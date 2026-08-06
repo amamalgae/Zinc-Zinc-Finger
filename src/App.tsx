@@ -2,15 +2,17 @@ import { useMemo, useState } from "react";
 import {
   candidatesToCsv,
   cleanDNA,
-  contactCode,
   formatCut,
   generateCandidates,
+  reverseComplement,
   type Candidate,
   type Finger,
 } from "./design-engine";
+import { MODULE_COUNT } from "./module-archive.ts";
 
-const EXAMPLE_SEQUENCE =
-  "GCTACCGATGAGTCCGATGCGTACCTGACCGTAGGCTACGTTGACCTAGCGATGGCATCCGTAACGTTAGCCGATGACTACCGGATCGTACGATGCTAGCGTACCTGAGCATCGGATCGTACGCTAGCATGACCTG";
+const EXAMPLE_LEFT_RECOGNITION = "GACGAAGATGCAGCCGGT";
+const EXAMPLE_RIGHT_RECOGNITION = "GGAGGCGGTGACGAACTA";
+const EXAMPLE_SEQUENCE = `CAGTCA${reverseComplement(EXAMPLE_LEFT_RECOGNITION)}GATTAC${EXAMPLE_RIGHT_RECOGNITION}TGACGT`;
 
 function downloadCandidates(candidates: Candidate[]) {
   const url = URL.createObjectURL(
@@ -36,9 +38,11 @@ function FingerTable({ title, fingers }: { title: string; fingers: Finger[] }) {
             <tr>
               <th>Finger</th>
               <th>標的3-mer</th>
-              <th>−7</th>
-              <th>−4</th>
-              <th>−1</th>
+              <th>認識ヘリックス −1…+6</th>
+              <th>B</th>
+              <th>DeepZF予測</th>
+              <th>標的順位</th>
+              <th>評価</th>
             </tr>
           </thead>
           <tbody>
@@ -46,9 +50,17 @@ function FingerTable({ title, fingers }: { title: string; fingers: Finger[] }) {
               <tr key={`${title}-${finger.finger}`}>
                 <td>F{finger.finger}</td>
                 <td className="mono strong">{finger.triplet}</td>
-                <td className="residue">{finger.minus7}</td>
-                <td className="residue">{finger.minus4}</td>
-                <td className="residue">{finger.minus1}</td>
+                <td className="mono residue">{finger.helix}</td>
+                <td>{finger.bScore}</td>
+                <td className="mono">{finger.deepZf.topTriplet}</td>
+                <td>#{finger.deepZf.targetRank}</td>
+                <td className={`module-${finger.recommendation}`}>
+                  {finger.recommendation === "favorable"
+                    ? "推奨"
+                    : finger.recommendation === "unfavorable"
+                      ? "非推奨"
+                      : "未評価"}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -60,7 +72,7 @@ function FingerTable({ title, fingers }: { title: string; fingers: Finger[] }) {
 
 export default function Home() {
   const [rawSequence, setRawSequence] = useState(EXAMPLE_SEQUENCE);
-  const [desiredCut, setDesiredCut] = useState(72);
+  const [desiredCut, setDesiredCut] = useState(27);
   const [fingerCount, setFingerCount] = useState(6);
   const [maxDistance, setMaxDistance] = useState(35);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -82,7 +94,7 @@ export default function Home() {
           </div>
           <div>
             <p>ZFN MA DESIGNER</p>
-            <span>literature-grounded prototype</span>
+            <span>extended modular assembly</span>
           </div>
         </div>
         <div className="privacy-pill"><span />Local calculation</div>
@@ -90,25 +102,22 @@ export default function Home() {
 
       <section className="hero">
         <div>
-          <p className="eyebrow">C2H2 recognition-code inverse design</p>
+          <p className="eyebrow">Experiment-derived modular design</p>
           <h1>標的配列から、<br />ZFN候補を瞬時に組む。</h1>
           <p className="hero-copy">
-            2024年の構造レビューを起点に、主要接触3残基の初期則を透明なルールとして実装。
-            6ZF×2の候補を列挙し、実験に回す3–5組を絞り込みます。
+            実験選抜済みone-finger archiveから構築可能な配列だけを列挙し、
+            B-scoreとDeepZFのprotein→PWM予測を組み合わせて順位付けします。
           </p>
         </div>
         <aside className="method-card">
-          <p className="method-label">INITIAL MODEL</p>
-          <div className="contact-grid">
-            {Object.entries(contactCode).map(([base, rule]) => (
-              <div key={base}>
-                <span className={`base base-${base.toLowerCase()}`}>{base}</span>
-                <strong>{rule.primary}</strong>
-                <small>{rule.alternatives !== "—" ? `alt. ${rule.alternatives}` : "primary contact"}</small>
-              </div>
-            ))}
+          <p className="method-label">EVIDENCE LAYER</p>
+          <div className="evidence-grid">
+            <div><strong>{MODULE_COUNT}</strong><small>Barbas modules</small></div>
+            <div><strong>6 + 6</strong><small>finger default</small></div>
+            <div><strong>≥15</strong><small>combined B-score</small></div>
+            <div><strong>DeepZF</strong><small>PWM cross-check</small></div>
           </div>
-          <p className="method-note">G→R/K/H ・ A→Q/N ・ T→E ・ C→D</p>
+          <p className="method-note">Bhakta et al. 2013 · AUC 0.77 (92 variants)</p>
         </aside>
       </section>
 
@@ -121,7 +130,7 @@ export default function Home() {
             </div>
             <button className="text-button" type="button" onClick={() => {
               setRawSequence(EXAMPLE_SEQUENCE);
-              setDesiredCut(72);
+              setDesiredCut(27);
             }}>例を復元</button>
           </div>
 
@@ -218,8 +227,10 @@ export default function Home() {
                     <b>{candidate.rightTop}</b>
                   </span>
                   <span className="candidate-data">
-                    <b>{candidate.score}</b>
-                    <small>cut {formatCut(candidate.cut)}</small>
+                    <b>B {candidate.combinedBScore}</b>
+                    <small>
+                      DeepZF {candidate.deepZfTargetFit.toFixed(2)} · cut {formatCut(candidate.cut)}
+                    </small>
                   </span>
                 </button>
               ))}
@@ -227,7 +238,7 @@ export default function Home() {
           ) : (
             <div className="empty-state">
               <strong>候補を生成できません</strong>
-              <p>配列長を増やすか、探索距離を広げてください。</p>
+              <p>{MODULE_COUNT}-module archiveで組める部位がありません。探索距離を広げてください。</p>
             </div>
           )}
         </div>
@@ -242,8 +253,8 @@ export default function Home() {
               <h2>切断位置 {formatCut(selected.cut)} ・ spacer {selected.spacerLength} bp</h2>
             </div>
             <div className="score-badge">
-              <strong>{selected.score}</strong>
-              <span>ranking score</span>
+              <strong>B {selected.combinedBScore}</strong>
+              <span>{selected.passesBScoreCutoff ? "published cutoffを通過" : "published cutoff未満"}</span>
             </div>
           </div>
 
@@ -272,25 +283,42 @@ export default function Home() {
             <FingerTable title="Right ZFA" fingers={selected.rightFingers} />
           </div>
 
+          <div className="protein-output">
+            <div>
+              <span>Left Sp1C-array protein（N→C）</span>
+              <code>{selected.leftArrayProtein}</code>
+            </div>
+            <div>
+              <span>Right Sp1C-array protein（N→C）</span>
+              <code>{selected.rightArrayProtein}</code>
+            </div>
+          </div>
+
           <div className="score-explanation">
             <div>
-              <span>位置</span>
-              <strong>50%</strong>
-              <p>希望切断点への近さ</p>
+              <span>Combined B-score</span>
+              <strong>{selected.combinedBScore}</strong>
+              <p>12 modulesの二価接触を合算</p>
             </div>
             <div>
-              <span>認識則</span>
-              <strong>40%</strong>
-              <p>構造知見の相対的確度</p>
+              <span>Module evidence</span>
+              <strong>{selected.favorableModules} / {selected.unfavorableModules}</strong>
+              <p>推奨 / 非推奨module数</p>
             </div>
             <div>
-              <span>Spacer</span>
-              <strong>10%</strong>
-              <p>6 bpを初期優先</p>
+              <span>DeepZF target fit</span>
+              <strong>{selected.deepZfTargetFit.toFixed(3)}</strong>
+              <p>top-1一致 {selected.deepZfExactModules} / {selected.leftFingers.length + selected.rightFingers.length}</p>
+            </div>
+            <div>
+              <span>ZFA–FokI linker</span>
+              <strong>{selected.fokILinker}</strong>
+              <p>{selected.spacerLength} bp spacer用</p>
             </div>
             <p className="score-caution">
-              このスコアは活性確率ではなく、初期候補の順位付けです。full-length ZFA配列には、
-              商用利用を確認したmodule/frameworkライブラリの接続が必要です。
+              B-score ≥15の構成はBhakta et al.の268構成中52%がSSA活性ありでしたが、これは本候補の成功確率ではありません。
+              DeepZF値も結合確率ではなくPWM整合度です。表示配列はSp1C型ZFAまでで、FokI、NLS、発現カセット、
+              ゲノムwide off-target評価はまだ含みません。
             </p>
           </div>
         </section>
@@ -298,27 +326,27 @@ export default function Home() {
 
       <section className="notes">
         <article>
-          <span>STRUCTURAL LAYER</span>
-          <h2>図1hは「辞書」ではなく検証セットとして使う</h2>
+          <span>CANDIDATE GENERATION</span>
+          <h2>単純な1塩基→1残基則を廃止</h2>
           <p>
-            掲載されたZF–DNA複合体は、−8/−7/−5/−4/−1残基、反対鎖接触、隣接triplet効果を抽出する入口です。
-            自然型ZFをそのままMAモジュールとして扱わず、PDB構造から独自に接触特徴を作ります。
+            {MODULE_COUNT}個の実験選抜済みBarbas moduleだけを使います。認識ヘリックス、Sp1C framework、
+            TGEKP interfinger linker、target-site overlap制約を明示して完全なZFA配列を出力します。
           </p>
         </article>
         <article>
-          <span>NEXT MODEL</span>
-          <h2>Deep modelは候補生成後に使う</h2>
+          <span>INDEPENDENT FORWARD MODEL</span>
+          <h2>DeepZFで認識配列を逆方向から検査</h2>
           <p>
-            逆設計はこの高速ルール層で行い、候補だけをprotein→PWMモデルで再評価します。
-            これにより総当たりを避け、ブラウザの応答速度を維持します。
+            原著の学習済みPWMpredictorをブラウザ用に軽量移植しました。B-scoreを主順位とし、同点候補だけを
+            DeepZFの標的PWM整合度で並べ替えます。48 moduleでは標的tripletがtop-1に15件、top-3に24件でした。
           </p>
         </article>
       </section>
 
       <footer>
         <p>Research prototype · no sequence is uploaded or retained</p>
-        <a href="https://doi.org/10.1016/j.sbi.2024.102836" target="_blank" rel="noreferrer">
-          Zhang et al., 2024 · DOI 10.1016/j.sbi.2024.102836
+        <a href="https://doi.org/10.1101/gr.143693.112" target="_blank" rel="noreferrer">
+          Bhakta et al., 2013 · DOI 10.1101/gr.143693.112
         </a>
       </footer>
     </main>

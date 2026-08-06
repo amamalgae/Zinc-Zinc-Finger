@@ -1,13 +1,26 @@
+import {
+  INTERFINGER_LINKER,
+  fullFingerSequence,
+  moduleArchive,
+  type ModuleRecommendation,
+} from "./module-archive.ts";
+import {
+  meanDeepZfTargetFit,
+  type FingerPwmPrediction,
+} from "./deepzf-pwm.ts";
+
 export type Base = "A" | "C" | "G" | "T";
 
 export type Finger = {
   finger: number;
   triplet: string;
-  minus7: string;
-  minus4: string;
-  minus1: string;
-  signature: string;
-  certainty: number;
+  helix: string;
+  fullSequence: string;
+  bScore: number;
+  recommendation: ModuleRecommendation;
+  requiresTsoContext: boolean;
+  tsoCompatible: boolean;
+  deepZf: FingerPwmPrediction;
 };
 
 export type Candidate = {
@@ -23,18 +36,22 @@ export type Candidate = {
   rightRecognition: string;
   leftFingers: Finger[];
   rightFingers: Finger[];
-  score: number;
-  evidence: number;
+  leftArrayProtein: string;
+  rightArrayProtein: string;
+  combinedBScore: number;
+  passesBScoreCutoff: boolean;
+  favorableModules: number;
+  unfavorableModules: number;
+  deepZfTargetFit: number;
+  deepZfExactModules: number;
+  deepZfTop3Modules: number;
+  fokILinker: string;
 };
 
-export const contactCode: Record<
-  Base,
-  { primary: string; alternatives: string; certainty: number }
-> = {
-  G: { primary: "R", alternatives: "K/H", certainty: 1 },
-  A: { primary: "Q", alternatives: "N", certainty: 0.86 },
-  T: { primary: "E", alternatives: "—", certainty: 0.82 },
-  C: { primary: "D", alternatives: "—", certainty: 0.78 },
+const FOKI_LINKERS: Record<number, string> = {
+  5: "TGGS",
+  6: "TGAAAR",
+  7: "TGPGAAAR",
 };
 
 export function cleanDNA(value: string): string {
@@ -46,19 +63,23 @@ export function cleanDNA(value: string): string {
     .replace(/[^ACGT]/g, "");
 }
 
-export function reverseComplement(value: string): string {
-  const complement: Record<string, string> = {
+export function complement(base: string | undefined): string | undefined {
+  if (!base) return undefined;
+  const complements: Record<string, string> = {
     A: "T",
     C: "G",
     G: "C",
     T: "A",
   };
+  return complements[base.toUpperCase()];
+}
 
+export function reverseComplement(value: string): string {
   return value
     .toUpperCase()
     .split("")
     .reverse()
-    .map((base) => complement[base] ?? "N")
+    .map((base) => complement(base) ?? "N")
     .join("");
 }
 
@@ -70,29 +91,47 @@ function chunks(value: string, size: number): string[] {
   return result;
 }
 
-export function fingersForRecognitionStrand(recognition: string): Finger[] {
-  return chunks(recognition, 3)
-    .reverse()
-    .map((triplet, index) => {
-      const b1 = triplet[0] as Base;
-      const b2 = triplet[1] as Base;
-      const b3 = triplet[2] as Base;
-      const minus7 = contactCode[b3];
-      const minus4 = contactCode[b2];
-      const minus1 = contactCode[b1];
-      const certainty =
-        (minus7.certainty + minus4.certainty + minus1.certainty) / 3;
+export function fingersForRecognitionStrand(
+  recognition: string,
+  threePrimeFlank?: string,
+): Finger[] | null {
+  const triplets = chunks(recognition, 3);
+  if (triplets.some((triplet) => triplet.length !== 3 || !moduleArchive[triplet])) {
+    return null;
+  }
 
-      return {
-        finger: index + 1,
-        triplet,
-        minus7: minus7.primary,
-        minus4: minus4.primary,
-        minus1: minus1.primary,
-        signature: `${minus7.primary}${minus4.primary}${minus1.primary}`,
-        certainty,
-      };
-    });
+  const inRecognitionOrder = triplets.map((triplet, index) => {
+    const module = moduleArchive[triplet];
+    const neighboringBase = triplets[index + 1]?.[0] ?? threePrimeFlank;
+    const tsoCompatible =
+      !module.requiresTsoContext || neighboringBase === "G" || neighboringBase === "T";
+
+    return {
+      triplet,
+      helix: module.helix,
+      fullSequence: fullFingerSequence(module.helix),
+      bScore: module.bScore,
+      recommendation: module.recommendation,
+      requiresTsoContext: module.requiresTsoContext,
+      tsoCompatible,
+      deepZf: module.deepZf,
+    };
+  });
+
+  if (inRecognitionOrder.some((finger) => !finger.tsoCompatible)) return null;
+
+  return inRecognitionOrder.reverse().map((finger, index) => ({
+    finger: index + 1,
+    ...finger,
+  }));
+}
+
+function arrayProtein(fingers: Finger[]): string {
+  return fingers.map((finger) => finger.fullSequence).join(INTERFINGER_LINKER);
+}
+
+function countRecommendation(fingers: Finger[], value: ModuleRecommendation): number {
+  return fingers.filter((finger) => finger.recommendation === value).length;
 }
 
 export function generateCandidates(
@@ -122,18 +161,21 @@ export function generateCandidates(
 
       const leftRecognition = reverseComplement(leftTop);
       const rightRecognition = rightTop;
-      const leftFingers = fingersForRecognitionStrand(leftRecognition);
-      const rightFingers = fingersForRecognitionStrand(rightRecognition);
+      const leftFingers = fingersForRecognitionStrand(
+        leftRecognition,
+        complement(dna[start - 1]),
+      );
+      const rightFingers = fingersForRecognitionStrand(
+        rightRecognition,
+        dna[start + footprint],
+      );
+      if (!leftFingers || !rightFingers) continue;
+
       const allFingers = [...leftFingers, ...rightFingers];
-      const evidence =
-        allFingers.reduce((sum, finger) => sum + finger.certainty, 0) /
-        allFingers.length;
-      const positionScore =
-        50 * Math.max(0, 1 - distance / Math.max(maxDistance, 1));
-      const evidenceScore = evidence * 40;
-      const spacerScore = spacerLength === 6 ? 10 : 8;
-      const score =
-        Math.round((positionScore + evidenceScore + spacerScore) * 10) / 10;
+      const combinedBScore = allFingers.reduce(
+        (sum, finger) => sum + finger.bScore,
+        0,
+      );
 
       candidates.push({
         id: `${start}-${spacerLength}`,
@@ -148,14 +190,37 @@ export function generateCandidates(
         rightRecognition,
         leftFingers,
         rightFingers,
-        score,
-        evidence,
+        leftArrayProtein: arrayProtein(leftFingers),
+        rightArrayProtein: arrayProtein(rightFingers),
+        combinedBScore,
+        passesBScoreCutoff: combinedBScore >= 15,
+        favorableModules: countRecommendation(allFingers, "favorable"),
+        unfavorableModules: countRecommendation(allFingers, "unfavorable"),
+        deepZfTargetFit: meanDeepZfTargetFit(
+          allFingers.map((finger) => finger.deepZf),
+        ),
+        deepZfExactModules: allFingers.filter(
+          (finger) => finger.deepZf.targetRank === 1,
+        ).length,
+        deepZfTop3Modules: allFingers.filter(
+          (finger) => finger.deepZf.targetRank <= 3,
+        ).length,
+        fokILinker: FOKI_LINKERS[spacerLength],
       });
     }
   }
 
   return candidates
-    .sort((a, b) => b.score - a.score || a.distance - b.distance)
+    .sort(
+      (a, b) =>
+        Number(b.passesBScoreCutoff) - Number(a.passesBScoreCutoff) ||
+        b.combinedBScore - a.combinedBScore ||
+        b.deepZfTargetFit - a.deepZfTargetFit ||
+        a.unfavorableModules - b.unfavorableModules ||
+        b.favorableModules - a.favorableModules ||
+        a.distance - b.distance ||
+        Math.abs(a.spacerLength - 6) - Math.abs(b.spacerLength - 6),
+    )
     .slice(0, 30);
 }
 
@@ -166,33 +231,47 @@ export function formatCut(value: number): string {
 export function candidatesToCsv(candidates: Candidate[]): string {
   const header = [
     "rank",
-    "score",
+    "combined_b_score",
+    "b_score_ge_15",
+    "deepzf_mean_target_fit",
+    "deepzf_exact_modules",
+    "deepzf_top3_modules",
     "cut_between_bases",
     "distance",
     "left_half_site_top_5to3",
     "spacer",
     "right_half_site_top_5to3",
+    "zfa_foki_linker",
     "left_recognition_strand_5to3",
     "right_recognition_strand_5to3",
     "left_fingers_NtoC",
     "right_fingers_NtoC",
+    "left_zfa_protein_NtoC",
+    "right_zfa_protein_NtoC",
   ];
   const rows = candidates.map((candidate, index) => [
     index + 1,
-    candidate.score,
+    candidate.combinedBScore,
+    candidate.passesBScoreCutoff,
+    candidate.deepZfTargetFit.toFixed(4),
+    candidate.deepZfExactModules,
+    candidate.deepZfTop3Modules,
     formatCut(candidate.cut),
     candidate.distance.toFixed(1),
     candidate.leftTop,
     candidate.spacer,
     candidate.rightTop,
+    candidate.fokILinker,
     candidate.leftRecognition,
     candidate.rightRecognition,
     candidate.leftFingers
-      .map((finger) => `${finger.triplet}:${finger.signature}`)
+      .map((finger) => `${finger.triplet}:${finger.helix}:B${finger.bScore}`)
       .join("|"),
     candidate.rightFingers
-      .map((finger) => `${finger.triplet}:${finger.signature}`)
+      .map((finger) => `${finger.triplet}:${finger.helix}:B${finger.bScore}`)
       .join("|"),
+    candidate.leftArrayProtein,
+    candidate.rightArrayProtein,
   ]);
 
   return [header, ...rows]
