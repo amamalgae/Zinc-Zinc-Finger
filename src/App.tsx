@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   candidatesToCsv,
   cleanDNA,
+  compareCandidates,
   formatCut,
   generateCandidates,
   reverseComplement,
@@ -9,6 +10,11 @@ import {
   type Finger,
 } from "./design-engine";
 import { MODULE_COUNT } from "./module-archive.ts";
+import type {
+  CandidateSpecificitySummary,
+  GenomeSearchResult,
+  OffTargetCandidateInput,
+} from "./off-target-engine.ts";
 
 const EXAMPLE_LEFT_RECOGNITION = "GACGAAGATGCAGCCGGT";
 const EXAMPLE_RIGHT_RECOGNITION = "GGAGGCGGTGACGAACTA";
@@ -23,6 +29,75 @@ function downloadCandidates(candidates: Candidate[]) {
   anchor.download = "zfn-ma-candidates.csv";
   anchor.click();
   URL.revokeObjectURL(url);
+}
+
+function downloadOffTargets(
+  candidates: Candidate[],
+  summaries: CandidateSpecificitySummary[],
+) {
+  const candidateById = new Map(candidates.map((candidate) => [candidate.id, candidate]));
+  const header = [
+    "specificity_rank",
+    "candidate_id",
+    "combined_b_score",
+    "intended_site_found",
+    "perfect_off_target_pairs",
+    "max_off_target_prognos_score",
+    "off_target_pairs_score_ge_50",
+    "homodimer_pairs",
+    "hit_rank",
+    "contig",
+    "position_1based",
+    "pair_type",
+    "spacer_bp",
+    "left_mismatches",
+    "right_mismatches",
+    "prognos_score",
+    "left_site_recognition_5to3",
+    "right_site_recognition_5to3",
+  ];
+  const rows: (string | number | boolean)[][] = [];
+  summaries.forEach((summary, summaryIndex) => {
+    const candidate = candidateById.get(summary.candidateId);
+    const hits = summary.topHits.length ? summary.topHits : [null];
+    hits.forEach((hit, hitIndex) => {
+      rows.push([
+        summaryIndex + 1,
+        summary.candidateId,
+        candidate?.combinedBScore ?? "",
+        summary.intendedSiteFound,
+        summary.perfectOffTargetHits,
+        summary.maxOffTargetScore.toFixed(3),
+        summary.highRiskHits,
+        summary.homodimerHits,
+        hit ? hitIndex + 1 : "",
+        hit?.contig ?? "",
+        hit ? hit.position + 1 : "",
+        hit?.pairType ?? "",
+        hit?.spacerLength ?? "",
+        hit?.leftMismatches ?? "",
+        hit?.rightMismatches ?? "",
+        hit?.score.toFixed(3) ?? "",
+        hit?.leftSite ?? "",
+        hit?.rightSite ?? "",
+      ]);
+    });
+  });
+  const csv = [header, ...rows]
+    .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(","))
+    .join("\n");
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = "zfn-genome-off-targets.csv";
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
+function formatBases(value: number) {
+  return value >= 1_000_000
+    ? `${(value / 1_000_000).toFixed(1)} Mbp`
+    : `${value.toLocaleString()} bp`;
 }
 
 function FingerTable({ title, fingers }: { title: string; fingers: Finger[] }) {
@@ -80,14 +155,120 @@ export default function Home() {
   const [fingerCount, setFingerCount] = useState(6);
   const [maxDistance, setMaxDistance] = useState(35);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [genomeFile, setGenomeFile] = useState<File | null>(null);
+  const [genomeResult, setGenomeResult] = useState<GenomeSearchResult | null>(null);
+  const [genomeProgress, setGenomeProgress] = useState<{
+    phase: "parsing" | "searching";
+    fraction: number;
+    message: string;
+  } | null>(null);
+  const [genomeError, setGenomeError] = useState<string | null>(null);
+  const workerRef = useRef<Worker | null>(null);
   const dna = useMemo(() => cleanDNA(rawSequence), [rawSequence]);
   const invalidCount = rawSequence.replace(/[ACGTacgt\s\d>_-]/g, "").length;
   const candidates = useMemo(
     () => generateCandidates(dna, desiredCut, fingerCount, maxDistance),
     [dna, desiredCut, fingerCount, maxDistance],
   );
-  const selected = candidates.find((candidate) => candidate.id === selectedId) ?? candidates[0];
+  const specificityById = useMemo(
+    () => new Map(genomeResult?.summaries.map((summary) => [summary.candidateId, summary]) ?? []),
+    [genomeResult],
+  );
+  const rankedCandidates = useMemo(() => {
+    if (!genomeResult) return candidates;
+    return [...candidates].sort((a, b) => {
+      const aSpecificity = specificityById.get(a.id);
+      const bSpecificity = specificityById.get(b.id);
+      if (!aSpecificity || !bSpecificity) return compareCandidates(a, b);
+      return (
+        Number(b.passesBScoreCutoff) - Number(a.passesBScoreCutoff) ||
+        aSpecificity.perfectOffTargetHits - bSpecificity.perfectOffTargetHits ||
+        aSpecificity.maxOffTargetScore - bSpecificity.maxOffTargetScore ||
+        aSpecificity.highRiskHits - bSpecificity.highRiskHits ||
+        aSpecificity.homodimerHits - bSpecificity.homodimerHits ||
+        compareCandidates(a, b)
+      );
+    });
+  }, [candidates, genomeResult, specificityById]);
+  const selected =
+    rankedCandidates.find((candidate) => candidate.id === selectedId) ?? rankedCandidates[0];
+  const selectedSpecificity = selected ? specificityById.get(selected.id) : undefined;
   const footprint = fingerCount * 6 + 6;
+
+  const resetGenomeAnalysis = () => {
+    workerRef.current?.terminate();
+    workerRef.current = null;
+    setGenomeResult(null);
+    setGenomeProgress(null);
+    setGenomeError(null);
+  };
+
+  useEffect(() => () => workerRef.current?.terminate(), []);
+
+  const runGenomeSearch = () => {
+    if (!genomeFile) {
+      setGenomeError("ゲノムFASTAを選択してください。");
+      return;
+    }
+    if (fingerCount < 4) {
+      setGenomeError("3ZFは近似half-siteが多すぎるため、ゲノム検索は4–6ZFに限定しています。");
+      return;
+    }
+    if (!candidates.length) {
+      setGenomeError("検索できるZFN候補がありません。");
+      return;
+    }
+
+    workerRef.current?.terminate();
+    const worker = new Worker(new URL("./off-target.worker.ts", import.meta.url), {
+      type: "module",
+    });
+    workerRef.current = worker;
+    setGenomeError(null);
+    setGenomeResult(null);
+    setGenomeProgress({ phase: "parsing", fraction: 0, message: "検索を準備しています" });
+
+    worker.addEventListener("message", (event: MessageEvent) => {
+      if (event.data.type === "progress") {
+        setGenomeProgress(event.data.progress);
+        return;
+      }
+      if (event.data.type === "result") {
+        setGenomeResult(event.data.result as GenomeSearchResult);
+        setGenomeProgress(null);
+        worker.terminate();
+        workerRef.current = null;
+        return;
+      }
+      if (event.data.type === "error") {
+        setGenomeError(event.data.message);
+        setGenomeProgress(null);
+        worker.terminate();
+        workerRef.current = null;
+      }
+    });
+    worker.addEventListener("error", () => {
+      setGenomeError("検索処理を開始できませんでした。FASTA形式を確認してください。");
+      setGenomeProgress(null);
+      worker.terminate();
+      workerRef.current = null;
+    });
+
+    const searchCandidates: OffTargetCandidateInput[] = candidates.map((candidate) => ({
+      id: candidate.id,
+      leftRecognition: candidate.leftRecognition,
+      rightRecognition: candidate.rightRecognition,
+      spacerLength: candidate.spacerLength,
+      targetStart: candidate.start,
+      footprintLength: candidate.leftTop.length + candidate.spacerLength + candidate.rightTop.length,
+    }));
+    worker.postMessage({
+      type: "start",
+      file: genomeFile,
+      candidates: searchCandidates,
+      targetWindow: dna,
+    });
+  };
 
   return (
     <main>
@@ -133,6 +314,7 @@ export default function Home() {
               <h2>Target window</h2>
             </div>
             <button className="text-button" type="button" onClick={() => {
+              resetGenomeAnalysis();
               setRawSequence(EXAMPLE_SEQUENCE);
               setDesiredCut(27);
             }}>例を復元</button>
@@ -142,7 +324,10 @@ export default function Home() {
           <textarea
             id="sequence"
             value={rawSequence}
-            onChange={(event) => setRawSequence(event.target.value)}
+            onChange={(event) => {
+              resetGenomeAnalysis();
+              setRawSequence(event.target.value);
+            }}
             spellCheck={false}
             aria-describedby="sequence-help"
           />
@@ -161,13 +346,19 @@ export default function Home() {
                 min={0}
                 max={dna.length}
                 value={desiredCut}
-                onChange={(event) => setDesiredCut(Number(event.target.value))}
+                onChange={(event) => {
+                  resetGenomeAnalysis();
+                  setDesiredCut(Number(event.target.value));
+                }}
               />
               <small>5′端からの塩基間座標</small>
             </label>
             <label>
               <span>片側のfinger数</span>
-              <select value={fingerCount} onChange={(event) => setFingerCount(Number(event.target.value))}>
+              <select value={fingerCount} onChange={(event) => {
+                resetGenomeAnalysis();
+                setFingerCount(Number(event.target.value));
+              }}>
                 <option value={3}>3ZF</option>
                 <option value={4}>4ZF</option>
                 <option value={5}>5ZF</option>
@@ -177,7 +368,10 @@ export default function Home() {
             </label>
             <label>
               <span>探索距離</span>
-              <select value={maxDistance} onChange={(event) => setMaxDistance(Number(event.target.value))}>
+              <select value={maxDistance} onChange={(event) => {
+                resetGenomeAnalysis();
+                setMaxDistance(Number(event.target.value));
+              }}>
                 <option value={20}>±20 bp</option>
                 <option value={35}>±35 bp</option>
                 <option value={60}>±60 bp</option>
@@ -203,20 +397,21 @@ export default function Home() {
             <button
               className="export-button"
               type="button"
-              disabled={!candidates.length}
-              onClick={() => downloadCandidates(candidates)}
+              disabled={!rankedCandidates.length}
+              onClick={() => downloadCandidates(rankedCandidates)}
             >CSV</button>
           </div>
           <div className="result-summary">
-            <strong>{candidates.length}</strong>
+            <strong>{rankedCandidates.length}</strong>
             <span>候補を表示</span>
-            <small>spacer 5 / 6 / 7 bpを同時評価</small>
+            <small>{genomeResult ? "B-score閾値内でゲノム特異性を優先" : "spacer 5 / 6 / 7 bpを同時評価"}</small>
           </div>
 
-          {candidates.length ? (
+          {rankedCandidates.length ? (
             <div className="candidate-list" role="listbox" aria-label="ZFN candidates">
-              {candidates.slice(0, 12).map((candidate, index) => (
-                <button
+              {rankedCandidates.slice(0, 12).map((candidate, index) => {
+                const specificity = specificityById.get(candidate.id);
+                return <button
                   type="button"
                   key={candidate.id}
                   className={`candidate-row ${selected?.id === candidate.id ? "selected" : ""}`}
@@ -231,13 +426,15 @@ export default function Home() {
                     <b>{candidate.rightTop}</b>
                   </span>
                   <span className="candidate-data">
-                    <b>B {candidate.combinedBScore}</b>
+                    <b>{specificity ? `OT ${specificity.maxOffTargetScore.toFixed(1)}` : `B ${candidate.combinedBScore}`}</b>
                     <small>
-                      DeepZF参考 {candidate.deepZfTargetFit.toFixed(2)} · TSO {candidate.tsoIssues} · cut {formatCut(candidate.cut)}
+                      {specificity
+                        ? `完全一致 ${specificity.perfectOffTargetHits} · B ${candidate.combinedBScore}`
+                        : `DeepZF参考 ${candidate.deepZfTargetFit.toFixed(2)} · TSO ${candidate.tsoIssues} · cut ${formatCut(candidate.cut)}`}
                     </small>
                   </span>
-                </button>
-              ))}
+                </button>;
+              })}
             </div>
           ) : (
             <div className="empty-state">
@@ -248,11 +445,150 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="genome-panel">
+        <div className="detail-header genome-header">
+          <div>
+            <span className="step">03</span>
+            <p>Genome specificity</p>
+            <h2>FASTA内の切断可能な類似ペアを検索</h2>
+          </div>
+          {genomeResult && (
+            <button
+              className="export-button"
+              type="button"
+              onClick={() => downloadOffTargets(rankedCandidates, rankedCandidates.map((candidate) => specificityById.get(candidate.id)!).filter(Boolean))}
+            >off-target CSV</button>
+          )}
+        </div>
+
+        <div className="genome-intro">
+          <p>
+            4–6ZF候補を最大30組まとめて検索します。各half-site 3 mismatch以内を漏れなく列挙し、
+            LR・RL・LL・RRをPROGNOS ZFN v2.0で相対順位化します。
+          </p>
+          <span>ファイルは端末内のWeb Workerだけで処理され、送信・保存されません。</span>
+        </div>
+
+        <div className="genome-controls">
+          <label className="file-picker">
+            <input
+              type="file"
+              accept=".fa,.fasta,.fna,.fas,.fa.gz,.fasta.gz,.fna.gz,.gz,text/plain"
+              onChange={(event) => {
+                const file = event.target.files?.[0] ?? null;
+                workerRef.current?.terminate();
+                workerRef.current = null;
+                setGenomeFile(file);
+                setGenomeResult(null);
+                setGenomeProgress(null);
+                setGenomeError(null);
+              }}
+            />
+            <span>{genomeFile ? genomeFile.name : "ゲノムFASTAを選択"}</span>
+            <small>{genomeFile ? `${(genomeFile.size / 1_000_000).toFixed(1)} MB` : "FASTAまたはgzip圧縮FASTA"}</small>
+          </label>
+          <button
+            className="search-button"
+            type="button"
+            disabled={!genomeFile || !candidates.length || fingerCount < 4 || Boolean(genomeProgress)}
+            onClick={runGenomeSearch}
+          >
+            {genomeProgress ? "検索中…" : `${candidates.length}候補を検索`}
+          </button>
+        </div>
+
+        {fingerCount < 4 && (
+          <p className="genome-warning">3ZFは近似候補が急増するため非対応です。特異性を比較する場合は4–6ZFを選択してください。</p>
+        )}
+        {genomeError && <p className="genome-error" role="alert">{genomeError}</p>}
+        {genomeProgress && (
+          <div className="progress-block" aria-live="polite">
+            <div><span style={{ width: `${Math.max(3, genomeProgress.fraction * 100)}%` }} /></div>
+            <p>{genomeProgress.message} · {Math.round(genomeProgress.fraction * 100)}%</p>
+          </div>
+        )}
+
+        {genomeResult && selectedSpecificity && (
+          <>
+            <div className="genome-run-meta">
+              <span>{formatBases(genomeResult.genomeBases)}</span>
+              <span>{genomeResult.contigCount.toLocaleString()} contigs</span>
+              <span>{(genomeResult.elapsedMs / 1000).toFixed(2)} s</span>
+              <span>half-site ≤3 mismatch</span>
+            </div>
+            {!genomeResult.targetWindowUniquelyLocated && (
+              <p className="genome-warning">
+                入力した標的windowをゲノム内で一意に同定できませんでした。
+                完全一致部位も保守的にoff-targetとして数えています。
+              </p>
+            )}
+            <div className="specificity-summary">
+              <div>
+                <span>追加の完全一致ペア</span>
+                <strong>{selectedSpecificity.perfectOffTargetHits}</strong>
+                <small>意図部位を同定できた場合は除外</small>
+              </div>
+              <div>
+                <span>最大off-target score</span>
+                <strong>{selectedSpecificity.maxOffTargetScore.toFixed(1)}</strong>
+                <small>PROGNOS相対スコア · 確率ではない</small>
+              </div>
+              <div>
+                <span>score ≥50</span>
+                <strong>{selectedSpecificity.highRiskHits}</strong>
+                <small>LR / RL / LL / RR合計</small>
+              </div>
+              <div>
+                <span>homodimer候補</span>
+                <strong>{selectedSpecificity.homodimerHits}</strong>
+                <small>LL + RR · heterodimer FokIで抑制対象</small>
+              </div>
+            </div>
+
+            <div className="off-target-table-wrap">
+              <table className="off-target-table">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Location</th>
+                    <th>Pair</th>
+                    <th>Mismatch L/R</th>
+                    <th>Spacer</th>
+                    <th>PROGNOS</th>
+                    <th>Recognition sites 5′→3′</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedSpecificity.topHits.slice(0, 20).map((hit, index) => (
+                    <tr key={`${hit.contig}-${hit.position}-${hit.pairType}-${hit.spacerLength}`}>
+                      <td>{index + 1}</td>
+                      <td className="mono">{hit.contig}:{(hit.position + 1).toLocaleString()}</td>
+                      <td><span className={`pair-type pair-${hit.pairType.toLowerCase()}`}>{hit.pairType}</span></td>
+                      <td>{hit.leftMismatches} / {hit.rightMismatches}</td>
+                      <td>{hit.spacerLength} bp</td>
+                      <td><strong>{hit.score.toFixed(1)}</strong></td>
+                      <td className="mono site-pair">{hit.leftSite} · {hit.rightSite}</td>
+                    </tr>
+                  ))}
+                  {!selectedSpecificity.topHits.length && (
+                    <tr><td colSpan={7} className="no-off-targets">探索条件内のoff-targetペアはありません。</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <p className="genome-caution">
+              この順位は配列類似性に基づく候補抽出です。5–6ZFはPROGNOS学習範囲外への外挿であり、
+              クロマチン状態・発現量・実細胞での切断は予測しません。上位部位はamplicon sequencing等で検証してください。
+            </p>
+          </>
+        )}
+      </section>
+
       {selected && (
         <section className="design-detail">
           <div className="detail-header">
             <div>
-              <span className="step">03</span>
+              <span className="step">04</span>
               <p>Selected design</p>
               <h2>切断位置 {formatCut(selected.cut)} ・ spacer {selected.spacerLength} bp</h2>
             </div>
@@ -323,7 +659,7 @@ export default function Home() {
               B-score ≥15の構成はBhakta et al.の268構成中52%がSSA活性ありでしたが、これは本候補の成功確率ではありません。
               TSO不一致は原著どおり警告であり、候補を自動除外しません。DeepZF値は結合確率ではなくPWM整合度で、順位にも使用しません。
               表示配列はSp1C型ZFAまでで、FokI、NLS、発現カセット、
-              ゲノムwide off-target評価はまだ含みません。
+              クロマチン状態の評価は含みません。FASTA検索後はB-score閾値内でゲノム特異性を優先して並べ替えます。
             </p>
           </div>
         </section>
@@ -346,13 +682,23 @@ export default function Home() {
             活性予測AUC 0.491だったため、候補順位には使いません。49 moduleの標的triplet整合度だけを参考表示します。
           </p>
         </article>
+        <article>
+          <span>GENOME-WIDE SPECIFICITY</span>
+          <h2>似たhalf-siteではなく、切れる配置を探す</h2>
+          <p>
+            左右half-siteが5–7 bp spacerで向かい合う場所だけを列挙し、LR・RLに加えてLL・RRも検索します。
+            PROGNOS ZFN v2.0は相対順位に限定し、切断確率とは表示しません。
+          </p>
+        </article>
       </section>
 
       <footer>
         <p>Research prototype · no sequence is uploaded or retained</p>
-        <a href="https://doi.org/10.1101/gr.143693.112" target="_blank" rel="noreferrer">
-          Bhakta et al., 2013 · DOI 10.1101/gr.143693.112
-        </a>
+        <div className="footer-links">
+          <a href="https://doi.org/10.1101/gr.143693.112" target="_blank" rel="noreferrer">Bhakta 2013</a>
+          <a href="https://doi.org/10.1093/nar/gkt1326" target="_blank" rel="noreferrer">Fine 2014</a>
+          <a href="https://doi.org/10.1093/nar/gks1356" target="_blank" rel="noreferrer">Chen 2013</a>
+        </div>
       </footer>
     </main>
   );
