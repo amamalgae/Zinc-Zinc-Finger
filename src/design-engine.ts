@@ -45,6 +45,7 @@ export type Candidate = {
   deepZfTargetFit: number;
   deepZfExactModules: number;
   deepZfTop3Modules: number;
+  tsoIssues: number;
   fokILinker: string;
 };
 
@@ -117,8 +118,6 @@ export function fingersForRecognitionStrand(
       deepZf: module.deepZf,
     };
   });
-
-  if (inRecognitionOrder.some((finger) => !finger.tsoCompatible)) return null;
 
   return inRecognitionOrder.reverse().map((finger, index) => ({
     finger: index + 1,
@@ -205,6 +204,7 @@ export function generateCandidates(
         deepZfTop3Modules: allFingers.filter(
           (finger) => finger.deepZf.targetRank <= 3,
         ).length,
+        tsoIssues: allFingers.filter((finger) => !finger.tsoCompatible).length,
         fokILinker: FOKI_LINKERS[spacerLength],
       });
     }
@@ -216,6 +216,7 @@ export function generateCandidates(
         Number(b.passesBScoreCutoff) - Number(a.passesBScoreCutoff) ||
         b.combinedBScore - a.combinedBScore ||
         b.deepZfTargetFit - a.deepZfTargetFit ||
+        a.tsoIssues - b.tsoIssues ||
         a.unfavorableModules - b.unfavorableModules ||
         b.favorableModules - a.favorableModules ||
         a.distance - b.distance ||
@@ -236,6 +237,7 @@ export function candidatesToCsv(candidates: Candidate[]): string {
     "deepzf_mean_target_fit",
     "deepzf_exact_modules",
     "deepzf_top3_modules",
+    "tso_warnings",
     "cut_between_bases",
     "distance",
     "left_half_site_top_5to3",
@@ -256,6 +258,7 @@ export function candidatesToCsv(candidates: Candidate[]): string {
     candidate.deepZfTargetFit.toFixed(4),
     candidate.deepZfExactModules,
     candidate.deepZfTop3Modules,
+    candidate.tsoIssues,
     formatCut(candidate.cut),
     candidate.distance.toFixed(1),
     candidate.leftTop,

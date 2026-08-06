@@ -23,10 +23,12 @@ test("reverseComplement returns the opposite 5-prime to 3-prime strand", () => {
 });
 
 test("the archive exposes experiment-selected helices and the published B-score rule", () => {
-  assert.equal(Object.keys(moduleArchive).length, 48);
+  assert.equal(Object.keys(moduleArchive).length, 49);
   assert.equal(moduleArchive.GAA.helix, "QSSNLVR");
   assert.equal(calculateModuleBScore("GAA", "QSSNLVR"), 3);
   assert.equal(moduleArchive.AAA.bScore, 2);
+  assert.equal(moduleArchive.AAG.bScore, 2);
+  assert.equal(moduleArchive.ATC.helix, "DPGALRV");
 });
 
 test("the browser DeepZF port reproduces the upstream PWM model", () => {
@@ -36,10 +38,10 @@ test("the browser DeepZF port reproduces the upstream PWM model", () => {
   assert.ok(Math.abs(prediction.targetJointProbability - 0.9432) < 0.0001);
 });
 
-test("DeepZF contains recognition signal across the 48-module archive", () => {
+test("DeepZF contains recognition signal across the 49-module archive", () => {
   const modules = Object.values(moduleArchive);
-  assert.equal(modules.filter(({ deepZf }) => deepZf.targetRank === 1).length, 15);
-  assert.equal(modules.filter(({ deepZf }) => deepZf.targetRank <= 3).length, 24);
+  assert.equal(modules.filter(({ deepZf }) => deepZf.targetRank === 1).length, 16);
+  assert.equal(modules.filter(({ deepZf }) => deepZf.targetRank <= 3).length, 25);
 });
 
 test("finger output follows protein N-to-C order", () => {
@@ -55,9 +57,25 @@ test("finger output follows protein N-to-C order", () => {
   );
 });
 
-test("TSO-dependent modules require G or T immediately 3-prime", () => {
-  assert.equal(fingersForRecognitionStrand("AAGCAA", "A"), null);
-  assert.ok(fingersForRecognitionStrand("AAGGAA", "A"));
+test("TSO is restricted to GNG modules and remains a warning", () => {
+  const unmet = fingersForRecognitionStrand("GTGCAA", "A");
+  const met = fingersForRecognitionStrand("GTGGAA", "A");
+  assert.ok(unmet);
+  assert.ok(met);
+  assert.equal(unmet.find(({ triplet }) => triplet === "GTG")?.tsoCompatible, false);
+  assert.equal(met.find(({ triplet }) => triplet === "GTG")?.tsoCompatible, true);
+  assert.equal(moduleArchive.AAG.requiresTsoContext, false);
+});
+
+test("a TSO warning does not exclude an otherwise assemblable candidate", () => {
+  const recognition = "GTGCAAGAA";
+  const target = `${reverseComplement(recognition)}TTTTTT${recognition}`;
+  const candidate = generateCandidates(target, 12, 3, 20).find(
+    ({ id }) => id === "0-6",
+  );
+
+  assert.ok(candidate);
+  assert.equal(candidate.tsoIssues, 2);
 });
 
 const LEFT_RECOGNITION = "GAAGACGAT";
