@@ -11,6 +11,14 @@ The recognition-helix sequences, target triplets, and module recommendations in 
 
 The code in this repository was written independently. The repository's MIT license applies to that code and does not purport to relicense third-party publications, patents, plasmids, or biological materials.
 
+## Chen 2013 external benchmark data
+
+`data/chen-2013-zfn-benchmark.json` is a machine-readable extraction of ZFN target sites, somatic indel measurements, and the 12 amino acids between Cys2 and His1 for each zinc finger, derived from Supplementary Table S1 of:
+
+- Chen S et al. (2013), *A large-scale in vivo analysis reveals that TALENs are significantly more mutagenic than ZFNs generated using context-dependent assembly*, DOI: 10.1093/nar/gks1356. The article and supplementary data are distributed under CC BY-NC 3.0.
+
+Source workbook: `supp_gks1356_nar-02876-h-2012-File008.xlsx`, SHA-256 `d37402e74baf828d1524daa608d07f57b49dc15cb572773a768775be48305902`, retrieved from the Europe PMC supplementary-files endpoint for PMC3575824. The repository MIT license does not relicense this extracted scientific dataset.
+
 ## DeepZF
 
 The DeepZF PWMpredictor is used as an attributed forward-model cross-check:

@@ -196,7 +196,6 @@ const byNumber = (field) => (left, right) => left[field] - right[field];
 function byCurrentRanking(left, right) {
   return (
     left.combinedBScore - right.combinedBScore ||
-    left.deepZfTargetFit - right.deepZfTargetFit ||
     right.tsoIssues - left.tsoIssues ||
     right.unfavorableModules - left.unfavorableModules ||
     left.favorableModules - right.favorableModules

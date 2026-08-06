@@ -31,7 +31,7 @@ test("Bhakta activity-ranking metrics remain reproducible", () => {
 
   assert.ok(Math.abs(combined.bScoreAuc - 0.6555555555555556) < 1e-12);
   assert.ok(Math.abs(combined.deepZfAuc - 0.5222222222222223) < 1e-12);
-  assert.ok(Math.abs(combined.currentRankingAuc - 2 / 3) < 1e-12);
+  assert.ok(Math.abs(combined.currentRankingAuc - 0.6555555555555556) < 1e-12);
   assert.deepEqual(
     {
       tp: combined.bScore15.tp,
@@ -41,5 +41,5 @@ test("Bhakta activity-ranking metrics remain reproducible", () => {
     },
     { tp: 13, fp: 5, tn: 1, fn: 2 },
   );
-  assert.ok(Math.abs(prospective.currentRankingAuc - 23 / 24) < 1e-12);
+  assert.ok(Math.abs(prospective.currentRankingAuc - 22 / 24) < 1e-12);
 });

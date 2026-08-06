@@ -107,14 +107,16 @@ function softmax(values: Float32Array): PwmRow {
   ];
 }
 
-function predictPwm(helix: string): readonly [PwmRow, PwmRow, PwmRow] {
-  if (helix.length !== 7) {
-    throw new Error(`DeepZF requires a seven-residue recognition helix, received ${helix}`);
+function predictPwmFromTwelveResidues(
+  twelveResidues: string,
+): readonly [PwmRow, PwmRow, PwmRow] {
+  if (twelveResidues.length !== 12) {
+    throw new Error(
+      `DeepZF requires the 12 residues between Cys2 and His1, received ${twelveResidues}`,
+    );
   }
 
-  // In the Sp1C framework, the 12 residues between Cys2 and His1 are
-  // GKSFS followed by the seven-residue recognition helix.
-  const input = oneHotEncode(`GKSFS${helix}`);
+  const input = oneHotEncode(twelveResidues);
   const weights = model();
   const hidden1 = dense(
     input,
@@ -157,7 +159,16 @@ export function predictFingerPwm(
   helix: string,
   targetTriplet: string,
 ): FingerPwmPrediction {
-  const pwm = predictPwm(helix);
+  // In the Sp1C framework, the 12 residues between Cys2 and His1 are
+  // GKSFS followed by the seven-residue recognition helix.
+  return predictFingerPwmFromTwelveResidues(`GKSFS${helix}`, targetTriplet);
+}
+
+export function predictFingerPwmFromTwelveResidues(
+  twelveResidues: string,
+  targetTriplet: string,
+): FingerPwmPrediction {
+  const pwm = predictPwmFromTwelveResidues(twelveResidues);
   const rankedTriplets: Array<{ triplet: string; probability: number }> = [];
 
   for (const first of DNA_BASES) {
