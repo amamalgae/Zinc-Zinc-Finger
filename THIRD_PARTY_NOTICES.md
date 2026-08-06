@@ -2,6 +2,14 @@
 
 This project combines an independent implementation of published zinc-finger modular-assembly methods with a browser-oriented conversion of the published DeepZF PWMpredictor. It does not include code or data from ZFDesign, PROGNOS, ZFN-Site, or ZiFiT.
 
+## PROGNOS ZFN v2.0
+
+`src/off-target-engine.ts` is an independent TypeScript implementation of the published ZFN v2.0 scoring equations and parameters in:
+
+- Fine EJ et al. (2014), *An online bioinformatics tool predicts zinc finger and TALE nuclease off-target cleavage*, DOI: 10.1093/nar/gkt1326. The article is distributed under CC BY-NC 3.0.
+
+No PROGNOS source code, database, website content, or software assets are included. The repository MIT license applies to the independently written implementation and does not purport to relicense the publication or original PROGNOS software.
+
 ## Barbas one-finger module data
 
 The recognition-helix sequences, target triplets, and module recommendations in `src/module-archive.ts` are scientific sequence data reported across the Barbas modular-assembly literature and summarized by:

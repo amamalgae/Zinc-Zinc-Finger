@@ -15,9 +15,25 @@
 - DeepZF整合度は順位に使わず、独立な認識診断値として表示する
 - Sp1C framework、TGEKP interfinger linkerを含むZFAアミノ酸配列を出力する
 - spacer 5 / 6 / 7 bpに対してTGGS / TGAAAR / TGPGAAAR ZFA–FokI linkerを提案する
+- ゲノムFASTAまたはgzip圧縮FASTAを端末内だけで読み込む
+- 4–6 finger、最大30候補について各half-site 3 mismatch以内をゲノムwide検索する
+- 正向き・逆向きheterodimer（LR / RL）とhomodimer（LL / RR）を区別する
+- PROGNOS ZFN v2.0を独立実装し、候補off-targetを相対順位化する
+- B-score ≥15を優先した上で、完全一致off-target、最大PROGNOS score、score ≥50の部位数、homodimer候補数の順に候補を並べ替える
 - 候補と配列をCSVで保存する
+- 上位off-target座標・配列・mismatch数・PROGNOS scoreをCSVで保存する
 
 入力配列はブラウザ内だけで処理されます。API、アクセス解析、外部保存処理はありません。
+
+## ゲノムwide off-target検索
+
+ゲノムFASTAはサーバーへアップロードせず、Web Worker内で読み込み・検索します。`N`とcontig境界を保持するため、座標がずれたりcontigをまたいだ偽ヒットが生じたりしません。
+
+検索はhalf-siteを2個のseedに分けるseed-and-verify方式です。各half-siteの総mismatchが3以下なら、2個のseedの少なくとも一方は1 mismatch以下になるため、そのseed集合を一度のゲノム走査で検索して完全長half-siteを再検証します。これはBLASTの局所アラインメントではなく、9–18 bpの固定長half-siteに対する置換だけの完全列挙です。挿入・欠失は探索しません。
+
+PROGNOS ZFN v2.0はfingerごとの初回mismatch penalty 70、追加mismatch penalty 65、標的G一致bonus 17.5（triplet 5′端Gは2倍）、FokIからの距離に応じたpolarity 1.00 / 0.85 / 0.80 / 0.70、dimer exponent 1.75を実装しています。Fine et al. (2014), DOI: [10.1093/nar/gkt1326](https://doi.org/10.1093/nar/gkt1326)。
+
+入力した標的windowがゲノム内で一意に見つかった場合だけ、その1部位をintended siteとしてoff-target集計から除外します。一意に同定できなければ、完全一致部位も保守的にoff-targetとして数えます。PROGNOS scoreは0–100の相対順位であり、切断確率や安全性の尺度ではありません。
 
 ## スコアの意味
 
@@ -47,7 +63,10 @@ module別公表値から得たL6+R6 B-scoreは20/21標的で原著表と一致�
 ## 重要な制限
 
 - 出力するのはDNA-binding ZFA配列までです。FokI cleavage domain、obligate heterodimer変異、NLS、発現カセット、コドン最適化は含みません。
-- ゲノムwide off-target検索、クロマチン accessibility、発現量、細胞種依存性は評価しません。
+- ゲノムwide検索は塩基置換だけを扱い、bulge、挿入・欠失、構造変異は探索しません。
+- PROGNOS ZFN v2.0は3–4 finger ZFNを中心に構築されており、5–6 fingerは外挿です。
+- クロマチン accessibility、発現量、細胞種依存性は評価しません。
+- 3-fingerでは3 mismatch以内のhalf-siteが急増するため、ブラウザ版のゲノム検索対象は4–6 fingerに限定しています。
 - B-scoreはaffinity/activityの粗い分類器であり、PWM、結合定数、indel率を予測しません。
 - DeepZF target fitはPWM上の標的塩基確率の幾何平均であり、結合確率や切断効率ではありません。
 - DeepZF target fitは候補順位に使用しません。Chen 2013の独立82ペアで活性予測AUC 0.491だったためです。

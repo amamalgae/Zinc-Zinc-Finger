@@ -124,7 +124,7 @@ main { min-height: 100vh; }
   grid-template-columns: minmax(0, 1.1fr) minmax(360px, .9fr);
   gap: 20px;
 }
-.input-card, .results-card, .design-detail {
+.input-card, .results-card, .design-detail, .genome-panel {
   border: 1px solid var(--line);
   border-radius: 26px;
   background: rgba(255,254,250,.84);
@@ -187,6 +187,55 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .empty-state strong { color: var(--ink); }
 .empty-state p { font-size: 12px; }
 
+.genome-panel {
+  width: min(1180px, calc(100% - 40px));
+  margin: 20px auto 0;
+  padding: 34px;
+}
+.genome-header { align-items: center; }
+.genome-intro { margin: 24px 0; display: flex; align-items: flex-end; justify-content: space-between; gap: 28px; }
+.genome-intro p { max-width: 760px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.8; }
+.genome-intro > span { flex: 0 0 260px; color: var(--green); font-size: 10px; line-height: 1.6; text-align: right; }
+.genome-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; }
+.file-picker {
+  min-width: 0; min-height: 62px; padding: 12px 16px;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-content: center; gap: 4px 16px;
+  border: 1px dashed #b9c8bd; border-radius: 14px; background: #fbfcf7; cursor: pointer;
+}
+.file-picker input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.file-picker span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 12px; font-weight: 700; }
+.file-picker small { grid-column: 2; grid-row: 1; color: var(--muted); font-size: 9px; }
+.search-button {
+  min-width: 156px; padding: 0 20px; border: 0; border-radius: 14px;
+  background: var(--green); color: white; font-size: 12px; font-weight: 800; cursor: pointer;
+}
+.search-button:disabled { opacity: .42; cursor: default; }
+.genome-warning, .genome-error, .genome-caution {
+  margin: 14px 0 0; padding: 12px 14px; border-radius: 11px; font-size: 10px; line-height: 1.65;
+}
+.genome-warning { background: #fff3df; color: #785423; }
+.genome-error { background: #fee9e3; color: #8f351d; }
+.genome-caution { border-left: 3px solid var(--orange); border-radius: 0 11px 11px 0; background: rgba(227,108,62,.07); color: #715446; }
+.progress-block { margin-top: 18px; }
+.progress-block > div { height: 7px; overflow: hidden; border-radius: 99px; background: #e5e9e1; }
+.progress-block > div span { display: block; height: 100%; border-radius: inherit; background: var(--green); transition: width .18s ease; }
+.progress-block p { margin: 8px 0 0; color: var(--muted); font-size: 10px; }
+.genome-run-meta { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 8px; }
+.genome-run-meta span { padding: 7px 10px; border-radius: 99px; background: #edf1e8; color: var(--green-dark); font-size: 9px; font-weight: 700; }
+.specificity-summary { margin-top: 18px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.specificity-summary > div { padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: #fbfcf8; }
+.specificity-summary span { color: var(--muted); font-size: 9px; }
+.specificity-summary strong { display: block; margin: 5px 0; font-size: 23px; letter-spacing: -.03em; }
+.specificity-summary small { color: var(--muted); font-size: 8px; line-height: 1.45; }
+.off-target-table-wrap { margin-top: 18px; overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+.off-target-table { min-width: 900px; background: #fffefa; }
+.off-target-table th, .off-target-table td { white-space: nowrap; }
+.off-target-table tbody tr:first-child td { background: rgba(227,108,62,.055); }
+.pair-type { display: inline-grid; min-width: 28px; place-items: center; padding: 4px; border-radius: 7px; background: #e8eee7; color: var(--green-dark); font-size: 8px; font-weight: 800; }
+.pair-ll, .pair-rr { background: #fff0e9; color: #9b4629; }
+.site-pair { max-width: 340px; overflow: hidden; text-overflow: ellipsis; }
+.no-off-targets { padding: 28px !important; color: var(--green); text-align: center; }
+
 .design-detail { width: min(1180px, calc(100% - 40px)); margin: 20px auto 0; padding: 34px; }
 .detail-header { display: flex; align-items: flex-start; justify-content: space-between; }
 .detail-header > div:first-child { display: grid; grid-template-columns: auto 1fr; column-gap: 12px; }
@@ -242,7 +291,7 @@ th { color: var(--muted); font-size: 8px; text-transform: uppercase; letter-spac
 .score-explanation p { margin: 0; color: var(--muted); font-size: 9px; }
 .score-caution { grid-column: 1 / 4; margin: 4px 0 0; padding: 12px 14px; border-left: 3px solid var(--orange); background: rgba(227,108,62,.07); color: #715446; font-size: 10px; line-height: 1.7; }
 
-.notes { width: min(1180px, calc(100% - 40px)); margin: 20px auto 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.notes { width: min(1180px, calc(100% - 40px)); margin: 20px auto 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .notes article { padding: 30px; border-top: 1px solid var(--ink); }
 .notes span { color: var(--green); font-size: 9px; font-weight: 800; letter-spacing: .17em; }
 .notes h2 { margin: 13px 0 10px; font-size: 18px; letter-spacing: -.025em; }
@@ -254,6 +303,7 @@ footer {
 }
 footer p { margin: 0; }
 footer a { color: var(--green); text-decoration: none; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 12px; }
 
 @media (max-width: 860px) {
   .hero { grid-template-columns: 1fr; gap: 34px; padding-top: 50px; }
@@ -261,17 +311,20 @@ footer a { color: var(--green); text-decoration: none; }
   .workspace { grid-template-columns: 1fr; }
   .recognition-strands, .finger-grid, .protein-output, .notes { grid-template-columns: 1fr; }
   .control-grid { grid-template-columns: 1fr 1fr; }
+  .specificity-summary { grid-template-columns: 1fr 1fr; }
+  .genome-intro { align-items: flex-start; flex-direction: column; gap: 10px; }
+  .genome-intro > span { flex: auto; text-align: left; }
 }
 
 @media (max-width: 560px) {
-  .site-header, .hero, .workspace, .design-detail, .notes, footer { width: min(100% - 24px, 1180px); }
+  .site-header, .hero, .workspace, .design-detail, .genome-panel, .notes, footer { width: min(100% - 24px, 1180px); }
   .site-header { padding: 18px 0; }
   .brand span { display: none; }
   .privacy-pill { padding: 7px 9px; font-size: 10px; }
   .hero { padding: 42px 0 38px; }
   .hero h1 { font-size: 42px; }
   .hero-copy { font-size: 14px; }
-  .input-card, .results-card, .design-detail { padding: 20px; border-radius: 20px; }
+  .input-card, .results-card, .design-detail, .genome-panel { padding: 20px; border-radius: 20px; }
   .control-grid { grid-template-columns: 1fr; }
   .candidate-row { grid-template-columns: 24px minmax(0,1fr) 52px; }
   .pair-sequence { font-size: 8px; }
@@ -280,6 +333,9 @@ footer a { color: var(--green); text-decoration: none; }
   .duplex-view { padding: 22px 14px; gap: 6px; font-size: 8px; }
   .recognition-strands { margin-top: 44px; }
   .score-explanation { grid-template-columns: 1fr; }
+  .specificity-summary { grid-template-columns: 1fr; }
+  .genome-controls { grid-template-columns: 1fr; }
+  .search-button { min-height: 48px; }
   .score-caution { grid-column: 1; }
   footer { flex-direction: column; }
 }
