@@ -110,7 +110,7 @@ export default function Home() {
           <h1>標的配列から、<br />ZFN候補を瞬時に組む。</h1>
           <p className="hero-copy">
             実験選抜済みone-finger archiveから構築可能な配列だけを列挙し、
-            B-scoreとDeepZFのprotein→PWM予測を組み合わせて順位付けします。
+            published B-scoreを主軸に順位付けします。DeepZFは順位に使わず、認識診断として表示します。
           </p>
         </div>
         <aside className="method-card">
@@ -121,7 +121,7 @@ export default function Home() {
             <div><strong>≥15</strong><small>combined B-score</small></div>
             <div><strong>DeepZF</strong><small>PWM cross-check</small></div>
           </div>
-          <p className="method-note">再計算: B-score 20/21一致 · ranking AUC 0.67</p>
+          <p className="method-note">再計算: B-score 20/21一致 · Chen外部検証 n=82</p>
         </aside>
       </section>
 
@@ -233,7 +233,7 @@ export default function Home() {
                   <span className="candidate-data">
                     <b>B {candidate.combinedBScore}</b>
                     <small>
-                      DeepZF {candidate.deepZfTargetFit.toFixed(2)} · TSO {candidate.tsoIssues} · cut {formatCut(candidate.cut)}
+                      DeepZF参考 {candidate.deepZfTargetFit.toFixed(2)} · TSO {candidate.tsoIssues} · cut {formatCut(candidate.cut)}
                     </small>
                   </span>
                 </button>
@@ -321,7 +321,7 @@ export default function Home() {
             </div>
             <p className="score-caution">
               B-score ≥15の構成はBhakta et al.の268構成中52%がSSA活性ありでしたが、これは本候補の成功確率ではありません。
-              TSO不一致は原著どおり警告であり、候補を自動除外しません。DeepZF値も結合確率ではなくPWM整合度です。
+              TSO不一致は原著どおり警告であり、候補を自動除外しません。DeepZF値は結合確率ではなくPWM整合度で、順位にも使用しません。
               表示配列はSp1C型ZFAまでで、FokI、NLS、発現カセット、
               ゲノムwide off-target評価はまだ含みません。
             </p>
@@ -340,10 +340,10 @@ export default function Home() {
         </article>
         <article>
           <span>INDEPENDENT FORWARD MODEL</span>
-          <h2>DeepZFで認識配列を逆方向から検査</h2>
+          <h2>DeepZFは診断表示だけに限定</h2>
           <p>
-            原著の学習済みPWMpredictorをブラウザ用に軽量移植しました。B-scoreを主順位とし、同点候補だけを
-            DeepZFの標的PWM整合度で並べ替えます。49 moduleでは標的tripletがtop-1に16件、top-3に25件でした。
+            原著の学習済みPWMpredictorをブラウザ用に軽量移植しました。Chen 2013の実配列82ペアでは
+            活性予測AUC 0.491だったため、候補順位には使いません。49 moduleの標的triplet整合度だけを参考表示します。
           </p>
         </article>
       </section>

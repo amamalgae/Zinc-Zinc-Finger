@@ -49,6 +49,18 @@ export type Candidate = {
   fokILinker: string;
 };
 
+export function compareCandidates(a: Candidate, b: Candidate): number {
+  return (
+    Number(b.passesBScoreCutoff) - Number(a.passesBScoreCutoff) ||
+    b.combinedBScore - a.combinedBScore ||
+    a.tsoIssues - b.tsoIssues ||
+    a.unfavorableModules - b.unfavorableModules ||
+    b.favorableModules - a.favorableModules ||
+    a.distance - b.distance ||
+    Math.abs(a.spacerLength - 6) - Math.abs(b.spacerLength - 6)
+  );
+}
+
 const FOKI_LINKERS: Record<number, string> = {
   5: "TGGS",
   6: "TGAAAR",
@@ -210,19 +222,7 @@ export function generateCandidates(
     }
   }
 
-  return candidates
-    .sort(
-      (a, b) =>
-        Number(b.passesBScoreCutoff) - Number(a.passesBScoreCutoff) ||
-        b.combinedBScore - a.combinedBScore ||
-        b.deepZfTargetFit - a.deepZfTargetFit ||
-        a.tsoIssues - b.tsoIssues ||
-        a.unfavorableModules - b.unfavorableModules ||
-        b.favorableModules - a.favorableModules ||
-        a.distance - b.distance ||
-        Math.abs(a.spacerLength - 6) - Math.abs(b.spacerLength - 6),
-    )
-    .slice(0, 30);
+  return candidates.sort(compareCandidates).slice(0, 30);
 }
 
 export function formatCut(value: number): string {

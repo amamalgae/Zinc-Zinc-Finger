@@ -1,0 +1,1846 @@
+{
+  "source": {
+    "citation": "Chen et al. (2013), A large-scale in vivo analysis reveals that TALENs are significantly more mutagenic than ZFNs generated using context-dependent assembly",
+    "doi": "10.1093/nar/gks1356",
+    "sheet": "Supplementary Table S1",
+    "sourceFile": "supp_gks1356_nar-02876-h-2012-File008.xlsx",
+    "sourceSha256": "d37402e74baf828d1524daa608d07f57b49dc15cb572773a768775be48305902",
+    "articleLicense": "CC BY-NC 3.0",
+    "retrievedFrom": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC3575824/supplementaryFiles",
+    "transformation": "Translated each coding sequence in all frames and retained the three C2H2 matches C-X(2,4)-C-X(12)-H-X(3,5)-H. Two rows contain Addgene IDs instead of coding sequence and therefore have null residue arrays."
+  },
+  "records": [
+    {
+      "sourceRow": 3,
+      "ensemblId": "ENSDARG00000035732",
+      "gene": "Arntl1b",
+      "somaticIndelRatePercent": 28.93252764816715,
+      "indelReads": 446391,
+      "totalReads": 1542869,
+      "targetSite": "GACTTCAACcgcaaGAGGAAGGG",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSTSTLLNR",
+        "MRNFSQQTNLTR",
+        "MRNFSVGGSLNR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSKRERLDR",
+        "MRNFSQQTNLTR",
+        "MRNFSRRDNLNR"
+      ],
+      "openConfidenceScore": "9,5",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 4,
+      "ensemblId": "ENSDARG00000003944",
+      "gene": "Nmur1b",
+      "somaticIndelRatePercent": 25.0182,
+      "indelReads": 1033438,
+      "totalReads": 4130746,
+      "targetSite": "TGCTCCACCaaagaaGAAGAATGT",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSKNTRLSV",
+        "MRNFSQSAHLKR",
+        "MRNFSIRHHLKR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRRQHLQY",
+        "MRNFSQQTNLTR",
+        "MRNFSQTNNLNR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 5,
+      "ensemblId": "ENSDARG00000056230",
+      "gene": "Ghsra",
+      "somaticIndelRatePercent": 20.61479,
+      "indelReads": 345509,
+      "totalReads": 1676028,
+      "targetSite": "CTCTTCTTCtttgtaGGGGTAACG",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSKHSNLTR",
+        "MRNFSQQTNLTR",
+        "MRNFSQTNNLNR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRNITLVR",
+        "MRNFSQRSSLVR",
+        "MRNFSRTEHLAR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 6,
+      "ensemblId": "ENSDARG00000068422",
+      "gene": "Gpr103b",
+      "somaticIndelRatePercent": 11.926498450804997,
+      "indelReads": 38839,
+      "totalReads": 325653,
+      "targetSite": "ACCACCTTCataatGGTGGCGCT",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSMKHHLAR",
+        "MRNFSEAHHLSR",
+        "MRNFSQDGNLTR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSTSSGLTR",
+        "MRNFSLKEHLTR",
+        "MRNFSMGHHLKR"
+      ],
+      "openConfidenceScore": "8,9",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 7,
+      "ensemblId": "ENSDARG00000006791",
+      "gene": "Arntl1a",
+      "somaticIndelRatePercent": 11.253985856818156,
+      "indelReads": 190479,
+      "totalReads": 1692547,
+      "targetSite": "GACTACAACcgcaaGAGGAAGGG",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSTSTILAR",
+        "MRNFSQRSSLVR",
+        "MRNFSHHNSLTR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSKRERLDR",
+        "MRNFSQQTNLTR",
+        "MRNFSRRDNLNR"
+      ],
+      "openConfidenceScore": "9,3 inactive",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 8,
+      "ensemblId": "ENSDARG00000069307",
+      "gene": "Pomcb",
+      "somaticIndelRatePercent": 7.67152,
+      "indelReads": 8941,
+      "totalReads": 116548,
+      "targetSite": "CACAGCCCAcatgtaGACGGTGGC",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSRTSSLKR",
+        "MRNFSQRSDLTR",
+        "MRNFSRSDHLSL"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSVPSKLKR",
+        "MRNFSEAHHLSR",
+        "MRNFSDPSNLRR"
+      ],
+      "openConfidenceScore": "9,3",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 9,
+      "ensemblId": "ENSDARG00000035942",
+      "gene": "Hrh3",
+      "somaticIndelRatePercent": 7.610865,
+      "indelReads": 58245,
+      "totalReads": 765288,
+      "targetSite": "TGCCTCCTCtgcagGTGGAAGAG",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSRRVDLLR",
+        "MRNFSRQDNLGR",
+        "MRNFSRVDNLPR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSKHSNLTR",
+        "MRNFSQQTNLTR",
+        "MRNFSRNVALGN"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 10,
+      "ensemblId": "ENSDARG00000060884",
+      "gene": "Nmur1a",
+      "somaticIndelRatePercent": 7.50797,
+      "indelReads": 194225,
+      "totalReads": 2586917,
+      "targetSite": "CACACCGACcgcctGATGTGGAG",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSRRFILSR",
+        "MRNFSEAHHLSR",
+        "MRNFSDRSSLRR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSKHSNLTR",
+        "MRNFSRREVLEN",
+        "MRNFSISHNLAR"
+      ],
+      "openConfidenceScore": "9,7",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 11,
+      "ensemblId": "ENSDARG00000075694",
+      "gene": "Adora1a",
+      "somaticIndelRatePercent": 7.1315032084697725,
+      "indelReads": 77706,
+      "totalReads": 1089616,
+      "targetSite": "TACTTCAACttcttcGGCTGGGTG",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSQKQALDR",
+        "MRNFSQQTNLTR",
+        "MRNFSVGGSLNR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRNFILQR",
+        "MRNFSRREHLTI",
+        "MRNFSEKSHLTR"
+      ],
+      "openConfidenceScore": "7,5",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 12,
+      "ensemblId": "ENSDARG00000045854",
+      "gene": "FGF23",
+      "somaticIndelRatePercent": 3.736774,
+      "indelReads": 2097,
+      "totalReads": 56118,
+      "targetSite": "TACTGCTTAatctgGACGGGGAC",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSQKQALTR",
+        "MRNFSQSTTLKR",
+        "MRNFSQGGNLAL"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSEEANLRR",
+        "MRNFSRREHLVR",
+        "MRNFSDPSNLQR"
+      ],
+      "openConfidenceScore": "9,7",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 13,
+      "ensemblId": "ENSDARG00000074182",
+      "gene": "ProkR1",
+      "somaticIndelRatePercent": 3.4843900000000003,
+      "indelReads": 41916,
+      "totalReads": 1202965,
+      "targetSite": "CGTGTCCACcaatgcTCTGCTGGC",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSKGNDLTR",
+        "MRNFSDRGNLTR",
+        "MRNFSRGDALAR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSAPSKLAR",
+        "MRNFSQRSDLTR",
+        "MRNFSQRNTLKG"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 14,
+      "ensemblId": "ENSDARG00000037048",
+      "gene": "Pmchr1a",
+      "somaticIndelRatePercent": 2.610541,
+      "indelReads": 51306,
+      "totalReads": 1965340,
+      "targetSite": "CGCTTCAACcatgtGCGGACAAC",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSRLRDLPR",
+        "MRNFSQQTNLTR",
+        "MRNFSVGGSLNR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSGHTALRN",
+        "MRNFSDRGNLTR",
+        "MRNFSRRDGLTR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 2
+    },
+    {
+      "sourceRow": 15,
+      "ensemblId": "ENSDARG00000043299",
+      "gene": "NMU",
+      "somaticIndelRatePercent": 2.396335,
+      "indelReads": 37980,
+      "totalReads": 1584917,
+      "targetSite": "TACCCCAGCttgccaGAAGAAGAA",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSQQSSLLR",
+        "MRNFSRREHLVR",
+        "MRNFSVSNSLAR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSQASNLTR",
+        "MRNFSQQTNLTR",
+        "MRNFSQTNNLNR"
+      ],
+      "openConfidenceScore": "9,6",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 16,
+      "ensemblId": "ENSDARG00000057117",
+      "gene": "Ghsrb",
+      "somaticIndelRatePercent": 1.91803,
+      "indelReads": 39849,
+      "totalReads": 2077600,
+      "targetSite": "CCCATCTTCattctgGTCGGGGTC",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSKKDHLHR",
+        "MRNFSVRHNLTR",
+        "MRNFSQRNNLGR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSTKSLLAR",
+        "MRNFSRREHLVR",
+        "MRNFSDPTSLNR"
+      ],
+      "openConfidenceScore": "6,9",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 17,
+      "ensemblId": "ENSDARG00000094637",
+      "gene": "QRFP",
+      "somaticIndelRatePercent": 1.904091,
+      "indelReads": 121604,
+      "totalReads": 6386467,
+      "targetSite": "CTCTACCCAcagggcGGTGAGGCT",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSKHSNLTR",
+        "MRNFSQRSSLVR",
+        "MRNFSRSDHLSL"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSNKQALDR",
+        "MRNFSRQDNLGR",
+        "MRNFSVKHGLGR"
+      ],
+      "openConfidenceScore": "9,1 inactive",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 18,
+      "ensemblId": "ENSDARG00000002533",
+      "gene": "Adora2b",
+      "somaticIndelRatePercent": 1.9025699999999999,
+      "indelReads": 2473,
+      "totalReads": 129982,
+      "targetSite": "AGCAACAGCagcgatGACGATGCT",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSTKQILGR",
+        "MRNFSHKSSLTR",
+        "MRNFSVSNTLTR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSTKQVLDR",
+        "MRNFSVRHNLTR",
+        "MRNFSDPSNLRR"
+      ],
+      "openConfidenceScore": "9,5",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 19,
+      "ensemblId": "ENSDARG00000006868",
+      "gene": "TRH",
+      "somaticIndelRatePercent": 1.804595,
+      "indelReads": 14992,
+      "totalReads": 830768,
+      "targetSite": "TCCATCCTCacacaGATGGAGGA",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSDKTKLRV",
+        "MRNFSVRHNLTR",
+        "MRNFSREDNLPR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRTDRLIR",
+        "MRNFSQSAHLKR",
+        "MRNFSISHNLAR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 20,
+      "ensemblId": "ENSDARG00000058488",
+      "gene": "Adora2ab",
+      "somaticIndelRatePercent": 1.3035164348543709,
+      "indelReads": 42094,
+      "totalReads": 3229265,
+      "targetSite": "AACAGCCTCgtcacagGAAGAAGAG",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSQATLLRR",
+        "MRNFSQRSDLTR",
+        "MRNFSRQDNLQR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSKHSNLTR",
+        "MRNFSQQTNLTR",
+        "MRNFSQTNNLNR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 21,
+      "ensemblId": "ENSDARG00000038634",
+      "gene": "CCKa",
+      "somaticIndelRatePercent": 1.209797,
+      "indelReads": 19227,
+      "totalReads": 1589276,
+      "targetSite": "AGCCGCTGCcaccaGCGGGCGAC",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSKHQTLQR",
+        "MRNFSRTDTLAR",
+        "MRNFSQKGTLGR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSDPSNLRR",
+        "MRNFSLKEHLTR",
+        "MRNFSRKDGLTR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 3
+    },
+    {
+      "sourceRow": 22,
+      "ensemblId": "ENSDARG00000069446",
+      "gene": "DBH",
+      "somaticIndelRatePercent": 1.199156098999569,
+      "indelReads": 13215,
+      "totalReads": 1102025,
+      "targetSite": "TAGGATGGGtcgttGCATGAGCT",
+      "spacerLength": 5,
+      "leftCys2ToHis1": null,
+      "rightCys2ToHis1": null,
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 23,
+      "ensemblId": "ENSDARG00000057239",
+      "gene": "Tph2",
+      "somaticIndelRatePercent": 1.1495625698875083,
+      "indelReads": 40906,
+      "totalReads": 3558397,
+      "targetSite": "GACAACATCccacaGCTGGAGGA",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSTKKILTV",
+        "MRNFSHKSSLTR",
+        "MRNFSISHNLAR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRTDRLIR",
+        "MRNFSQSAHLKR",
+        "MRNFSLKHDLRR"
+      ],
+      "openConfidenceScore": "9,5",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 24,
+      "ensemblId": "ENSDARG00000070492",
+      "gene": "FGF21",
+      "somaticIndelRatePercent": 0.7295330999999999,
+      "indelReads": 676,
+      "totalReads": 92662,
+      "targetSite": "TTCCTCATCttcggtGGTGTATGT",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSQASNLLR",
+        "MRNFSRQDNLGR",
+        "MRNFSLNSNLAR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRKQHLQL",
+        "MRNFSQRSSLVR",
+        "MRNFSHGHRLKT"
+      ],
+      "openConfidenceScore": "9,6 inactive",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 25,
+      "ensemblId": "ENSDARG00000033706",
+      "gene": "Adora2aa",
+      "somaticIndelRatePercent": 0.49814100000000006,
+      "indelReads": 6398,
+      "totalReads": 1284376,
+      "targetSite": "GCCATCATCgttggTTTGTTTGC",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSSPSKLAR",
+        "MRNFSVRHNLTR",
+        "MRNFSISHNLAR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRMRNLII",
+        "MRNFSHKSSLTR",
+        "MRNFSQRNALSG"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 26,
+      "ensemblId": "ENSDARG00000060884",
+      "gene": "Nmur1a",
+      "somaticIndelRatePercent": 0.493317,
+      "indelReads": 4174,
+      "totalReads": 846109,
+      "targetSite": "CTCATCGGCatgcaGCTGAAGCG",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSTNNNLAR",
+        "MRNFSVRHNLTR",
+        "MRNFSDHSNLSR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRLRDLPR",
+        "MRNFSQQTNLTR",
+        "MRNFSVGNSLTR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 2
+    },
+    {
+      "sourceRow": 27,
+      "ensemblId": "ENSDARG00000042909",
+      "gene": "LIFRa",
+      "somaticIndelRatePercent": 0.4254137918348645,
+      "indelReads": 1272,
+      "totalReads": 299003,
+      "targetSite": "TTCTGCATCgtccaGAAGTTGAC",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSQGSNLAR",
+        "MRNFSQSTTLKR",
+        "MRNFSLNSNLAR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSEQANLRR",
+        "MRNFSHKSSLTR",
+        "MRNFSQTNNLGR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 28,
+      "ensemblId": "ENSDARG00000079862",
+      "gene": "Klotho",
+      "somaticIndelRatePercent": 0.36999400000000005,
+      "indelReads": 2644,
+      "totalReads": 714606,
+      "targetSite": "CACAGCATCtgatccaGGAGCAGGA",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSRTSSLKR",
+        "MRNFSQRSDLTR",
+        "MRNFSLTHNLRR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRTDRLIR",
+        "MRNFSQSTTLKR",
+        "MRNFSQKPHLSR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 29,
+      "ensemblId": "ENSDARG00000041381",
+      "gene": "Arntl2",
+      "somaticIndelRatePercent": 0.34338782568816106,
+      "indelReads": 1797,
+      "totalReads": 523315,
+      "targetSite": "CACAGCGGCtggcggcGGTGACGGA",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSRTSSLKR",
+        "MRNFSQRSDLTR",
+        "MRNFSDPSNLRR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRPAKLVL",
+        "MRNFSDRGNLTR",
+        "MRNFSIRHHLKR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 2
+    },
+    {
+      "sourceRow": 30,
+      "ensemblId": "ENSDARG00000053449",
+      "gene": "PYYa",
+      "somaticIndelRatePercent": 0.3292045,
+      "indelReads": 9441,
+      "totalReads": 2867820,
+      "targetSite": "ATCAACCTCatcacGAGGCAACG",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSTGQQLRV",
+        "MRNFSHKSSLTR",
+        "MRNFSRHDQLTR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRSQTLAQ",
+        "MRNFSQSTTLKR",
+        "MRNFSRGDNLNR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 31,
+      "ensemblId": "ENSDARG00000094637",
+      "gene": "QRFP",
+      "somaticIndelRatePercent": 0.3286217569282994,
+      "indelReads": 1152,
+      "totalReads": 350555,
+      "targetSite": "ACAGTCTTCttcttGTTGGTGCT",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSRKQHLQL",
+        "MRNFSDRGNLTR",
+        "MRNFSQSNNLNR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSLRQTLAR",
+        "MRNFSEAHHLSR",
+        "MRNFSIRTSLKR"
+      ],
+      "openConfidenceScore": "7,9",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 32,
+      "ensemblId": "ENSDARG00000036117",
+      "gene": "Pmchr2a",
+      "somaticIndelRatePercent": 0.2860828,
+      "indelReads": 5798,
+      "totalReads": 2026688,
+      "targetSite": "TACGGCGTCctgtgcTCGGTCGGG",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSQKQALTR",
+        "MRNFSDSSVLRR",
+        "MRNFSEGGNLMR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSKKDHLHR",
+        "MRNFSDHSSLKR",
+        "MRNFSRGDSLKK"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 4
+    },
+    {
+      "sourceRow": 33,
+      "ensemblId": "ENSDARG00000022570",
+      "gene": "Nmur2",
+      "somaticIndelRatePercent": 0.2760377,
+      "indelReads": 11292,
+      "totalReads": 4090749,
+      "targetSite": "TTCTACCTCagttcaGCTGTAAAC",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSHRPNLTR",
+        "MRNFSQRSSLVR",
+        "MRNFSREDNLGR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSGGTALRM",
+        "MRNFSQRSSLVR",
+        "MRNFSVKNTLTR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 34,
+      "ensemblId": "ENSDARG00000075454",
+      "gene": "HDC",
+      "somaticIndelRatePercent": 0.2743056,
+      "indelReads": 4166,
+      "totalReads": 1518743,
+      "targetSite": "CCCGCCTGCactgaGCTGGAGAT",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSRKHHLGR",
+        "MRNFSLKEHLTR",
+        "MRNFSQTNTLKR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSTRQRLRI",
+        "MRNFSQSAHLKR",
+        "MRNFSLKHDLRR"
+      ],
+      "openConfidenceScore": "5,9",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 35,
+      "ensemblId": "ENSDARG00000036222",
+      "gene": "NPY",
+      "somaticIndelRatePercent": 0.27195670570790026,
+      "indelReads": 3580,
+      "totalReads": 1316386,
+      "targetSite": "CCCGACAACccgggaGAGGACGCA",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSKKDHLHR",
+        "MRNFSDHSSLKR",
+        "MRNFSHHNSLTR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSLKHSLLR",
+        "MRNFSDRGNLTR",
+        "MRNFSREDNLGR"
+      ],
+      "openConfidenceScore": "9,7",
+      "targetCpGs": 2
+    },
+    {
+      "sourceRow": 36,
+      "ensemblId": "ENSDARG00000063390",
+      "gene": "Pvrl2l",
+      "somaticIndelRatePercent": 0.1770892,
+      "indelReads": 869,
+      "totalReads": 490714,
+      "targetSite": "GCCTTCTTCtgtacgaGTGGAGGAA",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSTRAKLHI",
+        "MRNFSQQTNLTR",
+        "MRNFSQTNNLNR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSQASNLLR",
+        "MRNFSRQDNLGR",
+        "MRNFSRNVNLVT"
+      ],
+      "openConfidenceScore": "8,9",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 37,
+      "ensemblId": "ENSDARG00000038384",
+      "gene": "TH2",
+      "somaticIndelRatePercent": 0.16646149999999998,
+      "indelReads": 181,
+      "totalReads": 108734,
+      "targetSite": "TCCCTCAGCtcagagaGGTGTCTGC",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSTHAHLTR",
+        "MRNFSRQDNLGR",
+        "MRNFSVSNTLTR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRKRNLIM",
+        "MRNFSDHSSLKR",
+        "MRNFSQPHHLPR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 38,
+      "ensemblId": "ENSDARG00000075454",
+      "gene": "HDC",
+      "somaticIndelRatePercent": 0.1579162,
+      "indelReads": 2212,
+      "totalReads": 1400741,
+      "targetSite": "CTCTGCAGCgcgccGTGGAGGAG",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSKHSNLAR",
+        "MRNFSQSTTLKR",
+        "MRNFSLKHDLRR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRQMNLDR",
+        "MRNFSRQDNLGR",
+        "MRNFSRNVNLVT"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 39,
+      "ensemblId": "ENSDARG00000059899",
+      "gene": "Adora1c",
+      "somaticIndelRatePercent": 0.15382367616532464,
+      "indelReads": 558,
+      "totalReads": 362753,
+      "targetSite": "TTCTTCGTCtgggtGGTGGTGCC",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSQASNLTR",
+        "MRNFSQQTNLTR",
+        "MRNFSDMGNLGR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSSKKSLTR",
+        "MRNFSEAHHLSR",
+        "MRNFSIRHHLKR"
+      ],
+      "openConfidenceScore": "8,9",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 40,
+      "ensemblId": "ENSDARG00000090315",
+      "gene": "ProkR2",
+      "somaticIndelRatePercent": 0.12529410000000002,
+      "indelReads": 1224,
+      "totalReads": 976902,
+      "targetSite": "AACGTCTGCgatgtcgGAGGAAAAC",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSTHTVLAR",
+        "MRNFSDRGNLTR",
+        "MRNFSQGNTLTR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSGASALRQ",
+        "MRNFSQQTNLTR",
+        "MRNFSRRDNLNR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 41,
+      "ensemblId": "ENSDARG00000030621",
+      "gene": "TH",
+      "somaticIndelRatePercent": 0.11295179999999999,
+      "indelReads": 21,
+      "totalReads": 18592,
+      "targetSite": "ACATCCCTCagctgGAGGATGTG",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSRRQHLQY",
+        "MRNFSQSAHLKR",
+        "MRNFSVHWNLMR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRKHILIH",
+        "MRNFSVRHNLTR",
+        "MRNFSREDNLPR"
+      ],
+      "openConfidenceScore": "9,8",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 42,
+      "ensemblId": "ENSDARG00000004798",
+      "gene": "B4galt4",
+      "somaticIndelRatePercent": 0.0941755,
+      "indelReads": 859,
+      "totalReads": 912126,
+      "targetSite": "AACTCCTACtggggctGGGGTGGAG",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSTTALLKR",
+        "MRNFSQSAHLKR",
+        "MRNFSQSTSLQR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSKHSNLTR",
+        "MRNFSRREVLEN",
+        "MRNFSRQGHLKR"
+      ],
+      "openConfidenceScore": "8,6",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 43,
+      "ensemblId": "ENSDARG00000079862",
+      "gene": "Klotho",
+      "somaticIndelRatePercent": 0.0797073,
+      "indelReads": 2676,
+      "totalReads": 3357284,
+      "targetSite": "CACCGCTGCatattcaGTGGAAGGA",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSRNFILAR",
+        "MRNFSRTDTLAR",
+        "MRNFSQKGTLGR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRMERLDR",
+        "MRNFSQQTNLTR",
+        "MRNFSRNVALGN"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 44,
+      "ensemblId": "GENSCAN00000033897",
+      "gene": "SELPLG",
+      "somaticIndelRatePercent": 0.0756013,
+      "indelReads": 734,
+      "totalReads": 970882,
+      "targetSite": "CCCATCAACcgtagccGAAGCTGAG",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSKKDHLHR",
+        "MRNFSVRHNLTR",
+        "MRNFSHHNSLTR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSKHSNLTR",
+        "MRNFSQRSDLTR",
+        "MRNFSQRNNLGR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 45,
+      "ensemblId": "ENSDARG00000070810",
+      "gene": "CCKb",
+      "somaticIndelRatePercent": 0.0721077,
+      "indelReads": 323,
+      "totalReads": 447941,
+      "targetSite": "CACACCCGCgcagcGCCGCCTGC",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSRRFILSR",
+        "MRNFSEAHHLSR",
+        "MRNFSRLDMLAR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRGRNLEM",
+        "MRNFSDSSVLRR",
+        "MRNFSERRGLAR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 2
+    },
+    {
+      "sourceRow": 46,
+      "ensemblId": "ENSDARG00000042845",
+      "gene": "Oxtl",
+      "somaticIndelRatePercent": 0.06553278,
+      "indelReads": 1654,
+      "totalReads": 2523928,
+      "targetSite": "TTCGGCCCCagtatctGCTGTGGTG",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSQASNLAR",
+        "MRNFSDSSVLRR",
+        "MRNFSRTEHLAR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRNFVLAR",
+        "MRNFSRREVLEN",
+        "MRNFSVGASLKR"
+      ],
+      "openConfidenceScore": "5,9",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 47,
+      "ensemblId": "ENSDARG00000078129",
+      "gene": "Adora3c",
+      "somaticIndelRatePercent": 0.061285599999999996,
+      "indelReads": 728,
+      "totalReads": 1187881,
+      "targetSite": "GTCTACTTCaactatcTGTGTTGCA",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSDPANLRR",
+        "MRNFSQRSSLVR",
+        "MRNFSQRNNLGR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRRQELKR",
+        "MRNFSHKSSLTR",
+        "MRNFSQPHGLAH"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 48,
+      "ensemblId": "ENSDARG00000062688",
+      "gene": "Gpnmb",
+      "somaticIndelRatePercent": 0.0539443,
+      "indelReads": 468,
+      "totalReads": 867562,
+      "targetSite": "CCCCCCTTCaaaccGCAGCTGAC",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSRKHHLGR",
+        "MRNFSRREHLVR",
+        "MRNFSQDGNLGR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSDLSNLKR",
+        "MRNFSQRSDLTR",
+        "MRNFSQGGTLRR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 49,
+      "ensemblId": "ENSDARG00000088887",
+      "gene": "Pmchr2b",
+      "somaticIndelRatePercent": 0.0522685,
+      "indelReads": 193,
+      "totalReads": 369247,
+      "targetSite": "GACAACTGCaaccagGTGGCCTGT",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSTKKILTV",
+        "MRNFSHKSSLTR",
+        "MRNFSQGNTLTR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRKQHLTL",
+        "MRNFSDSSVLRR",
+        "MRNFSRHTSLTR"
+      ],
+      "openConfidenceScore": "4,5",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 50,
+      "ensemblId": "ENSDARG00000090315",
+      "gene": "ProkR2",
+      "somaticIndelRatePercent": 0.0461896,
+      "indelReads": 466,
+      "totalReads": 1008885,
+      "targetSite": "GACTTCATCgtggccGTGGTCTGT",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSTSTLLNR",
+        "MRNFSQQTNLTR",
+        "MRNFSVGSNLTR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRKQHLVL",
+        "MRNFSDHSSLKR",
+        "MRNFSRHTSLTR"
+      ],
+      "openConfidenceScore": "9,2 inactive",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 51,
+      "ensemblId": "ENSDARG00000006926",
+      "gene": "BTD",
+      "somaticIndelRatePercent": 0.04596583,
+      "indelReads": 268,
+      "totalReads": 583042,
+      "targetSite": "AGCTCCTCCtccagGCCGCGGAC",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSTTQALRR",
+        "MRNFSQSAHLKR",
+        "MRNFSQMSHLKR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSDPSNLIR",
+        "MRNFSRTDTLAR",
+        "MRNFSERRGLAR"
+      ],
+      "openConfidenceScore": "8,9",
+      "targetCpGs": 2
+    },
+    {
+      "sourceRow": 52,
+      "ensemblId": "ENSDARG00000024189",
+      "gene": "Pnocb",
+      "somaticIndelRatePercent": 0.04227152,
+      "indelReads": 76,
+      "totalReads": 179790,
+      "targetSite": "CACAGCGACtgccaaGGGGACTGC",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSRTSSLKR",
+        "MRNFSQRSDLTR",
+        "MRNFSDRSSLRR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRSRNLDI",
+        "MRNFSDRGNLTR",
+        "MRNFSRNHGLVR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 53,
+      "ensemblId": "ENSDARG00000030621",
+      "gene": "TH",
+      "somaticIndelRatePercent": 0.04098493,
+      "indelReads": 366,
+      "totalReads": 893012,
+      "targetSite": "GGCCGCGGCggcggagGCTGCAGGA",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSDPSTLRR",
+        "MRNFSRTDTLAR",
+        "MRNFSERRGLAR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRTDRLIR",
+        "MRNFSQSTTLKR",
+        "MRNFSLKHDLRR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 2
+    },
+    {
+      "sourceRow": 54,
+      "ensemblId": "RNASEQG00000003685",
+      "gene": "AgRPb",
+      "somaticIndelRatePercent": 0.03796779,
+      "indelReads": 1054,
+      "totalReads": 2776035,
+      "targetSite": "GACTCCAGCgcgccgcTGTGCCGGT",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSTSTLLKR",
+        "MRNFSQSAHLKR",
+        "MRNFSLKHDLRR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRQSRLQR",
+        "MRNFSDSSVLRR",
+        "MRNFSQAHGLTA"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 55,
+      "ensemblId": "ENSDARG00000062831",
+      "gene": "PVR",
+      "somaticIndelRatePercent": 0.0370136,
+      "indelReads": 264,
+      "totalReads": 713251,
+      "targetSite": "AACACCACCttcatcTGTGAGGTC",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSAATALRR",
+        "MRNFSEAHHLSR",
+        "MRNFSIRHHLKR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSNTSLLRR",
+        "MRNFSRQDNLGR",
+        "MRNFSQQHGLRH"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 56,
+      "ensemblId": "ENSDARG00000045016",
+      "gene": "Npffl",
+      "somaticIndelRatePercent": 0.03601322,
+      "indelReads": 538,
+      "totalReads": 1493897,
+      "targetSite": "AACGGCTGCtggagGAGGACGAG",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSTTTVLAR",
+        "MRNFSDSSVLRR",
+        "MRNFSQGGTLRR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRTHNLTR",
+        "MRNFSDRGNLTR",
+        "MRNFSREDNLGR"
+      ],
+      "openConfidenceScore": "9,8",
+      "targetCpGs": 2
+    },
+    {
+      "sourceRow": 57,
+      "ensemblId": "ENSDARG00000030621",
+      "gene": "TH",
+      "somaticIndelRatePercent": 0.033302947432391365,
+      "indelReads": 137,
+      "totalReads": 411375,
+      "targetSite": "GGCGGCGGCcgcggcGGCGGAGGC",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSDGSTLRR",
+        "MRNFSDSSVLRR",
+        "MRNFSERRGLAR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSVPSKLLR",
+        "MRNFSQSAHLKR",
+        "MRNFSEKSHLKR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 3
+    },
+    {
+      "sourceRow": 58,
+      "ensemblId": "ENSDARG00000070961",
+      "gene": "LepR",
+      "somaticIndelRatePercent": 0.03177232,
+      "indelReads": 168,
+      "totalReads": 528762,
+      "targetSite": "CACTGCACAatcacaGAAGATGCA",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSRSHILTN",
+        "MRNFSQSTTLKR",
+        "MRNFSQAHGLTA"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSLRHSLSR",
+        "MRNFSVRHNLTR",
+        "MRNFSQRNNLGR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 59,
+      "ensemblId": "ENSDARG00000035942",
+      "gene": "Hrh3",
+      "somaticIndelRatePercent": 0.029927895298195718,
+      "indelReads": 431,
+      "totalReads": 1440128,
+      "targetSite": "TCCGTGGCGtttattgGAGGACTGC",
+      "spacerLength": 7,
+      "leftCys2ToHis1": null,
+      "rightCys2ToHis1": null,
+      "openConfidenceScore": "none",
+      "targetCpGs": 2
+    },
+    {
+      "sourceRow": 60,
+      "ensemblId": "ENSDARG00000076294",
+      "gene": "Klotho_beta",
+      "somaticIndelRatePercent": 0.02871578,
+      "indelReads": 157,
+      "totalReads": 546737,
+      "targetSite": "CACGACATCtgctgctGGCGCATGC",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSRNFILQR",
+        "MRNFSDHSSLKR",
+        "MRNFSISHNLAR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRNRNLVL",
+        "MRNFSQSTTLKR",
+        "MRNFSDGGHLTR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 2
+    },
+    {
+      "sourceRow": 61,
+      "ensemblId": "ENSDARG00000086172",
+      "gene": "Acvr1c",
+      "somaticIndelRatePercent": 0.027914300000000003,
+      "indelReads": 317,
+      "totalReads": 1135618,
+      "targetSite": "CGTGTCCCCatcagaGTTGAAGGG",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSKGNDLTR",
+        "MRNFSDRGNLTR",
+        "MRNFSRNHGLVR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSKRERLDR",
+        "MRNFSQQTNLTR",
+        "MRNFSVGGSLNR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 62,
+      "ensemblId": "ENSDARG00000028878",
+      "gene": "Vipr1_similar",
+      "somaticIndelRatePercent": 0.025629371943697396,
+      "indelReads": 75,
+      "totalReads": 292633,
+      "targetSite": "GCCATCAGCtcgcattGGAGAAGTA",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSSPSKLAR",
+        "MRNFSVRHNLTR",
+        "MRNFSLKHDLRR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSQKQALDR",
+        "MRNFSQQTNLTR",
+        "MRNFSQTTHLSR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 63,
+      "ensemblId": "ENSDARG00000070932",
+      "gene": "Hcrt",
+      "somaticIndelRatePercent": 0.023945420000000002,
+      "indelReads": 30,
+      "totalReads": 125285,
+      "targetSite": "CTCAACAACgacgccGCTGTCGGG",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSRPHNLLR",
+        "MRNFSHKSSLTR",
+        "MRNFSIRTSLKR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSKKDHLHR",
+        "MRNFSDHSSLKR",
+        "MRNFSVSNSLAR"
+      ],
+      "openConfidenceScore": "9,1",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 64,
+      "ensemblId": "ENSDARG00000076294",
+      "gene": "Klotho_beta",
+      "somaticIndelRatePercent": 0.023218,
+      "indelReads": 435,
+      "totalReads": 1873547,
+      "targetSite": "AGCGGCATCtgtttctGCTGGGGGT",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSLRTSLVR",
+        "MRNFSDSSVLRR",
+        "MRNFSLSTNLTR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRQSRLQR",
+        "MRNFSRREHLVR",
+        "MRNFSVSNSLAR"
+      ],
+      "openConfidenceScore": "8,9",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 65,
+      "ensemblId": "ENSDARG00000074182",
+      "gene": "ProkR1",
+      "somaticIndelRatePercent": 0.022638674571591005,
+      "indelReads": 223,
+      "totalReads": 985040,
+      "targetSite": "AGCGTCTACgacggcGGCGCAGAA",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSVRQGLTR",
+        "MRNFSDRGNLTR",
+        "MRNFSQSTSLQR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSQGSNLAR",
+        "MRNFSQSTTLKR",
+        "MRNFSDGGHLTR"
+      ],
+      "openConfidenceScore": "7,9",
+      "targetCpGs": 2
+    },
+    {
+      "sourceRow": 66,
+      "ensemblId": "ENSDARG00000043135",
+      "gene": "Pomca",
+      "somaticIndelRatePercent": 0.02071786,
+      "indelReads": 170,
+      "totalReads": 820548,
+      "targetSite": "TACAGCCTCcctccgaGCCGGAGCA",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSQQSSLLR",
+        "MRNFSQRSDLTR",
+        "MRNFSRQDNLQR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSKNTRLSV",
+        "MRNFSQSAHLKR",
+        "MRNFSDPSNLRR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 67,
+      "ensemblId": "ENSDARG00000045548",
+      "gene": "Lepb",
+      "somaticIndelRatePercent": 0.01985661,
+      "indelReads": 129,
+      "totalReads": 649658,
+      "targetSite": "GTTACCTGCagttgcgGTTGCATGT",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSGASALRS",
+        "MRNFSEAHHLSR",
+        "MRNFSQNGTLTR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRRQHLQY",
+        "MRNFSQSTTLKR",
+        "MRNFSTRHSLGR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 68,
+      "ensemblId": "ENSDARG00000091616",
+      "gene": "Prok2",
+      "somaticIndelRatePercent": 0.015828859715888807,
+      "indelReads": 47,
+      "totalReads": 296926,
+      "targetSite": "GCATGCATCactacaGCTGATGGC",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSRNRNLVL",
+        "MRNFSQSTTLKR",
+        "MRNFSLNSNLAR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSSPSKLAR",
+        "MRNFSVRHNLTR",
+        "MRNFSLKHDLRR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 69,
+      "ensemblId": "ENSDARG00000038384",
+      "gene": "TH2",
+      "somaticIndelRatePercent": 0.015073861923424782,
+      "indelReads": 83,
+      "totalReads": 550622,
+      "targetSite": "GACAGCTTCgtgtttGAGGAGGAG",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSTRAVLRR",
+        "MRNFSQRSDLTR",
+        "MRNFSQRNNLGR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRQMNLDR",
+        "MRNFSRQDNLGR",
+        "MRNFSRVDNLPR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 70,
+      "ensemblId": "ENSDARG00000076140",
+      "gene": "CLC",
+      "somaticIndelRatePercent": 0.01439995,
+      "indelReads": 269,
+      "totalReads": 1868062,
+      "targetSite": "CCCCGCCCCtctacGGAGTTACG",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSRGNHLRR",
+        "MRNFSRTDTLAR",
+        "MRNFSRKHRLDG"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRSHDLTV",
+        "MRNFSHKSSLTR",
+        "MRNFSQTTHLSR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 2
+    },
+    {
+      "sourceRow": 71,
+      "ensemblId": "ENSDARG00000069089",
+      "gene": "AgRPa",
+      "somaticIndelRatePercent": 0.014025349999999999,
+      "indelReads": 79,
+      "totalReads": 563266,
+      "targetSite": "CTCATCCACacctgaGACGCAGAG",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSTNNNLAR",
+        "MRNFSVRHNLTR",
+        "MRNFSRRAALGP"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSKHSNLAR",
+        "MRNFSQSTTLKR",
+        "MRNFSDPSNLRR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 72,
+      "ensemblId": "ENSDARG00000012353",
+      "gene": "Vipr2",
+      "somaticIndelRatePercent": 0.01357410683489658,
+      "indelReads": 61,
+      "totalReads": 449385,
+      "targetSite": "GCAAACTTCtactgGTTGCTGGT",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSRMRNLII",
+        "MRNFSHKSSLTR",
+        "MRNFSQTNNLGR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRRQKLTI",
+        "MRNFSQRSDLTR",
+        "MRNFSIRTSLKR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 73,
+      "ensemblId": "ENSDARG00000070961",
+      "gene": "LepR",
+      "somaticIndelRatePercent": 0.012454267394460128,
+      "indelReads": 93,
+      "totalReads": 746732,
+      "targetSite": "TTCCACTGCtcagtgtGTTGGAGAA",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSHKPNLHR",
+        "MRNFSRREVLEN",
+        "MRNFSQGGTLRR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSQRSNLAR",
+        "MRNFSQSAHLKR",
+        "MRNFSHHNSLTR"
+      ],
+      "openConfidenceScore": "4,7",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 74,
+      "ensemblId": "ENSDARG00000044061",
+      "gene": "Adora3b",
+      "somaticIndelRatePercent": 0.012382730000000002,
+      "indelReads": 207,
+      "totalReads": 1671683,
+      "targetSite": "ATCATCGCCgctgtgtGCTGGATGC",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSTKQRLVV",
+        "MRNFSVRHNLTR",
+        "MRNFSESGHLKR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRSRNLLL",
+        "MRNFSQSAHLKR",
+        "MRNFSLKHDLRR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 75,
+      "ensemblId": "ENSDARG00000022570",
+      "gene": "Nmur2",
+      "somaticIndelRatePercent": 0.01203811,
+      "indelReads": 67,
+      "totalReads": 556565,
+      "targetSite": "CCCTTCGGCgagagcaTCTGCTGCT",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSKRERLDR",
+        "MRNFSQQTNLTR",
+        "MRNFSEHRGLKR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSMKNTLTR",
+        "MRNFSQRSDLTR",
+        "MRNFSQRNTLKG"
+      ],
+      "openConfidenceScore": "2,9",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 76,
+      "ensemblId": "ENSDARG00000088165",
+      "gene": "Adora2b_3",
+      "somaticIndelRatePercent": 0.011651149999999999,
+      "indelReads": 119,
+      "totalReads": 1021358,
+      "targetSite": "CGCTGCCGAacgcggaGGTGCAGGA",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSRRHTLTR",
+        "MRNFSQSTTLKR",
+        "MRNFSRADGLQL"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRTDRLIR",
+        "MRNFSQSTTLKR",
+        "MRNFSVDHHLRR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 2
+    },
+    {
+      "sourceRow": 77,
+      "ensemblId": "RNASEQG00000001265",
+      "gene": "PTHL",
+      "somaticIndelRatePercent": 0.01149957,
+      "indelReads": 54,
+      "totalReads": 469583,
+      "targetSite": "GGCTTCACActgcgcaGGCGCGAAC",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSDSPTLRR",
+        "MRNFSQQTNLTR",
+        "MRNFSQPHGLTA"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSGHTALAL",
+        "MRNFSRTDTLAR",
+        "MRNFSESGHLKR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 2
+    },
+    {
+      "sourceRow": 78,
+      "ensemblId": "ENSDARG00000070056",
+      "gene": "Adora1b",
+      "somaticIndelRatePercent": 0.007265072814981971,
+      "indelReads": 115,
+      "totalReads": 1582916,
+      "targetSite": "ACAAACGGCacagtgGGTGTTGAC",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSRRQHLQY",
+        "MRNFSHKSSLTR",
+        "MRNFSDHSNLSR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSEQANLRR",
+        "MRNFSHKSSLTR",
+        "MRNFSHGHRLKT"
+      ],
+      "openConfidenceScore": "0,3 inactive",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 79,
+      "ensemblId": "ENSDARG00000028661",
+      "gene": "CNTFR",
+      "somaticIndelRatePercent": 0.004652113539764998,
+      "indelReads": 66,
+      "totalReads": 1418710,
+      "targetSite": "GACCACGGCtcatcctGATGGAGGT",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSTMAVLRR",
+        "MRNFSRREVLEN",
+        "MRNFSERRGLHR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSIPNHLAR",
+        "MRNFSQSAHLKR",
+        "MRNFSISHNLAR"
+      ],
+      "openConfidenceScore": "9,4",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 80,
+      "ensemblId": "RNASEQG00000001265",
+      "gene": "PTHL",
+      "somaticIndelRatePercent": 0.004298604516661,
+      "indelReads": 22,
+      "totalReads": 511794,
+      "targetSite": "AGCAGCGGCggccaGAAGAGGGC",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSMKNTLTR",
+        "MRNFSQRSDLTR",
+        "MRNFSDPSNLRR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSSPSKLVR",
+        "MRNFSRQDNLGR",
+        "MRNFSQRNNLGR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 82,
+      "ensemblId": "ENSDARG00000090315",
+      "gene": "ProkR2",
+      "somaticIndelRatePercent": 0.003689532873737905,
+      "indelReads": 47,
+      "totalReads": 1273874,
+      "targetSite": "CACGGCTTAtatccTCTGCTGGG",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSRTSSLKR",
+        "MRNFSDSSVLRR",
+        "MRNFSQSGNLHT"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSKKDHLHR",
+        "MRNFSQRSDLTR",
+        "MRNFSQRNTLKG"
+      ],
+      "openConfidenceScore": "7,9",
+      "targetCpGs": 1
+    },
+    {
+      "sourceRow": 83,
+      "ensemblId": "ENSDARG00000052425",
+      "gene": "Hrh1",
+      "somaticIndelRatePercent": 0.0012381656130702743,
+      "indelReads": 25,
+      "totalReads": 2019116,
+      "targetSite": "TTCGCCGTCagaaaGGAGCGGAC",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSHRPNLTR",
+        "MRNFSLKEHLTR",
+        "MRNFSDPSNLRR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSDPSNLIR",
+        "MRNFSRTDTLAR",
+        "MRNFSQTTHLSR"
+      ],
+      "openConfidenceScore": "9,9",
+      "targetCpGs": 3
+    },
+    {
+      "sourceRow": 84,
+      "ensemblId": "RNASEQG00000018488",
+      "gene": "Hrh2",
+      "somaticIndelRatePercent": 0.0011133834958989214,
+      "indelReads": 16,
+      "totalReads": 1437061,
+      "targetSite": "TCCCCCTGCtggccaTGTGTTGGA",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSTSAHLAR",
+        "MRNFSRREHLVR",
+        "MRNFSQTATLKR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRSTHLRV",
+        "MRNFSHKSSLTR",
+        "MRNFSQPHGLAH"
+      ],
+      "openConfidenceScore": "5,9 inactive",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 85,
+      "ensemblId": "ENSDARG00000075454",
+      "gene": "HDC",
+      "somaticIndelRatePercent": 0.0010965834116172047,
+      "indelReads": 24,
+      "totalReads": 2188616,
+      "targetSite": "AGCGCCCCCtatgaGCCGGAGGA",
+      "spacerLength": 5,
+      "leftCys2ToHis1": [
+        "MRNFSTSSGLTR",
+        "MRNFSLKEHLTR",
+        "MRNFSRGDKLAL"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSRTDRLIR",
+        "MRNFSQSAHLKR",
+        "MRNFSDPSNLRR"
+      ],
+      "openConfidenceScore": "5 inactive,9",
+      "targetCpGs": 2
+    },
+    {
+      "sourceRow": 86,
+      "ensemblId": "ENSDARG00000076140",
+      "gene": "CLC",
+      "somaticIndelRatePercent": 0.0009617617276538098,
+      "indelReads": 7,
+      "totalReads": 727831,
+      "targetSite": "GCATTCTTCtctgtgcGGTGAGGGA",
+      "spacerLength": 7,
+      "leftCys2ToHis1": [
+        "MRNFSRRRNLTL",
+        "MRNFSQQTNLTR",
+        "MRNFSQTNNLNR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSTHAHLTR",
+        "MRNFSRQDNLGR",
+        "MRNFSVKHGLGR"
+      ],
+      "openConfidenceScore": "none",
+      "targetCpGs": 0
+    },
+    {
+      "sourceRow": 87,
+      "ensemblId": "ENSDARG00000033706",
+      "gene": "Adora2aa",
+      "somaticIndelRatePercent": 0.0006112612663092147,
+      "indelReads": 6,
+      "totalReads": 981577,
+      "targetSite": "AGCATCACCaacttcTTTGTTGTT",
+      "spacerLength": 6,
+      "leftCys2ToHis1": [
+        "MRNFSTKQVLDR",
+        "MRNFSVRHNLTR",
+        "MRNFSQPHHLPR"
+      ],
+      "rightCys2ToHis1": [
+        "MRNFSTKPVLKI",
+        "MRNFSHKSSLTR",
+        "MRNFSQRNALSG"
+      ],
+      "openConfidenceScore": "9 inactive,8",
+      "targetCpGs": 0
+    }
+  ]
+}

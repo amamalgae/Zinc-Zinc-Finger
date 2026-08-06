@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   candidatesToCsv,
   cleanDNA,
+  compareCandidates,
   fingersForRecognitionStrand,
   generateCandidates,
   reverseComplement,
@@ -12,7 +13,10 @@ import {
   calculateModuleBScore,
   moduleArchive,
 } from "../src/module-archive.ts";
-import { predictFingerPwm } from "../src/deepzf-pwm.ts";
+import {
+  predictFingerPwm,
+  predictFingerPwmFromTwelveResidues,
+} from "../src/deepzf-pwm.ts";
 
 test("cleanDNA removes FASTA headers without treating header letters as bases", () => {
   assert.equal(cleanDNA(">target ACGT\naacc 11\nggtt\n"), "AACCGGTT");
@@ -36,6 +40,44 @@ test("the browser DeepZF port reproduces the upstream PWM model", () => {
   assert.equal(prediction.topTriplet, "GAG");
   assert.equal(prediction.targetRank, 1);
   assert.ok(Math.abs(prediction.targetJointProbability - 0.9432) < 0.0001);
+});
+
+test("DeepZF accepts the actual 12-residue Cys2-to-His1 sequence", () => {
+  const fromHelix = predictFingerPwm("RSDNLVR", "GAG");
+  const fromTwelve = predictFingerPwmFromTwelveResidues(
+    "GKSFSRSDNLVR",
+    "GAG",
+  );
+  assert.deepEqual(fromTwelve, fromHelix);
+  assert.throws(
+    () => predictFingerPwmFromTwelveResidues("TOO-SHORT", "GAG"),
+    /12 residues/,
+  );
+});
+
+test("DeepZF is diagnostic only and cannot change candidate ranking", () => {
+  const common = {
+    passesBScoreCutoff: true,
+    combinedBScore: 18,
+    tsoIssues: 0,
+    unfavorableModules: 0,
+    favorableModules: 3,
+    distance: 2,
+    spacerLength: 6,
+  };
+  assert.equal(
+    compareCandidates(
+      { ...common, deepZfTargetFit: 0.01 },
+      { ...common, deepZfTargetFit: 0.99 },
+    ),
+    0,
+  );
+  assert.ok(
+    compareCandidates(
+      { ...common, deepZfTargetFit: 0.01 },
+      { ...common, tsoIssues: 1, deepZfTargetFit: 0.99 },
+    ) < 0,
+  );
 });
 
 test("DeepZF contains recognition signal across the 49-module archive", () => {
