@@ -2,12 +2,13 @@ name: Bootstrap current Pages deployment
 
 on:
   schedule:
-    - cron: "22 21 6 8 *"
+    - cron: "7,22,37,52 * 6-8 8 *"
   workflow_run:
     workflows: ["Deploy GitHub Pages"]
     types: [completed]
 
 permissions:
+  actions: write
   contents: read
   pages: write
   id-token: write
@@ -58,3 +59,13 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
+  disable-bootstrap:
+    needs: deploy-current-main
+    if: ${{ needs.deploy-current-main.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Disable one-time bootstrap
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow disable bootstrap-pages.yml --repo "${{ github.repository }}"
