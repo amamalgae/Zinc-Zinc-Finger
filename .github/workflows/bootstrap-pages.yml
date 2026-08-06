@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   deploy-current-main:
-    if: ${{ github.event_name == 'schedule' || github.event.workflow_run.id == 31087919237 || github.event.workflow_run.id == 31097690475 }}
+    if: ${{ github.event_name == 'schedule' || github.event.workflow_run.id == 31087919237 || github.event.workflow_run.id == 31097690475 || github.event.workflow_run.id == 31128441707 }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout current main
