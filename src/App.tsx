@@ -42,6 +42,7 @@ function FingerTable({ title, fingers }: { title: string; fingers: Finger[] }) {
               <th>B</th>
               <th>DeepZF予測</th>
               <th>標的順位</th>
+              <th>TSO</th>
               <th>評価</th>
             </tr>
           </thead>
@@ -54,6 +55,9 @@ function FingerTable({ title, fingers }: { title: string; fingers: Finger[] }) {
                 <td>{finger.bScore}</td>
                 <td className="mono">{finger.deepZf.topTriplet}</td>
                 <td>#{finger.deepZf.targetRank}</td>
+                <td className={finger.tsoCompatible ? "" : "warning"}>
+                  {finger.tsoCompatible ? "—" : "要確認"}
+                </td>
                 <td className={`module-${finger.recommendation}`}>
                   {finger.recommendation === "favorable"
                     ? "推奨"
@@ -117,7 +121,7 @@ export default function Home() {
             <div><strong>≥15</strong><small>combined B-score</small></div>
             <div><strong>DeepZF</strong><small>PWM cross-check</small></div>
           </div>
-          <p className="method-note">Bhakta et al. 2013 · AUC 0.77 (92 variants)</p>
+          <p className="method-note">再計算: B-score 20/21一致 · ranking AUC 0.67</p>
         </aside>
       </section>
 
@@ -229,7 +233,7 @@ export default function Home() {
                   <span className="candidate-data">
                     <b>B {candidate.combinedBScore}</b>
                     <small>
-                      DeepZF {candidate.deepZfTargetFit.toFixed(2)} · cut {formatCut(candidate.cut)}
+                      DeepZF {candidate.deepZfTargetFit.toFixed(2)} · TSO {candidate.tsoIssues} · cut {formatCut(candidate.cut)}
                     </small>
                   </span>
                 </button>
@@ -298,12 +302,12 @@ export default function Home() {
             <div>
               <span>Combined B-score</span>
               <strong>{selected.combinedBScore}</strong>
-              <p>12 modulesの二価接触を合算</p>
+              <p>{selected.leftFingers.length + selected.rightFingers.length} modulesのpublished値を合算</p>
             </div>
             <div>
               <span>Module evidence</span>
               <strong>{selected.favorableModules} / {selected.unfavorableModules}</strong>
-              <p>推奨 / 非推奨module数</p>
+              <p>推奨 / 非推奨 · TSO警告 {selected.tsoIssues}</p>
             </div>
             <div>
               <span>DeepZF target fit</span>
@@ -317,7 +321,8 @@ export default function Home() {
             </div>
             <p className="score-caution">
               B-score ≥15の構成はBhakta et al.の268構成中52%がSSA活性ありでしたが、これは本候補の成功確率ではありません。
-              DeepZF値も結合確率ではなくPWM整合度です。表示配列はSp1C型ZFAまでで、FokI、NLS、発現カセット、
+              TSO不一致は原著どおり警告であり、候補を自動除外しません。DeepZF値も結合確率ではなくPWM整合度です。
+              表示配列はSp1C型ZFAまでで、FokI、NLS、発現カセット、
               ゲノムwide off-target評価はまだ含みません。
             </p>
           </div>
@@ -330,7 +335,7 @@ export default function Home() {
           <h2>単純な1塩基→1残基則を廃止</h2>
           <p>
             {MODULE_COUNT}個の実験選抜済みBarbas moduleだけを使います。認識ヘリックス、Sp1C framework、
-            TGEKP interfinger linker、target-site overlap制約を明示して完全なZFA配列を出力します。
+            TGEKP interfinger linker、target-site overlap警告を明示して完全なZFA配列を出力します。
           </p>
         </article>
         <article>
@@ -338,7 +343,7 @@ export default function Home() {
           <h2>DeepZFで認識配列を逆方向から検査</h2>
           <p>
             原著の学習済みPWMpredictorをブラウザ用に軽量移植しました。B-scoreを主順位とし、同点候補だけを
-            DeepZFの標的PWM整合度で並べ替えます。48 moduleでは標的tripletがtop-1に15件、top-3に24件でした。
+            DeepZFの標的PWM整合度で並べ替えます。49 moduleでは標的tripletがtop-1に16件、top-3に25件でした。
           </p>
         </article>
       </section>
