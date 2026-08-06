@@ -1,6 +1,8 @@
 name: Bootstrap current Pages deployment
 
 on:
+  schedule:
+    - cron: "*/5 * * * *"
   workflow_run:
     workflows: ["Deploy GitHub Pages"]
     types: [completed]
@@ -16,7 +18,7 @@ concurrency:
 
 jobs:
   deploy-current-main:
-    if: ${{ (github.event.workflow_run.id == 31087919237 || github.event.workflow_run.id == 31097690475) }}
+    if: ${{ github.event_name == 'schedule' || github.event.workflow_run.id == 31087919237 || github.event.workflow_run.id == 31097690475 }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout current main
