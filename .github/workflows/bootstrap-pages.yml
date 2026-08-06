@@ -2,7 +2,7 @@ name: Bootstrap current Pages deployment
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "22 21 6 8 *"
   workflow_run:
     workflows: ["Deploy GitHub Pages"]
     types: [completed]
