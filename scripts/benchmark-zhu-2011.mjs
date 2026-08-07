@@ -1,0 +1,160 @@
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
+import {
+  complement,
+  fingersForRecognitionStrand,
+  reverseComplement,
+} from "../src/design-engine.ts";
+
+const dataset = JSON.parse(
+  readFileSync(
+    new URL("../data/zhu-2011-ma-zfn-benchmark.json", import.meta.url),
+    "utf8",
+  ),
+);
+
+function activity(pair) {
+  const measured = pair.lesionFrequencies.filter((value) => value !== null);
+  return measured.length > 0 && Math.max(...measured) >= 0.01;
+}
+
+function targetGeometry(pair) {
+  const match = pair.targetTop.match(
+    /^([acgt])([ACGT]{9})([acgt]{5,7})([ACGT]{9})([acgt])$/,
+  );
+  if (!match) throw new Error(`${pair.id} has an invalid target-site layout`);
+  const [, leftFlank, leftTop, spacer, rightTop, rightFlank] = match;
+  return { leftFlank, leftTop, spacer, rightTop, rightFlank };
+}
+
+function scorePair(pair) {
+  const geometry = targetGeometry(pair);
+  const leftRecognition = reverseComplement(geometry.leftTop);
+  const rightRecognition = geometry.rightTop;
+
+  if (leftRecognition !== pair.left.recognition) {
+    throw new Error(`${pair.id} left recognition sequence does not match Table S5`);
+  }
+  if (rightRecognition !== pair.right.recognition) {
+    throw new Error(`${pair.id} right recognition sequence does not match Table S5`);
+  }
+
+  const leftFingers = fingersForRecognitionStrand(
+    leftRecognition,
+    complement(geometry.leftFlank),
+  );
+  const rightFingers = fingersForRecognitionStrand(
+    rightRecognition,
+    geometry.rightFlank,
+  );
+  const actualHelices = [...pair.left.helices, ...pair.right.helices];
+
+  if (!leftFingers || !rightFingers) {
+    return {
+      pair,
+      active: activity(pair),
+      scorable: false,
+      actualHelices,
+      matchedModules: 0,
+      exactProteinPair: false,
+    };
+  }
+
+  const currentFingers = [...leftFingers, ...rightFingers];
+  const matchedModules = currentFingers.filter(
+    (finger, index) => finger.helix === actualHelices[index],
+  ).length;
+
+  return {
+    pair,
+    active: activity(pair),
+    scorable: true,
+    actualHelices,
+    matchedModules,
+    exactProteinPair: matchedModules === actualHelices.length,
+    combinedBScore: currentFingers.reduce(
+      (sum, finger) => sum + finger.bScore,
+      0,
+    ),
+    tsoIssues: currentFingers.filter((finger) => !finger.tsoCompatible).length,
+    unfavorableModules: currentFingers.filter(
+      (finger) => finger.recommendation === "unfavorable",
+    ).length,
+    favorableModules: currentFingers.filter(
+      (finger) => finger.recommendation === "favorable",
+    ).length,
+  };
+}
+
+function auc(rows, compare) {
+  const positives = rows.filter((row) => row.active);
+  const negatives = rows.filter((row) => !row.active);
+  let credit = 0;
+  for (const positive of positives) {
+    for (const negative of negatives) {
+      const result = compare(positive, negative);
+      credit += result > 0 ? 1 : result === 0 ? 0.5 : 0;
+    }
+  }
+  return credit / (positives.length * negatives.length);
+}
+
+function compareCurrentRanking(left, right) {
+  return (
+    Number(left.combinedBScore >= 15) - Number(right.combinedBScore >= 15) ||
+    left.combinedBScore - right.combinedBScore ||
+    right.tsoIssues - left.tsoIssues ||
+    right.unfavorableModules - left.unfavorableModules ||
+    left.favorableModules - right.favorableModules
+  );
+}
+
+export function runZhuBenchmark() {
+  const rows = dataset.pairs.map(scorePair);
+  const transferableRows = rows.filter((row) => row.scorable);
+  const sourceIdMismatches = dataset.pairs
+    .filter(
+      (pair) =>
+        pair.left.sourceZfnId !== pair.id || pair.right.sourceZfnId !== pair.id,
+    )
+    .map((pair) => ({
+      tableS7Id: pair.id,
+      gene: pair.gene,
+      tableS5Ids: [...new Set([
+        pair.left.sourceZfnId,
+        pair.right.sourceZfnId,
+      ])],
+    }));
+
+  return {
+    source: dataset.source,
+    fullCohort: {
+      n: rows.length,
+      active: rows.filter((row) => row.active).length,
+      exactProteinPairs: rows.filter((row) => row.exactProteinPair).length,
+      matchedModules: rows.reduce((sum, row) => sum + row.matchedModules, 0),
+      testedModules: rows.reduce(
+        (sum, row) => sum + row.actualHelices.length,
+        0,
+      ),
+    },
+    sourceIdMismatches,
+    sequenceOnlyTransfer: {
+      n: transferableRows.length,
+      active: transferableRows.filter((row) => row.active).length,
+      excluded: rows.length - transferableRows.length,
+      bScoreAuc: auc(
+        transferableRows,
+        (left, right) => left.combinedBScore - right.combinedBScore,
+      ),
+      currentRankingAuc: auc(transferableRows, compareCurrentRanking),
+      interpretation:
+        "Transfer-only analysis: the tested Zhu proteins use a different position-specific module archive, so these AUCs do not directly validate the Barbas extended-MA proteins generated by this tool.",
+    },
+  };
+}
+
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  console.log(JSON.stringify(runZhuBenchmark(), null, 2));
+}

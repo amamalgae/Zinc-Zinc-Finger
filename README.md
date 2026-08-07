@@ -129,11 +129,19 @@ module別公表値から得たL6+R6 B-scoreは20/21標的で原著表と一致�
 
 21件全体ではDeepZFによる改善はAUC 0.011に留まり、DeepZF単独はほぼランダムです。前向き11件では改善が見えましたが、活性8・不活性3の小標本なので一般化性能とは扱いません。
 
+### Zhu 2011の3F modular-assemblyデータ
+
+Zhu et al.のSupplementary Tables S1、S5、S7から、3F ZFN 29ペアと左右58 array、実際に使われた174 moduleを行単位で復元しました。原著の記載どおり、最大somatic lesion frequencyが1%以上のペアは8/29でした。Zhu et al. (2011), DOI: [10.1242/dev.066779](https://doi.org/10.1242/dev.066779)。
+
+ただし、このデータは現行ツールのBarbas one-finger archiveを直接検証しません。Zhuのposition-specific archiveで使われた174 recognition helixのうち現行Barbas helixと一致したのは4本だけで、左右6本すべてが一致するZFNペアは0/29でした。現行archiveで同じ標的tripletを構築可能な25ペアへ配列組成だけを転用すると、B-score AUCは0.585、採用順位は0.570でした。この値は異なるタンパク質間のtransfer解析であり、現行4–6F設計の精度値や学習データには使用しません。
+
+Table S5とS7では`sbno2`、`sgk`、`spon1b`のZFN IDが1行ずつずれているため、遺伝子名と左右の認識配列で対応を復元し、差異を回帰試験に固定しています。
+
 さらに、別研究室のCoDA ZFN 84ペアについて、補足表のcoding sequenceから各fingerのCys2–His1間12残基を抽出して外部検証しました。配列を取得できた82ペア（活性32、不活性50）では、DeepZF整合度とsomatic indel率のSpearman ρは0.053、活性閾値>0.27%に対するROC-AUCは0.491でした。最弱fingerまたは最弱monomerを使ってもAUCは0.520、0.518で、活性順位付けには使えませんでした。Chen et al. (2013), DOI: [10.1093/nar/gks1356](https://doi.org/10.1093/nar/gks1356)。
 
 以上から、DeepZFは候補順位から外し、PWM上の認識整合度を確認する診断表示だけに限定しました。ChenデータはCoDA・zebrafish胚という別方式なので、extended MAの成功率推定には混ぜていません。再計算は`npm run benchmark`で実行できます。
 
-92 array variantsについては、原著の報告AUCは0.77です。Figure 2から92件の二値ラベルを復元した参考解析もスクリプトに含めていますが、出版社移行後に行単位の補足データを取得できず、図からの復元値は原著の生データと同一とは保証できないため、主結果には使用していません。
+92 array variantsについては、原著の報告AUCは0.77です。Figure 2から92件の二値ラベルを復元した参考解析もスクリプトに含めています。原著にはSupplemental Tables S1–S8がありますが、268構成の行単位データを収録した`Supplemental_Appendices.xls`という別ファイルは確認できませんでした。Data accessに記載されたBioProject PRJNA179355はT2-X6のmassively parallel sequencingデータであり、268構成のSSA成否表ではありません。このため図からの復元値は主結果には使用していません。
 
 ## 重要な制限
 
@@ -165,6 +173,7 @@ DeepZFはprotein sequenceからPWMを予測するforward modelです。本ツー
 
 - one-finger archiveとSp1C / Zif268 framework：Bhakta & Segal (2010), DOI: [10.1007/978-1-60761-753-2_1](https://doi.org/10.1007/978-1-60761-753-2_1)
 - extended MA、B-score、linker、活性データ：Bhakta et al. (2013), DOI: [10.1101/gr.143693.112](https://doi.org/10.1101/gr.143693.112)
+- 別module archiveの3F MA適用範囲：Zhu et al. (2011), DOI: [10.1242/dev.066779](https://doi.org/10.1242/dev.066779)
 - CoDA ZFN 84ペアの外部活性データ：Chen et al. (2013), DOI: [10.1093/nar/gks1356](https://doi.org/10.1093/nar/gks1356)
 - ZFN off-target全候補の外部検証：Sander et al. (2013), DOI: [10.1093/nar/gkt716](https://doi.org/10.1093/nar/gkt716)
 - PROGNOS式とHBB 3F/4Fの検証：Fine et al. (2014), DOI: [10.1093/nar/gkt1326](https://doi.org/10.1093/nar/gkt1326)

@@ -9,8 +9,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "benchmark": "npm run benchmark:bhakta && npm run benchmark:chen && npm run benchmark:sander && npm run benchmark:fine && npm run benchmark:paschon",
+    "benchmark": "npm run benchmark:bhakta && npm run benchmark:zhu && npm run benchmark:chen && npm run benchmark:sander && npm run benchmark:fine && npm run benchmark:paschon",
     "benchmark:bhakta": "node scripts/benchmark-bhakta-2013.mjs",
+    "benchmark:zhu": "node scripts/benchmark-zhu-2011.mjs",
     "benchmark:chen": "node scripts/benchmark-chen-2013.mjs",
     "benchmark:sander": "node scripts/benchmark-sander-2013.mjs",
     "benchmark:fine": "node scripts/benchmark-fine-2014.mjs",
