@@ -343,7 +343,7 @@ export default function Home() {
             <div><strong>≥15</strong><small>combined B-score</small></div>
             <div><strong>DeepZF</strong><small>PWM cross-check</small></div>
           </div>
-          <p className="method-note">再計算: B-score 20/21一致 · Chen外部検証 n=82</p>
+          <p className="method-note">再計算: B-score 20/21一致 · 異種archiveは学習に不使用</p>
         </aside>
       </section>
 
@@ -765,6 +765,7 @@ export default function Home() {
             <p className="score-caution">
               B-score ≥15の構成はBhakta et al.の268構成中52%がSSA活性ありでしたが、これは本候補の成功確率ではありません。
               TSO不一致は原著どおり警告であり、候補を自動除外しません。DeepZF値は結合確率ではなくPWM整合度で、順位にも使用しません。
+              Zhu 2011の29ペアは別module archiveで現行配列と0/29一致のため、順位学習には混ぜていません。
               表示配列はSp1C型ZFAまでで、FokI、NLS、発現カセット、
               クロマチン状態の評価は含みません。FASTA検索後はB-score閾値内でゲノム特異性を優先して並べ替えます。
             </p>
@@ -803,6 +804,7 @@ export default function Home() {
         <p>Research prototype · no sequence is uploaded or retained</p>
         <div className="footer-links">
           <a href="https://doi.org/10.1101/gr.143693.112" target="_blank" rel="noreferrer">Bhakta 2013</a>
+          <a href="https://doi.org/10.1242/dev.066779" target="_blank" rel="noreferrer">Zhu 2011</a>
           <a href="https://doi.org/10.1093/nar/gkt1326" target="_blank" rel="noreferrer">Fine 2014</a>
           <a href="https://doi.org/10.1093/nar/gks1356" target="_blank" rel="noreferrer">Chen 2013</a>
         </div>

@@ -43,6 +43,14 @@ The code in this repository was written independently. The repository's MIT lice
 
 Source workbook: `supp_gks1356_nar-02876-h-2012-File008.xlsx`, SHA-256 `d37402e74baf828d1524daa608d07f57b49dc15cb572773a768775be48305902`, retrieved from the Europe PMC supplementary-files endpoint for PMC3575824. The repository MIT license does not relicense this extracted scientific dataset.
 
+## Zhu 2011 modular-assembly applicability data
+
+`data/zhu-2011-ma-zfn-benchmark.json` is a machine-readable transcription of target sites, recognition helices, bacterial one-hybrid measurements, somatic lesion measurements, and founder rates from Supplementary Tables S1, S5, and S7 of:
+
+- Zhu C et al. (2011), *Evaluation and application of modularly assembled zinc-finger nucleases in zebrafish*, DOI: 10.1242/dev.066779.
+
+The data are used only to test whether this different, position-specific three-finger module archive can directly validate the Barbas extended-MA proteins generated here. The repository MIT license does not relicense the article, its supplementary workbooks, or the extracted scientific data.
+
 ## DeepZF
 
 The DeepZF PWMpredictor is used as an attributed forward-model cross-check:

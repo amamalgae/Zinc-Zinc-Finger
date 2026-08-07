@@ -1,0 +1,1237 @@
+{
+  "source": {
+    "citation": "Zhu et al. (2011)",
+    "doi": "10.1242/dev.066779",
+    "tables": [
+      "Supplementary Table S1",
+      "Supplementary Table S5",
+      "Supplementary Table S7"
+    ],
+    "activityDefinition": "maximum reported somatic lesion frequency >= 0.01, matching the paper wording (1% or more)",
+    "sha256": {
+      "S1": "b11b2f30c9156fc18cf420ebb507fe704da3f84155e2d5ffdf4eae46538f919d",
+      "S5": "904a443d00d909894d3169999207ddf15ed578198fa9e751aa0042a8f8d9874b",
+      "S7": "c4bf085d2da80c342eb6d3b3642897479f47172ca88fd8f41a71b66bdf6495c4"
+    }
+  },
+  "pairs": [
+    {
+      "id": "ZFNv1_94061",
+      "gene": "ago2",
+      "targetTop": "aCTCATCCACcagctGGAGATGGCa",
+      "left": {
+        "sourceName": "ago2-5p",
+        "sourceZfnId": "ZFNv1_94061",
+        "recognition": "GTGGATGAG",
+        "triplets": [
+          "GAG",
+          "GAT",
+          "GTG"
+        ],
+        "helices": [
+          "RSDNLTR",
+          "LSFNLTR",
+          "RSDALTR"
+        ],
+        "b2h3At": 2.5
+      },
+      "right": {
+        "sourceName": "ago2-3p",
+        "sourceZfnId": "ZFNv1_94061",
+        "recognition": "GGAGATGGC",
+        "triplets": [
+          "GGC",
+          "GAT",
+          "GGA"
+        ],
+        "helices": [
+          "EKSHLTR",
+          "LSFNLTR",
+          "QRGHLTR"
+        ],
+        "b2h3At": 5.0
+      },
+      "lesionFrequencies": [
+        0.003692534,
+        0.0001
+      ],
+      "founderRate": 0.06522
+    },
+    {
+      "id": "ZFNv1_60136",
+      "gene": "arhgef1",
+      "targetTop": "aATCCGTGACggcgcaGTAAGGGCCc",
+      "left": {
+        "sourceName": "arhgef1-3p",
+        "sourceZfnId": "ZFNv1_60136",
+        "recognition": "GTCACGGAT",
+        "triplets": [
+          "GAT",
+          "ACG",
+          "GTC"
+        ],
+        "helices": [
+          "HRNNLTR",
+          "RSDTLKN",
+          "DRSALAR"
+        ],
+        "b2h3At": 5.0
+      },
+      "right": {
+        "sourceName": "arhgef1-5p",
+        "sourceZfnId": "ZFNv1_60136",
+        "recognition": "GTAAGGGCC",
+        "triplets": [
+          "GCC",
+          "AGG",
+          "GTA"
+        ],
+        "helices": [
+          "ERGTLAR",
+          "RSDHLTQ",
+          "QSGALTR"
+        ],
+        "b2h3At": 10.0
+      },
+      "lesionFrequencies": [
+        0.00457508,
+        0.00242
+      ],
+      "founderRate": null
+    },
+    {
+      "id": "ZFNv1_27773",
+      "gene": "braf",
+      "targetTop": "aCACCTCCTCctgggtGATGGGGTGg",
+      "left": {
+        "sourceName": "braf-3p",
+        "sourceZfnId": "ZFNv1_27773",
+        "recognition": "GAGGAGGTG",
+        "triplets": [
+          "GTG",
+          "GAG",
+          "GAG"
+        ],
+        "helices": [
+          "RSDALTR",
+          "RSDNLTR",
+          "RSDNLTR"
+        ],
+        "b2h3At": 5.0
+      },
+      "right": {
+        "sourceName": "braf-5p",
+        "sourceZfnId": "ZFNv1_27773",
+        "recognition": "GATGGGGTG",
+        "triplets": [
+          "GTG",
+          "GGG",
+          "GAT"
+        ],
+        "helices": [
+          "RSDALTR",
+          "RSDHLTR",
+          "LSFNLTR"
+        ],
+        "b2h3At": 5.0
+      },
+      "lesionFrequencies": [
+        0.013006624,
+        0.05118
+      ],
+      "founderRate": 0.0
+    },
+    {
+      "id": "ZFNv1_68779",
+      "gene": "chd5",
+      "targetTop": "cCTCCTCCCCagagccGTAGTCGTAc",
+      "left": {
+        "sourceName": "chd5-3p",
+        "sourceZfnId": "ZFNv1_68779",
+        "recognition": "GGGGAGGAG",
+        "triplets": [
+          "GAG",
+          "GAG",
+          "GGG"
+        ],
+        "helices": [
+          "RSDNLTR",
+          "RSDNLTR",
+          "RSDHLTR"
+        ],
+        "b2h3At": 10.0
+      },
+      "right": {
+        "sourceName": "chd5-5p",
+        "sourceZfnId": "ZFNv1_68779",
+        "recognition": "GTAGTCGTA",
+        "triplets": [
+          "GTA",
+          "GTC",
+          "GTA"
+        ],
+        "helices": [
+          "QSGALTR",
+          "DRSALAR",
+          "QSGALTR"
+        ],
+        "b2h3At": 1.0
+      },
+      "lesionFrequencies": [
+        0.000195929,
+        null
+      ],
+      "founderRate": 0.0
+    },
+    {
+      "id": "ZFNv1_52706",
+      "gene": "col18a",
+      "targetTop": "aCCCCTGGTCcggaaGTGTGGGTGt",
+      "left": {
+        "sourceName": "col18a1-3p",
+        "sourceZfnId": "ZFNv1_52706",
+        "recognition": "GACCAGGGG",
+        "triplets": [
+          "GGG",
+          "CAG",
+          "GAC"
+        ],
+        "helices": [
+          "RSDHLTR",
+          "RSDNLSE",
+          "LKGNLTR"
+        ],
+        "b2h3At": 5.0
+      },
+      "right": {
+        "sourceName": "col18a1-5p",
+        "sourceZfnId": "ZFNv1_52706",
+        "recognition": "GTGTGGGTG",
+        "triplets": [
+          "GTG",
+          "TGG",
+          "GTG"
+        ],
+        "helices": [
+          "RSDALTR",
+          "RSDHLTT",
+          "RSDALTR"
+        ],
+        "b2h3At": 10.0
+      },
+      "lesionFrequencies": [
+        0.001235136,
+        null
+      ],
+      "founderRate": null
+    },
+    {
+      "id": "ZFNv1_cxcl12b",
+      "gene": "cxcl12b",
+      "targetTop": "cCTCAACACCgtcccGCAACGGAGc",
+      "left": {
+        "sourceName": "cxcl12b-5p",
+        "sourceZfnId": "ZFNv1_cxcl12b",
+        "recognition": "GGTGTTGAG",
+        "triplets": [
+          "GAG",
+          "GTT",
+          "GGT"
+        ],
+        "helices": [
+          "RSDNLTR",
+          "FKSSLTR",
+          "LSHHLTR"
+        ],
+        "b2h3At": 10.0
+      },
+      "right": {
+        "sourceName": "cxcl12b-3p",
+        "sourceZfnId": "ZFNv1_cxcl12b",
+        "recognition": "GCAACGGAG",
+        "triplets": [
+          "GAG",
+          "ACG",
+          "GCA"
+        ],
+        "helices": [
+          "RSDNLTR",
+          "RSDTLKN",
+          "QRSTRKR"
+        ],
+        "b2h3At": 5.0
+      },
+      "lesionFrequencies": [
+        0.002593597,
+        6e-05
+      ],
+      "founderRate": null
+    },
+    {
+      "id": "ZFNv1_83611",
+      "gene": "cxcr4a",
+      "targetTop": "cGTCTGCACCtctcaGTGGCGGACc",
+      "left": {
+        "sourceName": "cxcr4a-5p",
+        "sourceZfnId": "ZFNv1_83611",
+        "recognition": "GGTGCAGAC",
+        "triplets": [
+          "GAC",
+          "GCA",
+          "GGT"
+        ],
+        "helices": [
+          "LKGNLTR",
+          "QSGDLTR",
+          "LSHHLTR"
+        ],
+        "b2h3At": 2.5
+      },
+      "right": {
+        "sourceName": "cxcr4a-3p",
+        "sourceZfnId": "ZFNv1_83611",
+        "recognition": "GTGGCGGAC",
+        "triplets": [
+          "GAC",
+          "GCG",
+          "GTG"
+        ],
+        "helices": [
+          "LKGNLTR",
+          "RSDDLTR",
+          "RSDALTR"
+        ],
+        "b2h3At": 10.0
+      },
+      "lesionFrequencies": [
+        0.011519181,
+        2e-05
+      ],
+      "founderRate": 0.1
+    },
+    {
+      "id": "ZFNv1_46261",
+      "gene": "dab2",
+      "targetTop": "aCTCTCCTTCtccccGAGGGGGTCc",
+      "left": {
+        "sourceName": "dab2-3p",
+        "sourceZfnId": "ZFNv1_46261",
+        "recognition": "GAAGGAGAG",
+        "triplets": [
+          "GAG",
+          "GGA",
+          "GAA"
+        ],
+        "helices": [
+          "RSDNLTR",
+          "QKGHLTR",
+          "QLSNLTR"
+        ],
+        "b2h3At": 10.0
+      },
+      "right": {
+        "sourceName": "dab2-5p",
+        "sourceZfnId": "ZFNv1_46261",
+        "recognition": "GAGGGGGTC",
+        "triplets": [
+          "GTC",
+          "GGG",
+          "GAG"
+        ],
+        "helices": [
+          "DRSALAR",
+          "RSDHLTR",
+          "RSDNLTR"
+        ],
+        "b2h3At": 10.0
+      },
+      "lesionFrequencies": [
+        0.003321297,
+        0.00577
+      ],
+      "founderRate": null
+    },
+    {
+      "id": "ZFNv1_975",
+      "gene": "dicer",
+      "targetTop": "tTTCCTCCACaaagaGGCTGGGATg",
+      "left": {
+        "sourceName": "dicer-3p",
+        "sourceZfnId": "ZFNv1_975",
+        "recognition": "GTGGAGGAA",
+        "triplets": [
+          "GAA",
+          "GAG",
+          "GTG"
+        ],
+        "helices": [
+          "QKCNLVR",
+          "RSDNLTR",
+          "RSDALTR"
+        ],
+        "b2h3At": 2.5
+      },
+      "right": {
+        "sourceName": "dicer-5p",
+        "sourceZfnId": "ZFNv1_975",
+        "recognition": "GGCTGGGAT",
+        "triplets": [
+          "GAT",
+          "TGG",
+          "GGC"
+        ],
+        "helices": [
+          "HRNNLTR",
+          "RSDHLTT",
+          "DRSHLTR"
+        ],
+        "b2h3At": 2.5
+      },
+      "lesionFrequencies": [
+        0.001040577,
+        null
+      ],
+      "founderRate": null
+    },
+    {
+      "id": "ZFNv1_78994",
+      "gene": "drosha",
+      "targetTop": "tGTCCTCCTCatggcgGTCGATGGTt",
+      "left": {
+        "sourceName": "drosha-3p",
+        "sourceZfnId": "ZFNv1_78994",
+        "recognition": "GAGGAGGAC",
+        "triplets": [
+          "GAC",
+          "GAG",
+          "GAG"
+        ],
+        "helices": [
+          "LKGNLTR",
+          "RSDNLTR",
+          "RSDNLTR"
+        ],
+        "b2h3At": 2.5
+      },
+      "right": {
+        "sourceName": "drosha-5p",
+        "sourceZfnId": "ZFNv1_78994",
+        "recognition": "GTCGATGGT",
+        "triplets": [
+          "GGT",
+          "GAT",
+          "GTC"
+        ],
+        "helices": [
+          "LAHHLTR",
+          "LSFNLTR",
+          "DRSALAR"
+        ],
+        "b2h3At": 5.0
+      },
+      "lesionFrequencies": [
+        8.11e-05,
+        null
+      ],
+      "founderRate": null
+    },
+    {
+      "id": "ZFNv1_32233",
+      "gene": "efnb2a",
+      "targetTop": "cCACGCCCAAgagggGCGGCAGCGg",
+      "left": {
+        "sourceName": "efnb2a-5p",
+        "sourceZfnId": "ZFNv1_32233",
+        "recognition": "TTGGGCGTG",
+        "triplets": [
+          "GTG",
+          "GGC",
+          "TTG"
+        ],
+        "helices": [
+          "RSDALTR",
+          "DRSHLAR",
+          "RSDALRK"
+        ],
+        "b2h3At": 5.0
+      },
+      "right": {
+        "sourceName": "efnb2a-3p",
+        "sourceZfnId": "ZFNv1_32233",
+        "recognition": "GCGGCAGCG",
+        "triplets": [
+          "GCG",
+          "GCA",
+          "GCG"
+        ],
+        "helices": [
+          "RSDDLTR",
+          "QSGDLTR",
+          "RSDDLTR"
+        ],
+        "b2h3At": 10.0
+      },
+      "lesionFrequencies": [
+        0.000889149,
+        null
+      ],
+      "founderRate": null
+    },
+    {
+      "id": "ZFNv1_116400",
+      "gene": "fli1a",
+      "targetTop": "aCCCCATTCCccctcaGCAAGAGTGg",
+      "left": {
+        "sourceName": "fli1aB-5p",
+        "sourceZfnId": "ZFNv1_116400",
+        "recognition": "GGAATGGGG",
+        "triplets": [
+          "GGG",
+          "ATG",
+          "GGA"
+        ],
+        "helices": [
+          "RSDHLTR",
+          "RSDALTQ",
+          "QRGHLTR"
+        ],
+        "b2h3At": 2.5
+      },
+      "right": {
+        "sourceName": "fli1aB-3p",
+        "sourceZfnId": "ZFNv1_116400",
+        "recognition": "GCAAGAGTG",
+        "triplets": [
+          "GTG",
+          "AGA",
+          "GCA"
+        ],
+        "helices": [
+          "RSDALTR",
+          "QSSHLKQ",
+          "QRSTRKR"
+        ],
+        "b2h3At": 10.0
+      },
+      "lesionFrequencies": [
+        0.000336134,
+        null
+      ],
+      "founderRate": null
+    },
+    {
+      "id": "ZFNv1_87654",
+      "gene": "gata2a",
+      "targetTop": "cCGCCGCCACagcgggGTGGAGGTGg",
+      "left": {
+        "sourceName": "gata2-3p",
+        "sourceZfnId": "ZFNv1_87654",
+        "recognition": "GTGGCGGCG",
+        "triplets": [
+          "GCG",
+          "GCG",
+          "GTG"
+        ],
+        "helices": [
+          "RSDDLTR",
+          "RSDDLTR",
+          "RSDALTR"
+        ],
+        "b2h3At": 10.0
+      },
+      "right": {
+        "sourceName": "gata2-5p",
+        "sourceZfnId": "ZFNv1_87654",
+        "recognition": "GTGGAGGTG",
+        "triplets": [
+          "GTG",
+          "GAG",
+          "GTG"
+        ],
+        "helices": [
+          "RSDALTR",
+          "RSDNLTR",
+          "RSDALTR"
+        ],
+        "b2h3At": 10.0
+      },
+      "lesionFrequencies": [
+        null,
+        0.01291
+      ],
+      "founderRate": 0.04167
+    },
+    {
+      "id": "ZFNv1_25601",
+      "gene": "gata3",
+      "targetTop": "cCTCCGCCACagaggaGTCGAGGTGg",
+      "left": {
+        "sourceName": "gata3-3p",
+        "sourceZfnId": "ZFNv1_25601",
+        "recognition": "GTGGCGGAG",
+        "triplets": [
+          "GAG",
+          "GCG",
+          "GTG"
+        ],
+        "helices": [
+          "RSDNLTR",
+          "RSDDLTR",
+          "RSDALTR"
+        ],
+        "b2h3At": 10.0
+      },
+      "right": {
+        "sourceName": "gata3-5p",
+        "sourceZfnId": "ZFNv1_25601",
+        "recognition": "GTCGAGGTG",
+        "triplets": [
+          "GTG",
+          "GAG",
+          "GTC"
+        ],
+        "helices": [
+          "RSDALTR",
+          "RSDNLTR",
+          "DRSALAR"
+        ],
+        "b2h3At": 10.0
+      },
+      "lesionFrequencies": [
+        0.010224446,
+        0.09022
+      ],
+      "founderRate": 0.25
+    },
+    {
+      "id": "ZFNv1_53751",
+      "gene": "kif1ba",
+      "targetTop": "cTCCCGCACCagtttgGCATTGGGGt",
+      "left": {
+        "sourceName": "kif1ba-53751-3p",
+        "sourceZfnId": "ZFNv1_53751",
+        "recognition": "GGTGCGGGA",
+        "triplets": [
+          "GGA",
+          "GCG",
+          "GGT"
+        ],
+        "helices": [
+          "QKGHLTR",
+          "RSDDLTR",
+          "LSHHLTR"
+        ],
+        "b2h3At": 10.0
+      },
+      "right": {
+        "sourceName": "kif1ba-53751-5p",
+        "sourceZfnId": "ZFNv1_53751",
+        "recognition": "GCATTGGGG",
+        "triplets": [
+          "GGG",
+          "TTG",
+          "GCA"
+        ],
+        "helices": [
+          "RSDHLTR",
+          "RSDALRK",
+          "QRSTRKR"
+        ],
+        "b2h3At": 10.0
+      },
+      "lesionFrequencies": [
+        0.000108681,
+        null
+      ],
+      "founderRate": 0.0
+    },
+    {
+      "id": "ZFNv1_53765",
+      "gene": "kif1bb",
+      "targetTop": "aCGCCTCATCgtgacgGTGGAGGAAa",
+      "left": {
+        "sourceName": "kif1bbeta-53765-3p",
+        "sourceZfnId": "ZFNv1_53765",
+        "recognition": "GATGAGGCG",
+        "triplets": [
+          "GCG",
+          "GAG",
+          "GAT"
+        ],
+        "helices": [
+          "RSDDLTR",
+          "RSDNLTR",
+          "LSFNLTR"
+        ],
+        "b2h3At": 5.0
+      },
+      "right": {
+        "sourceName": "kif1bbeta-53765-5p",
+        "sourceZfnId": "ZFNv1_53765",
+        "recognition": "GTGGAGGAA",
+        "triplets": [
+          "GAA",
+          "GAG",
+          "GTG"
+        ],
+        "helices": [
+          "QKCNLVR",
+          "RSDNLTR",
+          "RSDALTR"
+        ],
+        "b2h3At": 10.0
+      },
+      "lesionFrequencies": [
+        0.007284978,
+        0.02084
+      ],
+      "founderRate": 0.17647
+    },
+    {
+      "id": "ZFNv1_64370",
+      "gene": "klf2a",
+      "targetTop": "aCTCTCCCCAgggagCAGGCAGCAt",
+      "left": {
+        "sourceName": "klf2a-5p",
+        "sourceZfnId": "ZFNv1_64370",
+        "recognition": "TGGGGAGAG",
+        "triplets": [
+          "GAG",
+          "GGA",
+          "TGG"
+        ],
+        "helices": [
+          "RSDNLTR",
+          "QKGHLTR",
+          "RSDHLTT"
+        ],
+        "b2h3At": 5.0
+      },
+      "right": {
+        "sourceName": "klf2a-3p",
+        "sourceZfnId": "ZFNv1_64370",
+        "recognition": "CAGGCAGCA",
+        "triplets": [
+          "GCA",
+          "GCA",
+          "CAG"
+        ],
+        "helices": [
+          "QSGDLTR",
+          "QSGDLTR",
+          "RSDNLSE"
+        ],
+        "b2h3At": 10.0
+      },
+      "lesionFrequencies": [
+        0.000141764,
+        0.00051
+      ],
+      "founderRate": null
+    },
+    {
+      "id": "ZFNv1_73570",
+      "gene": "micall2",
+      "targetTop": "aGCCCTCCAAtctgaaGGTGCAGGAg",
+      "left": {
+        "sourceName": "micall2-5p",
+        "sourceZfnId": "ZFNv1_73570",
+        "recognition": "TTGGAGGGC",
+        "triplets": [
+          "GGC",
+          "GAG",
+          "TTG"
+        ],
+        "helices": [
+          "EKSHLTR",
+          "RSDNLTR",
+          "RSDALRK"
+        ],
+        "b2h3At": 5.0
+      },
+      "right": {
+        "sourceName": "micall2-3p",
+        "sourceZfnId": "ZFNv1_73570",
+        "recognition": "GGTGCAGGA",
+        "triplets": [
+          "GGA",
+          "GCA",
+          "GGT"
+        ],
+        "helices": [
+          "QKGHLTR",
+          "QSGDLTR",
+          "LSHHLTR"
+        ],
+        "b2h3At": 2.5
+      },
+      "lesionFrequencies": [
+        null,
+        0.00162587
+      ],
+      "founderRate": null
+    },
+    {
+      "id": "ZFNv1_19302",
+      "gene": "nf1a",
+      "targetTop": "cACCCTCCTCaggctGTAGAGGAAg",
+      "left": {
+        "sourceName": "nf1a-3p",
+        "sourceZfnId": "ZFNv1_19302",
+        "recognition": "GAGGAGGGT",
+        "triplets": [
+          "GGT",
+          "GAG",
+          "GAG"
+        ],
+        "helices": [
+          "LAHHLTR",
+          "RSDNLTR",
+          "RSDNLTR"
+        ],
+        "b2h3At": 5.0
+      },
+      "right": {
+        "sourceName": "nf1a-5p",
+        "sourceZfnId": "ZFNv1_19302",
+        "recognition": "GTAGAGGAA",
+        "triplets": [
+          "GAA",
+          "GAG",
+          "GTA"
+        ],
+        "helices": [
+          "QKCNLVR",
+          "RSDNLTR",
+          "QSGALTR"
+        ],
+        "b2h3At": 5.0
+      },
+      "lesionFrequencies": [
+        0.001007854,
+        0.00043
+      ],
+      "founderRate": 0.05479
+    },
+    {
+      "id": "ZFNv1_5253",
+      "gene": "nf1b",
+      "targetTop": "tTTCCGTTACctgtgtGAGGAGGCAg",
+      "left": {
+        "sourceName": "nf1b_5253-5p",
+        "sourceZfnId": "ZFNv1_5253",
+        "recognition": "GTAACGGAA",
+        "triplets": [
+          "GAA",
+          "ACG",
+          "GTA"
+        ],
+        "helices": [
+          "QKCNLVR",
+          "RSDTLKN",
+          "QSGALTR"
+        ],
+        "b2h3At": 10.0
+      },
+      "right": {
+        "sourceName": "nf1b_5253-3p",
+        "sourceZfnId": "ZFNv1_5253",
+        "recognition": "GAGGAGGCA",
+        "triplets": [
+          "GCA",
+          "GAG",
+          "GAG"
+        ],
+        "helices": [
+          "QSGDLTR",
+          "RSDNLTR",
+          "RSDNLTR"
+        ],
+        "b2h3At": 5.0
+      },
+      "lesionFrequencies": [
+        0.011719289,
+        0.012
+      ],
+      "founderRate": 0.03
+    },
+    {
+      "id": "ZFNv1_5254",
+      "gene": "nf1b",
+      "targetTop": "cCGTTACCTGtgtgagGAGGCAGAAa",
+      "left": {
+        "sourceName": "nf1b_5254-5p",
+        "sourceZfnId": "ZFNv1_5254",
+        "recognition": "CAGGTAACG",
+        "triplets": [
+          "ACG",
+          "GTA",
+          "CAG"
+        ],
+        "helices": [
+          "RSDTLTQ",
+          "QSGALTR",
+          "RSDNLSE"
+        ],
+        "b2h3At": 10.0
+      },
+      "right": {
+        "sourceName": "nf1b_5254-3p",
+        "sourceZfnId": "ZFNv1_5254",
+        "recognition": "GAGGCAGAA",
+        "triplets": [
+          "GAA",
+          "GCA",
+          "GAG"
+        ],
+        "helices": [
+          "QKCNLVR",
+          "QSGDLTR",
+          "RSDNLTR"
+        ],
+        "b2h3At": 10.0
+      },
+      "lesionFrequencies": [
+        null,
+        null
+      ],
+      "founderRate": 0.01316
+    },
+    {
+      "id": "ZFNv1_37185",
+      "gene": "numb-like",
+      "targetTop": "cATCCGCCTGccactGGTGTGGTCg",
+      "left": {
+        "sourceName": "numb_like-3p",
+        "sourceZfnId": "ZFNv1_37185",
+        "recognition": "CAGGCGGAT",
+        "triplets": [
+          "GAT",
+          "GCG",
+          "CAG"
+        ],
+        "helices": [
+          "HRNNLTR",
+          "RSDDLTR",
+          "RSDNLSE"
+        ],
+        "b2h3At": 5.0
+      },
+      "right": {
+        "sourceName": "numb_like-5p",
+        "sourceZfnId": "ZFNv1_37185",
+        "recognition": "GGTGTGGTC",
+        "triplets": [
+          "GTC",
+          "GTG",
+          "GGT"
+        ],
+        "helices": [
+          "DRSALAR",
+          "RSDALTR",
+          "LSHHLTR"
+        ],
+        "b2h3At": 5.0
+      },
+      "lesionFrequencies": [
+        0.011621504,
+        0.011
+      ],
+      "founderRate": 0.13
+    },
+    {
+      "id": "ZFNv1_89770",
+      "gene": "ptpru",
+      "targetTop": "aCACCTCATCtggacGTGGAGGAGt",
+      "left": {
+        "sourceName": "ptpru-5p",
+        "sourceZfnId": "ZFNv1_89770",
+        "recognition": "GATGAGGTG",
+        "triplets": [
+          "GTG",
+          "GAG",
+          "GAT"
+        ],
+        "helices": [
+          "RSDALTR",
+          "RSDNLTR",
+          "LSFNLTR"
+        ],
+        "b2h3At": 5.0
+      },
+      "right": {
+        "sourceName": "ptpru-3p",
+        "sourceZfnId": "ZFNv1_89770",
+        "recognition": "GTGGAGGAG",
+        "triplets": [
+          "GAG",
+          "GAG",
+          "GTG"
+        ],
+        "helices": [
+          "RSDNLTR",
+          "RSDNLTR",
+          "RSDALTR"
+        ],
+        "b2h3At": 5.0
+      },
+      "lesionFrequencies": [
+        0.001909597,
+        0.00508
+      ],
+      "founderRate": null
+    },
+    {
+      "id": "ZFNv1_5627",
+      "gene": "sbno2",
+      "targetTop": "cCTCCTCCTCttcctCGGGTGGTGg",
+      "left": {
+        "sourceName": "sbno2-3p",
+        "sourceZfnId": "ZFNv1_4729",
+        "recognition": "GAGGAGGAG",
+        "triplets": [
+          "GAG",
+          "GAG",
+          "GAG"
+        ],
+        "helices": [
+          "RSDNLTR",
+          "RSDNLTR",
+          "RSDNLTR"
+        ],
+        "b2h3At": 5.0
+      },
+      "right": {
+        "sourceName": "sbno2-5p",
+        "sourceZfnId": "ZFNv1_4729",
+        "recognition": "CGGGTGGTG",
+        "triplets": [
+          "GTG",
+          "GTG",
+          "CGG"
+        ],
+        "helices": [
+          "RSDALTR",
+          "RSDALTR",
+          "RSDHLSD"
+        ],
+        "b2h3At": 10.0
+      },
+      "lesionFrequencies": [
+        0.00974696,
+        null
+      ],
+      "founderRate": null
+    },
+    {
+      "id": "ZFNv1_4729",
+      "gene": "sgk",
+      "targetTop": "gGACTACATCaatggaGGAGAGGTGt",
+      "left": {
+        "sourceName": "sgk-5p",
+        "sourceZfnId": "ZFNv1_38612",
+        "recognition": "GATGTAGTC",
+        "triplets": [
+          "GTC",
+          "GTA",
+          "GAT"
+        ],
+        "helices": [
+          "DRSALAR",
+          "QSGALTR",
+          "LSFNLTR"
+        ],
+        "b2h3At": 10.0
+      },
+      "right": {
+        "sourceName": "sgk-3p",
+        "sourceZfnId": "ZFNv1_38612",
+        "recognition": "GGAGAGGTG",
+        "triplets": [
+          "GTG",
+          "GAG",
+          "GGA"
+        ],
+        "helices": [
+          "RSDALTR",
+          "RSDNLTR",
+          "QRGHLTR"
+        ],
+        "b2h3At": 5.0
+      },
+      "lesionFrequencies": [
+        0.001230118,
+        0.01269
+      ],
+      "founderRate": null
+    },
+    {
+      "id": "ZFNv1_38612",
+      "gene": "spon1b",
+      "targetTop": "cCTCCGCCCCttatcaCAGGTGGAGg",
+      "left": {
+        "sourceName": "spon1b-3p",
+        "sourceZfnId": "ZFNv1_36798",
+        "recognition": "GGGGCGGAG",
+        "triplets": [
+          "GAG",
+          "GCG",
+          "GGG"
+        ],
+        "helices": [
+          "RSDNLTR",
+          "RSDDLTR",
+          "RSDHLTR"
+        ],
+        "b2h3At": 10.0
+      },
+      "right": {
+        "sourceName": "spon1b-5p",
+        "sourceZfnId": "ZFNv1_36798",
+        "recognition": "CAGGTGGAG",
+        "triplets": [
+          "GAG",
+          "GTG",
+          "CAG"
+        ],
+        "helices": [
+          "RSDNLTR",
+          "RSDALTR",
+          "RSDNLSE"
+        ],
+        "b2h3At": 10.0
+      },
+      "lesionFrequencies": [
+        0.0006296,
+        null
+      ],
+      "founderRate": null
+    },
+    {
+      "id": "ZFNv1_5068",
+      "gene": "tie1",
+      "targetTop": "tTCCCACCACtcagcAAGTGGGACg",
+      "left": {
+        "sourceName": "tie1-5p",
+        "sourceZfnId": "ZFNv1_5068",
+        "recognition": "GTGGTGGGA",
+        "triplets": [
+          "GGA",
+          "GTG",
+          "GTG"
+        ],
+        "helices": [
+          "QKGHLTR",
+          "RSDALTR",
+          "RSDALTR"
+        ],
+        "b2h3At": 1.0
+      },
+      "right": {
+        "sourceName": "tie1-3p",
+        "sourceZfnId": "ZFNv1_5068",
+        "recognition": "AAGTGGGAC",
+        "triplets": [
+          "GAC",
+          "TGG",
+          "AAG"
+        ],
+        "helices": [
+          "LKGNLTR",
+          "RSDHLTT",
+          "RSDNLTQ"
+        ],
+        "b2h3At": 10.0
+      },
+      "lesionFrequencies": [
+        9.69e-05,
+        null
+      ],
+      "founderRate": null
+    },
+    {
+      "id": "ZFNv1_110943",
+      "gene": "trbp",
+      "targetTop": "gACCCTCGGCcttcagCAGGTCGTAc",
+      "left": {
+        "sourceName": "trbp-3p",
+        "sourceZfnId": "ZFNv1_110943",
+        "recognition": "GCCGAGGGT",
+        "triplets": [
+          "GGT",
+          "GAG",
+          "GCC"
+        ],
+        "helices": [
+          "LAHHLTR",
+          "RSDNLTR",
+          "DRSDLTR"
+        ],
+        "b2h3At": 5.0
+      },
+      "right": {
+        "sourceName": "trbp-5p",
+        "sourceZfnId": "ZFNv1_110943",
+        "recognition": "CAGGTCGTA",
+        "triplets": [
+          "GTA",
+          "GTC",
+          "CAG"
+        ],
+        "helices": [
+          "QSGALTR",
+          "DRSALAR",
+          "RSDNLSE"
+        ],
+        "b2h3At": 5.0
+      },
+      "lesionFrequencies": [
+        0.000185633,
+        null
+      ],
+      "founderRate": null
+    },
+    {
+      "id": "ZFNv1_5641",
+      "gene": "yrk",
+      "targetTop": "cACACACCTGtgagtcCAGGAGGACg",
+      "left": {
+        "sourceName": "yrk-3p",
+        "sourceZfnId": "ZFNv1_5641",
+        "recognition": "CAGGTGTGT",
+        "triplets": [
+          "TGT",
+          "GTG",
+          "CAG"
+        ],
+        "helices": [
+          "LRHHLVG",
+          "RSDALTR",
+          "RSDNLSE"
+        ],
+        "b2h3At": 10.0
+      },
+      "right": {
+        "sourceName": "yrk-5p",
+        "sourceZfnId": "ZFNv1_5641",
+        "recognition": "CAGGAGGAC",
+        "triplets": [
+          "GAC",
+          "GAG",
+          "CAG"
+        ],
+        "helices": [
+          "LKGNLTR",
+          "RSDNLTR",
+          "RSDNLSE"
+        ],
+        "b2h3At": 5.0
+      },
+      "lesionFrequencies": [
+        0.000819705,
+        0.00259
+      ],
+      "founderRate": null
+    }
+  ]
+}
