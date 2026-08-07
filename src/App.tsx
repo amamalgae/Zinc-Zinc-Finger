@@ -20,10 +20,35 @@ import type {
   GenomeSearchResult,
   OffTargetCandidateInput,
 } from "./off-target-engine.ts";
+import { selectDiversePortfolio } from "./portfolio.ts";
+import {
+  buildZfnPair,
+  constructsToFasta,
+  constructsToGenBank,
+  type CodonPreset,
+} from "./construct-output.ts";
+import {
+  generateContextCandidates,
+  parseFauserContextWorkbook,
+  type FauserContextMap,
+} from "./fauser-context.ts";
+import {
+  cleavageAssayToCsv,
+  designCleavageAssay,
+} from "./assay-design.ts";
 
 const EXAMPLE_LEFT_RECOGNITION = "GACGAAGATGCAGCCGGT";
 const EXAMPLE_RIGHT_RECOGNITION = "GGAGGCGGTGACGAACTA";
 const EXAMPLE_SEQUENCE = `CAGTCA${reverseComplement(EXAMPLE_LEFT_RECOGNITION)}GATTAC${EXAMPLE_RIGHT_RECOGNITION}TGACGT`;
+
+function downloadText(contents: string, filename: string, type = "text/plain;charset=utf-8") {
+  const url = URL.createObjectURL(new Blob([contents], { type }));
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
 
 function downloadCandidates(candidates: Candidate[]) {
   const url = URL.createObjectURL(
@@ -186,6 +211,10 @@ export default function Home() {
   const [persikovModel, setPersikovModel] = useState<PersikovModel | null>(null);
   const [persikovFileName, setPersikovFileName] = useState<string | null>(null);
   const [persikovError, setPersikovError] = useState<string | null>(null);
+  const [fauserContextMap, setFauserContextMap] = useState<FauserContextMap | null>(null);
+  const [fauserFileName, setFauserFileName] = useState<string | null>(null);
+  const [fauserError, setFauserError] = useState<string | null>(null);
+  const [codonPreset, setCodonPreset] = useState<CodonPreset>("auxenochlorella");
   const workerRef = useRef<Worker | null>(null);
   const dna = useMemo(() => cleanDNA(rawSequence), [rawSequence]);
   const invalidCount = rawSequence.replace(/[ACGTacgt\s\d>_-]/g, "").length;
@@ -232,8 +261,52 @@ export default function Home() {
       );
     });
   }, [candidates, genomeResult, specificityById]);
+  const portfolio = useMemo(
+    () => selectDiversePortfolio(rankedCandidates, 3),
+    [rankedCandidates],
+  );
   const selected =
     rankedCandidates.find((candidate) => candidate.id === selectedId) ?? rankedCandidates[0];
+  const selectedConstructs = useMemo(
+    () => selected ? buildZfnPair(selected, codonPreset) : [],
+    [selected, codonPreset],
+  );
+  const cleavageAssay = useMemo(
+    () => selected
+      ? designCleavageAssay(
+          dna,
+          selected.cut,
+          `${selected.leftTop}${selected.spacer}${selected.rightTop}`,
+        )
+      : null,
+    [dna, selected],
+  );
+  const portfolioConstructs = useMemo(
+    () => portfolio.flatMap(({ candidate }) => buildZfnPair(candidate, codonPreset)),
+    [portfolio, codonPreset],
+  );
+  const contextCandidates = useMemo(
+    () => fauserContextMap && leftSkipAfterFinger === null && rightSkipAfterFinger === null
+      ? generateContextCandidates(
+          dna,
+          desiredCut,
+          leftFingerCount,
+          rightFingerCount,
+          maxDistance,
+          fauserContextMap,
+        )
+      : [],
+    [
+      dna,
+      desiredCut,
+      leftFingerCount,
+      rightFingerCount,
+      maxDistance,
+      fauserContextMap,
+      leftSkipAfterFinger,
+      rightSkipAfterFinger,
+    ],
+  );
   const selectedSpecificity = selected ? specificityById.get(selected.id) : undefined;
   const footprint =
     leftFingerCount * 3 +
@@ -518,6 +591,37 @@ export default function Home() {
             {persikovError && <p className="genome-error" role="alert">{persikovError}</p>}
           </div>
 
+          <div className="geometry-grid experimental-loader">
+            <label className="file-picker">
+              <input
+                type="file"
+                accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                onChange={async (event) => {
+                  const file = event.target.files?.[0];
+                  if (!file) return;
+                  try {
+                    const contextMap = parseFauserContextWorkbook(await file.arrayBuffer());
+                    setFauserContextMap(contextMap);
+                    setFauserFileName(file.name);
+                    setFauserError(null);
+                  } catch (error) {
+                    setFauserContextMap(null);
+                    setFauserFileName(null);
+                    setFauserError(error instanceof Error ? error.message : "xlsxを解析できません。");
+                  }
+                }}
+              />
+              <span>{fauserFileName ?? "実験: Fauser Data 33 (.xlsx)"}</span>
+              <small>{fauserContextMap ? `${Object.keys(fauserContextMap).length} context読込済み` : "4塩基context-aware候補を並列生成"}</small>
+            </label>
+            <p>
+              Fauser 2024 Supplementary Data 33の「Triplet + flanking base」を端末内で読み、
+              Barbas候補とは別枠で連続3–6ZF部位を探索します。
+              <a href="https://doi.org/10.1038/s41467-024-45100-w" target="_blank" rel="noreferrer">原著と補足資料</a>
+            </p>
+            {fauserError && <p className="genome-error" role="alert">{fauserError}</p>}
+          </div>
+
           <div className="footprint">
             <span>想定フットプリント</span>
             <strong>約 {footprint} bp</strong>
@@ -546,6 +650,33 @@ export default function Home() {
             <span>候補を表示</span>
             <small>{genomeResult ? "B-score・完全一致・最大類似scoreを優先" : persikovModel ? "B-score同点時にexpanded SVMを使用" : "spacer 5 / 6 / 7 bpを同時評価"}</small>
           </div>
+
+          {portfolio.length > 0 && (
+            <div className="portfolio-block">
+              <div>
+                <strong>試験推奨セット</strong>
+                <small>B-score通過・TSOなしを優先し、切断位置とmodule重複を分散</small>
+              </div>
+              <div className="portfolio-items">
+                {portfolio.map((choice, index) => (
+                  <button
+                    type="button"
+                    key={choice.candidate.id}
+                    className={selected?.id === choice.candidate.id ? "selected" : ""}
+                    onClick={() => setSelectedId(choice.candidate.id)}
+                  >
+                    <span>P{index + 1}</span>
+                    <b>元順位 {choice.sourceRank}</b>
+                    <small>
+                      {choice.minimumCutSeparation === null
+                        ? "基準候補"
+                        : `cut差 ≥${formatCut(choice.minimumCutSeparation)} bp · module重複 ≤${Math.round((choice.maximumModuleOverlap ?? 0) * 100)}%`}
+                    </small>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {rankedCandidates.length ? (
             <div className="candidate-list" role="listbox" aria-label="ZFN candidates">
@@ -584,6 +715,43 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      {fauserContextMap && (
+        <section className="context-panel">
+          <div className="detail-header">
+            <div>
+              <span className="step">EXPERIMENTAL</span>
+              <p>Four-base context comparison</p>
+              <h2>Fauser context候補 {contextCandidates.length}組</h2>
+            </div>
+            <span className="experimental-badge">主順位・CDS出力から分離</span>
+          </div>
+          {(leftSkipAfterFinger !== null || rightSkipAfterFinger !== null) ? (
+            <p className="genome-warning">4塩基表は1c base-skippingを定義しないため、両側を「連続」にすると候補を生成します。</p>
+          ) : contextCandidates.length ? (
+            <div className="context-candidates">
+              {contextCandidates.slice(0, 3).map((candidate, index) => {
+                const overlapsBarbas = rankedCandidates.some((item) => item.start === candidate.start && item.spacerLength === candidate.spacerLength);
+                return <article key={candidate.id}>
+                  <div><span>C{index + 1}</span><strong>cut {formatCut(candidate.cut)} · spacer {candidate.spacerLength} bp</strong></div>
+                  <code>{candidate.leftTop}<i>{candidate.spacer}</i>{candidate.rightTop}</code>
+                  <dl>
+                    <div><dt>Left helices N→C</dt><dd>{candidate.leftHelices.join(" · ")}</dd></div>
+                    <div><dt>Right helices N→C</dt><dd>{candidate.rightHelices.join(" · ")}</dd></div>
+                  </dl>
+                  <small>{overlapsBarbas ? "同じ切断配置がBarbas archiveにも存在" : "Barbas上位30組にない追加配置"} · helix重複 {candidate.repeatedHelices}</small>
+                </article>;
+              })}
+            </div>
+          ) : (
+            <p className="genome-warning">読込んだ182 contextだけで両側の全fingerを満たす候補はありません。探索距離またはfinger数を変更してください。</p>
+          )}
+          <p className="context-caution">
+            この枠はZFDesign由来の4塩基context表による配列適合探索で、活性score・B-score・直接的ZFN検証を持ちません。
+            framework互換性を未検証のため、完全ORFには変換しません。既定のBarbas/eMA順位との比較用です。
+          </p>
+        </section>
+      )}
 
       <section className="genome-panel">
         <div className="detail-header genome-header">
@@ -785,6 +953,94 @@ export default function Home() {
             </div>
           </div>
 
+          <section className="construct-output">
+            <div className="construct-heading">
+              <div>
+                <span>Complete coding constructs</span>
+                <h3>SV40 NLS–Sp1C ZFA–linker–FokI ELD/KKR</h3>
+              </div>
+              <label>
+                <span>Codon preset</span>
+                <select value={codonPreset} onChange={(event) => setCodonPreset(event.target.value as CodonPreset)}>
+                  <option value="auxenochlorella">Auxenochlorella protothecoides</option>
+                  <option value="human">Homo sapiens</option>
+                </select>
+              </label>
+            </div>
+            <div className="construct-grid">
+              {selectedConstructs.map((construct) => (
+                <div key={construct.name}>
+                  <span>{construct.arm === "left" ? "Left" : "Right"} · FokI-{construct.fokIVariant}</span>
+                  <strong>{construct.protein.length} aa · {construct.cds.length} bp</strong>
+                  <small>CDS GC {construct.gcPercent.toFixed(1)}%</small>
+                  <code>{construct.protein}</code>
+                </div>
+              ))}
+            </div>
+            <div className="construct-actions">
+              <button type="button" onClick={() => downloadText(
+                constructsToFasta(selectedConstructs, "protein"),
+                `zfn-${selected.id}-protein.fasta`,
+              )}>Protein FASTA</button>
+              <button type="button" onClick={() => downloadText(
+                constructsToFasta(selectedConstructs, "cds"),
+                `zfn-${selected.id}-${codonPreset}-cds.fasta`,
+              )}>CDS FASTA</button>
+              <button type="button" onClick={() => downloadText(
+                constructsToGenBank(selectedConstructs, codonPreset),
+                `zfn-${selected.id}-${codonPreset}.gb`,
+              )}>GenBank</button>
+              <button type="button" disabled={!portfolioConstructs.length} onClick={() => downloadText(
+                constructsToFasta(portfolioConstructs, "cds"),
+                `zfn-portfolio-3-${codonPreset}-cds.fasta`,
+              )}>推奨3組 CDS</button>
+            </div>
+            <p className="construct-caution">
+              左をELD、右をKKRとしてFokI P14870 aa 384–579へQ486E/N496D/I499LまたはE490K/H537R/I538Kを導入しています。
+              出力は合成可能なORFですが、promoter・terminator・ベクターbackboneは含みません。
+              Auxenochlorella presetは公開1056 codon由来の小標本なので、合成前に使用株・核発現系で再確認してください。
+            </p>
+          </section>
+
+          {cleavageAssay && (
+            <section className="assay-output">
+              <div className="construct-heading">
+                <div>
+                  <span>Cleavage validation output</span>
+                  <h3>PCR amplicon + SSA target duplex</h3>
+                </div>
+                <button type="button" onClick={() => downloadText(
+                  cleavageAssayToCsv(cleavageAssay),
+                  `zfn-${selected.id}-cleavage-assay.csv`,
+                  "text/csv;charset=utf-8",
+                )}>Assay CSV</button>
+              </div>
+              {cleavageAssay.amplicon ? (
+                <div className="primer-grid">
+                  {[cleavageAssay.amplicon.forward, cleavageAssay.amplicon.reverse].map((primer) => (
+                    <div key={primer.name}>
+                      <span>{primer.name}</span>
+                      <code>{primer.sequence}</code>
+                      <small>Tm {primer.tmCelsius.toFixed(1)} °C · GC {primer.gcPercent.toFixed(1)}% · {primer.sequence.length} nt</small>
+                    </div>
+                  ))}
+                  <p>Amplicon {cleavageAssay.amplicon.length} bp · 入力配列内 {cleavageAssay.amplicon.start + 1}–{cleavageAssay.amplicon.end}</p>
+                </div>
+              ) : (
+                <p className="genome-warning">PCR primerを設計するには、切断点の両側を少なくとも約250 bp含む標的windowを入力してください。</p>
+              )}
+              <div className="ssa-duplex">
+                <span>SSA reporter insert（overhangなし、各鎖5′→3′）</span>
+                <code>Top&nbsp;&nbsp;&nbsp; {cleavageAssay.ssaTargetTop}</code>
+                <code>Bottom {cleavageAssay.ssaTargetBottom}</code>
+              </div>
+              <p className="construct-caution">
+                Primer Tmは50 mM一価塩相当の簡易式による一次案です。発注前にPrimer3、参照ゲノムBLAST、dimer/hairpin評価で確認してください。
+                SSA insertにはクローニングoverhangを付けていません。
+              </p>
+            </section>
+          )}
+
           <div className="score-explanation">
             <div>
               <span>Combined B-score</span>
@@ -810,7 +1066,7 @@ export default function Home() {
               B-score ≥15の構成はBhakta et al.の268構成中52%がSSA活性ありでしたが、これは本候補の成功確率ではありません。
               TSO不一致は原著どおり警告であり、候補を自動除外しません。expanded SVM値は結合確率ではなくPWM整合度です。
               Zhu 2011の29ペアは別module archiveで現行配列と0/29一致のため、順位学習には混ぜていません。
-              表示配列はSp1C型ZFAまでで、FokI、NLS、発現カセット、
+              完全ORF出力にはFokIとNLSを含みますが、promoter・terminator・ベクターbackboneと
               クロマチン状態の評価は含みません。FASTA検索後はB-score閾値内でゲノム特異性を優先して並べ替えます。
             </p>
           </div>
@@ -851,6 +1107,8 @@ export default function Home() {
           <a href="https://doi.org/10.1242/dev.066779" target="_blank" rel="noreferrer">Zhu 2011</a>
           <a href="https://doi.org/10.1093/nar/gkt1326" target="_blank" rel="noreferrer">Fine 2014</a>
           <a href="https://doi.org/10.1093/nar/gkt890" target="_blank" rel="noreferrer">Persikov 2014</a>
+          <a href="https://doi.org/10.1038/nmeth.1539" target="_blank" rel="noreferrer">Doyon 2011</a>
+          <a href="https://doi.org/10.1038/s41467-024-45100-w" target="_blank" rel="noreferrer">Fauser 2024</a>
         </div>
       </footer>
     </main>

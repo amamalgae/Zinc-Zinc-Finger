@@ -61,3 +61,29 @@ ZFDesign is cited for comparison only. Its article states that both selection da
 - Ichikawa DM et al. (2023), *A universal deep-learning model for zinc finger design enables transcription factor reprogramming*, DOI: 10.1038/s41587-022-01624-4.
 
 No ZFDesign code or restricted training data are included here.
+
+## FokI ELD/KKR coding constructs
+
+`src/construct-output.ts` uses the FokI cleavage-domain amino-acid sequence from UniProt P14870, residues 384–579, and applies the published ELD (Q486E, N496D, I499L) or KKR (E490K, H537R, I538K) substitutions described in:
+
+- Doyon Y et al. (2011), *Enhancing zinc-finger-nuclease activity with improved obligate heterodimeric architectures*, DOI: 10.1038/nmeth.1539.
+- UniProt P14870, Type II restriction enzyme FokI from *Flavobacterium okeanokoites*.
+- ENA/GenBank J04623, the original FokI coding sequence.
+
+The generated DNA is a computed synthetic coding sequence, not a plasmid or expression cassette copied from a repository. No Addgene plasmid sequence or biological material is included. Sequence output does not grant patent, material-transfer, biosafety, or freedom-to-operate rights.
+
+## Fauser 2024 four-base context data
+
+`src/fauser-context.ts` is an independently written local parser and design comparator for the helix / “Triplet + flanking base” table in Supplementary Data 33 of:
+
+- Fauser F et al. (2024), *A versatile platform for locus-scale genome rewriting and verification*, DOI: 10.1038/s41467-024-45100-w. The article and supplementary material are distributed under CC BY 4.0.
+
+The 182-row workbook is not bundled. Users retrieve it from the publisher and select it locally; the browser does not upload or retain it. Context-derived candidates are kept out of the primary Barbas/B-score ranking and complete-ORF export because framework compatibility and direct ZFN activity have not been established here.
+
+## Codon-use presets
+
+The optional *Auxenochlorella protothecoides* preset is derived from the Kazusa Codon Usage Database species entry 3075. That entry contains only 5 CDS and 1,056 codons and is therefore exposed with an explicit small-sample warning. The human preset uses standard high-frequency human codon choices. Neither preset is a validated expression model for a particular strain, compartment, vector, or culture condition.
+
+## fflate
+
+The application uses `fflate` 0.8.2 to decompress locally selected `.xlsx` files in the browser. fflate is copyright 2020–2023 Arjun Barrett and is distributed under the MIT License. Its package license text is available in the installed npm distribution and at <https://github.com/101arrowz/fflate>.
