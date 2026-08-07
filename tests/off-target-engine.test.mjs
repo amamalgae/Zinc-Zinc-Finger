@@ -63,6 +63,25 @@ test("seed-and-verify finds intended, mismatched, and homodimeric sites", () => 
   assert.equal(summary.topHits.some(({ pairType }) => pairType === "LL"), true);
 });
 
+test("a close match on either half anchors a pair whose other half has more than three mismatches", () => {
+  const farRight = `CCCC${RIGHT.slice(4)}`;
+  const farLeftRecognition = `TTTT${LEFT.slice(4)}`;
+  const leftAnchored = `${reverseComplement(LEFT)}${SPACER}${farRight}`;
+  const rightAnchored = `${reverseComplement(farLeftRecognition)}${SPACER}${RIGHT}`;
+  const separator = "N".repeat(20);
+  const result = searchGenomeOffTargets(
+    [{ name: "asymmetric", sequence: `${leftAnchored}${separator}${rightAnchored}` }],
+    [CANDIDATE],
+    "",
+  );
+  const lrHits = result.summaries[0].topHits.filter(({ pairType }) => pairType === "LR");
+
+  assert.equal(lrHits.some(({ leftMismatches, rightMismatches }) =>
+    leftMismatches === 0 && rightMismatches === 4), true);
+  assert.equal(lrHits.some(({ leftMismatches, rightMismatches }) =>
+    leftMismatches === 4 && rightMismatches === 0), true);
+});
+
 test("a uniquely located reverse-complement target is recognized as the intended RL site", () => {
   const result = searchGenomeOffTargets(
     [{ name: "chrR", sequence: `NNNN${reverseComplement(WINDOW)}NNNN` }],

@@ -1,0 +1,75 @@
+{
+  "source": {
+    "citation": "Sander et al. (2013), Nucleic Acids Research 41:e181",
+    "doi": "10.1093/nar/gkt716",
+    "url": "https://academic.oup.com/nar/article/41/19/e181/1207245",
+    "extraction": "Rows whose validating study is Sander in main-text Tables 3 and 4; sites also labelled Pattanayak/Sander were excluded to keep the prospective Sander-only set.",
+    "notes": "CCR5 contains 26 sequence rows but 25 loci because two overlapping SKAP2 target windows represent the same locus. Indel percentages are the Sander measurements printed in the main tables."
+  },
+  "nucleases": {
+    "CCR5": {
+      "onTarget": "GTCATCCTCATCCTGATAAACTGCAAAAG",
+      "halfSiteLength": 12,
+      "sites": [
+        { "locus": "CCR5-01", "sequence": "TGCTTCCTCACCCCAGGTAAACTGGAACAG", "classifierScore": 0.133, "indelPercent": 0.25 },
+        { "locus": "CCR5-02", "sequence": "CTCTCCCTCATCTCAGAGCAACTGTAAAAG", "classifierScore": 0.204, "indelPercent": 0.39 },
+        { "locus": "CCR5-03", "sequence": "GCCAGCCTCAGCTTCTTCAACTGGAAAAG", "classifierScore": 0.209, "indelPercent": 0.07 },
+        { "locus": "MAP3K7", "sequence": "CTCTTACTCTACATGTTAAACTGAAAAAG", "classifierScore": 0.215, "indelPercent": 0.06 },
+        { "locus": "DNER", "sequence": "CTGGGGCTCAGCACACTCAACTGTAAAAG", "classifierScore": 0.217, "indelPercent": 0.11 },
+        { "locus": "GRP", "sequence": "GCAGTCCTTATCCCAAGTGAACTGAAAAAG", "classifierScore": 0.219, "indelPercent": 0.05 },
+        { "locus": "CCR5-07", "sequence": "CTCTTCCTCAGCATGATTAACTGTAATAG", "classifierScore": 0.228, "indelPercent": 2.40 },
+        { "locus": "CCR5-08", "sequence": "GTAGTCCTCCTCCTGCTAAACTGCAATGG", "classifierScore": 0.270, "indelPercent": 2.13 },
+        { "locus": "SKAP2", "sequence": "GACTCCCTCTCCTGGATTAACTGTAAAAG", "classifierScore": 0.294, "indelPercent": 0.07 },
+        { "locus": "CAMTA1", "sequence": "GGTGCCCTCACCTTTTTAAACTGTTAAAG", "classifierScore": 0.306, "indelPercent": 0.60 },
+        { "locus": "EREG", "sequence": "AAAGTACTCATCCTTTAAGACTGAAAAAG", "classifierScore": 0.322, "indelPercent": 2.06 },
+        { "locus": "CCR5-12", "sequence": "ACATTGCTCATCACAAAGTAACTGTAAAAG", "classifierScore": 0.342, "indelPercent": 0.81 },
+        { "locus": "CCR5-13", "sequence": "TGGTTGCTCATCTCCAAGAAACTGGAAAGG", "classifierScore": 0.357, "indelPercent": 0.80 },
+        { "locus": "VANGL1", "sequence": "CCCCCCCTCATCCCAATTAACTGTAAAAT", "classifierScore": 0.364, "indelPercent": 0.11 },
+        { "locus": "CCR5-15", "sequence": "ACACACCTCTTCCTCATAAACTGGAAGAG", "classifierScore": 0.400, "indelPercent": 4.59 },
+        { "locus": "CCR5-16", "sequence": "CCCATGCTCTGCCCAGTCAACTGGGAAAG", "classifierScore": 0.400, "indelPercent": 0.03 },
+        { "locus": "DTD1", "sequence": "TGTGTCCTCTGCATCAGTAAACTGAAACAG", "classifierScore": 0.401, "indelPercent": 2.50 },
+        { "locus": "CCR5-18", "sequence": "GTGTTGCTTCTCCCCATCAACAGGAAAAG", "classifierScore": 0.401, "indelPercent": 0.22 },
+        { "locus": "FBLIM1", "sequence": "GGAGAATGCAGCTTCATAAACTGCAAAAG", "classifierScore": 0.401, "indelPercent": 0.03 },
+        { "locus": "IQSEC1", "sequence": "GTCCTCCTCATTCACACAAACTGGAAGGG", "classifierScore": 0.408, "indelPercent": 0.87 },
+        { "locus": "SKAP2", "sequence": "GGACTCCCTCTCCTGGATTAACTGTAAAAG", "classifierScore": 0.428, "indelPercent": 0.05 },
+        { "locus": "CCR5-22", "sequence": "TTGGTCCTCATTATAAATAAACTGAAAGGG", "classifierScore": 0.500, "indelPercent": 0.02 },
+        { "locus": "CCR5-23", "sequence": "ATGGACCTCAGCAAAGTAAACTGGAAAAC", "classifierScore": 0.501, "indelPercent": 0.02 },
+        { "locus": "RAB3IP", "sequence": "TATTTCCCCATCTCAATAAACTGCAATAG", "classifierScore": 0.505, "indelPercent": 0.07 },
+        { "locus": "DOPEY1", "sequence": "GTTCCCCTCAGCAATGTAAACTGGGAAAC", "classifierScore": 0.508, "indelPercent": 0.27 },
+        { "locus": "MYO7B", "sequence": "GTCATCCTCATCGCCATCAACCGACATGG", "classifierScore": 0.701, "indelPercent": 0.02 }
+      ]
+    },
+    "VEGFA": {
+      "onTarget": "AGCAGCGTCTTCGAGAGTGAGGA",
+      "halfSiteLength": 9,
+      "sites": [
+        { "locus": "VEGFA-01", "sequence": "AGCAGCGTCCTTCCTCAGTGAGAC", "classifierScore": 0.132, "indelPercent": 0.05 },
+        { "locus": "VEGFA-02", "sequence": "AGCAACTTCATCTTGAGTGAGGG", "classifierScore": 0.145, "indelPercent": 0.03 },
+        { "locus": "AK8", "sequence": "AGCAGCGTCGTGTGGTGTGAGGT", "classifierScore": 0.155, "indelPercent": 0.40 },
+        { "locus": "CTXN3", "sequence": "AGCATCGTCTTTCTGTGTGAGGC", "classifierScore": 0.161, "indelPercent": 0.27 },
+        { "locus": "VEGFA-05", "sequence": "GGCAACGTCAACTCAGAGTGAGAA", "classifierScore": 0.202, "indelPercent": 0.04 },
+        { "locus": "VEGFA-06", "sequence": "AGCAGGGTCACACTAAAGTGAGGC", "classifierScore": 0.209, "indelPercent": 0.34 },
+        { "locus": "VEGFA-07", "sequence": "AGCAGCGGCCCGCAGAGGGAGGC", "classifierScore": 0.213, "indelPercent": 2.23 },
+        { "locus": "BC04086", "sequence": "AGCAGTGTCAGCCATGAGGGAGGG", "classifierScore": 0.216, "indelPercent": 1.81 },
+        { "locus": "ERMP1", "sequence": "AGCAAAGTCCTTGGTAAGTGAGGG", "classifierScore": 0.225, "indelPercent": 0.79 },
+        { "locus": "EGLN3", "sequence": "AGCACGGTCAGTCTTCAGTGAGGG", "classifierScore": 0.267, "indelPercent": 0.96 },
+        { "locus": "KIF3C", "sequence": "AGCAGCGGCAGCGAGAGTGATGT", "classifierScore": 0.285, "indelPercent": 0.06 },
+        { "locus": "DERA", "sequence": "AGCACAGTCAATCTTCAGTGAGGG", "classifierScore": 0.301, "indelPercent": 0.05 },
+        { "locus": "CDKL3", "sequence": "AGCTCCGGCAGACATGAGTGAGGG", "classifierScore": 0.302, "indelPercent": 0.07 },
+        { "locus": "CELF4", "sequence": "GGCAGAGTCAGGGCTGAGTGAGGC", "classifierScore": 0.305, "indelPercent": 0.03 },
+        { "locus": "SYT9", "sequence": "AGCAGCGTGCAGTGACAGTGAGGC", "classifierScore": 0.400, "indelPercent": 0.04 },
+        { "locus": "EVL", "sequence": "AGCAAGGTCCATCCAGAGAGAGGC", "classifierScore": 0.402, "indelPercent": 0.22 },
+        { "locus": "SLC22A23", "sequence": "AGCAGAGTCCAGTGGGTGTGAGGC", "classifierScore": 0.432, "indelPercent": 0.05 },
+        { "locus": "CHST11", "sequence": "AGCAAGGTCCACCAGGTGGGAGGG", "classifierScore": 0.500, "indelPercent": 0.01 },
+        { "locus": "CNBD1", "sequence": "AGTAGTGTCTCAGAAGAGGGAGGG", "classifierScore": 0.501, "indelPercent": 0.61 },
+        { "locus": "VEGFA-20", "sequence": "AGTAAGGTCACTCATAAGTAAGGT", "classifierScore": 0.600, "indelPercent": 5.10 },
+        { "locus": "VEGFA-21", "sequence": "TGCAGCGGCGGCGGGAGGGAGGG", "classifierScore": 0.600, "indelPercent": 0.01 },
+        { "locus": "BEND4", "sequence": "TGCACCGTCAAGAGTCAGTGAGAA", "classifierScore": 0.605, "indelPercent": 0.04 },
+        { "locus": "ANGPTL7", "sequence": "AGCCAGGTCACAGCTGAGAGAGGC", "classifierScore": 0.613, "indelPercent": 0.02 },
+        { "locus": "CHAF1A", "sequence": "AGCAGCGGCCGCCTGAGGGGAGC", "classifierScore": 0.701, "indelPercent": 3.11 },
+        { "locus": "FBLN2", "sequence": "AGCAACAGCCCTGGGGGGTGAGGT", "classifierScore": 0.704, "indelPercent": 0.01 },
+        { "locus": "PRDZ", "sequence": "AGCAACTGCGAGCTGGGTGAGGC", "classifierScore": 0.705, "indelPercent": 0.08 }
+      ]
+    }
+  }
+}
