@@ -1,0 +1,101 @@
+{
+  "source": {
+    "citation": "Fine et al. (2014), Nucleic Acids Research 42:e42",
+    "doi": "10.1093/nar/gkt1326",
+    "supplement": "nar-02842-met-h-2013-File002.pdf",
+    "supplementPdfSha256": "dbf9d5e05fa081e9754ef96df34be1fd30bef1844e3707371b86af730675e1b5",
+    "tables": ["Supplementary Table 8", "Supplementary Table 9"],
+    "notes": "Rows were transcribed from the full supplementary PDF. Positive means the active-ZFN sample was significantly enriched over empty vector at one-sided p < 0.05. On-target HBB rows are metadata, not classifier-evaluation rows."
+  },
+  "nucleases": {
+    "HBB_3F": {
+      "fingerCount": 3,
+      "plusTargetPhysical": "CCTTGCCCC",
+      "minusTargetRecognition": "GCAGTAACG",
+      "onTarget": {
+        "gene": "HBB",
+        "matchType": "L-5-R",
+        "coordinate": "chr11:5248197",
+        "controlIndels": 0,
+        "controlTotal": 1394,
+        "activeIndels": 27,
+        "activeTotal": 1443,
+        "indelPercent": 1.9,
+        "pValue": 8.4e-8
+      },
+      "predictedSites": [
+        {"gene":"CANX","matchType":"R-5-L","coordinate":"chr5:179126029","plusHalf":"CTTTACTGC","minusHalf":"GGGGCAAGG","mismatches":[1,1,0],"ranks":{"homology":2,"conservedG":2,"prognosV2":5},"control":[0,56],"active":[0,42],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"ATG7","matchType":"L-6-L","coordinate":"chr3:11495737","plusHalf":"CCTTGGCCC","minusHalf":"GGGGCAAGG","mismatches":[1,1,0],"ranks":{"homology":3,"conservedG":7,"prognosV2":11},"control":[0,1927],"active":[7,1344],"indelPercent":0.52,"pValue":0.004,"status":"positive"},
+        {"gene":"TMEM132C","matchType":"R-6-L","coordinate":"chr12:129185625","plusHalf":"AGTTACTGC","minusHalf":"GGGGCAAGG","mismatches":[1,1,0],"ranks":{"homology":4,"conservedG":35,"prognosV2":9},"control":[0,1961],"active":[3,1927],"indelPercent":0.16,"pValue":0.042,"status":"positive"},
+        {"gene":"PARD3B","matchType":"L-5-L","coordinate":"chr2:206432669","plusHalf":"CCTTGCCCC","minusHalf":"GGGGCAAGC","mismatches":[1,0,1],"ranks":{"homology":5,"conservedG":8,"prognosV2":7},"control":[0,884],"active":[15,1192],"indelPercent":1.3,"pValue":0.00005,"status":"positive"},
+        {"gene":"GLIS1","matchType":"L-6-L","coordinate":"chr1:53983473","plusHalf":"CCTTGCCCC","minusHalf":"GGGGCCAGG","mismatches":[1,0,1],"ranks":{"homology":6,"conservedG":3,"prognosV2":2},"control":[0,221],"active":[0,386],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"GOLGA5","matchType":"R-6-R","coordinate":"chr14:93279378","plusHalf":"CGTTACTGC","minusHalf":"GCAGTAAAG","mismatches":[1,0,1],"ranks":{"homology":7,"conservedG":4,"prognosV2":6},"control":[0,1188],"active":[0,1054],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"BST2","matchType":"R-6-L","coordinate":"chr19:17501464","plusHalf":"CGTTACTGC","minusHalf":"GGGGGAAGG","mismatches":[1,0,1],"ranks":{"homology":8,"conservedG":5,"prognosV2":3},"control":[0,333],"active":[0,504],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"GLIS2","matchType":"L-6-L","coordinate":"chr16:4372996","plusHalf":"CCTGGCCCC","minusHalf":"GGGGCAAGG","mismatches":[1,1,0],"ranks":{"homology":9,"conservedG":6,"prognosV2":4},"control":[0,1263],"active":[10,1648],"indelPercent":0.61,"pValue":0.00077,"status":"positive"},
+        {"gene":"MIR4417","matchType":"L-6-L","coordinate":"chr1:5446429","plusHalf":"CATTGCCCC","minusHalf":"GGGGCAAGG","mismatches":[1,1,0],"ranks":{"homology":10,"conservedG":9,"prognosV2":8},"control":[0,999],"active":[1,1629],"indelPercent":0.061,"pValue":0.16,"status":"negative"},
+        {"gene":"FLJ36777","matchType":"L-6-L","coordinate":"chr4:7140214","plusHalf":"CCTTGCACC","minusHalf":"GGGGCAAGG","mismatches":[1,1,0],"ranks":{"homology":11,"conservedG":10,"prognosV2":10},"control":[0,1103],"active":[0,567],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"RTN4RL1","matchType":"L-6-L","coordinate":"chr17:1838800","plusHalf":"CCTTGCCCC","minusHalf":"TTGGCAAGG","mismatches":[2,0,2],"ranks":{"homology":12,"conservedG":153,"prognosV2":166},"control":[0,363],"active":[0,444],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"DEFB110","matchType":"R-5-R","coordinate":"chr6:49986688","plusHalf":"CGTTACTGC","minusHalf":"GCAGCAATG","mismatches":[2,0,2],"ranks":{"homology":13,"conservedG":11,"prognosV2":63},"control":[0,788],"active":[0,1134],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"SH2D3A","matchType":"R-6-L","coordinate":"chr19:6755279","plusHalf":"GGTCACTGC","minusHalf":"GGGGCAAGG","mismatches":[2,2,0],"ranks":{"homology":14,"conservedG":103,"prognosV2":108},"control":[0,670],"active":[0,335],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"SNX33","matchType":"L-5-L","coordinate":"chr15:75950889","plusHalf":"CCTTGCCCC","minusHalf":"GGGTCATGG","mismatches":[2,0,2],"ranks":{"homology":15,"conservedG":36,"prognosV2":92},"control":[3,1301],"active":[2,1291],"indelPercent":0.15,"pValue":null,"status":"negative"},
+        {"gene":"AP3B2","matchType":"L-6-L","coordinate":"chr15:83349008","plusHalf":"CCGGGCCCC","minusHalf":"GGGGCAAGG","mismatches":[2,2,0],"ranks":{"homology":71,"conservedG":26,"prognosV2":34},"control":[0,340],"active":null,"indelPercent":null,"pValue":null,"status":"untested"},
+        {"gene":"AFF3","matchType":"L-6-L","coordinate":"chr2:100206671","plusHalf":"CCTAGGCCC","minusHalf":"GGGGCAAGG","mismatches":[2,2,0],"ranks":{"homology":16,"conservedG":37,"prognosV2":20},"control":[0,1380],"active":[27,919],"indelPercent":2.9,"pValue":7.3e-8,"status":"positive"},
+        {"gene":"ATP2B2","matchType":"L-5-L","coordinate":"chr3:10548826","plusHalf":"CCTTGGCCT","minusHalf":"GGGGCAAGG","mismatches":[2,2,0],"ranks":{"homology":77,"conservedG":168,"prognosV2":383},"control":[0,973],"active":[0,1319],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"COL4A6","matchType":"R-6-L","coordinate":"chrX:107547157","plusHalf":"CGATAATGC","minusHalf":"GGGGCAAGG","mismatches":[2,2,0],"ranks":{"homology":17,"conservedG":104,"prognosV2":159},"control":[0,1083],"active":[0,1959],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"CTNND2","matchType":"L-5-L","coordinate":"chr5:11467482","plusHalf":"CCTTCTCCC","minusHalf":"GGGGCAAGG","mismatches":[2,2,0],"ranks":{"homology":18,"conservedG":38,"prognosV2":21},"control":[0,651],"active":[0,910],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"DSCAML1-1","matchType":"L-6-L","coordinate":"chr11:117374929","plusHalf":"CCTTGCCCC","minusHalf":"GATGCAAGG","mismatches":[2,0,2],"ranks":{"homology":19,"conservedG":154,"prognosV2":167},"control":[0,751],"active":[0,859],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"DSCAML1-2","matchType":"L-5-L","coordinate":"chr11:117481217","plusHalf":"CCTTGCCCC","minusHalf":"GTAGCAAGG","mismatches":[2,0,2],"ranks":{"homology":20,"conservedG":155,"prognosV2":168},"control":[0,966],"active":[0,994],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"TBCEL","matchType":"L-5-L","coordinate":"chr11:120895335","plusHalf":"CCTTGCCCC","minusHalf":"GGGGGATGG","mismatches":[2,0,2],"ranks":{"homology":21,"conservedG":12,"prognosV2":29},"control":[0,354],"active":[0,283],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"RGS10","matchType":"L-6-L","coordinate":"chr10:121260641","plusHalf":"CCTTGCCCC","minusHalf":"GGGGCAGAG","mismatches":[2,0,2],"ranks":{"homology":22,"conservedG":39,"prognosV2":15},"control":[0,1106],"active":[49,949],"indelPercent":5.2,"pValue":4.6e-13,"status":"positive"}
+      ]
+    },
+    "HBB_4F": {
+      "fingerCount": 4,
+      "plusTargetPhysical": "TCACCTTGCCCC",
+      "minusTargetRecognition": "GCAGTAACGGCA",
+      "onTarget": {
+        "gene": "HBB",
+        "matchType": "L-5-R",
+        "coordinate": "chr11:5248194",
+        "controlIndels": 0,
+        "controlTotal": 1168,
+        "activeIndels": 61,
+        "activeTotal": 970,
+        "indelPercent": 6.3,
+        "pValue": 5.9e-16
+      },
+      "predictedSites": [
+        {"gene":"TRIM39","matchType":"L-6-L","coordinate":"chr6:30310803","plusHalf":"TCACCTTGCTCC","minusHalf":"GAGGCAAAGTGG","mismatches":[4,1,3],"ranks":{"homology":9,"conservedG":29,"prognosV2":116},"control":[0,889],"active":[0,908],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"CANX","matchType":"R-5-L","coordinate":"chr5:179126026","plusHalf":"TCTCTTTACTGC","minusHalf":"GGGGCAAGGTGT","mismatches":[4,3,1],"ranks":{"homology":7,"conservedG":7,"prognosV2":3},"control":[0,101],"active":[0,49],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"HBD","matchType":"L-5-R","coordinate":"chr11:5255606","plusHalf":"TCACTTTGCCCC","minusHalf":"GCATTGACAGCA","mismatches":[4,1,3],"ranks":{"homology":10,"conservedG":47,"prognosV2":38},"control":[0,704],"active":[0,734],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"KIAA0895L","matchType":"L-6-R","coordinate":"chr16:67211909","plusHalf":"TCACCTTGCCCA","minusHalf":"TCAGCAACGGGA","mismatches":[4,1,3],"ranks":{"homology":11,"conservedG":17,"prognosV2":306},"control":[0,445],"active":[0,630],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"AKAP8L","matchType":"R-6-L","coordinate":"chr19:15508854","plusHalf":"TGCAGTTACTGC","minusHalf":"GGGGACAGGGGA","mismatches":[4,1,3],"ranks":{"homology":12,"conservedG":8,"prognosV2":10},"control":[0,734],"active":[0,562],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"EPHA4","matchType":"L-5-R","coordinate":"chr2:222337426","plusHalf":"TCCCCTTGCCCC","minusHalf":"AGAGTAACAGCA","mismatches":[4,1,3],"ranks":{"homology":13,"conservedG":18,"prognosV2":29},"control":[0,655],"active":[0,738],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"C1QTNF3-AMACR","matchType":"L-6-L","coordinate":"chr5:34048014","plusHalf":"TCACCTTGCCAC","minusHalf":"AGGGCAAAATGA","mismatches":[4,1,3],"ranks":{"homology":14,"conservedG":53,"prognosV2":130},"control":[0,373],"active":[0,281],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"RNU6-66","matchType":"L-5-L","coordinate":"chr19:46730793","plusHalf":"CCACCTTGCCCC","minusHalf":"TGGGGAAGGTGC","mismatches":[4,1,3],"ranks":{"homology":15,"conservedG":4,"prognosV2":22},"control":[0,551],"active":[0,739],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"NCKAP1L","matchType":"R-6-L","coordinate":"chr12:54927118","plusHalf":"TGCTGTTACTGC","minusHalf":"GGAGCAAGAAGA","mismatches":[4,1,3],"ranks":{"homology":16,"conservedG":48,"prognosV2":61},"control":[0,831],"active":[0,755],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"PTPRR","matchType":"L-5-L","coordinate":"chr12:71095942","plusHalf":"TCCCCTTTTCCC","minusHalf":"GGGGCAAGGGGA","mismatches":[4,3,1],"ranks":{"homology":17,"conservedG":5,"prognosV2":4},"control":[0,410],"active":[0,617],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"SORCS2","matchType":"R-5-R","coordinate":"chr4:7234893","plusHalf":"TACTGTCACTGC","minusHalf":"GCAGGAACGGCA","mismatches":[4,3,1],"ranks":{"homology":18,"conservedG":12,"prognosV2":25},"control":[0,710],"active":[0,1028],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"ATP2C2","matchType":"R-6-L","coordinate":"chr16:84496285","plusHalf":"TGCGGTTATGGC","minusHalf":"GGGGCAAGGGGA","mismatches":[4,3,1],"ranks":{"homology":19,"conservedG":19,"prognosV2":65},"control":[0,511],"active":[0,708],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"BIRC3","matchType":"L-5-L","coordinate":"chr11:102158067","plusHalf":"TCACCCCGCCCA","minusHalf":"GGGGCAAGGAGA","mismatches":[4,3,1],"ranks":{"homology":20,"conservedG":6,"prognosV2":27},"control":[0,252],"active":[2,640],"indelPercent":0.31,"pValue":0.078,"status":"negative"},
+        {"gene":"ALDH8A1","matchType":"R-5-R","coordinate":"chr6:135036337","plusHalf":"TGCCGTTACTTC","minusHalf":"GCAAAAACAGCA","mismatches":[4,1,3],"ranks":{"homology":21,"conservedG":40,"prognosV2":45},"control":[0,624],"active":[0,582],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"RP1-177G6.2","matchType":"R-6-L","coordinate":"chrX:139732519","plusHalf":"TGCCTGTACTCC","minusHalf":"GGGGCAAGGAGA","mismatches":[4,3,1],"ranks":{"homology":22,"conservedG":2,"prognosV2":7},"control":[0,971],"active":[0,914],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"ZEB2-AS1","matchType":"L-6-L","coordinate":"chr2:145281549","plusHalf":"TCACCTGGCCCC","minusHalf":"GCGGCCAGCTGA","mismatches":[4,1,3],"ranks":{"homology":23,"conservedG":13,"prognosV2":39},"control":[0,845],"active":[0,1002],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"PLG","matchType":"R-5-R","coordinate":"chr6:161189273","plusHalf":"TGCCATTGATGC","minusHalf":"GCAGTAACTGCA","mismatches":[4,3,1],"ranks":{"homology":24,"conservedG":41,"prognosV2":28},"control":[0,661],"active":[3,1465],"indelPercent":0.2,"pValue":0.042,"status":"positive"},
+        {"gene":"ZNF536","matchType":"L-5-R","coordinate":"chr19:30773004","plusHalf":"TCACCTTTCCCC","minusHalf":"GCAGTGACTGTA","mismatches":[4,1,3],"ranks":{"homology":25,"conservedG":9,"prognosV2":18},"control":[0,793],"active":[0,955],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"SMIM2-IT1","matchType":"L-6-R","coordinate":"chr13:44832638","plusHalf":"CCACCTTGCCCC","minusHalf":"CATGTAACGGCA","mismatches":[4,1,3],"ranks":{"homology":26,"conservedG":10,"prognosV2":2},"control":[0,259],"active":[0,509],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"CDH8","matchType":"R-6-L","coordinate":"chr16:62551628","plusHalf":"TGCAGTTAATGG","minusHalf":"TGGGCAAGGTGA","mismatches":[4,3,1],"ranks":{"homology":27,"conservedG":151,"prognosV2":859},"control":[0,749],"active":[0,1009],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"FLJ43390","matchType":"R-5-R","coordinate":"chr14:62877376","plusHalf":"TGCAGTTCTTGC","minusHalf":"GCAGTAATGGCA","mismatches":[4,3,1],"ranks":{"homology":28,"conservedG":42,"prognosV2":26},"control":null,"active":null,"indelPercent":null,"pValue":null,"status":"untested"},
+        {"gene":"GNAQ","matchType":"L-5-R","coordinate":"chr9:80648426","plusHalf":"TCACCTTGCCCT","minusHalf":"GCAGAGAGGGCA","mismatches":[4,1,3],"ranks":{"homology":29,"conservedG":11,"prognosV2":117},"control":[0,244],"active":[0,249],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"SPRY2","matchType":"R-6-R","coordinate":"chr13:81011695","plusHalf":"TGCCATTACTGC","minusHalf":"GAAGTAAAGGTA","mismatches":[4,1,3],"ranks":{"homology":30,"conservedG":3,"prognosV2":15},"control":[0,749],"active":[0,1229],"indelPercent":0,"pValue":null,"status":"negative"}
+      ],
+      "threeFingerPositiveRetests": [
+        {"gene":"ATG7","matchType":"L-6-L","coordinate":"chr3:11495737","plusHalf":"CGCCCTTGGCCC","minusHalf":"GGGGCAAGGTAG","mismatches":[6,4,2],"control":[0,1927],"active":null,"indelPercent":null,"pValue":null,"status":"untested"},
+        {"gene":"PARD3B","matchType":"L-5-L","coordinate":"chr2:206432669","plusHalf":"ACACCTTGCCCC","minusHalf":"GGGGCAAGCATG","mismatches":[5,1,4],"control":[0,884],"active":[2,1023],"indelPercent":0.2,"pValue":0.079,"status":"negative"},
+        {"gene":"GLIS2","matchType":"L-6-L","coordinate":"chr16:4372996","plusHalf":"AGTCCTGGCCCC","minusHalf":"GGGGCAAGGGGT","mismatches":[6,4,2],"control":[0,1263],"active":[0,218],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"AFF3","matchType":"L-6-L","coordinate":"chr2:100206668","plusHalf":"GCACCTAGGCCC","minusHalf":"GGGGCAAGGGCA","mismatches":[5,3,2],"ranks":{"homology":87,"conservedG":116,"prognosV2":17},"control":[0,1380],"active":[0,881],"indelPercent":0,"pValue":null,"status":"negative"},
+        {"gene":"RGS10","matchType":"L-6-L","coordinate":"chr10:121260641","plusHalf":"CTCCCTTGCCCC","minusHalf":"GGGGCAGAGAAA","mismatches":[7,3,4],"control":[0,1106],"active":[0,650],"indelPercent":0,"pValue":null,"status":"negative"}
+      ]
+    }
+  }
+}

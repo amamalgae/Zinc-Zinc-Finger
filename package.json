@@ -9,9 +9,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "benchmark": "npm run benchmark:bhakta && npm run benchmark:chen",
+    "benchmark": "npm run benchmark:bhakta && npm run benchmark:chen && npm run benchmark:sander && npm run benchmark:fine",
     "benchmark:bhakta": "node scripts/benchmark-bhakta-2013.mjs",
     "benchmark:chen": "node scripts/benchmark-chen-2013.mjs",
+    "benchmark:sander": "node scripts/benchmark-sander-2013.mjs",
+    "benchmark:fine": "node scripts/benchmark-fine-2014.mjs",
     "convert:deepzf": "node scripts/convert-deepzf-pwm.mjs",
     "test": "node --test tests/*.test.mjs",
     "lint": "eslint ."

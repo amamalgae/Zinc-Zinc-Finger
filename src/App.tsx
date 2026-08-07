@@ -68,7 +68,7 @@ function downloadOffTargets(
         summary.intendedSiteFound,
         summary.perfectOffTargetHits,
         summary.maxOffTargetScore.toFixed(3),
-        summary.highRiskHits,
+        summary.highScoreHits,
         summary.homodimerHits,
         hit ? hitIndex + 1 : "",
         hit?.contig ?? "",
@@ -184,7 +184,7 @@ export default function Home() {
         Number(b.passesBScoreCutoff) - Number(a.passesBScoreCutoff) ||
         aSpecificity.perfectOffTargetHits - bSpecificity.perfectOffTargetHits ||
         aSpecificity.maxOffTargetScore - bSpecificity.maxOffTargetScore ||
-        aSpecificity.highRiskHits - bSpecificity.highRiskHits ||
+        aSpecificity.highScoreHits - bSpecificity.highScoreHits ||
         aSpecificity.homodimerHits - bSpecificity.homodimerHits ||
         compareCandidates(a, b)
       );
@@ -463,8 +463,8 @@ export default function Home() {
 
         <div className="genome-intro">
           <p>
-            4–6ZF候補を最大30組まとめて検索します。各half-site 3 mismatch以内を漏れなく列挙し、
-            LR・RL・LL・RRをPROGNOS ZFN v2.0で相対順位化します。
+            4–6ZF候補を最大30組まとめて検索します。左右いずれかのhalf-siteが3 mismatch以内の
+            ペアを漏れなく列挙し、反対側は制限せずLR・RL・LL・RRをPROGNOS ZFN v2.0で相対順位化します。
           </p>
           <span>ファイルは端末内のWeb Workerだけで処理され、送信・保存されません。</span>
         </div>
@@ -514,7 +514,7 @@ export default function Home() {
               <span>{formatBases(genomeResult.genomeBases)}</span>
               <span>{genomeResult.contigCount.toLocaleString()} contigs</span>
               <span>{(genomeResult.elapsedMs / 1000).toFixed(2)} s</span>
-              <span>half-site ≤3 mismatch</span>
+              <span>片側half-site ≤3 mismatch</span>
             </div>
             {!genomeResult.targetWindowUniquelyLocated && (
               <p className="genome-warning">
@@ -534,9 +534,9 @@ export default function Home() {
                 <small>PROGNOS相対スコア · 確率ではない</small>
               </div>
               <div>
-                <span>score ≥50</span>
-                <strong>{selectedSpecificity.highRiskHits}</strong>
-                <small>LR / RL / LL / RR合計</small>
+                <span>score ≥50（参考）</span>
+                <strong>{selectedSpecificity.highScoreHits}</strong>
+                <small>実験陽性の判定閾値ではない</small>
               </div>
               <div>
                 <span>homodimer候補</span>
@@ -578,6 +578,7 @@ export default function Home() {
             </div>
             <p className="genome-caution">
               この順位は配列類似性に基づく候補抽出です。5–6ZFはPROGNOS学習範囲外への外挿であり、
+              Sander 2013の4ZF陽性25 lociではPROGNOS scoreとindel率の相関はρ=0.10でした。
               クロマチン状態・発現量・実細胞での切断は予測しません。上位部位はamplicon sequencing等で検証してください。
             </p>
           </>

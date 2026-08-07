@@ -16,10 +16,10 @@
 - Sp1C framework、TGEKP interfinger linkerを含むZFAアミノ酸配列を出力する
 - spacer 5 / 6 / 7 bpに対してTGGS / TGAAAR / TGPGAAAR ZFA–FokI linkerを提案する
 - ゲノムFASTAまたはgzip圧縮FASTAを端末内だけで読み込む
-- 4–6 finger、最大30候補について各half-site 3 mismatch以内をゲノムwide検索する
+- 4–6 finger、最大30候補について、少なくとも片側のhalf-siteが3 mismatch以内のZFNペアをゲノムwide検索する
 - 正向き・逆向きheterodimer（LR / RL）とhomodimer（LL / RR）を区別する
 - PROGNOS ZFN v2.0を独立実装し、候補off-targetを相対順位化する
-- B-score ≥15を優先した上で、完全一致off-target、最大PROGNOS score、score ≥50の部位数、homodimer候補数の順に候補を並べ替える
+- B-score ≥15を優先した上で、完全一致off-target、最大PROGNOS score、score ≥50の部位数、homodimer候補数の順に候補を並べ替える。ただしPROGNOSは実験陽性の判定閾値ではなく、相対的な配列類似性指標としてのみ使う
 - 候補と配列をCSVで保存する
 - 上位off-target座標・配列・mismatch数・PROGNOS scoreをCSVで保存する
 
@@ -29,9 +29,42 @@
 
 ゲノムFASTAはサーバーへアップロードせず、Web Worker内で読み込み・検索します。`N`とcontig境界を保持するため、座標がずれたりcontigをまたいだ偽ヒットが生じたりしません。
 
-検索はhalf-siteを2個のseedに分けるseed-and-verify方式です。各half-siteの総mismatchが3以下なら、2個のseedの少なくとも一方は1 mismatch以下になるため、そのseed集合を一度のゲノム走査で検索して完全長half-siteを再検証します。これはBLASTの局所アラインメントではなく、9–18 bpの固定長half-siteに対する置換だけの完全列挙です。挿入・欠失は探索しません。
+検索はhalf-siteを2個のseedに分けるseed-and-verify方式です。half-siteの総mismatchが3以下なら、2個のseedの少なくとも一方は1 mismatch以下になるため、そのseed集合を一度のゲノム走査で検索して完全長half-siteを再検証します。左右どちらかがこのanchor条件を満たすペアを列挙し、反対側half-siteはmismatch数で打ち切らず完全長配列をPROGNOSで採点します。Sander 2013の独立陽性51 lociは全て少なくとも片側が3 mismatch以内でした。これはBLASTの局所アラインメントではなく、9–18 bpの固定長half-siteに対する置換だけの探索です。挿入・欠失は探索しません。
 
 PROGNOS ZFN v2.0はfingerごとの初回mismatch penalty 70、追加mismatch penalty 65、標的G一致bonus 17.5（triplet 5′端Gは2倍）、FokIからの距離に応じたpolarity 1.00 / 0.85 / 0.80 / 0.70、dimer exponent 1.75を実装しています。Fine et al. (2014), DOI: [10.1093/nar/gkt1326](https://doi.org/10.1093/nar/gkt1326)。
+
+### Sander 2013外部陽性データとの照合
+
+Sander et al. (2013)のmain-text Tables 3–4から、同研究で新規に検証された陽性部位を行単位で再構成しました。CCR5は重複するSKAP2 windowをまとめて25 loci、VEGFAは26 lociです。DOI: [10.1093/nar/gkt716](https://doi.org/10.1093/nar/gkt716)。
+
+| 評価 | CCR5 4ZF | VEGFA 3ZF | 合計 |
+|---|---:|---:|---:|
+| 独立陽性loci | 25 | 26 | 51 |
+| 旧条件：左右とも≤3 mismatch | 5/25 | 25/26 | 30/51 |
+| 新条件：少なくとも片側≤3 mismatch | 25/25 | 26/26 | 51/51 |
+| PROGNOS score vs indel率 Spearman ρ | 0.103 | −0.000 | −0.076 |
+| 単純identity vs indel率 Spearman ρ | 0.077 | 0.037 | −0.090 |
+
+このデータは陽性部位だけなので、ROC-AUCやprecisionは計算できません。PROGNOS scoreはoff-targetの定量indel率を予測せず、score ≥50も陽性判定閾値として使えません。一方、少なくとも片側を≤3 mismatchのanchorとして探索する規則は、独立陽性51/51 lociを包含しました。ブラウザ版は3ZFを計算量上の理由で受け付けないため、実装回帰試験はCCR5 4ZFの25/25 lociを対象にしています。
+
+再構成データSHA-256: `635ce1d3373b3f3a0ab2f3ef9ff37041c06debc6ba2dce66bd55d87a23328a2f`
+
+20 Mbp・30候補の合成ゲノムで、新しい高感度探索は6ZFで約1.72秒、4ZFで約36.55秒でした（desktop Node.js）。4ZFは短いanchorが多数出るため、スマートフォンではさらに時間がかかる可能性があります。
+
+### Fine 2014の陽性・陰性データとの照合
+
+Fine et al. (2014)のSupplementary Tables 8–9を、陰性候補とread countを含めて再構成しました。DOI: [10.1093/nar/gkt1326](https://doi.org/10.1093/nar/gkt1326)。独立実装したPROGNOS scoreは、掲載46候補すべてのhalf-site mismatch数と、掲載されたZFN v2.0順位の相対順序を再現しました。
+
+| HBB ZFN | 評価可能off-target | 実験陽性 | PROGNOS ROC-AUC | Average precision | Recall@10 |
+|---|---:|---:|---:|---:|---:|
+| 3F | 22 | 6 | 0.698 | 0.399 | 4/6 |
+| 4F | 22 | 1 | 0.524 | 0.091 | 0/1 |
+
+この結果は、実装式の再現性は高い一方、PROGNOS順位を切断陽性の判定器として扱えないことを示します。特に4Fは陽性が1部位しかないためAUCの不確実性が大きく、再学習には使いません。3Fでは単純Homology順位のaverage precision 0.506がZFN v2.0の0.399を上回りましたが、同じ22候補内の事後比較なので、順位式の置換根拠にはしていません。
+
+同じHBB領域では、on-target indelが3Fの1.9%から4Fの6.3%へ増え、検出されたoff-targetは6/22から1/22へ減りました。また3Fで陽性だった5部位の4F再検査は、評価可能4部位すべてで有意差なしでした。これはfinger数を増やす設計を支持しますが、3Fと4Fで候補抽出条件が異なるため、6/22対1/22を一般的な効果量とは解釈しません。
+
+再構成したSupplementary PDF SHA-256: `dbf9d5e05fa081e9754ef96df34be1fd30bef1844e3707371b86af730675e1b5`
 
 入力した標的windowがゲノム内で一意に見つかった場合だけ、その1部位をintended siteとしてoff-target集計から除外します。一意に同定できなければ、完全一致部位も保守的にoff-targetとして数えます。PROGNOS scoreは0–100の相対順位であり、切断確率や安全性の尺度ではありません。
 
@@ -65,6 +98,7 @@ module別公表値から得たL6+R6 B-scoreは20/21標的で原著表と一致�
 - 出力するのはDNA-binding ZFA配列までです。FokI cleavage domain、obligate heterodimer変異、NLS、発現カセット、コドン最適化は含みません。
 - ゲノムwide検索は塩基置換だけを扱い、bulge、挿入・欠失、構造変異は探索しません。
 - PROGNOS ZFN v2.0は3–4 finger ZFNを中心に構築されており、5–6 fingerは外挿です。
+- 検索の完全列挙保証は「少なくとも片側のhalf-siteが3 mismatch以内」の範囲です。左右とも4 mismatch以上の部位は列挙しません。
 - クロマチン accessibility、発現量、細胞種依存性は評価しません。
 - 3-fingerでは3 mismatch以内のhalf-siteが急増するため、ブラウザ版のゲノム検索対象は4–6 fingerに限定しています。
 - B-scoreはaffinity/activityの粗い分類器であり、PWM、結合定数、indel率を予測しません。

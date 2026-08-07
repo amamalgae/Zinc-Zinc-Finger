@@ -35,7 +35,7 @@ export type CandidateSpecificitySummary = {
   offTargetHits: number;
   perfectPairHits: number;
   perfectOffTargetHits: number;
-  highRiskHits: number;
+  highScoreHits: number;
   homodimerHits: number;
   maxOffTargetScore: number;
   topHits: OffTargetHit[];
@@ -481,18 +481,35 @@ function registerHit(
   ) {
     summary.perfectOffTargetHits += 1;
   }
-  if (hit.score >= HIGH_RISK_SCORE) summary.highRiskHits += 1;
+  if (hit.score >= HIGH_RISK_SCORE) summary.highScoreHits += 1;
   if (hit.pairType === "LL" || hit.pairType === "RR") summary.homodimerHits += 1;
   summary.maxOffTargetScore = Math.max(summary.maxOffTargetScore, hit.score);
   insertTopHit(summary, hit, maxResults);
 }
 
-function pairMatches(
+function observeHalf(
+  sequence: string,
+  start: number,
+  targetRecognition: string,
+  reversePhysicalSite: boolean,
+): HalfMatch | null {
+  if (start < 0 || start + targetRecognition.length > sequence.length) return null;
+  const physicalSite = sequence.slice(start, start + targetRecognition.length);
+  if (physicalSite.length !== targetRecognition.length || /[^ACGT]/.test(physicalSite)) return null;
+  const recognition = reversePhysicalSite ? reverseComplementDna(physicalSite) : physicalSite;
+  return {
+    mismatches: hammingDistanceAt(recognition, 0, targetRecognition, targetRecognition.length) ?? 0,
+    recognition,
+    score: prognosHalfSiteScore(targetRecognition, recognition),
+  };
+}
+
+function pairMatchesFromEitherAnchor(
   candidate: OffTargetCandidateInput,
   contig: FastaContig,
   contigIndex: number,
-  leftMatches: Map<number, HalfMatch>,
-  rightMatches: Map<number, HalfMatch>,
+  leftAnchors: Map<number, HalfMatch>,
+  rightAnchors: Map<number, HalfMatch>,
   pairType: OffTargetPairType,
   leftTarget: string,
   rightTarget: string,
@@ -501,11 +518,47 @@ function pairMatches(
   maxResults: number,
 ) {
   const halfLength = leftTarget.length;
-  for (const [position, left] of leftMatches) {
+  for (const [position, left] of leftAnchors) {
     for (const spacerLength of [5, 6, 7]) {
       const rightPosition = position + halfLength + spacerLength;
-      const right = rightMatches.get(rightPosition);
+      const right = rightAnchors.get(rightPosition) ?? observeHalf(
+        contig.sequence,
+        rightPosition,
+        rightTarget,
+        false,
+      );
       if (!right) continue;
+      const isIntended =
+        intended?.contigIndex === contigIndex &&
+        intended.position === position &&
+        intended.pairType === pairType &&
+        spacerLength === candidate.spacerLength;
+      registerHit(
+        summary,
+        {
+          candidateId: candidate.id,
+          contig: contig.name,
+          position,
+          pairType,
+          spacerLength,
+          leftSite: left.recognition,
+          rightSite: right.recognition,
+          leftMismatches: left.mismatches,
+          rightMismatches: right.mismatches,
+          score: prognosPairScore(leftTarget, left.recognition, rightTarget, right.recognition),
+          isIntended,
+        },
+        maxResults,
+      );
+    }
+  }
+
+  for (const [rightPosition, right] of rightAnchors) {
+    for (const spacerLength of [5, 6, 7]) {
+      const position = rightPosition - halfLength - spacerLength;
+      if (leftAnchors.has(position)) continue;
+      const left = observeHalf(contig.sequence, position, leftTarget, true);
+      if (!left) continue;
       const isIntended =
         intended?.contigIndex === contigIndex &&
         intended.position === position &&
@@ -573,7 +626,7 @@ export function searchGenomeOffTargets(
     offTargetHits: 0,
     perfectPairHits: 0,
     perfectOffTargetHits: 0,
-    highRiskHits: 0,
+    highScoreHits: 0,
     homodimerHits: 0,
     maxOffTargetScore: 0,
     topHits: [],
@@ -590,10 +643,10 @@ export function searchGenomeOffTargets(
       const matches = halfMatches[candidateIndex];
       const summary = summaries[candidateIndex];
       const intended = intendedPairs[candidateIndex];
-      pairMatches(candidate, contig, contigIndex, matches.leftL, matches.rightR, "LR", candidate.leftRecognition, candidate.rightRecognition, intended, summary, maxResults);
-      pairMatches(candidate, contig, contigIndex, matches.leftR, matches.rightL, "RL", candidate.rightRecognition, candidate.leftRecognition, intended, summary, maxResults);
-      pairMatches(candidate, contig, contigIndex, matches.leftL, matches.rightL, "LL", candidate.leftRecognition, candidate.leftRecognition, intended, summary, maxResults);
-      pairMatches(candidate, contig, contigIndex, matches.leftR, matches.rightR, "RR", candidate.rightRecognition, candidate.rightRecognition, intended, summary, maxResults);
+      pairMatchesFromEitherAnchor(candidate, contig, contigIndex, matches.leftL, matches.rightR, "LR", candidate.leftRecognition, candidate.rightRecognition, intended, summary, maxResults);
+      pairMatchesFromEitherAnchor(candidate, contig, contigIndex, matches.leftR, matches.rightL, "RL", candidate.rightRecognition, candidate.leftRecognition, intended, summary, maxResults);
+      pairMatchesFromEitherAnchor(candidate, contig, contigIndex, matches.leftL, matches.rightL, "LL", candidate.leftRecognition, candidate.leftRecognition, intended, summary, maxResults);
+      pairMatchesFromEitherAnchor(candidate, contig, contigIndex, matches.leftR, matches.rightR, "RR", candidate.rightRecognition, candidate.rightRecognition, intended, summary, maxResults);
     });
     searchedBases += contig.sequence.length;
     options.onProgress?.({
