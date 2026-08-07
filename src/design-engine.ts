@@ -1,4 +1,5 @@
 import {
+  BASE_SKIPPING_LINKER_1C,
   INTERFINGER_LINKER,
   fullFingerSequence,
   moduleArchive,
@@ -34,6 +35,12 @@ export type Candidate = {
   rightTop: string;
   leftRecognition: string;
   rightRecognition: string;
+  leftFingerCount: number;
+  rightFingerCount: number;
+  leftSkipAfterFinger: number | null;
+  rightSkipAfterFinger: number | null;
+  leftSkippedBaseOffset: number | null;
+  rightSkippedBaseOffset: number | null;
   leftFingers: Finger[];
   rightFingers: Finger[];
   leftArrayProtein: string;
@@ -107,6 +114,7 @@ function chunks(value: string, size: number): string[] {
 export function fingersForRecognitionStrand(
   recognition: string,
   threePrimeFlank?: string,
+  skippedBase?: { offset: number; base: string },
 ): Finger[] | null {
   const triplets = chunks(recognition, 3);
   if (triplets.some((triplet) => triplet.length !== 3 || !moduleArchive[triplet])) {
@@ -115,7 +123,9 @@ export function fingersForRecognitionStrand(
 
   const inRecognitionOrder = triplets.map((triplet, index) => {
     const module = moduleArchive[triplet];
-    const neighboringBase = triplets[index + 1]?.[0] ?? threePrimeFlank;
+    const neighboringBase = skippedBase?.offset === (index + 1) * 3
+      ? skippedBase.base
+      : triplets[index + 1]?.[0] ?? threePrimeFlank;
     const tsoCompatible =
       !module.requiresTsoContext || neighboringBase === "G" || neighboringBase === "T";
 
@@ -137,8 +147,16 @@ export function fingersForRecognitionStrand(
   }));
 }
 
-function arrayProtein(fingers: Finger[]): string {
-  return fingers.map((finger) => finger.fullSequence).join(INTERFINGER_LINKER);
+function arrayProtein(fingers: Finger[], skipAfterFinger: number | null): string {
+  return fingers
+    .map((finger, index) => {
+      if (index === fingers.length - 1) return finger.fullSequence;
+      const linker = index + 1 === skipAfterFinger
+        ? BASE_SKIPPING_LINKER_1C
+        : INTERFINGER_LINKER;
+      return `${finger.fullSequence}${linker}`;
+    })
+    .join("");
 }
 
 function countRecommendation(fingers: Finger[], value: ModuleRecommendation): number {
@@ -148,37 +166,70 @@ function countRecommendation(fingers: Finger[], value: ModuleRecommendation): nu
 export function generateCandidates(
   dna: string,
   desiredCut: number,
-  fingerCount: number,
+  leftFingerCount: number,
   maxDistance: number,
+  options: {
+    rightFingerCount?: number;
+    leftSkipAfterFinger?: number | null;
+    rightSkipAfterFinger?: number | null;
+  } = {},
 ): Candidate[] {
-  const halfLength = fingerCount * 3;
+  const rightFingerCount = options.rightFingerCount ?? leftFingerCount;
+  const leftSkipAfterFinger = options.leftSkipAfterFinger ?? null;
+  const rightSkipAfterFinger = options.rightSkipAfterFinger ?? null;
+  const leftRecognitionSkipOffset = leftSkipAfterFinger === null
+    ? null
+    : (leftFingerCount - leftSkipAfterFinger) * 3;
+  const rightRecognitionSkipOffset = rightSkipAfterFinger === null
+    ? null
+    : (rightFingerCount - rightSkipAfterFinger) * 3;
+  const leftLength = leftFingerCount * 3 + Number(leftSkipAfterFinger !== null);
+  const rightLength = rightFingerCount * 3 + Number(rightSkipAfterFinger !== null);
   const candidates: Candidate[] = [];
 
   for (const spacerLength of [5, 6, 7]) {
-    const footprint = halfLength * 2 + spacerLength;
+    const footprint = leftLength + rightLength + spacerLength;
     for (let start = 0; start + footprint <= dna.length; start += 1) {
-      const leftTop = dna.slice(start, start + halfLength);
+      const leftTop = dna.slice(start, start + leftLength);
       const spacer = dna.slice(
-        start + halfLength,
-        start + halfLength + spacerLength,
+        start + leftLength,
+        start + leftLength + spacerLength,
       );
       const rightTop = dna.slice(
-        start + halfLength + spacerLength,
+        start + leftLength + spacerLength,
         start + footprint,
       );
-      const cut = start + halfLength + spacerLength / 2;
+      const cut = start + leftLength + spacerLength / 2;
       const distance = Math.abs(cut - desiredCut);
       if (distance > maxDistance) continue;
 
-      const leftRecognition = reverseComplement(leftTop);
-      const rightRecognition = rightTop;
+      const leftRecognitionSpan = reverseComplement(leftTop);
+      const rightRecognitionSpan = rightTop;
+      const leftRecognition = leftRecognitionSkipOffset === null
+        ? leftRecognitionSpan
+        : `${leftRecognitionSpan.slice(0, leftRecognitionSkipOffset)}${leftRecognitionSpan.slice(leftRecognitionSkipOffset + 1)}`;
+      const rightRecognition = rightRecognitionSkipOffset === null
+        ? rightRecognitionSpan
+        : `${rightRecognitionSpan.slice(0, rightRecognitionSkipOffset)}${rightRecognitionSpan.slice(rightRecognitionSkipOffset + 1)}`;
       const leftFingers = fingersForRecognitionStrand(
         leftRecognition,
         complement(dna[start - 1]),
+        leftRecognitionSkipOffset === null
+          ? undefined
+          : {
+              offset: leftRecognitionSkipOffset,
+              base: leftRecognitionSpan[leftRecognitionSkipOffset],
+            },
       );
       const rightFingers = fingersForRecognitionStrand(
         rightRecognition,
         dna[start + footprint],
+        rightRecognitionSkipOffset === null
+          ? undefined
+          : {
+              offset: rightRecognitionSkipOffset,
+              base: rightRecognitionSpan[rightRecognitionSkipOffset],
+            },
       );
       if (!leftFingers || !rightFingers) continue;
 
@@ -199,10 +250,16 @@ export function generateCandidates(
         rightTop,
         leftRecognition,
         rightRecognition,
+        leftFingerCount,
+        rightFingerCount,
+        leftSkipAfterFinger,
+        rightSkipAfterFinger,
+        leftSkippedBaseOffset: leftRecognitionSkipOffset,
+        rightSkippedBaseOffset: rightRecognitionSkipOffset,
         leftFingers,
         rightFingers,
-        leftArrayProtein: arrayProtein(leftFingers),
-        rightArrayProtein: arrayProtein(rightFingers),
+        leftArrayProtein: arrayProtein(leftFingers, leftSkipAfterFinger),
+        rightArrayProtein: arrayProtein(rightFingers, rightSkipAfterFinger),
         combinedBScore,
         passesBScoreCutoff: combinedBScore >= 15,
         favorableModules: countRecommendation(allFingers, "favorable"),
@@ -243,6 +300,10 @@ export function candidatesToCsv(candidates: Candidate[]): string {
     "left_half_site_top_5to3",
     "spacer",
     "right_half_site_top_5to3",
+    "left_finger_count",
+    "right_finger_count",
+    "left_1c_linker_after_finger",
+    "right_1c_linker_after_finger",
     "zfa_foki_linker",
     "left_recognition_strand_5to3",
     "right_recognition_strand_5to3",
@@ -264,6 +325,10 @@ export function candidatesToCsv(candidates: Candidate[]): string {
     candidate.leftTop,
     candidate.spacer,
     candidate.rightTop,
+    candidate.leftFingerCount,
+    candidate.rightFingerCount,
+    candidate.leftSkipAfterFinger ?? "",
+    candidate.rightSkipAfterFinger ?? "",
     candidate.fokILinker,
     candidate.leftRecognition,
     candidate.rightRecognition,

@@ -100,7 +100,15 @@ function formatBases(value: number) {
     : `${value.toLocaleString()} bp`;
 }
 
-function FingerTable({ title, fingers }: { title: string; fingers: Finger[] }) {
+function FingerTable({
+  title,
+  fingers,
+  skipAfterFinger,
+}: {
+  title: string;
+  fingers: Finger[];
+  skipAfterFinger: number | null;
+}) {
   return (
     <section className="finger-panel">
       <div className="finger-heading">
@@ -119,6 +127,7 @@ function FingerTable({ title, fingers }: { title: string; fingers: Finger[] }) {
               <th>標的順位</th>
               <th>TSO</th>
               <th>評価</th>
+              <th>次linker</th>
             </tr>
           </thead>
           <tbody>
@@ -140,6 +149,13 @@ function FingerTable({ title, fingers }: { title: string; fingers: Finger[] }) {
                       ? "非推奨"
                       : "未評価"}
                 </td>
+                <td className={skipAfterFinger === finger.finger ? "base-skip" : "mono"}>
+                  {finger.finger === fingers.length
+                    ? "—"
+                    : skipAfterFinger === finger.finger
+                      ? "1c"
+                      : "TGEKP"}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -152,7 +168,10 @@ function FingerTable({ title, fingers }: { title: string; fingers: Finger[] }) {
 export default function Home() {
   const [rawSequence, setRawSequence] = useState(EXAMPLE_SEQUENCE);
   const [desiredCut, setDesiredCut] = useState(27);
-  const [fingerCount, setFingerCount] = useState(6);
+  const [leftFingerCount, setLeftFingerCount] = useState(6);
+  const [rightFingerCount, setRightFingerCount] = useState(6);
+  const [leftSkipAfterFinger, setLeftSkipAfterFinger] = useState<number | null>(null);
+  const [rightSkipAfterFinger, setRightSkipAfterFinger] = useState<number | null>(null);
   const [maxDistance, setMaxDistance] = useState(35);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [genomeFile, setGenomeFile] = useState<File | null>(null);
@@ -167,8 +186,20 @@ export default function Home() {
   const dna = useMemo(() => cleanDNA(rawSequence), [rawSequence]);
   const invalidCount = rawSequence.replace(/[ACGTacgt\s\d>_-]/g, "").length;
   const candidates = useMemo(
-    () => generateCandidates(dna, desiredCut, fingerCount, maxDistance),
-    [dna, desiredCut, fingerCount, maxDistance],
+    () => generateCandidates(dna, desiredCut, leftFingerCount, maxDistance, {
+      rightFingerCount,
+      leftSkipAfterFinger,
+      rightSkipAfterFinger,
+    }),
+    [
+      dna,
+      desiredCut,
+      leftFingerCount,
+      rightFingerCount,
+      leftSkipAfterFinger,
+      rightSkipAfterFinger,
+      maxDistance,
+    ],
   );
   const specificityById = useMemo(
     () => new Map(genomeResult?.summaries.map((summary) => [summary.candidateId, summary]) ?? []),
@@ -192,7 +223,12 @@ export default function Home() {
   const selected =
     rankedCandidates.find((candidate) => candidate.id === selectedId) ?? rankedCandidates[0];
   const selectedSpecificity = selected ? specificityById.get(selected.id) : undefined;
-  const footprint = fingerCount * 6 + 6;
+  const footprint =
+    leftFingerCount * 3 +
+    rightFingerCount * 3 +
+    Number(leftSkipAfterFinger !== null) +
+    Number(rightSkipAfterFinger !== null) +
+    6;
 
   const resetGenomeAnalysis = () => {
     workerRef.current?.terminate();
@@ -209,7 +245,7 @@ export default function Home() {
       setGenomeError("ゲノムFASTAを選択してください。");
       return;
     }
-    if (fingerCount < 4) {
+    if (leftFingerCount < 4 || rightFingerCount < 4) {
       setGenomeError("3ZFは近似half-siteが多すぎるため、ゲノム検索は4–6ZFに限定しています。");
       return;
     }
@@ -257,6 +293,12 @@ export default function Home() {
       id: candidate.id,
       leftRecognition: candidate.leftRecognition,
       rightRecognition: candidate.rightRecognition,
+      leftSkippedBaseOffsets: candidate.leftSkippedBaseOffset === null
+        ? []
+        : [candidate.leftSkippedBaseOffset],
+      rightSkippedBaseOffsets: candidate.rightSkippedBaseOffset === null
+        ? []
+        : [candidate.rightSkippedBaseOffset],
       spacerLength: candidate.spacerLength,
       targetStart: candidate.start,
       footprintLength: candidate.leftTop.length + candidate.spacerLength + candidate.rightTop.length,
@@ -297,7 +339,7 @@ export default function Home() {
           <p className="method-label">EVIDENCE LAYER</p>
           <div className="evidence-grid">
             <div><strong>{MODULE_COUNT}</strong><small>Barbas modules</small></div>
-            <div><strong>6 + 6</strong><small>finger default</small></div>
+            <div><strong>{leftFingerCount} + {rightFingerCount}</strong><small>left / right fingers</small></div>
             <div><strong>≥15</strong><small>combined B-score</small></div>
             <div><strong>DeepZF</strong><small>PWM cross-check</small></div>
           </div>
@@ -316,6 +358,10 @@ export default function Home() {
               resetGenomeAnalysis();
               setRawSequence(EXAMPLE_SEQUENCE);
               setDesiredCut(27);
+              setLeftFingerCount(6);
+              setRightFingerCount(6);
+              setLeftSkipAfterFinger(null);
+              setRightSkipAfterFinger(null);
             }}>例を復元</button>
           </div>
 
@@ -353,17 +399,32 @@ export default function Home() {
               <small>5′端からの塩基間座標</small>
             </label>
             <label>
-              <span>片側のfinger数</span>
-              <select value={fingerCount} onChange={(event) => {
+              <span>Left finger数</span>
+              <select value={leftFingerCount} onChange={(event) => {
                 resetGenomeAnalysis();
-                setFingerCount(Number(event.target.value));
+                setLeftFingerCount(Number(event.target.value));
+                setLeftSkipAfterFinger(null);
               }}>
                 <option value={3}>3ZF</option>
                 <option value={4}>4ZF</option>
                 <option value={5}>5ZF</option>
                 <option value={6}>6ZF（推奨）</option>
               </select>
-              <small>既定はextended MA</small>
+              <small>左ZFA（既定6ZF）</small>
+            </label>
+            <label>
+              <span>Right finger数</span>
+              <select value={rightFingerCount} onChange={(event) => {
+                resetGenomeAnalysis();
+                setRightFingerCount(Number(event.target.value));
+                setRightSkipAfterFinger(null);
+              }}>
+                <option value={3}>3ZF</option>
+                <option value={4}>4ZF</option>
+                <option value={5}>5ZF</option>
+                <option value={6}>6ZF（推奨）</option>
+              </select>
+              <small>右ZFA（非対称可）</small>
             </label>
             <label>
               <span>探索距離</span>
@@ -380,10 +441,46 @@ export default function Home() {
             </label>
           </div>
 
+          <div className="geometry-grid">
+            <label>
+              <span>Left 1c base-skip</span>
+              <select value={leftSkipAfterFinger ?? 0} onChange={(event) => {
+                resetGenomeAnalysis();
+                const value = Number(event.target.value);
+                setLeftSkipAfterFinger(value || null);
+              }}>
+                <option value={0}>なし（連続）</option>
+                {Array.from({ length: leftFingerCount - 1 }, (_, index) => index + 1).map((finger) => (
+                  <option key={finger} value={finger}>F{finger}の後で1 bp飛ばす</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>Right 1c base-skip</span>
+              <select value={rightSkipAfterFinger ?? 0} onChange={(event) => {
+                resetGenomeAnalysis();
+                const value = Number(event.target.value);
+                setRightSkipAfterFinger(value || null);
+              }}>
+                <option value={0}>なし（連続）</option>
+                {Array.from({ length: rightFingerCount - 1 }, (_, index) => index + 1).map((finger) => (
+                  <option key={finger} value={finger}>F{finger}の後で1 bp飛ばす</option>
+                ))}
+              </select>
+            </label>
+            <p>
+              1c（THPRAPIPKP）は指定finger間で1塩基を認識対象から外します。Paschon 2019由来で、
+              通常のTGEKP linkerと同じ活性根拠ではありません。設計出力はC末端FokIのcanonical構成です。
+            </p>
+          </div>
+
           <div className="footprint">
             <span>想定フットプリント</span>
             <strong>約 {footprint} bp</strong>
-            <small>左右{fingerCount * 3} bp + spacer 5–7 bp</small>
+            <small>
+              Left {leftFingerCount * 3 + Number(leftSkipAfterFinger !== null)} bp +
+              Right {rightFingerCount * 3 + Number(rightSkipAfterFinger !== null)} bp + spacer 5–7 bp
+            </small>
           </div>
         </div>
 
@@ -462,7 +559,8 @@ export default function Home() {
 
         <div className="genome-intro">
           <p>
-            4–6ZF候補を最大30組まとめて検索します。左右いずれかのhalf-siteが3 mismatch以内の
+            4–6ZF候補を最大30組まとめて検索します。左右非対称と片側1個までの1-bp base-skippingに対応し、
+            いずれかのhalf-siteが3 mismatch以内の
             ペアを漏れなく列挙し、反対側は制限せずLR・RL・LL・RRをPROGNOS ZFN v2.0で相対順位化します。
           </p>
           <span>ファイルは端末内のWeb Workerだけで処理され、送信・保存されません。</span>
@@ -489,14 +587,14 @@ export default function Home() {
           <button
             className="search-button"
             type="button"
-            disabled={!genomeFile || !candidates.length || fingerCount < 4 || Boolean(genomeProgress)}
+            disabled={!genomeFile || !candidates.length || leftFingerCount < 4 || rightFingerCount < 4 || Boolean(genomeProgress)}
             onClick={runGenomeSearch}
           >
             {genomeProgress ? "検索中…" : `${candidates.length}候補を検索`}
           </button>
         </div>
 
-        {fingerCount < 4 && (
+        {(leftFingerCount < 4 || rightFingerCount < 4) && (
           <p className="genome-warning">3ZFは近似候補が急増するため非対応です。特異性を比較する場合は4–6ZFを選択してください。</p>
         )}
         {genomeError && <p className="genome-error" role="alert">{genomeError}</p>}
@@ -620,8 +718,16 @@ export default function Home() {
           </div>
 
           <div className="finger-grid">
-            <FingerTable title="Left ZFA" fingers={selected.leftFingers} />
-            <FingerTable title="Right ZFA" fingers={selected.rightFingers} />
+            <FingerTable
+              title="Left ZFA"
+              fingers={selected.leftFingers}
+              skipAfterFinger={selected.leftSkipAfterFinger}
+            />
+            <FingerTable
+              title="Right ZFA"
+              fingers={selected.rightFingers}
+              skipAfterFinger={selected.rightSkipAfterFinger}
+            />
           </div>
 
           <div className="protein-output">

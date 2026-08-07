@@ -15,6 +15,7 @@
     "benchmark:sander": "node scripts/benchmark-sander-2013.mjs",
     "benchmark:fine": "node scripts/benchmark-fine-2014.mjs",
     "benchmark:paschon": "node scripts/benchmark-paschon-2019.mjs",
+    "data:paschon-sequences": "node scripts/build-paschon-sequence-scores.mjs",
     "convert:deepzf": "node scripts/convert-deepzf-pwm.mjs",
     "test": "node --test tests/*.test.mjs",
     "lint": "eslint ."

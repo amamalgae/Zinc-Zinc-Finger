@@ -8,15 +8,16 @@
 
 - FASTAまたは塩基配列をブラウザ内で読み込む
 - 実験選抜済みBarbas one-finger archive（49 modules）だけで構築可能な候補を列挙する
-- 片側3–6 finger、spacer 5–7 bpを探索する
+- 左右それぞれ3–6 finger、spacer 5–7 bpを探索し、5F/6Fなど非対称ペアも生成する
+- 各half-siteに1個まで、Paschon 1c linker（THPRAPIPKP）による1-bp base-skipping位置を指定する
 - target-site overlap（TSO）を生じるGNG moduleの隣接塩基を検査し、警告する
 - published B-score、module評価、希望切断位置で候補を順位付けする
 - DeepZF原著の学習済みPWMpredictorで各moduleの標的triplet整合度を計算する
 - DeepZF整合度は順位に使わず、独立な認識診断値として表示する
-- Sp1C framework、TGEKP interfinger linkerを含むZFAアミノ酸配列を出力する
+- Sp1C framework、TGEKPまたは1c interfinger linkerを含むZFAアミノ酸配列を出力する
 - spacer 5 / 6 / 7 bpに対してTGGS / TGAAAR / TGPGAAAR ZFA–FokI linkerを提案する
 - ゲノムFASTAまたはgzip圧縮FASTAを端末内だけで読み込む
-- 4–6 finger、最大30候補について、少なくとも片側のhalf-siteが3 mismatch以内のZFNペアをゲノムwide検索する
+- 左右4–6 finger、最大30候補について、非対称armと片側1個までのbase-skippingを含め、少なくとも片側のhalf-siteが3 mismatch以内のZFNペアをゲノムwide検索する
 - 正向き・逆向きheterodimer（LR / RL）とhomodimer（LL / RR）を区別する
 - PROGNOS ZFN v2.0を独立実装し、候補off-targetを相対順位化する
 - B-score ≥15を優先した上で、完全一致off-target、最大PROGNOS score、homodimer候補数の順に候補を並べ替える。`score ≥50`の部位数は表示だけに残し、実験陽性の判定や候補順位には使わない
@@ -29,7 +30,7 @@
 
 ゲノムFASTAはサーバーへアップロードせず、Web Worker内で読み込み・検索します。`N`とcontig境界を保持するため、座標がずれたりcontigをまたいだ偽ヒットが生じたりしません。
 
-検索はhalf-siteを2個のseedに分けるseed-and-verify方式です。half-siteの総mismatchが3以下なら、2個のseedの少なくとも一方は1 mismatch以下になるため、そのseed集合を一度のゲノム走査で検索して完全長half-siteを再検証します。左右どちらかがこのanchor条件を満たすペアを列挙し、反対側half-siteはmismatch数で打ち切らず完全長配列をPROGNOSで採点します。Sander 2013の独立陽性51 lociは全て少なくとも片側が3 mismatch以内でした。これはBLASTの局所アラインメントではなく、9–18 bpの固定長half-siteに対する置換だけの探索です。挿入・欠失は探索しません。
+検索は認識対象塩基を2個のseedに分けるseed-and-verify方式です。half-siteの総mismatchが3以下なら、2個のseedの少なくとも一方は1 mismatch以下になるため、そのseed集合をゲノム走査して完全長half-siteを再検証します。base-skippingでは1c linkerが飛ばす1塩基をspaced seedと完全長照合の両方から除外します。左右どちらかがanchor条件を満たすペアを列挙し、反対側half-siteはmismatch数で打ち切らずPROGNOSで採点します。Sander 2013の独立陽性51 lociは全て少なくとも片側が3 mismatch以内でした。これはBLASTの局所アラインメントではなく、12–18個の認識塩基に対する置換探索です。通常の挿入・欠失やbulgeは探索しません。
 
 PROGNOS ZFN v2.0はfingerごとの初回mismatch penalty 70、追加mismatch penalty 65、標的G一致bonus 17.5（triplet 5′端Gは2倍）、FokIからの距離に応じたpolarity 1.00 / 0.85 / 0.80 / 0.70、dimer exponent 1.75を実装しています。Fine et al. (2014), DOI: [10.1093/nar/gkt1326](https://doi.org/10.1093/nar/gkt1326)。
 
@@ -89,13 +90,25 @@ Fine et al. (2014)のSupplementary Tables 8–9を、陰性候補とread count�
 
 入力した標的windowがゲノム内で一意に見つかった場合だけ、その1部位をintended siteとしてoff-target集計から除外します。一意に同定できなければ、完全一致部位も保守的にoff-targetとして数えます。PROGNOS scoreは0–100の相対順位であり、切断確率や安全性の尺度ではありません。
 
-### Paschon 2019の5–6Fデータと適用範囲
+### Paschon 2019の非連続・非対称5–6F外部検証
 
 Paschon et al. (2019)のSource Data Figure 5から、TRAC 1–5の122 off-target候補（実験陽性16部位）とon-target indelを再構成しました。陽性数はTRAC 1–5で4、8、4、0、0、on-target indelは79.37–85.14%です。DOI: [10.1038/s41467-019-08867-x](https://doi.org/10.1038/s41467-019-08867-x)。
 
-ただしSupplementary Figure 21を照合すると、TRAC 1–4は少なくとも片側にbase-skipping linkerがあり、TRAC 5は左右6F/5Fの非対称ペアです。したがって、現行の連続half-site・左右同finger数を前提とするPROGNOS探索へ直接適用できるペアは0/5でした。このデータを無理に採点せず、非連続half-siteと非対称ペアを将来実装した際の外部検証セットとして保持します。
+Supplementary Figure 21とTable 2を全文照合し、各1c linker位置、左右finger数、認識strand、FokIのN/C末端位置を復元しました。TRAC 1–4の飛ばし塩基をPROGNOS入力から除外し、TRAC 3–4ではN末端FokIに合わせてpolarityを反転し、TRAC 5は6F/5Fのまま採点します。各候補のhg38配列は[UCSC Genome Browser API](https://api.genome.ucsc.edu/)から取得し、両orientation・spacer 5–7 bpで最大scoreの配置を使いました。5/5 on-targetはscore 100で復元できました。
 
-再構成データSHA-256: `59a269de1330011afe4e36a224cec52747a0100e0df8eeab1f2ea3845114a77b`
+| TRAC | 構成 | off-target陽性 | masked PROGNOS ROC-AUC | Average precision | Recall@10 |
+|---|---|---:|---:|---:|---:|
+| 1 | canonical・両側1c | 4/23 | 0.421 | 0.200 | 2/4 |
+| 2 | canonical・右1c | 8/23 | 0.742 | 0.684 | 6/8 |
+| 3 | NC・両側1c | 4/23 | 0.803 | 0.378 | 4/4 |
+| 4 | NC・左1c | 0/26 | — | — | — |
+| 5 | canonical・6F/5F | 0/27 | — | — | — |
+
+122候補をpoolするとROC-AUC 0.759、average precision 0.369、Recall@20 6/16、Recall@50 13/16でした。ただし標的別ではTRAC 1がAUC 0.421でランダム未満です。したがって、base-skipping対応は探索可能範囲を広げますが、masked PROGNOSを切断陽性判定器へ昇格させる根拠にはなりません。TRAC 4–5は陽性0件なので、低score順位の正しさもAUCでは評価できません。
+
+実験・geometryデータSHA-256: `2c3d745b88c42e3de14dced4ad19652d438d4ea92f08d33d022608d76db19e24`
+
+hg38配列・scoreデータSHA-256: `ad630d308c628b067ba37fcc42bdddc960ba9299010a7f55bcc0612399c80a24`
 
 ## スコアの意味
 
@@ -127,7 +140,8 @@ module別公表値から得たL6+R6 B-scoreは20/21標的で原著表と一致�
 - 出力するのはDNA-binding ZFA配列までです。FokI cleavage domain、obligate heterodimer変異、NLS、発現カセット、コドン最適化は含みません。
 - ゲノムwide検索は塩基置換だけを扱い、bulge、挿入・欠失、構造変異は探索しません。
 - PROGNOS ZFN v2.0は3–4 finger ZFNを中心に構築されており、5–6 fingerは外挿です。
-- 現行設計は連続した左右同finger数のhalf-siteだけを扱い、base-skipping linkerや左右でfinger数が異なるペアは生成・採点しません。
+- 設計画面はC末端FokIのcanonical構成を生成します。N末端FokIを含むNC/CN/NN構成はPaschon外部データの採点には実装しましたが、ZFA–FokI全長配列としては出力しません。
+- base-skippingはPaschon 1cによる1-bp gapを各half-site 1個まで扱います。2-bp gap、複数gap、別linkerは未対応です。
 - 検索の完全列挙保証は「少なくとも片側のhalf-siteが3 mismatch以内」の範囲です。左右とも4 mismatch以上の部位は列挙しません。
 - クロマチン accessibility、発現量、細胞種依存性は評価しません。
 - 3-fingerでは3 mismatch以内のhalf-siteが急増するため、ブラウザ版のゲノム検索対象は4–6 fingerに限定しています。

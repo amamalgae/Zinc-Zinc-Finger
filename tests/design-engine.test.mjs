@@ -149,6 +149,27 @@ test("candidate includes B-score, Sp1C array, and spacer-matched FokI linker", (
   assert.equal(candidate.deepZfExactModules, 3);
 });
 
+test("asymmetric and 1c base-skipping designs preserve finger geometry", () => {
+  const leftRecognitionWithGap = "GAAGACAGAT";
+  const leftTop = reverseComplement(leftRecognitionWithGap);
+  const rightRecognition = "GCAGCCGGTAAC";
+  const target = `${leftTop}TTTTTT${rightRecognition}`;
+  const candidate = generateCandidates(target, leftTop.length + 3, 3, 20, {
+    rightFingerCount: 4,
+    leftSkipAfterFinger: 1,
+  }).find(({ id }) => id === "0-6");
+
+  assert.ok(candidate);
+  assert.equal(candidate.leftFingerCount, 3);
+  assert.equal(candidate.rightFingerCount, 4);
+  assert.equal(candidate.leftSkipAfterFinger, 1);
+  assert.equal(candidate.leftSkippedBaseOffset, 6);
+  assert.equal(candidate.leftRecognition, "GAAGACGAT");
+  assert.equal(candidate.rightRecognition, rightRecognition);
+  assert.match(candidate.leftArrayProtein, /THPRAPIPKP/);
+  assert.doesNotMatch(candidate.rightArrayProtein, /THPRAPIPKP/);
+});
+
 test("CSV export contains recognition strands and N-to-C finger signatures", () => {
   const candidate = generateCandidates(TEST_TARGET, 12, 3, 20).find(
     ({ id }) => id === "0-6",

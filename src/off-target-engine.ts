@@ -4,11 +4,15 @@ export type FastaContig = {
 };
 
 export type OffTargetPairType = "LR" | "RL" | "LL" | "RR";
+export type FokIEnd = "N" | "C";
+export type RecognitionStrand = "forward" | "reverse";
 
 export type OffTargetCandidateInput = {
   id: string;
   leftRecognition: string;
   rightRecognition: string;
+  leftSkippedBaseOffsets?: number[];
+  rightSkippedBaseOffsets?: number[];
   spacerLength: number;
   targetStart: number;
   footprintLength: number;
@@ -77,7 +81,35 @@ type SeedDescriptor = {
   category: HalfCategory;
   pattern: string;
   targetRecognition: string;
-  offset: number;
+  seedOffset: number;
+  seedPositions: number[];
+  fokIEnd: FokIEnd;
+};
+
+type SeedIndex = {
+  contiguous: Map<number, Map<number, SeedDescriptor[]>>;
+  spaced: Map<string, {
+    spanLength: number;
+    positions: number[];
+    codeIndex: Map<number, SeedDescriptor[]>;
+  }>;
+};
+
+export type PhysicalHalfSite = {
+  physicalTarget: string;
+  strand: RecognitionStrand;
+  skippedBaseOffsets?: number[];
+  fokIEnd?: FokIEnd;
+};
+
+export type PhysicalPairScore = {
+  score: number;
+  leftScore: number;
+  rightScore: number;
+  leftMismatches: number;
+  rightMismatches: number;
+  leftRecognition: string;
+  rightRecognition: string;
 };
 
 type TargetWindowOccurrence = {
@@ -101,7 +133,7 @@ const BASE_BITS: Record<string, number | undefined> = {
   T: 3,
 };
 
-function reverseComplementDna(value: string): string {
+export function reverseComplementDna(value: string): string {
   const complements: Record<string, string> = {
     A: "T",
     C: "G",
@@ -218,22 +250,29 @@ function fingerRawScore(targetTriplet: string, observedTriplet: string): number 
   return Math.max(0, 100 - mismatchPenalty + gBonus);
 }
 
-function rawHalfSiteScore(target: string, observed: string): number {
+function rawHalfSiteScore(target: string, observed: string, fokIEnd: FokIEnd): number {
   let score = 0;
   for (let offset = 0, finger = 0; offset < target.length; offset += 3, finger += 1) {
+    const polarityFinger = fokIEnd === "C"
+      ? finger
+      : target.length / 3 - finger - 1;
     score +=
       fingerRawScore(target.slice(offset, offset + 3), observed.slice(offset, offset + 3)) *
-      POLARITY[Math.min(finger, POLARITY.length - 1)];
+      POLARITY[Math.min(polarityFinger, POLARITY.length - 1)];
   }
   return score;
 }
 
-export function prognosHalfSiteScore(target: string, observed: string): number {
+export function prognosHalfSiteScore(
+  target: string,
+  observed: string,
+  fokIEnd: FokIEnd = "C",
+): number {
   if (target.length !== observed.length || target.length % 3 !== 0) {
     throw new Error("PROGNOS half-siteには同じ長さの3の倍数配列が必要です。");
   }
-  const intended = rawHalfSiteScore(target, target);
-  return intended === 0 ? 0 : (rawHalfSiteScore(target, observed) / intended) * 100;
+  const intended = rawHalfSiteScore(target, target, fokIEnd);
+  return intended === 0 ? 0 : (rawHalfSiteScore(target, observed, fokIEnd) / intended) * 100;
 }
 
 export function prognosPairScore(
@@ -241,10 +280,88 @@ export function prognosPairScore(
   leftObserved: string,
   rightTarget: string,
   rightObserved: string,
+  leftFokIEnd: FokIEnd = "C",
+  rightFokIEnd: FokIEnd = "C",
 ): number {
-  const left = prognosHalfSiteScore(leftTarget, leftObserved) / 100;
-  const right = prognosHalfSiteScore(rightTarget, rightObserved) / 100;
+  const left = prognosHalfSiteScore(leftTarget, leftObserved, leftFokIEnd) / 100;
+  const right = prognosHalfSiteScore(rightTarget, rightObserved, rightFokIEnd) / 100;
   return ((left ** DIMER_EXPONENT + right ** DIMER_EXPONENT) / 2) * 100;
+}
+
+function removeSkippedBases(value: string, skippedBaseOffsets: number[] = []): string {
+  const skipped = new Set(skippedBaseOffsets);
+  return [...value].filter((_, index) => !skipped.has(index)).join("");
+}
+
+function recognitionFromPhysical(
+  physical: string,
+  strand: RecognitionStrand,
+  skippedBaseOffsets: number[] = [],
+): string {
+  const compactPhysical = removeSkippedBases(physical, skippedBaseOffsets);
+  return strand === "forward" ? compactPhysical : reverseComplementDna(compactPhysical);
+}
+
+function mismatchCount(target: string, observed: string): number {
+  let mismatches = 0;
+  for (let index = 0; index < target.length; index += 1) {
+    if (target[index] !== observed[index]) mismatches += 1;
+  }
+  return mismatches;
+}
+
+export function scorePhysicalPair(
+  leftTarget: PhysicalHalfSite,
+  leftObservedPhysical: string,
+  rightTarget: PhysicalHalfSite,
+  rightObservedPhysical: string,
+): PhysicalPairScore {
+  if (
+    leftTarget.physicalTarget.length !== leftObservedPhysical.length ||
+    rightTarget.physicalTarget.length !== rightObservedPhysical.length
+  ) {
+    throw new Error("物理half-siteの標的と観測配列は同じ長さである必要があります。");
+  }
+  const leftTargetRecognition = recognitionFromPhysical(
+    leftTarget.physicalTarget,
+    leftTarget.strand,
+    leftTarget.skippedBaseOffsets,
+  );
+  const rightTargetRecognition = recognitionFromPhysical(
+    rightTarget.physicalTarget,
+    rightTarget.strand,
+    rightTarget.skippedBaseOffsets,
+  );
+  const leftRecognition = recognitionFromPhysical(
+    leftObservedPhysical,
+    leftTarget.strand,
+    leftTarget.skippedBaseOffsets,
+  );
+  const rightRecognition = recognitionFromPhysical(
+    rightObservedPhysical,
+    rightTarget.strand,
+    rightTarget.skippedBaseOffsets,
+  );
+  const leftFokIEnd = leftTarget.fokIEnd ?? "C";
+  const rightFokIEnd = rightTarget.fokIEnd ?? "C";
+  const leftScore = prognosHalfSiteScore(leftTargetRecognition, leftRecognition, leftFokIEnd);
+  const rightScore = prognosHalfSiteScore(rightTargetRecognition, rightRecognition, rightFokIEnd);
+  return {
+    score: prognosPairScore(
+      leftTargetRecognition,
+      leftRecognition,
+      rightTargetRecognition,
+      rightRecognition,
+      leftFokIEnd,
+      rightFokIEnd,
+    ),
+    leftScore,
+    rightScore,
+    leftMismatches: mismatchCount(leftTargetRecognition, leftRecognition),
+    rightMismatches: mismatchCount(rightTargetRecognition, rightRecognition),
+    leftRecognition,
+    rightRecognition,
+  };
 }
 
 function encodeKmer(value: string): number | null {
@@ -273,7 +390,29 @@ function hammingOneVariantCodes(seed: string): number[] {
   return [...variants];
 }
 
-function hammingDistanceAt(
+function patternFromRecognition(
+  recognition: string,
+  skippedBaseOffsets: number[] = [],
+): string {
+  const offsets = [...skippedBaseOffsets].sort((a, b) => a - b);
+  let pattern = recognition;
+  let inserted = 0;
+  for (const offset of offsets) {
+    pattern = `${pattern.slice(0, offset + inserted)}.${pattern.slice(offset + inserted)}`;
+    inserted += 1;
+  }
+  return pattern;
+}
+
+function reversePattern(pattern: string): string {
+  return pattern
+    .split("")
+    .reverse()
+    .map((base) => base === "." ? "." : reverseComplementDna(base))
+    .join("");
+}
+
+function patternHammingDistanceAt(
   sequence: string,
   start: number,
   pattern: string,
@@ -282,9 +421,10 @@ function hammingDistanceAt(
   if (start < 0 || start + pattern.length > sequence.length) return null;
   let mismatches = 0;
   for (let index = 0; index < pattern.length; index += 1) {
+    const expected = pattern[index];
     const observed = sequence[start + index];
     if (BASE_BITS[observed] === undefined) return null;
-    if (observed !== pattern[index]) {
+    if (expected !== "." && observed !== expected) {
       mismatches += 1;
       if (mismatches > limit) return null;
     }
@@ -292,43 +432,94 @@ function hammingDistanceAt(
   return mismatches;
 }
 
-function buildSeedIndex(candidates: OffTargetCandidateInput[]) {
-  const byLength = new Map<number, Map<number, SeedDescriptor[]>>();
+function recognitionFromPatternAt(
+  sequence: string,
+  start: number,
+  pattern: string,
+  reversePhysical: boolean,
+): string | null {
+  if (start < 0 || start + pattern.length > sequence.length) return null;
+  const compact = [...pattern]
+    .map((expected, index) => expected === "." ? "" : sequence[start + index])
+    .join("");
+  if (/[^ACGT]/.test(compact)) return null;
+  return reversePhysical ? reverseComplementDna(compact) : compact;
+}
+
+function seedPartitions(pattern: string) {
+  const recognizedPositions = [...pattern]
+    .map((base, index) => base === "." ? null : index)
+    .filter((index): index is number => index !== null);
+  const split = Math.floor(recognizedPositions.length / 2);
+  return [recognizedPositions.slice(0, split), recognizedPositions.slice(split)];
+}
+
+function buildSeedIndex(candidates: OffTargetCandidateInput[]): SeedIndex {
+  const seedIndex: SeedIndex = {
+    contiguous: new Map(),
+    spaced: new Map(),
+  };
 
   const addPattern = (
     candidateIndex: number,
     category: HalfCategory,
     pattern: string,
     targetRecognition: string,
+    fokIEnd: FokIEnd = "C",
   ) => {
-    const split = Math.floor(pattern.length / 2);
-    for (const offset of [0, split]) {
-      const seed = pattern.slice(offset, offset === 0 ? split : pattern.length);
-      const lengthIndex = byLength.get(seed.length) ?? new Map<number, SeedDescriptor[]>();
-      byLength.set(seed.length, lengthIndex);
+    for (const absolutePositions of seedPartitions(pattern)) {
+      const seedOffset = absolutePositions[0];
+      const seedPositions = absolutePositions.map((position) => position - seedOffset);
+      const seed = absolutePositions.map((position) => pattern[position]).join("");
       const descriptor: SeedDescriptor = {
         candidateIndex,
         category,
         pattern,
         targetRecognition,
-        offset,
+        seedOffset,
+        seedPositions,
+        fokIEnd,
       };
+      const spanLength = seedPositions.at(-1)! + 1;
+      const contiguous = seedPositions.every((position, index) => position === index);
+      let codeIndex: Map<number, SeedDescriptor[]>;
+      if (contiguous) {
+        codeIndex = seedIndex.contiguous.get(spanLength) ?? new Map();
+        seedIndex.contiguous.set(spanLength, codeIndex);
+      } else {
+        const key = `${spanLength}:${seedPositions.join(",")}`;
+        const group = seedIndex.spaced.get(key) ?? {
+          spanLength,
+          positions: seedPositions,
+          codeIndex: new Map<number, SeedDescriptor[]>(),
+        };
+        seedIndex.spaced.set(key, group);
+        codeIndex = group.codeIndex;
+      }
       for (const code of hammingOneVariantCodes(seed)) {
-        const descriptors = lengthIndex.get(code) ?? [];
+        const descriptors = codeIndex.get(code) ?? [];
         descriptors.push(descriptor);
-        lengthIndex.set(code, descriptors);
+        codeIndex.set(code, descriptors);
       }
     }
   };
 
   candidates.forEach((candidate, candidateIndex) => {
-    addPattern(candidateIndex, "leftL", reverseComplementDna(candidate.leftRecognition), candidate.leftRecognition);
-    addPattern(candidateIndex, "rightL", candidate.leftRecognition, candidate.leftRecognition);
-    addPattern(candidateIndex, "leftR", reverseComplementDna(candidate.rightRecognition), candidate.rightRecognition);
-    addPattern(candidateIndex, "rightR", candidate.rightRecognition, candidate.rightRecognition);
+    const leftPattern = patternFromRecognition(
+      candidate.leftRecognition,
+      candidate.leftSkippedBaseOffsets,
+    );
+    const rightPattern = patternFromRecognition(
+      candidate.rightRecognition,
+      candidate.rightSkippedBaseOffsets,
+    );
+    addPattern(candidateIndex, "leftL", reversePattern(leftPattern), candidate.leftRecognition);
+    addPattern(candidateIndex, "rightL", leftPattern, candidate.leftRecognition);
+    addPattern(candidateIndex, "leftR", reversePattern(rightPattern), candidate.rightRecognition);
+    addPattern(candidateIndex, "rightR", rightPattern, candidate.rightRecognition);
   });
 
-  return byLength;
+  return seedIndex;
 }
 
 function emptyHalfMatches(): CandidateHalfMatches {
@@ -348,7 +539,45 @@ function findHalfMatches(
 ): CandidateHalfMatches[] {
   const matches = candidates.map(() => emptyHalfMatches());
 
-  for (const [seedLength, codeIndex] of seedIndex) {
+  const registerDescriptors = (
+    descriptors: SeedDescriptor[] | undefined,
+    seedStart: number,
+  ) => {
+    if (!descriptors) return;
+    for (const descriptor of descriptors) {
+      const fullStart = seedStart - descriptor.seedOffset;
+      const categoryMatches = matches[descriptor.candidateIndex][descriptor.category];
+      if (categoryMatches.has(fullStart)) continue;
+      const mismatches = patternHammingDistanceAt(
+        sequence,
+        fullStart,
+        descriptor.pattern,
+        maxMismatches,
+      );
+      if (mismatches === null) continue;
+      if (categoryMatches.size >= MAX_HALF_HITS_PER_CATEGORY) {
+        throw new Error("half-site候補が多すぎます。4–6 fingerを使用するか、候補数を減らしてください。");
+      }
+      const recognition = recognitionFromPatternAt(
+        sequence,
+        fullStart,
+        descriptor.pattern,
+        descriptor.category.startsWith("left"),
+      );
+      if (!recognition) continue;
+      categoryMatches.set(fullStart, {
+        mismatches,
+        recognition,
+        score: prognosHalfSiteScore(
+          descriptor.targetRecognition,
+          recognition,
+          descriptor.fokIEnd,
+        ),
+      });
+    }
+  };
+
+  for (const [seedLength, codeIndex] of seedIndex.contiguous) {
     const mask = (1 << (seedLength * 2)) - 1;
     let code = 0;
     let validLength = 0;
@@ -364,33 +593,23 @@ function findHalfMatches(
       validLength += 1;
       if (validLength < seedLength) continue;
       const seedStart = position - seedLength + 1;
-      const descriptors = codeIndex.get(code);
-      if (!descriptors) continue;
+      registerDescriptors(codeIndex.get(code), seedStart);
+    }
+  }
 
-      for (const descriptor of descriptors) {
-        const fullStart = seedStart - descriptor.offset;
-        const categoryMatches = matches[descriptor.candidateIndex][descriptor.category];
-        if (categoryMatches.has(fullStart)) continue;
-        const mismatches = hammingDistanceAt(
-          sequence,
-          fullStart,
-          descriptor.pattern,
-          maxMismatches,
-        );
-        if (mismatches === null) continue;
-        if (categoryMatches.size >= MAX_HALF_HITS_PER_CATEGORY) {
-          throw new Error("half-site候補が多すぎます。4–6 fingerを使用するか、候補数を減らしてください。");
+  for (const { spanLength, positions, codeIndex } of seedIndex.spaced.values()) {
+    for (let seedStart = 0; seedStart + spanLength <= sequence.length; seedStart += 1) {
+      let code = 0;
+      let valid = true;
+      for (const position of positions) {
+        const bits = BASE_BITS[sequence[seedStart + position]];
+        if (bits === undefined) {
+          valid = false;
+          break;
         }
-        const physicalSite = sequence.slice(fullStart, fullStart + descriptor.pattern.length);
-        const recognition = descriptor.category.startsWith("left")
-          ? reverseComplementDna(physicalSite)
-          : physicalSite;
-        categoryMatches.set(fullStart, {
-          mismatches,
-          recognition,
-          score: prognosHalfSiteScore(descriptor.targetRecognition, recognition),
-        });
+        code = (code << 2) | bits;
       }
+      if (valid) registerDescriptors(codeIndex.get(code), seedStart);
     }
   }
 
@@ -487,20 +706,33 @@ function registerHit(
   insertTopHit(summary, hit, maxResults);
 }
 
+type SearchHalfDefinition = {
+  targetRecognition: string;
+  pattern: string;
+  reversePhysical: boolean;
+  fokIEnd: FokIEnd;
+};
+
 function observeHalf(
   sequence: string,
   start: number,
-  targetRecognition: string,
-  reversePhysicalSite: boolean,
+  definition: SearchHalfDefinition,
 ): HalfMatch | null {
-  if (start < 0 || start + targetRecognition.length > sequence.length) return null;
-  const physicalSite = sequence.slice(start, start + targetRecognition.length);
-  if (physicalSite.length !== targetRecognition.length || /[^ACGT]/.test(physicalSite)) return null;
-  const recognition = reversePhysicalSite ? reverseComplementDna(physicalSite) : physicalSite;
+  const recognition = recognitionFromPatternAt(
+    sequence,
+    start,
+    definition.pattern,
+    definition.reversePhysical,
+  );
+  if (!recognition) return null;
   return {
-    mismatches: hammingDistanceAt(recognition, 0, targetRecognition, targetRecognition.length) ?? 0,
+    mismatches: mismatchCount(definition.targetRecognition, recognition),
     recognition,
-    score: prognosHalfSiteScore(targetRecognition, recognition),
+    score: prognosHalfSiteScore(
+      definition.targetRecognition,
+      recognition,
+      definition.fokIEnd,
+    ),
   };
 }
 
@@ -511,21 +743,20 @@ function pairMatchesFromEitherAnchor(
   leftAnchors: Map<number, HalfMatch>,
   rightAnchors: Map<number, HalfMatch>,
   pairType: OffTargetPairType,
-  leftTarget: string,
-  rightTarget: string,
+  leftDefinition: SearchHalfDefinition,
+  rightDefinition: SearchHalfDefinition,
   intended: ReturnType<typeof intendedPairForCandidate>,
   summary: CandidateSpecificitySummary,
   maxResults: number,
 ) {
-  const halfLength = leftTarget.length;
+  const leftSpanLength = leftDefinition.pattern.length;
   for (const [position, left] of leftAnchors) {
     for (const spacerLength of [5, 6, 7]) {
-      const rightPosition = position + halfLength + spacerLength;
+      const rightPosition = position + leftSpanLength + spacerLength;
       const right = rightAnchors.get(rightPosition) ?? observeHalf(
         contig.sequence,
         rightPosition,
-        rightTarget,
-        false,
+        rightDefinition,
       );
       if (!right) continue;
       const isIntended =
@@ -545,7 +776,14 @@ function pairMatchesFromEitherAnchor(
           rightSite: right.recognition,
           leftMismatches: left.mismatches,
           rightMismatches: right.mismatches,
-          score: prognosPairScore(leftTarget, left.recognition, rightTarget, right.recognition),
+          score: prognosPairScore(
+            leftDefinition.targetRecognition,
+            left.recognition,
+            rightDefinition.targetRecognition,
+            right.recognition,
+            leftDefinition.fokIEnd,
+            rightDefinition.fokIEnd,
+          ),
           isIntended,
         },
         maxResults,
@@ -555,9 +793,9 @@ function pairMatchesFromEitherAnchor(
 
   for (const [rightPosition, right] of rightAnchors) {
     for (const spacerLength of [5, 6, 7]) {
-      const position = rightPosition - halfLength - spacerLength;
+      const position = rightPosition - leftSpanLength - spacerLength;
       if (leftAnchors.has(position)) continue;
-      const left = observeHalf(contig.sequence, position, leftTarget, true);
+      const left = observeHalf(contig.sequence, position, leftDefinition);
       if (!left) continue;
       const isIntended =
         intended?.contigIndex === contigIndex &&
@@ -576,7 +814,14 @@ function pairMatchesFromEitherAnchor(
           rightSite: right.recognition,
           leftMismatches: left.mismatches,
           rightMismatches: right.mismatches,
-          score: prognosPairScore(leftTarget, left.recognition, rightTarget, right.recognition),
+          score: prognosPairScore(
+            leftDefinition.targetRecognition,
+            left.recognition,
+            rightDefinition.targetRecognition,
+            right.recognition,
+            leftDefinition.fokIEnd,
+            rightDefinition.fokIEnd,
+          ),
           isIntended,
         },
         maxResults,
@@ -589,17 +834,54 @@ function validateCandidates(candidates: OffTargetCandidateInput[], maxMismatches
   if (!candidates.length) throw new Error("検索するZFN候補がありません。");
   if (maxMismatches !== 3) throw new Error("現在の完全列挙はhalf-siteあたり3 mismatchに対応します。");
   for (const candidate of candidates) {
-    const length = candidate.leftRecognition.length;
+    const lengths = [candidate.leftRecognition.length, candidate.rightRecognition.length];
+    const leftSkipped = candidate.leftSkippedBaseOffsets ?? [];
+    const rightSkipped = candidate.rightSkippedBaseOffsets ?? [];
     if (
-      length < 12 ||
-      length > 18 ||
-      length % 3 !== 0 ||
-      candidate.rightRecognition.length !== length ||
+      lengths.some((length) => length < 12 || length > 18 || length % 3 !== 0) ||
+      leftSkipped.some((offset) => !Number.isInteger(offset) || offset < 3 || offset > lengths[0] - 3 || offset % 3 !== 0) ||
+      rightSkipped.some((offset) => !Number.isInteger(offset) || offset < 3 || offset > lengths[1] - 3 || offset % 3 !== 0) ||
+      leftSkipped.length > 1 ||
+      rightSkipped.length > 1 ||
       /[^ACGT]/.test(candidate.leftRecognition + candidate.rightRecognition)
     ) {
-      throw new Error("ゲノム検索は同じ長さの4–6 finger ZFNペアに対応します。");
+      throw new Error("ゲノム検索は4–6 finger、左右非対称、片側1個までの1-bp base-skippingに対応します。");
     }
   }
+}
+
+function candidateSearchDefinitions(candidate: OffTargetCandidateInput) {
+  const leftDirectPattern = patternFromRecognition(
+    candidate.leftRecognition,
+    candidate.leftSkippedBaseOffsets,
+  );
+  const rightDirectPattern = patternFromRecognition(
+    candidate.rightRecognition,
+    candidate.rightSkippedBaseOffsets,
+  );
+  const leftDirect: SearchHalfDefinition = {
+    targetRecognition: candidate.leftRecognition,
+    pattern: leftDirectPattern,
+    reversePhysical: false,
+    fokIEnd: "C",
+  };
+  const leftReverse: SearchHalfDefinition = {
+    ...leftDirect,
+    pattern: reversePattern(leftDirectPattern),
+    reversePhysical: true,
+  };
+  const rightDirect: SearchHalfDefinition = {
+    targetRecognition: candidate.rightRecognition,
+    pattern: rightDirectPattern,
+    reversePhysical: false,
+    fokIEnd: "C",
+  };
+  const rightReverse: SearchHalfDefinition = {
+    ...rightDirect,
+    pattern: reversePattern(rightDirectPattern),
+    reversePhysical: true,
+  };
+  return { leftDirect, leftReverse, rightDirect, rightReverse };
 }
 
 export function searchGenomeOffTargets(
@@ -643,10 +925,11 @@ export function searchGenomeOffTargets(
       const matches = halfMatches[candidateIndex];
       const summary = summaries[candidateIndex];
       const intended = intendedPairs[candidateIndex];
-      pairMatchesFromEitherAnchor(candidate, contig, contigIndex, matches.leftL, matches.rightR, "LR", candidate.leftRecognition, candidate.rightRecognition, intended, summary, maxResults);
-      pairMatchesFromEitherAnchor(candidate, contig, contigIndex, matches.leftR, matches.rightL, "RL", candidate.rightRecognition, candidate.leftRecognition, intended, summary, maxResults);
-      pairMatchesFromEitherAnchor(candidate, contig, contigIndex, matches.leftL, matches.rightL, "LL", candidate.leftRecognition, candidate.leftRecognition, intended, summary, maxResults);
-      pairMatchesFromEitherAnchor(candidate, contig, contigIndex, matches.leftR, matches.rightR, "RR", candidate.rightRecognition, candidate.rightRecognition, intended, summary, maxResults);
+      const definitions = candidateSearchDefinitions(candidate);
+      pairMatchesFromEitherAnchor(candidate, contig, contigIndex, matches.leftL, matches.rightR, "LR", definitions.leftReverse, definitions.rightDirect, intended, summary, maxResults);
+      pairMatchesFromEitherAnchor(candidate, contig, contigIndex, matches.leftR, matches.rightL, "RL", definitions.rightReverse, definitions.leftDirect, intended, summary, maxResults);
+      pairMatchesFromEitherAnchor(candidate, contig, contigIndex, matches.leftL, matches.rightL, "LL", definitions.leftReverse, definitions.leftDirect, intended, summary, maxResults);
+      pairMatchesFromEitherAnchor(candidate, contig, contigIndex, matches.leftR, matches.rightR, "RR", definitions.rightReverse, definitions.rightDirect, intended, summary, maxResults);
     });
     searchedBases += contig.sequence.length;
     options.onProgress?.({

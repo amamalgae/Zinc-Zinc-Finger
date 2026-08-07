@@ -4,7 +4,7 @@
     "doi": "10.1038/s41467-019-08867-x",
     "sourceDataUrl": "https://media.springernature.com/original/springer-static/esm/art%3A10.1038%2Fs41467-019-08867-x/MediaObjects/41467_2019_8867_MOESM2_ESM.xlsx",
     "supplementUrl": "https://media.springernature.com/original/springer-static/esm/art%3A10.1038%2Fs41467-019-08867-x/MediaObjects/41467_2019_8867_MOESM1_ESM.pdf",
-    "notes": "Cellular indel rows are transcribed from Fig. 5 source data. Physical ZFN spans and architecture metadata were transcribed from Supplementary Figure 21. Four of five pairs contain base-skipping linkers; TRAC 5 has unequal 6F/5F arms. These rows are an external experimental cohort but are not scored with contiguous equal-arm PROGNOS."
+    "notes": "Cellular indel rows are transcribed from Fig. 5 source data. Physical ZFN spans and architecture metadata were transcribed from Supplementary Figure 21; 1c linker locations and N/C-terminal FokI attachment were reconstructed from Supplementary Table 2. Four of five pairs contain base-skipping linkers; TRAC 5 has unequal 6F/5F arms. Derived hg38 sequences and masked PROGNOS scores are stored separately in paschon-2019-trac-sequence-scores.json."
   },
   "sites": [
     {
@@ -17,7 +17,25 @@
         "baseSkipping": [
           1,
           1
-        ]
+        ],
+        "geometry": {
+          "left": {
+            "zfnId": "55204",
+            "fingerCount": 6,
+            "strand": "reverse",
+            "fokIEnd": "C",
+            "skipAfterFinger": 2,
+            "skippedBaseOffsetsPhysical": [6]
+          },
+          "right": {
+            "zfnId": "53759",
+            "fingerCount": 6,
+            "strand": "forward",
+            "fokIEnd": "C",
+            "skipAfterFinger": 4,
+            "skippedBaseOffsetsPhysical": [6]
+          }
+        }
       },
       "rows": [
         {
@@ -392,7 +410,25 @@
         "baseSkipping": [
           0,
           1
-        ]
+        ],
+        "geometry": {
+          "left": {
+            "zfnId": "55229",
+            "fingerCount": 5,
+            "strand": "reverse",
+            "fokIEnd": "C",
+            "skipAfterFinger": null,
+            "skippedBaseOffsetsPhysical": []
+          },
+          "right": {
+            "zfnId": "53785",
+            "fingerCount": 5,
+            "strand": "forward",
+            "fokIEnd": "C",
+            "skipAfterFinger": 3,
+            "skippedBaseOffsetsPhysical": [6]
+          }
+        }
       },
       "rows": [
         {
@@ -767,7 +803,25 @@
         "baseSkipping": [
           1,
           1
-        ]
+        ],
+        "geometry": {
+          "left": {
+            "zfnId": "55266",
+            "fingerCount": 6,
+            "strand": "forward",
+            "fokIEnd": "N",
+            "skipAfterFinger": 2,
+            "skippedBaseOffsetsPhysical": [12]
+          },
+          "right": {
+            "zfnId": "53853",
+            "fingerCount": 6,
+            "strand": "forward",
+            "fokIEnd": "C",
+            "skipAfterFinger": 4,
+            "skippedBaseOffsetsPhysical": [6]
+          }
+        }
       },
       "rows": [
         {
@@ -1142,7 +1196,25 @@
         "baseSkipping": [
           1,
           0
-        ]
+        ],
+        "geometry": {
+          "left": {
+            "zfnId": "53885",
+            "fingerCount": 6,
+            "strand": "forward",
+            "fokIEnd": "N",
+            "skipAfterFinger": 4,
+            "skippedBaseOffsetsPhysical": [6]
+          },
+          "right": {
+            "zfnId": "53909",
+            "fingerCount": 6,
+            "strand": "forward",
+            "fokIEnd": "C",
+            "skipAfterFinger": null,
+            "skippedBaseOffsetsPhysical": []
+          }
+        }
       },
       "rows": [
         {
@@ -1562,7 +1634,25 @@
         "baseSkipping": [
           0,
           0
-        ]
+        ],
+        "geometry": {
+          "left": {
+            "zfnId": "55248",
+            "fingerCount": 6,
+            "strand": "reverse",
+            "fokIEnd": "C",
+            "skipAfterFinger": null,
+            "skippedBaseOffsetsPhysical": []
+          },
+          "right": {
+            "zfnId": "55254",
+            "fingerCount": 5,
+            "strand": "forward",
+            "fokIEnd": "C",
+            "skipAfterFinger": null,
+            "skippedBaseOffsetsPhysical": []
+          }
+        }
       },
       "rows": [
         {
