@@ -22,9 +22,9 @@ import type {
 } from "./off-target-engine.ts";
 import { selectDiversePortfolio } from "./portfolio.ts";
 import {
-  buildZfnPair,
-  constructsToFasta,
-  constructsToGenBank,
+  bicistronicConstructsToFasta,
+  bicistronicConstructsToGenBank,
+  buildBicistronicZfn,
   type CodonPreset,
 } from "./construct-output.ts";
 import {
@@ -267,8 +267,8 @@ export default function Home() {
   );
   const selected =
     rankedCandidates.find((candidate) => candidate.id === selectedId) ?? rankedCandidates[0];
-  const selectedConstructs = useMemo(
-    () => selected ? buildZfnPair(selected, codonPreset) : [],
+  const selectedConstruct = useMemo(
+    () => selected ? buildBicistronicZfn(selected, codonPreset) : null,
     [selected, codonPreset],
   );
   const cleavageAssay = useMemo(
@@ -282,7 +282,7 @@ export default function Home() {
     [dna, selected],
   );
   const portfolioConstructs = useMemo(
-    () => portfolio.flatMap(({ candidate }) => buildZfnPair(candidate, codonPreset)),
+    () => portfolio.map(({ candidate }) => buildBicistronicZfn(candidate, codonPreset)),
     [portfolio, codonPreset],
   );
   const contextCandidates = useMemo(
@@ -956,8 +956,8 @@ export default function Home() {
           <section className="construct-output">
             <div className="construct-heading">
               <div>
-                <span>Complete coding constructs</span>
-                <h3>SV40 NLS–Sp1C ZFA–linker–FokI ELD/KKR</h3>
+                <span>Single-ORF coding construct</span>
+                <h3>Left ELD–GSG-T2A–Right KKR · SV40 NLS on both monomers</h3>
               </div>
               <label>
                 <span>Codon preset</span>
@@ -967,39 +967,57 @@ export default function Home() {
                 </select>
               </label>
             </div>
-            <div className="construct-grid">
-              {selectedConstructs.map((construct) => (
-                <div key={construct.name}>
-                  <span>{construct.arm === "left" ? "Left" : "Right"} · FokI-{construct.fokIVariant}</span>
-                  <strong>{construct.protein.length} aa · {construct.cds.length} bp</strong>
-                  <small>CDS GC {construct.gcPercent.toFixed(1)}%</small>
-                  <code>{construct.protein}</code>
+            {selectedConstruct && (
+              <div className="construct-grid">
+                <div className="bicistronic-card">
+                  <span>Bicistronic polyprotein · one ORF</span>
+                  <strong>{selectedConstruct.protein.length} aa · {selectedConstruct.cds.length} bp</strong>
+                  <small>CDS GC {selectedConstruct.gcPercent.toFixed(1)}% · GSG-T2A: GSGEGRGSLLTCGDVEENPG↓P</small>
+                  <code>{selectedConstruct.protein}</code>
                 </div>
-              ))}
-            </div>
+                <div>
+                  <span>Processed left · FokI-ELD</span>
+                  <strong>{selectedConstruct.processedLeftProtein.length} aa</strong>
+                  <small>C末端にGSG-T2A由来20 aaが残ります</small>
+                  <code>{selectedConstruct.processedLeftProtein}</code>
+                </div>
+                <div>
+                  <span>Processed right · FokI-KKR</span>
+                  <strong>{selectedConstruct.processedRightProtein.length} aa</strong>
+                  <small>N末端はPro–Met–SV40 NLSです</small>
+                  <code>{selectedConstruct.processedRightProtein}</code>
+                </div>
+              </div>
+            )}
             <div className="construct-actions">
-              <button type="button" onClick={() => downloadText(
-                constructsToFasta(selectedConstructs, "protein"),
+              <button type="button" disabled={!selectedConstruct} onClick={() => selectedConstruct && downloadText(
+                bicistronicConstructsToFasta([selectedConstruct], "protein"),
                 `zfn-${selected.id}-protein.fasta`,
               )}>Protein FASTA</button>
-              <button type="button" onClick={() => downloadText(
-                constructsToFasta(selectedConstructs, "cds"),
+              <button type="button" disabled={!selectedConstruct} onClick={() => selectedConstruct && downloadText(
+                bicistronicConstructsToFasta([selectedConstruct], "cds"),
                 `zfn-${selected.id}-${codonPreset}-cds.fasta`,
               )}>CDS FASTA</button>
-              <button type="button" onClick={() => downloadText(
-                constructsToGenBank(selectedConstructs, codonPreset),
+              <button type="button" disabled={!selectedConstruct} onClick={() => selectedConstruct && downloadText(
+                bicistronicConstructsToGenBank([selectedConstruct], codonPreset),
                 `zfn-${selected.id}-${codonPreset}.gb`,
               )}>GenBank</button>
               <button type="button" disabled={!portfolioConstructs.length} onClick={() => downloadText(
-                constructsToFasta(portfolioConstructs, "cds"),
+                bicistronicConstructsToFasta(portfolioConstructs, "cds"),
                 `zfn-portfolio-3-${codonPreset}-cds.fasta`,
               )}>推奨3組 CDS</button>
             </div>
             <p className="construct-caution">
               左をELD、右をKKRとしてFokI P14870 aa 384–579へQ486E/N496D/I499LまたはE490K/H537R/I538Kを導入しています。
-              出力は合成可能なORFですが、promoter・terminator・ベクターbackboneは含みません。
+              Katayama 2025（DOI 10.3390/ijms26157602）と同じGSG-T2A配列・left→right順・下流開始Met保持を採用しています。
+              同論文の直接実験はZF-ND1であり、このSp1C–FokI ELD/KKR構成および緑藻では未検証です。出力にpromoter・terminator・ベクターbackboneは含みません。
               Auxenochlorella presetは公開1056 codon由来の小標本なので、合成前に使用株・核発現系で再確認してください。
             </p>
+            <div className="origin-list">
+              <span>ZFN ORFの核酸供与体候補・設計由来（全候補共通）</span>
+              <p><i>Betapolyomavirus macacae</i>（SV40 NLS） · <i>Homo sapiens</i>（Sp1由来Sp1C framework） · <i>Mus musculus</i>（Zif268/C7由来libraryの設計系譜） · <i>Flavobacterium okeanokoites</i>（FokI） · <i>Alphapermutotetravirus thoseae</i>（Thosea asigna virus; T2A）</p>
+              <small>recognition helix、ELD/KKR変異、linker、codon optimizationは人工配列です。候補ごとに追加される生物種はありません。</small>
+            </div>
           </section>
 
           {cleavageAssay && (
@@ -1066,7 +1084,7 @@ export default function Home() {
               B-score ≥15の構成はBhakta et al.の268構成中52%がSSA活性ありでしたが、これは本候補の成功確率ではありません。
               TSO不一致は原著どおり警告であり、候補を自動除外しません。expanded SVM値は結合確率ではなくPWM整合度です。
               Zhu 2011の29ペアは別module archiveで現行配列と0/29一致のため、順位学習には混ぜていません。
-              完全ORF出力にはFokIとNLSを含みますが、promoter・terminator・ベクターbackboneと
+              単一ORF出力には左右FokI、各monomerのNLS、GSG-T2Aを含みますが、promoter・terminator・ベクターbackboneと
               クロマチン状態の評価は含みません。FASTA検索後はB-score閾値内でゲノム特異性を優先して並べ替えます。
             </p>
           </div>
