@@ -1,6 +1,6 @@
 # Scientific data and third-party notices
 
-This project combines an independent implementation of published zinc-finger modular-assembly methods with a browser-oriented conversion of the published DeepZF PWMpredictor. It does not include code or data from ZFDesign, PROGNOS, ZFN-Site, or ZiFiT.
+This project contains independent implementations of published zinc-finger modular-assembly, specificity-scoring, and recognition-scoring methods. It does not include code or data from ZFDesign, PROGNOS, ZFN-Site, or ZiFiT.
 
 ## PROGNOS ZFN v2.0
 
@@ -35,14 +35,6 @@ The recognition-helix sequences, target triplets, and module recommendations in 
 
 The code in this repository was written independently. The repository's MIT license applies to that code and does not purport to relicense third-party publications, patents, plasmids, or biological materials.
 
-## Chen 2013 external benchmark data
-
-`data/chen-2013-zfn-benchmark.json` is a machine-readable extraction of ZFN target sites, somatic indel measurements, and the 12 amino acids between Cys2 and His1 for each zinc finger, derived from Supplementary Table S1 of:
-
-- Chen S et al. (2013), *A large-scale in vivo analysis reveals that TALENs are significantly more mutagenic than ZFNs generated using context-dependent assembly*, DOI: 10.1093/nar/gks1356. The article and supplementary data are distributed under CC BY-NC 3.0.
-
-Source workbook: `supp_gks1356_nar-02876-h-2012-File008.xlsx`, SHA-256 `d37402e74baf828d1524daa608d07f57b49dc15cb572773a768775be48305902`, retrieved from the Europe PMC supplementary-files endpoint for PMC3575824. The repository MIT license does not relicense this extracted scientific dataset.
-
 ## Zhu 2011 modular-assembly applicability data
 
 `data/zhu-2011-ma-zfn-benchmark.json` is a machine-readable transcription of target sites, recognition helices, bacterial one-hybrid measurements, somatic lesion measurements, and founder rates from Supplementary Tables S1, S5, and S7 of:
@@ -51,26 +43,16 @@ Source workbook: `supp_gks1356_nar-02876-h-2012-File008.xlsx`, SHA-256 `d37402e7
 
 The data are used only to test whether this different, position-specific three-finger module archive can directly validate the Barbas extended-MA proteins generated here. The repository MIT license does not relicense the article, its supplementary workbooks, or the extracted scientific data.
 
-## DeepZF
+## Persikov–Singh expanded linear SVM
 
-The DeepZF PWMpredictor is used as an attributed forward-model cross-check:
+`src/persikov-svm.ts` is an independent TypeScript implementation of the published seven-contact expanded linear SVM and overlapping four-base recognition model described in:
 
-- Aizenshtein-Gazit S, Orenstein Y (2022), *DeepZF: improved DNA-binding prediction of C2H2-zinc-finger proteins by deep transfer learning*, DOI: 10.1093/bioinformatics/btac469.
-- Repository: <https://github.com/OrensteinLab/DeepZF>
+- Persikov AV, Singh M (2014), *De novo prediction of DNA-binding specificities for Cys2His2 zinc finger proteins*, DOI: 10.1093/nar/gkt890.
+- Official download page: <https://zf.princeton.edu/download.php>
 
-Included derivative files:
+The implementation parses an official `SVMl7.mod` file supplied locally by the user. No pretrained model, standalone predictor executable, source archive, or training dataset from the official distribution is included in this repository. The model is processed only in the browser session and is not uploaded or persisted by the application.
 
-- `src/deepzf-pwm-weights.ts`: lossless Float32/base64 conversion of the inference weights in upstream `PWMpredictor/code/transfer_model100.h5`.
-- `src/deepzf-pwm.ts`: browser inference adapter implementing the published/original one-hot encoding and model architecture.
-- `scripts/convert-deepzf-pwm.mjs`: reproducible HDF5-to-TypeScript converter.
-
-Provenance:
-
-- Upstream repository: <https://github.com/OrensteinLab/DeepZF>
-- Upstream commit: `351da3013467631ad5390b71648680f34b2634fa`
-- Source model SHA-256: `2488eb1f07a26779f03bee946bc958d42213db560de3d9cb05c0ea9cab0e656d`
-
-As checked on 2026-08-06, the upstream repository supplied no LICENSE, COPYING, NOTICE, or other explicit code/model redistribution terms in its current branches, tags, history, or README. The repository MIT license therefore does not purport to license these DeepZF-derived weights. They are included with scientific attribution for research evaluation; users who need commercial redistribution rights should obtain clarification from the DeepZF authors.
+As checked on 2026-08-07, the official download and help pages requested citation of the associated papers but did not state an MTA requirement or an explicit software/model redistribution license. This project therefore does not redistribute those files or purport to grant rights in them. Public download availability is not itself a patent clearance or a license grant; users remain responsible for the terms applicable to their own use.
 
 ## ZFDesign
 

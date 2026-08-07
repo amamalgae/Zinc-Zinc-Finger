@@ -1,8 +1,3 @@
-import {
-  predictFingerPwm,
-  type FingerPwmPrediction,
-} from "./deepzf-pwm.ts";
-
 export type ModuleRecommendation = "favorable" | "unfavorable" | "not-evaluated";
 
 export type ZincFingerModule = {
@@ -11,7 +6,6 @@ export type ZincFingerModule = {
   recommendation: ModuleRecommendation;
   requiresTsoContext: boolean;
   bScore: number;
-  deepZf: FingerPwmPrediction;
 };
 
 // Experimentally selected Barbas one-finger archive.
@@ -100,7 +94,6 @@ export const moduleArchive: Readonly<Record<string, ZincFingerModule>> =
           requiresTsoContext:
             triplet[0] === "G" && triplet[2] === "G" && helix[2] === "D",
           bScore: publishedBScore,
-          deepZf: predictFingerPwm(helix, triplet),
         }),
       ]),
     ),
