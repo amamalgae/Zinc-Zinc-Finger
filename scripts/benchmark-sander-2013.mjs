@@ -1,10 +1,14 @@
 import fs from "node:fs";
+import { fileURLToPath } from "node:url";
 
-import { prognosPairScore } from "../src/off-target-engine.ts";
+import { prognosHalfSiteScore, prognosPairScore } from "../src/off-target-engine.ts";
 import { reverseComplement } from "../src/design-engine.ts";
 
 const dataset = JSON.parse(
   fs.readFileSync(new URL("../data/sander-2013-zfn-off-targets.json", import.meta.url), "utf8"),
+);
+const screenedDataset = JSON.parse(
+  fs.readFileSync(new URL("../data/sander-2013-zfn-screened-sites.json", import.meta.url), "utf8"),
 );
 
 function mismatches(a, b) {
@@ -42,6 +46,106 @@ function pearson(a, b) {
 
 function spearman(a, b) {
   return pearson(averageRanks(a), averageRanks(b));
+}
+
+function rocAuc(rows, scoreName) {
+  const positives = rows.filter(({ significant }) => significant);
+  const negatives = rows.filter(({ significant }) => !significant);
+  let credit = 0;
+  for (const positive of positives) {
+    for (const negative of negatives) {
+      if (positive[scoreName] > negative[scoreName]) credit += 1;
+      else if (positive[scoreName] === negative[scoreName]) credit += 0.5;
+    }
+  }
+  return credit / (positives.length * negatives.length);
+}
+
+function averagePrecision(rows, scoreName) {
+  const positiveCount = rows.filter(({ significant }) => significant).length;
+  const groups = Map.groupBy(rows, (row) => row[scoreName]);
+  let seen = 0;
+  let truePositives = 0;
+  let result = 0;
+  for (const [, group] of [...groups].sort(([left], [right]) => right - left)) {
+    const groupPositives = group.filter(({ significant }) => significant).length;
+    seen += group.length;
+    truePositives += groupPositives;
+    result += (groupPositives / positiveCount) * (truePositives / seen);
+  }
+  return result;
+}
+
+function recallAt(rows, scoreName, cutoff) {
+  const positives = rows.filter(({ significant }) => significant).length;
+  const recovered = [...rows]
+    .sort(
+      (left, right) =>
+        right[scoreName] - left[scoreName] ||
+        left.sourceRow - right.sourceRow ||
+        left.sourceBlock.localeCompare(right.sourceBlock),
+    )
+    .slice(0, cutoff)
+    .filter(({ significant }) => significant).length;
+  return { recovered, positives, recall: recovered / positives };
+}
+
+function analyzeScreenedCohort(name, nuclease) {
+  const halfLength = nuclease.halfSiteLength;
+  const leftTarget = reverseComplement(nuclease.onTarget.slice(0, halfLength));
+  const rightTarget = nuclease.onTarget.slice(-halfLength);
+  const rows = nuclease.rows.filter(({ isOnTarget }) => !isOnTarget).map((site) => {
+    const leftObserved = reverseComplement(site.sequence.slice(0, halfLength));
+    const rightObserved = site.sequence.slice(-halfLength);
+    const leftMismatches = mismatches(leftTarget, leftObserved);
+    const rightMismatches = mismatches(rightTarget, rightObserved);
+    const leftScore = prognosHalfSiteScore(leftTarget, leftObserved);
+    const rightScore = prognosHalfSiteScore(rightTarget, rightObserved);
+    return {
+      ...site,
+      prognosScore: prognosPairScore(leftTarget, leftObserved, rightTarget, rightObserved),
+      geometricHalfScore: Math.sqrt(leftScore * rightScore),
+      minimumHalfScore: Math.min(leftScore, rightScore),
+      identityScore: site.identity,
+      totalMismatchScore: -(leftMismatches + rightMismatches),
+      maximumHalfMismatchScore: -Math.max(leftMismatches, rightMismatches),
+      sanderClassifierScore: -site.classifierScore,
+    };
+  });
+  const scoreNames = [
+    "prognosScore",
+    "geometricHalfScore",
+    "minimumHalfScore",
+    "identityScore",
+    "totalMismatchScore",
+    "maximumHalfMismatchScore",
+    "sanderClassifierScore",
+  ];
+  const thresholdRows = rows.filter(({ prognosScore }) => prognosScore >= 50);
+  return {
+    name,
+    listedRows: nuclease.listedRows,
+    evaluableRowsIncludingOnTarget: nuclease.evaluableRows,
+    assayedOffTargets: rows.length,
+    positives: rows.filter(({ significant }) => significant).length,
+    matchedActiveControlCounts: rows.filter(({ matchedActiveControlCounts }) => matchedActiveControlCounts).length,
+    metrics: Object.fromEntries(
+      scoreNames.map((scoreName) => [
+        scoreName,
+        {
+          rocAuc: rocAuc(rows, scoreName),
+          averagePrecision: averagePrecision(rows, scoreName),
+          recallAt20: recallAt(rows, scoreName, 20),
+          recallAt50: recallAt(rows, scoreName, 50),
+        },
+      ]),
+    ),
+    fixedPrognosThreshold50: {
+      predictedPositive: thresholdRows.length,
+      truePositive: thresholdRows.filter(({ significant }) => significant).length,
+      totalPositive: rows.filter(({ significant }) => significant).length,
+    },
+  };
 }
 
 function analyzeNuclease(name, nuclease) {
@@ -108,39 +212,49 @@ function analyzeNuclease(name, nuclease) {
   };
 }
 
-const perNuclease = Object.entries(dataset.nucleases).map(([name, nuclease]) =>
-  analyzeNuclease(name, nuclease),
-);
-const allRows = perNuclease.flatMap(({ rows }) => rows);
-const summary = {
-  source: dataset.source,
-  perNuclease: perNuclease.map(({ rows: _rows, ...result }) => result),
-  pooled: {
-    sequenceRows: allRows.length,
-    uniqueLoci: new Set(allRows.map(({ locus }) => locus)).size,
-    oldBothWithinThree: allRows.filter(({ oldBothWithinThree }) => oldBothWithinThree).length,
-    eitherWithinThree: allRows.filter(({ eitherWithinThree }) => eitherWithinThree).length,
-    browserEngineCompatible: allRows.filter(({ browserEngineCompatible }) => browserEngineCompatible).length,
-    highActivity: allRows.filter(({ indelPercent }) => indelPercent >= 1).length,
-    highActivityEitherWithinThree: allRows.filter(
-      ({ indelPercent, eitherWithinThree }) => indelPercent >= 1 && eitherWithinThree,
-    ).length,
-    prognosScoreAtLeast50: allRows.filter(({ prognosScore }) => prognosScore >= 50).length,
-    spearman: {
-      prognosVsIndel: spearman(
-        allRows.map(({ prognosScore }) => prognosScore),
-        allRows.map(({ indelPercent }) => indelPercent),
-      ),
-      identityVsIndel: spearman(
-        allRows.map(({ totalMismatches }) => -totalMismatches),
-        allRows.map(({ indelPercent }) => indelPercent),
-      ),
-      sanderClassifierVsIndel: spearman(
-        allRows.map(({ classifierScore }) => -classifierScore),
-        allRows.map(({ indelPercent }) => indelPercent),
-      ),
+export function runSanderBenchmark() {
+  const perNuclease = Object.entries(dataset.nucleases).map(([name, nuclease]) =>
+    analyzeNuclease(name, nuclease),
+  );
+  const allRows = perNuclease.flatMap(({ rows }) => rows);
+  return {
+    source: dataset.source,
+    prospectivePositives: {
+      perNuclease: perNuclease.map(({ rows: _rows, ...result }) => result),
+      pooled: {
+        sequenceRows: allRows.length,
+        uniqueLoci: new Set(allRows.map(({ locus }) => locus)).size,
+        oldBothWithinThree: allRows.filter(({ oldBothWithinThree }) => oldBothWithinThree).length,
+        eitherWithinThree: allRows.filter(({ eitherWithinThree }) => eitherWithinThree).length,
+        browserEngineCompatible: allRows.filter(({ browserEngineCompatible }) => browserEngineCompatible).length,
+        highActivity: allRows.filter(({ indelPercent }) => indelPercent >= 1).length,
+        highActivityEitherWithinThree: allRows.filter(
+          ({ indelPercent, eitherWithinThree }) => indelPercent >= 1 && eitherWithinThree,
+        ).length,
+        prognosScoreAtLeast50: allRows.filter(({ prognosScore }) => prognosScore >= 50).length,
+        spearman: {
+          prognosVsIndel: spearman(
+            allRows.map(({ prognosScore }) => prognosScore),
+            allRows.map(({ indelPercent }) => indelPercent),
+          ),
+          identityVsIndel: spearman(
+            allRows.map(({ totalMismatches }) => -totalMismatches),
+            allRows.map(({ indelPercent }) => indelPercent),
+          ),
+          sanderClassifierVsIndel: spearman(
+            allRows.map(({ classifierScore }) => -classifierScore),
+            allRows.map(({ indelPercent }) => indelPercent),
+          ),
+        },
+      },
     },
-  },
-};
+    screenedCohorts: Object.entries(screenedDataset.nucleases).map(([name, nuclease]) =>
+      analyzeScreenedCohort(name, nuclease),
+    ),
+    screenedSource: screenedDataset.source,
+  };
+}
 
-console.log(JSON.stringify(summary, null, 2));
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  console.log(JSON.stringify(runSanderBenchmark(), null, 2));
+}

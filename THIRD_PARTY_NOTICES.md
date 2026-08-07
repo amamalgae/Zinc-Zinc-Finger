@@ -10,6 +10,22 @@ This project combines an independent implementation of published zinc-finger mod
 
 No PROGNOS source code, database, website content, or software assets are included. The repository MIT license applies to the independently written implementation and does not purport to relicense the publication or original PROGNOS software.
 
+## Sander 2013 external specificity data
+
+`data/sander-2013-zfn-off-targets.json` and `data/sander-2013-zfn-screened-sites.json` are machine-readable transcriptions of the prospective positive loci in main-text Tables 3–4 and the positive/negative candidate cohorts in Supplementary Tables 3 and 6 of:
+
+- Sander JD et al. (2013), *In silico abstraction of zinc finger nuclease cleavage profiles reveals an expanded landscape of off-target sites*, DOI: 10.1093/nar/gkt716.
+
+The full screened cohort was retrieved from the supplementary workbook archived by CDC STACKS at <https://stacks.cdc.gov/view/cdc/22560/cdc_22560_DS11.xlsx>. The repository MIT license does not relicense the article or extracted scientific data.
+
+## Paschon 2019 external specificity data
+
+`data/paschon-2019-trac-specificity.json` is a machine-readable transcription of TRAC 1–5 target architectures and cellular off-target measurements from Supplementary Figure 21 and Figure 5 Source Data of:
+
+- Paschon DE et al. (2019), *Diversifying the structure of zinc finger nucleases for high-precision genome editing*, DOI: 10.1038/s41467-019-08867-x. The article is distributed under CC BY 4.0.
+
+Source data and supplementary material were retrieved from the article's Springer Nature downloads. The repository MIT license does not relicense the extracted scientific dataset.
+
 ## Barbas one-finger module data
 
 The recognition-helix sequences, target triplets, and module recommendations in `src/module-archive.ts` are scientific sequence data reported across the Barbas modular-assembly literature and summarized by:
