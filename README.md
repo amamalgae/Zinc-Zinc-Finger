@@ -19,7 +19,7 @@
 - 4–6 finger、最大30候補について、少なくとも片側のhalf-siteが3 mismatch以内のZFNペアをゲノムwide検索する
 - 正向き・逆向きheterodimer（LR / RL）とhomodimer（LL / RR）を区別する
 - PROGNOS ZFN v2.0を独立実装し、候補off-targetを相対順位化する
-- B-score ≥15を優先した上で、完全一致off-target、最大PROGNOS score、score ≥50の部位数、homodimer候補数の順に候補を並べ替える。ただしPROGNOSは実験陽性の判定閾値ではなく、相対的な配列類似性指標としてのみ使う
+- B-score ≥15を優先した上で、完全一致off-target、最大PROGNOS score、homodimer候補数の順に候補を並べ替える。`score ≥50`の部位数は表示だけに残し、実験陽性の判定や候補順位には使わない
 - 候補と配列をCSVで保存する
 - 上位off-target座標・配列・mismatch数・PROGNOS scoreをCSVで保存する
 
@@ -51,6 +51,27 @@ Sander et al. (2013)のmain-text Tables 3–4から、同研究で新規に検�
 
 20 Mbp・30候補の合成ゲノムで、新しい高感度探索は6ZFで約1.72秒、4ZFで約36.55秒でした（desktop Node.js）。4ZFは短いanchorが多数出るため、スマートフォンではさらに時間がかかる可能性があります。
 
+### Sander 2013の全陽性・陰性候補による順位検証
+
+Supplementary Tables 3・6に掲載された候補を、実験陰性を含めて再構成しました。掲載310行のうち、PCRで評価可能だった297行には各ZFNのon-targetが1行ずつ含まれるため、実際のoff-target候補は295部位です。論文が有意なoff-targetとして報告した行を陽性ラベルとしました。Sander et al. (2013), DOI: [10.1093/nar/gkt716](https://doi.org/10.1093/nar/gkt716)。
+
+| 評価 | CCR5 4ZF | VEGFA 3ZF |
+|---|---:|---:|
+| 掲載行 | 141 | 169 |
+| 評価可能行（on-targetを含む） | 138 | 159 |
+| off-target候補 | 137 | 158 |
+| 実験陽性 | 22 | 34 |
+| PROGNOS ROC-AUC | 0.642 | 0.677 |
+| Average precision | 0.338 | 0.428 |
+| Recall@20 | 6/22 | 10/34 |
+| Recall@50 | 10/22 | 18/34 |
+| `score ≥50`の候補 | 14/137 | 77/158 |
+| `score ≥50`で回収した陽性 | 5/22 | 21/34 |
+
+PROGNOSはランダムよりよい相対順位を持ちますが、上位20件でも陽性の27–29%しか回収せず、固定の`score ≥50`はCCR5とVEGFAで挙動が大きく異なります。このため`score ≥50`の件数を候補順位から外し、画面上の参考表示だけにしました。左右half-site scoreの幾何平均は事後解析でAUCがCCR5 0.680、VEGFA 0.711へ上がりましたが、候補集合がSander classifierで事前選抜されており、同一データ内の比較でもあるため、PROGNOS式の置換や再学習は行っていません。これらのprecision指標は全ゲノムprecisionではなく、選抜済み候補集合内の値です。
+
+再構成データSHA-256: `bad9bf02412f9424118ae0cfc79e432a5cba02cad4085d1cbec124ead14f554b`
+
 ### Fine 2014の陽性・陰性データとの照合
 
 Fine et al. (2014)のSupplementary Tables 8–9を、陰性候補とread countを含めて再構成しました。DOI: [10.1093/nar/gkt1326](https://doi.org/10.1093/nar/gkt1326)。独立実装したPROGNOS scoreは、掲載46候補すべてのhalf-site mismatch数と、掲載されたZFN v2.0順位の相対順序を再現しました。
@@ -67,6 +88,14 @@ Fine et al. (2014)のSupplementary Tables 8–9を、陰性候補とread count�
 再構成したSupplementary PDF SHA-256: `dbf9d5e05fa081e9754ef96df34be1fd30bef1844e3707371b86af730675e1b5`
 
 入力した標的windowがゲノム内で一意に見つかった場合だけ、その1部位をintended siteとしてoff-target集計から除外します。一意に同定できなければ、完全一致部位も保守的にoff-targetとして数えます。PROGNOS scoreは0–100の相対順位であり、切断確率や安全性の尺度ではありません。
+
+### Paschon 2019の5–6Fデータと適用範囲
+
+Paschon et al. (2019)のSource Data Figure 5から、TRAC 1–5の122 off-target候補（実験陽性16部位）とon-target indelを再構成しました。陽性数はTRAC 1–5で4、8、4、0、0、on-target indelは79.37–85.14%です。DOI: [10.1038/s41467-019-08867-x](https://doi.org/10.1038/s41467-019-08867-x)。
+
+ただしSupplementary Figure 21を照合すると、TRAC 1–4は少なくとも片側にbase-skipping linkerがあり、TRAC 5は左右6F/5Fの非対称ペアです。したがって、現行の連続half-site・左右同finger数を前提とするPROGNOS探索へ直接適用できるペアは0/5でした。このデータを無理に採点せず、非連続half-siteと非対称ペアを将来実装した際の外部検証セットとして保持します。
+
+再構成データSHA-256: `59a269de1330011afe4e36a224cec52747a0100e0df8eeab1f2ea3845114a77b`
 
 ## スコアの意味
 
@@ -98,6 +127,7 @@ module別公表値から得たL6+R6 B-scoreは20/21標的で原著表と一致�
 - 出力するのはDNA-binding ZFA配列までです。FokI cleavage domain、obligate heterodimer変異、NLS、発現カセット、コドン最適化は含みません。
 - ゲノムwide検索は塩基置換だけを扱い、bulge、挿入・欠失、構造変異は探索しません。
 - PROGNOS ZFN v2.0は3–4 finger ZFNを中心に構築されており、5–6 fingerは外挿です。
+- 現行設計は連続した左右同finger数のhalf-siteだけを扱い、base-skipping linkerや左右でfinger数が異なるペアは生成・採点しません。
 - 検索の完全列挙保証は「少なくとも片側のhalf-siteが3 mismatch以内」の範囲です。左右とも4 mismatch以上の部位は列挙しません。
 - クロマチン accessibility、発現量、細胞種依存性は評価しません。
 - 3-fingerでは3 mismatch以内のhalf-siteが急増するため、ブラウザ版のゲノム検索対象は4–6 fingerに限定しています。
@@ -122,6 +152,9 @@ DeepZFはprotein sequenceからPWMを予測するforward modelです。本ツー
 - one-finger archiveとSp1C / Zif268 framework：Bhakta & Segal (2010), DOI: [10.1007/978-1-60761-753-2_1](https://doi.org/10.1007/978-1-60761-753-2_1)
 - extended MA、B-score、linker、活性データ：Bhakta et al. (2013), DOI: [10.1101/gr.143693.112](https://doi.org/10.1101/gr.143693.112)
 - CoDA ZFN 84ペアの外部活性データ：Chen et al. (2013), DOI: [10.1093/nar/gks1356](https://doi.org/10.1093/nar/gks1356)
+- ZFN off-target全候補の外部検証：Sander et al. (2013), DOI: [10.1093/nar/gkt716](https://doi.org/10.1093/nar/gkt716)
+- PROGNOS式とHBB 3F/4Fの検証：Fine et al. (2014), DOI: [10.1093/nar/gkt1326](https://doi.org/10.1093/nar/gkt1326)
+- 非連続・非対称5–6F ZFNの適用範囲：Paschon et al. (2019), DOI: [10.1038/s41467-019-08867-x](https://doi.org/10.1038/s41467-019-08867-x)
 - 最新の構造的認識コードの整理：Zhang et al. (2024), DOI: [10.1016/j.sbi.2024.102836](https://doi.org/10.1016/j.sbi.2024.102836)
 - DeepZF forward prediction：Aizenshtein-Gazit et al. (2022), DOI: [10.1093/bioinformatics/btac469](https://doi.org/10.1093/bioinformatics/btac469)
 

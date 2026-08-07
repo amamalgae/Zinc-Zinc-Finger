@@ -184,7 +184,6 @@ export default function Home() {
         Number(b.passesBScoreCutoff) - Number(a.passesBScoreCutoff) ||
         aSpecificity.perfectOffTargetHits - bSpecificity.perfectOffTargetHits ||
         aSpecificity.maxOffTargetScore - bSpecificity.maxOffTargetScore ||
-        aSpecificity.highScoreHits - bSpecificity.highScoreHits ||
         aSpecificity.homodimerHits - bSpecificity.homodimerHits ||
         compareCandidates(a, b)
       );
@@ -404,7 +403,7 @@ export default function Home() {
           <div className="result-summary">
             <strong>{rankedCandidates.length}</strong>
             <span>候補を表示</span>
-            <small>{genomeResult ? "B-score閾値内でゲノム特異性を優先" : "spacer 5 / 6 / 7 bpを同時評価"}</small>
+            <small>{genomeResult ? "B-score・完全一致・最大類似scoreを優先" : "spacer 5 / 6 / 7 bpを同時評価"}</small>
           </div>
 
           {rankedCandidates.length ? (
@@ -534,9 +533,9 @@ export default function Home() {
                 <small>PROGNOS相対スコア · 確率ではない</small>
               </div>
               <div>
-                <span>score ≥50（参考）</span>
+                <span>score ≥50（表示のみ）</span>
                 <strong>{selectedSpecificity.highScoreHits}</strong>
-                <small>実験陽性の判定閾値ではない</small>
+                <small>陽性判定・候補順位には不使用</small>
               </div>
               <div>
                 <span>homodimer候補</span>
@@ -578,7 +577,8 @@ export default function Home() {
             </div>
             <p className="genome-caution">
               この順位は配列類似性に基づく候補抽出です。5–6ZFはPROGNOS学習範囲外への外挿であり、
-              Sander 2013の4ZF陽性25 lociではPROGNOS scoreとindel率の相関はρ=0.10でした。
+              Sander 2013の全候補ではPROGNOS ROC-AUCがCCR5 0.64、VEGFA 0.68でした。
+              score ≥50は陽性をCCR5で5/22、VEGFAで21/34しか回収せず、候補順位には使用しません。
               クロマチン状態・発現量・実細胞での切断は予測しません。上位部位はamplicon sequencing等で検証してください。
             </p>
           </>

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
+import { runSanderBenchmark } from "../scripts/benchmark-sander-2013.mjs";
 import { searchGenomeOffTargets } from "../src/off-target-engine.ts";
 import { reverseComplement } from "../src/design-engine.ts";
 
@@ -81,4 +82,49 @@ test("the genome engine recovers every prospective CCR5 sequence from either-hal
     expectedPositions.filter((expected) => !observedPositions.has(expected)),
     [],
   );
+});
+
+test("Sander screened cohorts retain positive and negative off-targets", () => {
+  const result = runSanderBenchmark();
+  const [ccr5, vegfa] = result.screenedCohorts;
+
+  assert.equal(ccr5.name, "CCR5");
+  assert.equal(ccr5.listedRows, 141);
+  assert.equal(ccr5.evaluableRowsIncludingOnTarget, 138);
+  assert.equal(ccr5.assayedOffTargets, 137);
+  assert.equal(ccr5.positives, 22);
+
+  assert.equal(vegfa.name, "VEGFA");
+  assert.equal(vegfa.listedRows, 169);
+  assert.equal(vegfa.evaluableRowsIncludingOnTarget, 159);
+  assert.equal(vegfa.assayedOffTargets, 158);
+  assert.equal(vegfa.positives, 34);
+});
+
+test("Sander full-cohort PROGNOS metrics and the failed fixed threshold are reproducible", () => {
+  const result = runSanderBenchmark();
+  const [ccr5, vegfa] = result.screenedCohorts;
+
+  assert.ok(Math.abs(ccr5.metrics.prognosScore.rocAuc - 0.642292490118577) < 1e-12);
+  assert.ok(Math.abs(vegfa.metrics.prognosScore.rocAuc - 0.6774193548387096) < 1e-12);
+  assert.deepEqual(ccr5.metrics.prognosScore.recallAt20, {
+    recovered: 6,
+    positives: 22,
+    recall: 6 / 22,
+  });
+  assert.deepEqual(vegfa.metrics.prognosScore.recallAt50, {
+    recovered: 18,
+    positives: 34,
+    recall: 18 / 34,
+  });
+  assert.deepEqual(ccr5.fixedPrognosThreshold50, {
+    predictedPositive: 14,
+    truePositive: 5,
+    totalPositive: 22,
+  });
+  assert.deepEqual(vegfa.fixedPrognosThreshold50, {
+    predictedPositive: 77,
+    truePositive: 21,
+    totalPositive: 34,
+  });
 });

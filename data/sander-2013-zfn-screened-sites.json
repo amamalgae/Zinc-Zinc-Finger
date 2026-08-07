@@ -1,0 +1,6099 @@
+{
+  "source": {
+    "citation": "Sander et al. (2013), Nucleic Acids Research 41:e181",
+    "doi": "10.1093/nar/gkt716",
+    "supplementUrl": "https://stacks.cdc.gov/view/cdc/22560/cdc_22560_DS11.xlsx",
+    "extraction": "Supplemental Tables 3 and 6. Rows marked DID NOT AMPLIFY are excluded. Rows lacking one raw count remain because the authors' published significance label is available; matched-count availability is flagged. Exact on-target rows are retained and flagged."
+  },
+  "nucleases": {
+    "CCR5": {
+      "name": "CCR5",
+      "onTarget": "GTCATCCTCATCCTGATAAACTGCAAAAG",
+      "halfSiteLength": 12,
+      "listedRows": 141,
+      "evaluableRows": 138,
+      "offTargetRows": 137,
+      "rows": [
+        {
+          "sourceRow": 3,
+          "sourceBlock": "non_exon",
+          "sequence": "TGCTTCCTCACCCCAGGTAAACTGGAACAG",
+          "classifierScore": 0.132674014,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 57244
+          },
+          "active": {
+            "indels": 334,
+            "reads": 131358
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.002542669650877754,
+          "significant": true
+        },
+        {
+          "sourceRow": 3,
+          "sourceBlock": "exon",
+          "sequence": "GTCATCCTCATCCTGATAAACTGCAAAAG",
+          "classifierScore": 0.027959966,
+          "identity": 24,
+          "isOnTarget": true,
+          "inactive": {
+            "indels": 0,
+            "reads": 35877
+          },
+          "active": {
+            "indels": 24048,
+            "reads": 50330
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.477806477250149,
+          "significant": true
+        },
+        {
+          "sourceRow": 4,
+          "sourceBlock": "non_exon",
+          "sequence": "AACATGGGCAGCCTCTATAAACTGGAAAAG",
+          "classifierScore": 0.165565216,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 34806
+          },
+          "active": {
+            "indels": 0,
+            "reads": 36140
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 4,
+          "sourceBlock": "exon",
+          "sequence": "GTCGTCCTCATCTTAATAAACTGCAAAAA",
+          "classifierScore": 0.118423311,
+          "identity": 22,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 21274
+          },
+          "active": {
+            "indels": 3658,
+            "reads": 28352
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.12902088036117382,
+          "significant": true
+        },
+        {
+          "sourceRow": 5,
+          "sourceBlock": "non_exon",
+          "sequence": "GGTATACTCACCACCAGTAAATTGGAAAAG",
+          "classifierScore": 0.176274085,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 20500
+          },
+          "active": {
+            "indels": 3,
+            "reads": 23861
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.00012572817568417082,
+          "significant": false
+        },
+        {
+          "sourceRow": 6,
+          "sourceBlock": "non_exon",
+          "sequence": "TTTCTTCTTTTCCTAGTTAAACTGGAAAAG",
+          "classifierScore": 0.190197287,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 30066
+          },
+          "active": {
+            "indels": 0,
+            "reads": 38469
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 7,
+          "sourceBlock": "non_exon",
+          "sequence": "GTTGTACACATTAAAGTAAACTGCAAAAG",
+          "classifierScore": 0.201800589,
+          "identity": 19,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 20517
+          },
+          "active": {
+            "indels": 0,
+            "reads": 30664
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 7,
+          "sourceBlock": "exon",
+          "sequence": "GACTCCCTCTCCTGGATTAACTGTAAAAG",
+          "classifierScore": 0.293808941,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 31496
+          },
+          "active": {
+            "indels": 37,
+            "reads": 54630
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0006772835438403807,
+          "significant": true
+        },
+        {
+          "sourceRow": 8,
+          "sourceBlock": "non_exon",
+          "sequence": "CTCTCCCTCATCTCAGAGCAACTGTAAAAG",
+          "classifierScore": 0.203972519,
+          "identity": 19,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 18753
+          },
+          "active": {
+            "indels": 76,
+            "reads": 19515
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.003894440174224955,
+          "significant": true
+        },
+        {
+          "sourceRow": 9,
+          "sourceBlock": "non_exon",
+          "sequence": "GCCAGCCTCAGCTTCTTCAACTGGAAAAG",
+          "classifierScore": 0.208738832,
+          "identity": 19,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 32430
+          },
+          "active": {
+            "indels": 35,
+            "reads": 57322
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0006105858134747566,
+          "significant": true
+        },
+        {
+          "sourceRow": 11,
+          "sourceBlock": "non_exon",
+          "sequence": "TGTATTCTCATCATTAATAAACTGGAAAAA",
+          "classifierScore": 0.215337934,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 8740
+          },
+          "active": {
+            "indels": 0,
+            "reads": 13938
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 12,
+          "sourceBlock": "non_exon",
+          "sequence": "CTCTTACTCTACATGTTAAACTGAAAAAG",
+          "classifierScore": 0.21544015,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 9248
+          },
+          "active": {
+            "indels": 12,
+            "reads": 21640
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.00055452865064695,
+          "significant": true
+        },
+        {
+          "sourceRow": 13,
+          "sourceBlock": "non_exon",
+          "sequence": "TTCATTTGCATCCTTTTAAACTGGAAAAG",
+          "classifierScore": 0.215858471,
+          "identity": 19,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 19684
+          },
+          "active": {
+            "indels": 0,
+            "reads": 29179
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 14,
+          "sourceBlock": "non_exon",
+          "sequence": "CTGGGGCTCAGCACACTCAACTGTAAAAG",
+          "classifierScore": 0.217042799,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 35351
+          },
+          "active": {
+            "indels": 78,
+            "reads": 74490
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0010471204188481676,
+          "significant": true
+        },
+        {
+          "sourceRow": 15,
+          "sourceBlock": "non_exon",
+          "sequence": "GCAGTCCTTATCCCAAGTGAACTGAAAAAG",
+          "classifierScore": 0.21904926,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 37745
+          },
+          "active": {
+            "indels": 32,
+            "reads": 68234
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.00046897441158366796,
+          "significant": true
+        },
+        {
+          "sourceRow": 16,
+          "sourceBlock": "non_exon",
+          "sequence": "GTGATCCTCATTCCAGTAAACTGGAAAAC",
+          "classifierScore": 0.223210378,
+          "identity": 20,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 18405
+          },
+          "active": {
+            "indels": 0,
+            "reads": 32585
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 17,
+          "sourceBlock": "non_exon",
+          "sequence": "TCCGTACTCTCCAGGCTAAACTGTAAAGG",
+          "classifierScore": 0.224775253,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 28264
+          },
+          "active": {
+            "indels": 0,
+            "reads": 55310
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 18,
+          "sourceBlock": "non_exon",
+          "sequence": "CTCTTCCTCAGCATGATTAACTGTAATAG",
+          "classifierScore": 0.227760269,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 28867
+          },
+          "active": {
+            "indels": 1023,
+            "reads": 42602
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.024012957138162528,
+          "significant": true
+        },
+        {
+          "sourceRow": 19,
+          "sourceBlock": "non_exon",
+          "sequence": "TCCAGATGCATCCCAGTTAAACTGAAAAAG",
+          "classifierScore": 0.241151721,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 19166
+          },
+          "active": {
+            "indels": 1,
+            "reads": 37771
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 2.647533822244579e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 20,
+          "sourceBlock": "non_exon",
+          "sequence": "GTGACCTTCCTCTATCTCAACTGCAAAAG",
+          "classifierScore": 0.302101091,
+          "identity": 19,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 23888
+          },
+          "active": {
+            "indels": 1,
+            "reads": 58144
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 1.7198679141441937e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 20,
+          "sourceBlock": "exon",
+          "sequence": "GGTCTCCTCATTAATTCTGAACTGGAAAAG",
+          "classifierScore": 0.336969818,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 15492
+          },
+          "active": {
+            "indels": 0,
+            "reads": 20712
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 21,
+          "sourceBlock": "non_exon",
+          "sequence": "CTCATATACATCACTAATAAACTGGAATAG",
+          "classifierScore": 0.303809432,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 18592
+          },
+          "active": {
+            "indels": 0,
+            "reads": 51410
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 21,
+          "sourceBlock": "exon",
+          "sequence": "CTTTTCCGTTTTTTTTCGGATGAGGAAATG",
+          "classifierScore": 0.34933609,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 4,
+            "reads": 30226
+          },
+          "active": {
+            "indels": 1,
+            "reads": 35418
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 2.8234231181884916e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 22,
+          "sourceBlock": "non_exon",
+          "sequence": "CAATCACTCTTTCATATTAAACTGTAAAAG",
+          "classifierScore": 0.304557105,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 19939
+          },
+          "active": {
+            "indels": 0,
+            "reads": 20767
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 22,
+          "sourceBlock": "exon",
+          "sequence": "TTTGAACTTAACCAATTGAAACTGGAAAAG",
+          "classifierScore": 0.349376389,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 13821
+          },
+          "active": {
+            "indels": 0,
+            "reads": 10689
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 23,
+          "sourceBlock": "non_exon",
+          "sequence": "ACTCCCCTCCTCTGTCTGAAACCGGAAAAG",
+          "classifierScore": 0.305087809,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 7855
+          },
+          "active": {
+            "indels": 4,
+            "reads": 18706
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.00021383513311237036,
+          "significant": false
+        },
+        {
+          "sourceRow": 23,
+          "sourceBlock": "exon",
+          "sequence": "ATTTTCCTCAACAACCCTCAACTGTAAAGG",
+          "classifierScore": 0.35009459,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 5817
+          },
+          "active": {
+            "indels": 0,
+            "reads": 15343
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 24,
+          "sourceBlock": "non_exon",
+          "sequence": "TTCTCTCGGCTCCATTTAAACTGGAAAAG",
+          "classifierScore": 0.305248087,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 11503
+          },
+          "active": {
+            "indels": 0,
+            "reads": 25739
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 24,
+          "sourceBlock": "exon",
+          "sequence": "CCCCCCCTCATCCCAATTAACTGTAAAAT",
+          "classifierScore": 0.363906533,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 20285
+          },
+          "active": {
+            "indels": 23,
+            "reads": 20933
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0010987436105670473,
+          "significant": true
+        },
+        {
+          "sourceRow": 25,
+          "sourceBlock": "non_exon",
+          "sequence": "GGTGCCCTCACCTTTTTAAACTGTTAAAG",
+          "classifierScore": 0.306359436,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 24315
+          },
+          "active": {
+            "indels": 245,
+            "reads": 40672
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.006023800157356412,
+          "significant": true
+        },
+        {
+          "sourceRow": 25,
+          "sourceBlock": "exon",
+          "sequence": "AGGCTACTCAGCCTCCTCAACTGCAAAAT",
+          "classifierScore": 0.367129536,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 20703
+          },
+          "active": {
+            "indels": 0,
+            "reads": 30118
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 27,
+          "sourceBlock": "non_exon",
+          "sequence": "GTTATCCTCAGCAAACTAAAACTGGAACAG",
+          "classifierScore": 0.307205681,
+          "identity": 20,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 62349
+          },
+          "active": {
+            "indels": 79,
+            "reads": 96012
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0008228138149397992,
+          "significant": true
+        },
+        {
+          "sourceRow": 28,
+          "sourceBlock": "non_exon",
+          "sequence": "TTTATACTTATCACTGTAAACTGCAAAGG",
+          "classifierScore": 0.310254879,
+          "identity": 19,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 24703
+          },
+          "active": {
+            "indels": 8,
+            "reads": 69453
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.00011518580910831785,
+          "significant": false
+        },
+        {
+          "sourceRow": 29,
+          "sourceBlock": "non_exon",
+          "sequence": "GCCCTGCACATCCATCATAAACTGCAAATG",
+          "classifierScore": 0.310747012,
+          "identity": 19,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 53713
+          },
+          "active": {
+            "indels": 1,
+            "reads": 116908
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 8.553734560509118e-06,
+          "significant": false
+        },
+        {
+          "sourceRow": 30,
+          "sourceBlock": "non_exon",
+          "sequence": "GCCATTGTCATCAAAATAAACTGGAAAGG",
+          "classifierScore": 0.311331586,
+          "identity": 19,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 9545
+          },
+          "active": {
+            "indels": 0,
+            "reads": 20095
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 31,
+          "sourceBlock": "non_exon",
+          "sequence": "GTTGTGCCCATTATATTAGACTGGAAAAG",
+          "classifierScore": 0.311922966,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 27115
+          },
+          "active": {
+            "indels": 0,
+            "reads": 46829
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 32,
+          "sourceBlock": "non_exon",
+          "sequence": "TGTGTACTTCTCATTATTCAACTGAAAAAG",
+          "classifierScore": 0.312600621,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 37789
+          },
+          "active": {
+            "indels": 0,
+            "reads": 65177
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 33,
+          "sourceBlock": "non_exon",
+          "sequence": "CCCATGCTCTGCCCAGTCAACTGGGAAAG",
+          "classifierScore": 0.40001917,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 46208
+          },
+          "active": {
+            "indels": 27,
+            "reads": 87973
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0003069123481068055,
+          "significant": true
+        },
+        {
+          "sourceRow": 33,
+          "sourceBlock": "exon",
+          "sequence": "TACTTCTTCATCTCATTGAACTGGAACAG",
+          "classifierScore": 0.401140126,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 58171
+          },
+          "active": {
+            "indels": 0,
+            "reads": 56256
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 34,
+          "sourceBlock": "non_exon",
+          "sequence": "GGCATCCTCAGCTGGAAAAGACTGGAACAG",
+          "classifierScore": 0.400098082,
+          "identity": 19,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 9800
+          },
+          "active": {
+            "indels": 0,
+            "reads": 19762
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 34,
+          "sourceBlock": "exon",
+          "sequence": "GGACTCCCTCTCCTGGATTAACTGTAAAAG",
+          "classifierScore": 0.42807416,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 81733
+          },
+          "active": {
+            "indels": 37,
+            "reads": 76041
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0004865796083691693,
+          "significant": true
+        },
+        {
+          "sourceRow": 35,
+          "sourceBlock": "non_exon",
+          "sequence": "TATGTGCTCATCAGTGGTAAACTGGATAAA",
+          "classifierScore": 0.400171989,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 24417
+          },
+          "active": {
+            "indels": 3,
+            "reads": 33637
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 8.918750185807296e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 35,
+          "sourceBlock": "exon",
+          "sequence": "CTTACCCTCATCCATATCAATTGGATCAG",
+          "classifierScore": 0.438603549,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 26215
+          },
+          "active": {
+            "indels": 0,
+            "reads": 45172
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 36,
+          "sourceBlock": "non_exon",
+          "sequence": "ATGTATCTCAACATAATAAAACCGTAAAAG",
+          "classifierScore": 0.400553822,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 13968
+          },
+          "active": {
+            "indels": 0,
+            "reads": 23343
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 36,
+          "sourceBlock": "exon",
+          "sequence": "AAGATTCACAGCAGGCCTGAACTGTAAAAG",
+          "classifierScore": 0.455245474,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 10565
+          },
+          "active": {
+            "indels": 0,
+            "reads": 14371
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 37,
+          "sourceBlock": "non_exon",
+          "sequence": "TTCCTCCTCCTCCTTGGGAAAATGTAAAAG",
+          "classifierScore": 0.400637163,
+          "identity": 19,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 53279
+          },
+          "active": {
+            "indels": 0,
+            "reads": 79350
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 37,
+          "sourceBlock": "exon",
+          "sequence": "GTCATCCGCATCGCCCTGGAACTGGAAAAA",
+          "classifierScore": 0.459793918,
+          "identity": 20,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 60872
+          },
+          "active": {
+            "indels": 0,
+            "reads": 60273
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 38,
+          "sourceBlock": "non_exon",
+          "sequence": "TTCTTCCTGCTTACAGTAAACTGCAAAAG",
+          "classifierScore": 0.400649121,
+          "identity": 19,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 17417
+          },
+          "active": {
+            "indels": 0,
+            "reads": 29844
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 38,
+          "sourceBlock": "exon",
+          "sequence": "GTCGCCCTCCTCCTCACTAAACTGGTAGAA",
+          "classifierScore": 0.476360734,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 28864
+          },
+          "active": {
+            "indels": 0,
+            "reads": 24515
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 39,
+          "sourceBlock": "exon",
+          "sequence": "TTCAGACTCAGAAAATTAAACTGGAAGAG",
+          "classifierScore": 0.481254237,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 12627
+          },
+          "active": {
+            "indels": 0,
+            "reads": 17679
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 40,
+          "sourceBlock": "non_exon",
+          "sequence": "GTGACTCTCAGTTTACTCAACTGGAAAAG",
+          "classifierScore": 0.400736683,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 21347
+          },
+          "active": {
+            "indels": 0,
+            "reads": 27921
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 40,
+          "sourceBlock": "exon",
+          "sequence": "AATATACATTTCACAGATAAACTGTAACAG",
+          "classifierScore": 0.481515983,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 25209
+          },
+          "active": {
+            "indels": 1,
+            "reads": 19387
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 5.1580956310930006e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 41,
+          "sourceBlock": "non_exon",
+          "sequence": "TGTGTCCTCTGCATCAGTAAACTGAAACAG",
+          "classifierScore": 0.400931028,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 7452
+          },
+          "active": {
+            "indels": 352,
+            "reads": 14061
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.025033781381125098,
+          "significant": true
+        },
+        {
+          "sourceRow": 41,
+          "sourceBlock": "exon",
+          "sequence": "TTCTTTCTCACCTGCTTTAACTGAAAATG",
+          "classifierScore": 0.483597285,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 15884
+          },
+          "active": {
+            "indels": 0,
+            "reads": 11016
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 42,
+          "sourceBlock": "non_exon",
+          "sequence": "GTGTTGCTTCTCCCCATCAACAGGAAAAG",
+          "classifierScore": 0.400972808,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 35055
+          },
+          "active": {
+            "indels": 163,
+            "reads": 72871
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0022368294657682756,
+          "significant": true
+        },
+        {
+          "sourceRow": 42,
+          "sourceBlock": "exon",
+          "sequence": "TTCTTCCTCCTCTTCCTCATCTGCAAAAG",
+          "classifierScore": 0.490056377,
+          "identity": 19,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 24692
+          },
+          "active": {
+            "indels": 0,
+            "reads": 52219
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 43,
+          "sourceBlock": "non_exon",
+          "sequence": "TTTCCCCACAGCAGCAGTAAACTGGAATGG",
+          "classifierScore": 0.40132859,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 44279
+          },
+          "active": {
+            "indels": 1,
+            "reads": 140013
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 7.1421939391342235e-06,
+          "significant": false
+        },
+        {
+          "sourceRow": 43,
+          "sourceBlock": "exon",
+          "sequence": "CTGCTTAGCAGCCGAGTTAAACTGCAAAAG",
+          "classifierScore": 0.490601807,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 20124
+          },
+          "active": {
+            "indels": 0,
+            "reads": 21333
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 44,
+          "sourceBlock": "non_exon",
+          "sequence": "GGAGAATGCAGCTTCATAAACTGCAAAAG",
+          "classifierScore": 0.401484742,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 42561
+          },
+          "active": {
+            "indels": 30,
+            "reads": 90550
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0003313086692435119,
+          "significant": true
+        },
+        {
+          "sourceRow": 44,
+          "sourceBlock": "exon",
+          "sequence": "GTTTTCCTCAGTAATAGGAAACTGGAAAAA",
+          "classifierScore": 0.492616767,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 28240
+          },
+          "active": {
+            "indels": 0,
+            "reads": 43034
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 45,
+          "sourceBlock": "non_exon",
+          "sequence": "AACACGGGCAGCCTCTAGAAACTGCAAAAG",
+          "classifierScore": 0.402663067,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 40791
+          },
+          "active": {
+            "indels": 0,
+            "reads": 72227
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 45,
+          "sourceBlock": "exon",
+          "sequence": "GATTCAATTATCCTTTTGAACTGGAAAAG",
+          "classifierScore": 0.494148799,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 32386
+          },
+          "active": {
+            "indels": 0,
+            "reads": 34809
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 46,
+          "sourceBlock": "non_exon",
+          "sequence": "GTGACCATCCTCTATCTCAACTGCAAGAG",
+          "classifierScore": 0.500016034,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 34757
+          },
+          "active": {
+            "indels": 0,
+            "reads": 64167
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 46,
+          "sourceBlock": "exon",
+          "sequence": "AAGCTCCGCAGCTCCCTTAACTGCAAGAG",
+          "classifierScore": 0.503035188,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 42997
+          },
+          "active": {
+            "indels": 0,
+            "reads": 57601
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 47,
+          "sourceBlock": "non_exon",
+          "sequence": "ATGTTTCGTATGCTACTAAACTGCAATAG",
+          "classifierScore": 0.500115896,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 20684
+          },
+          "active": {
+            "indels": 0,
+            "reads": 21636
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 47,
+          "sourceBlock": "exon",
+          "sequence": "TATTTCCCCATCTCAATAAACTGCAATAG",
+          "classifierScore": 0.504572826,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 21334
+          },
+          "active": {
+            "indels": 15,
+            "reads": 20699
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0007246726895019084,
+          "significant": true
+        },
+        {
+          "sourceRow": 48,
+          "sourceBlock": "non_exon",
+          "sequence": "TTGGTCCTCATTATAAATAAACTGAAAGGG",
+          "classifierScore": 0.500171975,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 29315
+          },
+          "active": {
+            "indels": 10,
+            "reads": 49201
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.00020324790146541738,
+          "significant": true
+        },
+        {
+          "sourceRow": 48,
+          "sourceBlock": "exon",
+          "sequence": "AGAATCCTCAGCCTTGTAAAATGCAAAAA",
+          "classifierScore": 0.505674169,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 15869
+          },
+          "active": {
+            "indels": 0,
+            "reads": 68988
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 49,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCTTCCCCATCCAACCAAAACTGGGAAAG",
+          "classifierScore": 0.500263768,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 24951
+          },
+          "active": {
+            "indels": 0,
+            "reads": 46690
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 49,
+          "sourceBlock": "exon",
+          "sequence": "CATATGCTTAACCTTACAAACTGAAAAAG",
+          "classifierScore": 0.507367216,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 30271
+          },
+          "active": {
+            "indels": 1,
+            "reads": 34045
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 2.93728888236158e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 50,
+          "sourceBlock": "non_exon",
+          "sequence": "GTGGCCTTCTTCTATCTTAACTGCAAGAG",
+          "classifierScore": 0.500275871,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 18408
+          },
+          "active": {
+            "indels": 0,
+            "reads": 31139
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 50,
+          "sourceBlock": "exon",
+          "sequence": "GTTCCCCTCAGCAATGTAAACTGGGAAAC",
+          "classifierScore": 0.508003244,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 36354
+          },
+          "active": {
+            "indels": 90,
+            "reads": 33247
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.002707011158901555,
+          "significant": true
+        },
+        {
+          "sourceRow": 51,
+          "sourceBlock": "non_exon",
+          "sequence": "AATGTACTCAACACCATTGAACTGTAAATG",
+          "classifierScore": 0.500295862,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 14178
+          },
+          "active": {
+            "indels": 0,
+            "reads": 26884
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 51,
+          "sourceBlock": "exon",
+          "sequence": "CATTCCCACAACCATAGCAAACTGTAAAAG",
+          "classifierScore": 0.509607945,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 16129
+          },
+          "active": {
+            "indels": 0,
+            "reads": 11061
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 52,
+          "sourceBlock": "non_exon",
+          "sequence": "TAAATACCCACCAATGGTAGACTGGAAAAG",
+          "classifierScore": 0.500454489,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 3,
+            "reads": 25402
+          },
+          "active": {
+            "indels": 0,
+            "reads": 62664
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 52,
+          "sourceBlock": "exon",
+          "sequence": "GATGCCTTCCTCTTGTCTCAACTGCAAGAG",
+          "classifierScore": 0.511654164,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 7292
+          },
+          "active": {
+            "indels": 0,
+            "reads": 5488
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 53,
+          "sourceBlock": "non_exon",
+          "sequence": "TTCTCCCGCCTCCACCATCACCTGGAAGAG",
+          "classifierScore": 0.500497379,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 32139
+          },
+          "active": {
+            "indels": 0,
+            "reads": 53006
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 53,
+          "sourceBlock": "exon",
+          "sequence": "GATGCCTTCCTCTTGTCTCAACTGCAAGAG",
+          "classifierScore": 0.511654164,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 36718
+          },
+          "active": {
+            "indels": 0,
+            "reads": 87751
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 54,
+          "sourceBlock": "non_exon",
+          "sequence": "ACCATACATATTTTTAATAAACTGGAAAAG",
+          "classifierScore": 0.500692578,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 20047
+          },
+          "active": {
+            "indels": 0,
+            "reads": 45734
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 54,
+          "sourceBlock": "exon",
+          "sequence": "AATGAAGGCAGCCTTTAAAAACTGGAAAAG",
+          "classifierScore": 0.51324874,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 24847
+          },
+          "active": {
+            "indels": 0,
+            "reads": 23388
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 55,
+          "sourceBlock": "non_exon",
+          "sequence": "ATAATAAGCATTCTCAGTAAACTGGAAAAG",
+          "classifierScore": 0.500693895,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 35964
+          },
+          "active": {
+            "indels": 0,
+            "reads": 68260
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 55,
+          "sourceBlock": "exon",
+          "sequence": "TGCATCTTTCTCACAATAAACTGAAAGAG",
+          "classifierScore": 0.522457997,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 10310
+          },
+          "active": {
+            "indels": 0,
+            "reads": 12221
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 56,
+          "sourceBlock": "non_exon",
+          "sequence": "CATTCACATAGCCATCTTAAACTGCAAAAG",
+          "classifierScore": 0.500697841,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 28106
+          },
+          "active": {
+            "indels": 0,
+            "reads": 57062
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 56,
+          "sourceBlock": "exon",
+          "sequence": "GTTATACTTAGCAGAAATAAAAGGGAAAAG",
+          "classifierScore": 0.523568429,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 9742
+          },
+          "active": {
+            "indels": 2,
+            "reads": 10404
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.00019223375624759708,
+          "significant": false
+        },
+        {
+          "sourceRow": 57,
+          "sourceBlock": "non_exon",
+          "sequence": "ATGGACCTCAGCAAAGTAAACTGGAAAAC",
+          "classifierScore": 0.50081801,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 47734
+          },
+          "active": {
+            "indels": 19,
+            "reads": 103391
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.00018376841311139268,
+          "significant": true
+        },
+        {
+          "sourceRow": 58,
+          "sourceBlock": "non_exon",
+          "sequence": "TAAATCCTCAGCAGTTTCTAACTGGAAAAG",
+          "classifierScore": 0.500836015,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 23628
+          },
+          "active": {
+            "indels": 1,
+            "reads": 42666
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 2.3437866216659635e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 59,
+          "sourceBlock": "non_exon",
+          "sequence": "GAGGTCCTCATAATTATAAACTGCAGTAG",
+          "classifierScore": 0.600099267,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 19016
+          },
+          "active": {
+            "indels": 0,
+            "reads": 34048
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 59,
+          "sourceBlock": "exon",
+          "sequence": "TTCAGCTGCATCAAGAAAAACTGAAAGAG",
+          "classifierScore": 0.600265605,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 17853
+          },
+          "active": {
+            "indels": 0,
+            "reads": 14530
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 60,
+          "sourceBlock": "non_exon",
+          "sequence": "TTCAAGCTCCTGGGTGCTTAACTGTAAAAG",
+          "classifierScore": 0.600181371,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 19423
+          },
+          "active": {
+            "indels": 1,
+            "reads": 31702
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 3.154375118289067e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 60,
+          "sourceBlock": "exon",
+          "sequence": "ATAGTGCTCAGCCTTTTTAAATGAAAAAA",
+          "classifierScore": 0.603492093,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 20206
+          },
+          "active": {
+            "indels": 0,
+            "reads": 21420
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 61,
+          "sourceBlock": "non_exon",
+          "sequence": "ATCTTATTTATCCTTACTAAACTGTAAATT",
+          "classifierScore": 0.600305126,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 33800
+          },
+          "active": {
+            "indels": 0,
+            "reads": 81764
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 61,
+          "sourceBlock": "exon",
+          "sequence": "TCTGAGCTCAGCTCCCTCAACTGTAAAAC",
+          "classifierScore": 0.605580621,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 24267
+          },
+          "active": {
+            "indels": 0,
+            "reads": 25106
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 62,
+          "sourceBlock": "non_exon",
+          "sequence": "AAGGTTCTCACCAATCCTAAACTGTAAAGA",
+          "classifierScore": 0.600308083,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 23922
+          },
+          "active": {
+            "indels": 0,
+            "reads": 39617
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 62,
+          "sourceBlock": "exon",
+          "sequence": "GATTTGGGCTTCATATCTCAACAGCAAAAG",
+          "classifierScore": 0.608835731,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 20100
+          },
+          "active": {
+            "indels": 1,
+            "reads": 44054
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 2.269941435510964e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 63,
+          "sourceBlock": "non_exon",
+          "sequence": "CAAATGCCCATCAATAATAAACTGGATAAA",
+          "classifierScore": 0.600316486,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 19387
+          },
+          "active": {
+            "indels": 0,
+            "reads": 38271
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 63,
+          "sourceBlock": "exon",
+          "sequence": "GGGCCCCTTCCCAGACGCAACTGCAAAAG",
+          "classifierScore": 0.608909531,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 10515
+          },
+          "active": {
+            "indels": 0,
+            "reads": 14499
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 64,
+          "sourceBlock": "non_exon",
+          "sequence": "CAAATGCCCATCAGTGATAAACTGGATAAA",
+          "classifierScore": 0.600316486,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 23445
+          },
+          "active": {
+            "indels": 0,
+            "reads": 46460
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 64,
+          "sourceBlock": "exon",
+          "sequence": "GGAATATTCTTCAATTCCAACTGGAAGAG",
+          "classifierScore": 0.609506364,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 18210
+          },
+          "active": {
+            "indels": 0,
+            "reads": 27088
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 65,
+          "sourceBlock": "non_exon",
+          "sequence": "GACCTACTCTTCAATAGAAAATTGTAACAG",
+          "classifierScore": 0.600391598,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 9173
+          },
+          "active": {
+            "indels": 0,
+            "reads": 16696
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 65,
+          "sourceBlock": "exon",
+          "sequence": "GTGTGGCTCAGCCTGCAGGAACTGAAAAAG",
+          "classifierScore": 0.609959545,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 11775
+          },
+          "active": {
+            "indels": 0,
+            "reads": 15331
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 66,
+          "sourceBlock": "non_exon",
+          "sequence": "AACACCCGAAGCCACCAGAAACTGAAAGAG",
+          "classifierScore": 0.600478261,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 31526
+          },
+          "active": {
+            "indels": 0,
+            "reads": 49909
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 66,
+          "sourceBlock": "exon",
+          "sequence": "AGCCCATTCAGTGCTTTCAACTGGAAAAG",
+          "classifierScore": 0.611108901,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 56348
+          },
+          "active": {
+            "indels": 0,
+            "reads": 64936
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 67,
+          "sourceBlock": "non_exon",
+          "sequence": "CCTTAGCTCCTCATGCATAAAATGAAAAAG",
+          "classifierScore": 0.60049917,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 8909
+          },
+          "active": {
+            "indels": 0,
+            "reads": 16722
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 67,
+          "sourceBlock": "exon",
+          "sequence": "GGGGCGCACCTCAGGGTGAACTGGAAAAC",
+          "classifierScore": 0.613475174,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 26896
+          },
+          "active": {
+            "indels": 0,
+            "reads": 33508
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 68,
+          "sourceBlock": "non_exon",
+          "sequence": "TAGGTGCTCATCAATGGTTGACTGGAAAAA",
+          "classifierScore": 0.600514285,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 14165
+          },
+          "active": {
+            "indels": 0,
+            "reads": 34926
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 68,
+          "sourceBlock": "exon",
+          "sequence": "GGCCTCCTCAGCCTCTGCAACTGCAAGAA",
+          "classifierScore": 0.614520579,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 36386
+          },
+          "active": {
+            "indels": 0,
+            "reads": 84704
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 69,
+          "sourceBlock": "non_exon",
+          "sequence": "ATGCTGCACAGCAAAGTGAAACAGAAAAAG",
+          "classifierScore": 0.600560861,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 15231
+          },
+          "active": {
+            "indels": 0,
+            "reads": 26102
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 69,
+          "sourceBlock": "exon",
+          "sequence": "CTCACCCGCATCAAGGAGAACCGGAAGCG",
+          "classifierScore": 0.615170622,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 29185
+          },
+          "active": {
+            "indels": 0,
+            "reads": 33063
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 70,
+          "sourceBlock": "non_exon",
+          "sequence": "ATTATCCTCATTTGTTGAAAATGTAATAG",
+          "classifierScore": 0.600571464,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 15241
+          },
+          "active": {
+            "indels": 0,
+            "reads": 26210
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 70,
+          "sourceBlock": "exon",
+          "sequence": "ATTATTTTCATCAGACTTAAACTGGAAATT",
+          "classifierScore": 0.61624075,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 28628
+          },
+          "active": {
+            "indels": 0,
+            "reads": 20444
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 71,
+          "sourceBlock": "non_exon",
+          "sequence": "TGAATGGGCATCACTCAGAACTGGAAGAG",
+          "classifierScore": 0.600718861,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 8341
+          },
+          "active": {
+            "indels": 0,
+            "reads": 18936
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 71,
+          "sourceBlock": "exon",
+          "sequence": "TTCATCCCCCTCAGTTTCAACCGTAACGG",
+          "classifierScore": 0.617791509,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 13697
+          },
+          "active": {
+            "indels": 0,
+            "reads": 9660
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 72,
+          "sourceBlock": "non_exon",
+          "sequence": "CATTGACTCCTCCTCTGTAACTGTGAAAG",
+          "classifierScore": 0.700027672,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 22141
+          },
+          "active": {
+            "indels": 1,
+            "reads": 42128
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 2.3737181921762248e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 72,
+          "sourceBlock": "exon",
+          "sequence": "ATGAGGGTGACCTCTAGAAACTGGAAAAG",
+          "classifierScore": 0.7001383,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 2,
+            "reads": 40051
+          },
+          "active": {
+            "indels": 0,
+            "reads": 102486
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 73,
+          "sourceBlock": "non_exon",
+          "sequence": "GTTCTGAACTTCCTAGTAAACAGCAAGAG",
+          "classifierScore": 0.700029597,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 14492
+          },
+          "active": {
+            "indels": 0,
+            "reads": 38122
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 73,
+          "sourceBlock": "exon",
+          "sequence": "CCAAGGGGCAGACCCACAAAACTGGAAAAG",
+          "classifierScore": 0.700313423,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 31635
+          },
+          "active": {
+            "indels": 0,
+            "reads": 60850
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 74,
+          "sourceBlock": "non_exon",
+          "sequence": "ACTTCACATATCAATATTAACTGTAAATG",
+          "classifierScore": 0.700033669,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 29256
+          },
+          "active": {
+            "indels": 0,
+            "reads": 69543
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 74,
+          "sourceBlock": "exon",
+          "sequence": "GCGGGGCTCCTCTTCTGAAACTGTAAAGA",
+          "classifierScore": 0.700663166,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 20435
+          },
+          "active": {
+            "indels": 0,
+            "reads": 38337
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 75,
+          "sourceBlock": "non_exon",
+          "sequence": "ATCCATCTCTTCATCTGTAAAATGGAAAGG",
+          "classifierScore": 0.700047306,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 48457
+          },
+          "active": {
+            "indels": 0,
+            "reads": 89296
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 75,
+          "sourceBlock": "exon",
+          "sequence": "GTCATCCTCATCGCCATCAACCGACATGG",
+          "classifierScore": 0.700850862,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 51435
+          },
+          "active": {
+            "indels": 15,
+            "reads": 68701
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.000218337433225135,
+          "significant": true
+        },
+        {
+          "sourceRow": 76,
+          "sourceBlock": "non_exon",
+          "sequence": "CTCACTCTCACCCGGGGTTAACTGCAAAGT",
+          "classifierScore": 0.700057224,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 7,
+            "reads": 17643
+          },
+          "active": {
+            "indels": 17,
+            "reads": 39299
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.00043258098170436906,
+          "significant": false
+        },
+        {
+          "sourceRow": 76,
+          "sourceBlock": "exon",
+          "sequence": "AACCCAGTCATTATGCATAACTGCAAAAG",
+          "classifierScore": 0.700907094,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 34424
+          },
+          "active": {
+            "indels": 0,
+            "reads": 30330
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 77,
+          "sourceBlock": "non_exon",
+          "sequence": "AATGCCAGCAGCCACCAGAAACTGGAAGAG",
+          "classifierScore": 0.700059473,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 19981
+          },
+          "active": {
+            "indels": 0,
+            "reads": 32116
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 77,
+          "sourceBlock": "exon",
+          "sequence": "CTTCGGCTCACCCCTGCACAAGTGGAAAAG",
+          "classifierScore": 0.701037021,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 16597
+          },
+          "active": {
+            "indels": 0,
+            "reads": 21510
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 78,
+          "sourceBlock": "non_exon",
+          "sequence": "CTCCTCCTCTCCACGTGCAACTGGAGAAG",
+          "classifierScore": 0.700083627,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 44202
+          },
+          "active": {
+            "indels": 0,
+            "reads": 86868
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 78,
+          "sourceBlock": "exon",
+          "sequence": "ATGATCCTCTTCATAGGGAACTGCATGAG",
+          "classifierScore": 0.701500581,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 20223
+          },
+          "active": {
+            "indels": 0,
+            "reads": 11434
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 79,
+          "sourceBlock": "non_exon",
+          "sequence": "GTCATACTCATCAAGGAGAATCTGGAAAGT",
+          "classifierScore": 0.700110271,
+          "identity": 19,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 18622
+          },
+          "active": {
+            "indels": 0,
+            "reads": 32662
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 79,
+          "sourceBlock": "exon",
+          "sequence": "ATTACATTCACTTCTCTTAGACTGTAAAAG",
+          "classifierScore": 0.701926442,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 40820
+          },
+          "active": {
+            "indels": 0,
+            "reads": 39911
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 80,
+          "sourceBlock": "non_exon",
+          "sequence": "GTGGCCTTCCTCTATCTCAACTGCGAGAG",
+          "classifierScore": 0.700128498,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 18269
+          },
+          "active": {
+            "indels": 1,
+            "reads": 33892
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 2.9505488020771865e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 80,
+          "sourceBlock": "exon",
+          "sequence": "GTTTGCCTTCTCTGAGTAAACTGAAAGGG",
+          "classifierScore": 0.702989374,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 12627
+          },
+          "active": {
+            "indels": 0,
+            "reads": 9612
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 81,
+          "sourceBlock": "non_exon",
+          "sequence": "CTTATCCACAGAAATATAAGCTGTAAAAG",
+          "classifierScore": 0.700133797,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 14207
+          },
+          "active": {
+            "indels": 0,
+            "reads": 26200
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 81,
+          "sourceBlock": "exon",
+          "sequence": "GCTTTGCTCATCCACTATCAACAGAACCAG",
+          "classifierScore": 0.703292513,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 23839
+          },
+          "active": {
+            "indels": 0,
+            "reads": 30193
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 82,
+          "sourceBlock": "non_exon",
+          "sequence": "TCATTACTCTTCATGTATAAACTGCAAATT",
+          "classifierScore": 0.7001377559999999,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 11237
+          },
+          "active": {
+            "indels": 0,
+            "reads": 33302
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 82,
+          "sourceBlock": "exon",
+          "sequence": "TGCATGCCCAGCACCCATCAACTGGAACAC",
+          "classifierScore": 0.703737378,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 17521
+          },
+          "active": {
+            "indels": 0,
+            "reads": 13907
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 83,
+          "sourceBlock": "non_exon",
+          "sequence": "TGACCATTCCGACACAGAAACTGGAAAAG",
+          "classifierScore": 0.700139137,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 35894
+          },
+          "active": {
+            "indels": 0,
+            "reads": 70536
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 83,
+          "sourceBlock": "exon",
+          "sequence": "CTGGTAGACCACTAATCAAAACTGTAAAAG",
+          "classifierScore": 0.705596252,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 43171
+          },
+          "active": {
+            "indels": 0,
+            "reads": 107876
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 84,
+          "sourceBlock": "non_exon",
+          "sequence": "AATTCAGGCAGCCTCTAGAAACTGGAAAAA",
+          "classifierScore": 0.700139747,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 7251
+          },
+          "active": {
+            "indels": 0,
+            "reads": 19597
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 84,
+          "sourceBlock": "exon",
+          "sequence": "AACAGGCGCAGTCTGCAAAAACGGAAAAG",
+          "classifierScore": 0.705761591,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 16763
+          },
+          "active": {
+            "indels": 0,
+            "reads": 7827
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        }
+      ],
+      "excludedRows": [
+        {
+          "sourceRow": 10,
+          "sourceBlock": "non_exon",
+          "sequence": "TTCCTGGACAGCAGACATAAACTGGAAAAG",
+          "classifierScore": 0.211341903,
+          "identity": 17,
+          "isOnTarget": false,
+          "inactiveRaw": "DID NOT AMPLIFY",
+          "activeRaw": null,
+          "reason": "did not amplify in the active-ZFN sample"
+        },
+        {
+          "sourceRow": 26,
+          "sourceBlock": "non_exon",
+          "sequence": "TTCCCCCTCAGTAAAATAAACTGGAAAAG",
+          "classifierScore": 0.306839848,
+          "identity": 18,
+          "isOnTarget": false,
+          "inactiveRaw": "DID NOT AMPLIFY",
+          "activeRaw": null,
+          "reason": "did not amplify in the active-ZFN sample"
+        },
+        {
+          "sourceRow": 39,
+          "sourceBlock": "non_exon",
+          "sequence": "ATCATCCTCAGCAAACTAAAACAGGAAAAG",
+          "classifierScore": 0.400674576,
+          "identity": 20,
+          "isOnTarget": false,
+          "inactiveRaw": "DID NOT AMPLIFY",
+          "activeRaw": null,
+          "reason": "did not amplify in the active-ZFN sample"
+        }
+      ]
+    },
+    "VEGFA": {
+      "name": "VEGFA",
+      "onTarget": "AGCAGCGTCTTCGAGAGTGAGGA",
+      "halfSiteLength": 9,
+      "listedRows": 169,
+      "evaluableRows": 159,
+      "offTargetRows": 158,
+      "rows": [
+        {
+          "sourceRow": 3,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGCGTCTTCGAGAGTGAGGA",
+          "classifierScore": 0.059004132,
+          "identity": 18,
+          "isOnTarget": true,
+          "inactive": {
+            "indels": 1,
+            "reads": 737964
+          },
+          "active": {
+            "indels": 175348,
+            "reads": 817525
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.17660667577827174,
+          "significant": true
+        },
+        {
+          "sourceRow": 4,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAACATCATCTTGAGTGAGGG",
+          "classifierScore": 0.074699456,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 19484
+          },
+          "active": {
+            "indels": 0,
+            "reads": 27585
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 5,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCATCGTCTGAAGTGAGTGAGGC",
+          "classifierScore": 0.076392716,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 18308
+          },
+          "active": {
+            "indels": 299,
+            "reads": 20357
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.014475213013168087,
+          "significant": true
+        },
+        {
+          "sourceRow": 7,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAACGTCATATTCAGTGAGGA",
+          "classifierScore": 0.094610765,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 142859
+          },
+          "active": {
+            "indels": 221,
+            "reads": 114024
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0019344391439450304,
+          "significant": true
+        },
+        {
+          "sourceRow": 8,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAATGTCAAAAAGAGTGAGGC",
+          "classifierScore": 0.115284108,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 16013
+          },
+          "active": {
+            "indels": 77,
+            "reads": 32534
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0023611664775689185,
+          "significant": true
+        },
+        {
+          "sourceRow": 8,
+          "sourceBlock": "exon",
+          "sequence": "AGCACGGTCATGATGAGTGAGGC",
+          "classifierScore": 0.147920206,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 90828
+          },
+          "active": {
+            "indels": 199,
+            "reads": 111353
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0017839213998852553,
+          "significant": true
+        },
+        {
+          "sourceRow": 9,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAAGGGCTCCGTGAGTGAGGG",
+          "classifierScore": 0.12606722,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 68235
+          },
+          "active": {
+            "indels": 1,
+            "reads": 48091
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 2.0793479164933875e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 9,
+          "sourceBlock": "exon",
+          "sequence": "AGCATCGTCTTTCTGTGTGAGGC",
+          "classifierScore": 0.161134382,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 54991
+          },
+          "active": {
+            "indels": 112,
+            "reads": 40968
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.002726387536514119,
+          "significant": true
+        },
+        {
+          "sourceRow": 10,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGCGTCCTTCCTCAGTGAGAC",
+          "classifierScore": 0.131791209,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 110082
+          },
+          "active": {
+            "indels": 34,
+            "reads": 69608
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0004882111369575831,
+          "significant": true
+        },
+        {
+          "sourceRow": 12,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAAGGGCAGTGAGAGTGAGGC",
+          "classifierScore": 0.138005525,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 146084
+          },
+          "active": {
+            "indels": 1,
+            "reads": 244726
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 4.0861858315592475e-06,
+          "significant": false
+        },
+        {
+          "sourceRow": 13,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCACCGTCATCTTGAGTGAGCT",
+          "classifierScore": 0.141833943,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 50003
+          },
+          "active": {
+            "indels": 0,
+            "reads": 77469
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 14,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGCGTATCACATGAGTGAGGG",
+          "classifierScore": 0.143226985,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 2,
+            "reads": 121263
+          },
+          "active": {
+            "indels": 1293,
+            "reads": 129783
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.009864506088071042,
+          "significant": true
+        },
+        {
+          "sourceRow": 15,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGCGTCTCCCTTGAGTGATGG",
+          "classifierScore": 0.14530807,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 123478
+          },
+          "active": {
+            "indels": 0,
+            "reads": 115833
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 16,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAACTTCATCTTGAGTGAGGG",
+          "classifierScore": 0.145362563,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 32034
+          },
+          "active": {
+            "indels": 11,
+            "reads": 33110
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.00033211557622052476,
+          "significant": true
+        },
+        {
+          "sourceRow": 17,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGCGTCTTTTCTATGTGAGGC",
+          "classifierScore": 0.148191825,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 244057
+          },
+          "active": {
+            "indels": 4,
+            "reads": 312583
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 1.279643747180785e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 18,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAAAGGCAAATAGAGTGAGGG",
+          "classifierScore": 0.15077316,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 30481
+          },
+          "active": {
+            "indels": 0,
+            "reads": 32657
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 19,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGGGTCAGGGCTGAGTGAGGC",
+          "classifierScore": 0.151742825,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 617252
+          },
+          "active": {
+            "indels": 7147,
+            "reads": 709308
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.00997550439315798,
+          "significant": true
+        },
+        {
+          "sourceRow": 20,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGCGTCGTGTGGTGTGAGGT",
+          "classifierScore": 0.15473396,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 30736
+          },
+          "active": {
+            "indels": 111,
+            "reads": 27475
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.004023780178351337,
+          "significant": true
+        },
+        {
+          "sourceRow": 21,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGAGGCACCTTTGAGTGAGGT",
+          "classifierScore": 0.200668975,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 27795
+          },
+          "active": {
+            "indels": 0,
+            "reads": 23972
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 21,
+          "sourceBlock": "exon",
+          "sequence": "AGCAAAGTCCTTGGTAAGTGAGGG",
+          "classifierScore": 0.225204377,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 64908
+          },
+          "active": {
+            "indels": 510,
+            "reads": 63689
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.007944048972725432,
+          "significant": true
+        },
+        {
+          "sourceRow": 22,
+          "sourceBlock": "non_exon",
+          "sequence": "GGCAACGTCAACTCAGAGTGAGAA",
+          "classifierScore": 0.202003552,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 43397
+          },
+          "active": {
+            "indels": 19,
+            "reads": 51625
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0003679033382387112,
+          "significant": true
+        },
+        {
+          "sourceRow": 22,
+          "sourceBlock": "exon",
+          "sequence": "AGCAAGGTTAGGCTGAGTGAGGG",
+          "classifierScore": 0.246503265,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 19891
+          },
+          "active": {
+            "indels": 0,
+            "reads": 18139
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 23,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGGGGCAGCATGAGTGAGGT",
+          "classifierScore": 0.203696895,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 246125
+          },
+          "active": {
+            "indels": 0,
+            "reads": 190401
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 23,
+          "sourceBlock": "exon",
+          "sequence": "AGCACGGTCAGTCTTCAGTGAGGG",
+          "classifierScore": 0.266905402,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 48092
+          },
+          "active": {
+            "indels": 872,
+            "reads": 90455
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.00954810735050971,
+          "significant": true
+        },
+        {
+          "sourceRow": 24,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGCGGCACCCTGGGTGAGGC",
+          "classifierScore": 0.204705138,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 151104
+          },
+          "active": {
+            "indels": 0,
+            "reads": 137192
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 24,
+          "sourceBlock": "exon",
+          "sequence": "AGCAGCGGCGGCTGCAGTGAGGC",
+          "classifierScore": 0.275913942,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 98478
+          },
+          "active": {
+            "indels": 0,
+            "reads": 92261
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 25,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGCATCAGTGAGAGTGAGGC",
+          "classifierScore": 0.20494674,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 185339
+          },
+          "active": {
+            "indels": 2,
+            "reads": 142920
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 1.3993646884314522e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 25,
+          "sourceBlock": "exon",
+          "sequence": "AGCAGCGGCAGCGAGAGTGATGT",
+          "classifierScore": 0.285128122,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 8,
+            "reads": 349796
+          },
+          "active": {
+            "indels": 233,
+            "reads": 421421
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0005525857693748903,
+          "significant": true
+        },
+        {
+          "sourceRow": 26,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGGGTCACACTAAAGTGAGGC",
+          "classifierScore": 0.208852002,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 9104
+          },
+          "active": {
+            "indels": 33,
+            "reads": 9715
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.003385309807139926,
+          "significant": true
+        },
+        {
+          "sourceRow": 26,
+          "sourceBlock": "exon",
+          "sequence": "TGCAGCGTCAAATTGGAGTAAGGG",
+          "classifierScore": 0.292407554,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 27020
+          },
+          "active": {
+            "indels": 0,
+            "reads": 23472
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 27,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGCGTCTAGGGGGAGGGAGGG",
+          "classifierScore": 0.209217225,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 3,
+            "reads": 144622
+          },
+          "active": {
+            "indels": 217,
+            "reads": 229404
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0009450355150443557,
+          "significant": true
+        },
+        {
+          "sourceRow": 28,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGGGTCAGGTTTTAGTGAGGG",
+          "classifierScore": 0.210803254,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": null,
+          "active": {
+            "indels": 333,
+            "reads": 92873
+          },
+          "matchedActiveControlCounts": false,
+          "inactiveRaw": "n.d.",
+          "observedIndelRate": 0.0035727313692251574,
+          "significant": false
+        },
+        {
+          "sourceRow": 29,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGCGGCCCGCAGAGGGAGGC",
+          "classifierScore": 0.212584131,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 52605
+          },
+          "active": {
+            "indels": 984,
+            "reads": 43140
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.022300788686429155,
+          "significant": true
+        },
+        {
+          "sourceRow": 30,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAATGTCTAGATGAGTGTGGC",
+          "classifierScore": 0.214359484,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 7455
+          },
+          "active": {
+            "indels": 0,
+            "reads": 6992
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 31,
+          "sourceBlock": "non_exon",
+          "sequence": "AACAATGTCATGTTGAGTGAGGG",
+          "classifierScore": 0.215746675,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 116856
+          },
+          "active": {
+            "indels": 0,
+            "reads": 87401
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 32,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGTGTCAGCCATGAGGGAGGG",
+          "classifierScore": 0.216017712,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 33674
+          },
+          "active": {
+            "indels": 815,
+            "reads": 44343
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.01804774347845343,
+          "significant": true
+        },
+        {
+          "sourceRow": 33,
+          "sourceBlock": "non_exon",
+          "sequence": "AGTAACGTCTCCCTGAGTGTGGG",
+          "classifierScore": 0.216525742,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 2,
+            "reads": 177694
+          },
+          "active": {
+            "indels": 2,
+            "reads": 189309
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 1.0564626461219897e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 34,
+          "sourceBlock": "exon",
+          "sequence": "AGCCCCGTCATAGGAAGTGAGGT",
+          "classifierScore": 0.311180551,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 63647
+          },
+          "active": {
+            "indels": 0,
+            "reads": 69043
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 35,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCACAGTCAATCTTCAGTGAGGG",
+          "classifierScore": 0.301178325,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 104596
+          },
+          "active": {
+            "indels": 73,
+            "reads": 148709
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0004906507507628611,
+          "significant": true
+        },
+        {
+          "sourceRow": 35,
+          "sourceBlock": "exon",
+          "sequence": "AGCAACGGGAAGAGGAGTGAGTC",
+          "classifierScore": 0.336721865,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 38430
+          },
+          "active": {
+            "indels": 1,
+            "reads": 41724
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 2.396644697423607e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 36,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCTCCGGCAGACATGAGTGAGGG",
+          "classifierScore": 0.30163446,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 153275
+          },
+          "active": {
+            "indels": 90,
+            "reads": 132736
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0006775781849939018,
+          "significant": true
+        },
+        {
+          "sourceRow": 36,
+          "sourceBlock": "exon",
+          "sequence": "AGCAACGTCCAGTCCAAGTGTGGC",
+          "classifierScore": 0.343030796,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 31764
+          },
+          "active": {
+            "indels": 0,
+            "reads": 21407
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 37,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCATCGTCAGAATGGGTGAGGG",
+          "classifierScore": 0.302919241,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 112410
+          },
+          "active": {
+            "indels": 0,
+            "reads": 124919
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 37,
+          "sourceBlock": "exon",
+          "sequence": "AGCAATGGCCAGAAATAGTGAGGT",
+          "classifierScore": 0.345087541,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 2,
+            "reads": 472484
+          },
+          "active": {
+            "indels": 5,
+            "reads": 378917
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 1.3195327798333167e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 38,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCACAGGCTGAAGAGAGTGAGGG",
+          "classifierScore": 0.303407502,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 115370
+          },
+          "active": {
+            "indels": 0,
+            "reads": 95956
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 38,
+          "sourceBlock": "exon",
+          "sequence": "CGCAACGTCCAGCTGAGTGATGC",
+          "classifierScore": 0.351529788,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 52398
+          },
+          "active": {
+            "indels": 0,
+            "reads": 44845
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 39,
+          "sourceBlock": "non_exon",
+          "sequence": "AGTAACGGGCAAATGAGTGAGGC",
+          "classifierScore": 0.303611536,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 193063
+          },
+          "active": {
+            "indels": 2,
+            "reads": 163600
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 1.2224789428002103e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 39,
+          "sourceBlock": "exon",
+          "sequence": "AGCAGGGTCCCTCTGAGTGGGGC",
+          "classifierScore": 0.360719811,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 87508
+          },
+          "active": {
+            "indels": 2,
+            "reads": 122195
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 1.6367013920145338e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 40,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCATGGTCCCAAGGAGTGAGGG",
+          "classifierScore": 0.303703891,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 58493
+          },
+          "active": {
+            "indels": 117,
+            "reads": 54877
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0021275048187074956,
+          "significant": true
+        },
+        {
+          "sourceRow": 40,
+          "sourceBlock": "exon",
+          "sequence": "CGCAGCGGCCGAGTGAGTGAGTT",
+          "classifierScore": 0.365518593,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 16687
+          },
+          "active": {
+            "indels": 1,
+            "reads": 15721
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 6.360513929525506e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 41,
+          "sourceBlock": "non_exon",
+          "sequence": "ATCAGTGTCCCAGAGAGTGAGGG",
+          "classifierScore": 0.30427221,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 2,
+            "reads": 73189
+          },
+          "active": {
+            "indels": 3,
+            "reads": 53632
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 5.593362543115503e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 41,
+          "sourceBlock": "exon",
+          "sequence": "AGCAGCGTCAGCGACAGAGAGGC",
+          "classifierScore": 0.373282104,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 19,
+            "reads": 648751
+          },
+          "active": {
+            "indels": 11,
+            "reads": 299154
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 3.676900706967727e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 42,
+          "sourceBlock": "non_exon",
+          "sequence": "GGCAGAGTCAGGGCTGAGTGAGGC",
+          "classifierScore": 0.304620877,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 2,
+            "reads": 35184
+          },
+          "active": {
+            "indels": 15,
+            "reads": 43979
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.00034095558485247986,
+          "significant": true
+        },
+        {
+          "sourceRow": 42,
+          "sourceBlock": "exon",
+          "sequence": "AGCAACGTCCTGCAGAGGGAGAA",
+          "classifierScore": 0.379596908,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 260302
+          },
+          "active": {
+            "indels": 6,
+            "reads": 290767
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 2.0634653148676114e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 43,
+          "sourceBlock": "non_exon",
+          "sequence": "GGCACCGTCATCCTGAGTGGGGC",
+          "classifierScore": 0.305290728,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 182595
+          },
+          "active": {
+            "indels": 0,
+            "reads": 198198
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 43,
+          "sourceBlock": "exon",
+          "sequence": "AGCAGAGTTAGGAGAGAGTGAGGG",
+          "classifierScore": 0.380179366,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 154567
+          },
+          "active": {
+            "indels": 0,
+            "reads": 174291
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 44,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAATGTCAACAAGAGTGAGAA",
+          "classifierScore": 0.305374825,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 27619
+          },
+          "active": {
+            "indels": 0,
+            "reads": 30465
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 44,
+          "sourceBlock": "exon",
+          "sequence": "AGCTGCGGCAGGCCCGAGTGAGGC",
+          "classifierScore": 0.387922887,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 4528
+          },
+          "active": {
+            "indels": 0,
+            "reads": 3554
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 45,
+          "sourceBlock": "non_exon",
+          "sequence": "TGCAATGTCTTTGAGAGTGAGGT",
+          "classifierScore": 0.306112525,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 2,
+            "reads": 11980
+          },
+          "active": {
+            "indels": 0,
+            "reads": 23387
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 45,
+          "sourceBlock": "exon",
+          "sequence": "AGCTGCGTCTCTGGGAAGTGAGGG",
+          "classifierScore": 0.390046329,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 6,
+            "reads": 38136
+          },
+          "active": {
+            "indels": 2,
+            "reads": 25749
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 7.766688672284571e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 46,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAATGTCAGGGAAAGTGAGGA",
+          "classifierScore": 0.306153935,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 29432
+          },
+          "active": {
+            "indels": 2,
+            "reads": 27953
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 7.154355213736362e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 46,
+          "sourceBlock": "exon",
+          "sequence": "GGCAACGGTCCTGTGAGTGAGTG",
+          "classifierScore": 0.393764155,
+          "identity": 12,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 86107
+          },
+          "active": {
+            "indels": 5,
+            "reads": 146037
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 3.4236726421166514e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 47,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAAGGGCACCCAGAGAGAGGG",
+          "classifierScore": 0.400025585,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 37240
+          },
+          "active": {
+            "indels": 1,
+            "reads": 24726
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 4.0441622517895415e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 47,
+          "sourceBlock": "exon",
+          "sequence": "AGCAGCTGCATGATGAGTGAGGT",
+          "classifierScore": 0.401959564,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 102439
+          },
+          "active": {
+            "indels": 0,
+            "reads": 90036
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 48,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGCGGCTTAAGGGGGTGAGGT",
+          "classifierScore": 0.400188476,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 164947
+          },
+          "active": {
+            "indels": 0,
+            "reads": 93609
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 48,
+          "sourceBlock": "exon",
+          "sequence": "AGCCACGGCAGCCGCAGTGAGGG",
+          "classifierScore": 0.40269885,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 496189
+          },
+          "active": {
+            "indels": 3,
+            "reads": 395571
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 7.583916030881706e-06,
+          "significant": false
+        },
+        {
+          "sourceRow": 49,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGCGTGCAGTGACAGTGAGGC",
+          "classifierScore": 0.400372686,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 683968
+          },
+          "active": {
+            "indels": 187,
+            "reads": 426389
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0004383744045609692,
+          "significant": true
+        },
+        {
+          "sourceRow": 49,
+          "sourceBlock": "exon",
+          "sequence": "AGCATCGTCATCAGACAGTGAGGA",
+          "classifierScore": 0.402774886,
+          "identity": 16,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 127207
+          },
+          "active": {
+            "indels": 0,
+            "reads": 192345
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 50,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGCGTCCCAGTGAGCGATGG",
+          "classifierScore": 0.400823144,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 101932
+          },
+          "active": {
+            "indels": 1,
+            "reads": 187235
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 5.340853254715973e-06,
+          "significant": false
+        },
+        {
+          "sourceRow": 50,
+          "sourceBlock": "exon",
+          "sequence": "GGCAACGGCTTCGTGAGTGGGGC",
+          "classifierScore": 0.4032585,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": null,
+          "active": {
+            "indels": 0,
+            "reads": 42462
+          },
+          "matchedActiveControlCounts": false,
+          "inactiveRaw": "#N/A",
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 51,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAAAGTCTGTATGAGTGAGCA",
+          "classifierScore": 0.401531003,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 33061
+          },
+          "active": {
+            "indels": 0,
+            "reads": 18245
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 51,
+          "sourceBlock": "exon",
+          "sequence": "GGCACCATCAAGGTGAGTGAGGG",
+          "classifierScore": 0.405465069,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 176719
+          },
+          "active": {
+            "indels": 0,
+            "reads": 125034
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 52,
+          "sourceBlock": "exon",
+          "sequence": "AGCAACGGTGAGATGAGGGAGGC",
+          "classifierScore": 0.4165009,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": null,
+          "active": {
+            "indels": 1,
+            "reads": 52219
+          },
+          "matchedActiveControlCounts": false,
+          "inactiveRaw": "#N/A",
+          "observedIndelRate": 1.914975105323631e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 53,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAATGTCAGGGTGAGGGAGTC",
+          "classifierScore": 0.402063683,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 92236
+          },
+          "active": {
+            "indels": 1,
+            "reads": 150419
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 6.648052120728626e-06,
+          "significant": false
+        },
+        {
+          "sourceRow": 53,
+          "sourceBlock": "exon",
+          "sequence": "AGCAACAGCAGTGATGAGGGAGGG",
+          "classifierScore": 0.425089133,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 50418
+          },
+          "active": {
+            "indels": 0,
+            "reads": 56706
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 54,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAAGGTCCATCCAGAGAGAGGC",
+          "classifierScore": 0.402129595,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 3,
+            "reads": 83843
+          },
+          "active": {
+            "indels": 132,
+            "reads": 59970
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0021962663472097433,
+          "significant": true
+        },
+        {
+          "sourceRow": 54,
+          "sourceBlock": "exon",
+          "sequence": "AACAGTGGCTGCTTAGAGTGAGGG",
+          "classifierScore": 0.425137735,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 20138
+          },
+          "active": {
+            "indels": 0,
+            "reads": 16376
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 55,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGGGTCAGCCCAGAGTGGGGG",
+          "classifierScore": 0.403095818,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 11655
+          },
+          "active": {
+            "indels": 0,
+            "reads": 10780
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 55,
+          "sourceBlock": "exon",
+          "sequence": "AGCAATGTCACCATGAGTGTGGA",
+          "classifierScore": 0.426968074,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 86072
+          },
+          "active": {
+            "indels": 0,
+            "reads": 63721
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 56,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCCATGGCCATGTGAGTGAGGC",
+          "classifierScore": 0.403672148,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 28393
+          },
+          "active": {
+            "indels": 0,
+            "reads": 23446
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 56,
+          "sourceBlock": "exon",
+          "sequence": "AGCAGAGTCCAGTGGGTGTGAGGC",
+          "classifierScore": 0.432014366,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 2,
+            "reads": 93289
+          },
+          "active": {
+            "indels": 56,
+            "reads": 123619
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0004527996765716596,
+          "significant": true
+        },
+        {
+          "sourceRow": 57,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCATGGGCAACAAGAGTGAGGG",
+          "classifierScore": 0.403999743,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 42485
+          },
+          "active": {
+            "indels": 0,
+            "reads": 50974
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 57,
+          "sourceBlock": "exon",
+          "sequence": "AGCAATGTCTCTTTGAGTGGGTC",
+          "classifierScore": 0.434659986,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 47591
+          },
+          "active": {
+            "indels": 0,
+            "reads": 69889
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 58,
+          "sourceBlock": "non_exon",
+          "sequence": "GGCAGAGGCATAATGAGTGAGGC",
+          "classifierScore": 0.40434492,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 42055
+          },
+          "active": {
+            "indels": 0,
+            "reads": 48408
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 58,
+          "sourceBlock": "exon",
+          "sequence": "AGTAGCATCAGGGTTAAGTGAGGC",
+          "classifierScore": 0.441466619,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 51135
+          },
+          "active": {
+            "indels": 1,
+            "reads": 54914
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 1.8209960848584177e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 59,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAAGGTCTGGGAGAGTGATGT",
+          "classifierScore": 0.404809789,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 39428
+          },
+          "active": {
+            "indels": 0,
+            "reads": 35743
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 59,
+          "sourceBlock": "exon",
+          "sequence": "AGCATCGGCCCTCATCAGTGAGTG",
+          "classifierScore": 0.451415861,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 14782
+          },
+          "active": {
+            "indels": 0,
+            "reads": 15424
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 60,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCACTGGCCAGTAAAGTGAGGC",
+          "classifierScore": 0.500068515,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 38955
+          },
+          "active": {
+            "indels": 0,
+            "reads": 22440
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 60,
+          "sourceBlock": "exon",
+          "sequence": "AGCAAGGGGCGTGGAGAGTGAGGG",
+          "classifierScore": 0.50084244,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 6,
+            "reads": 101217
+          },
+          "active": {
+            "indels": 7,
+            "reads": 110755
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 6.319856990664668e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 61,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCACCAGCTGATTGAGTGAGAG",
+          "classifierScore": 0.500071604,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 60340
+          },
+          "active": {
+            "indels": 0,
+            "reads": 72015
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 61,
+          "sourceBlock": "exon",
+          "sequence": "AGTACCGTAACGTGGAGTGAGGG",
+          "classifierScore": 0.502213856,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 31707
+          },
+          "active": {
+            "indels": 1,
+            "reads": 32774
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 3.0511060259344013e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 62,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAACGGCTTCCACTGTGAGGA",
+          "classifierScore": 0.500266541,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 2,
+            "reads": 270070
+          },
+          "active": {
+            "indels": 0,
+            "reads": 147939
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 62,
+          "sourceBlock": "exon",
+          "sequence": "AGCACCGGCTCAGACAGTGAGTC",
+          "classifierScore": 0.505013752,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 47754
+          },
+          "active": {
+            "indels": 0,
+            "reads": 35418
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 63,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGAGTCTCAGAGGAGTGAAGC",
+          "classifierScore": 0.500302032,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 72775
+          },
+          "active": {
+            "indels": 1,
+            "reads": 121385
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 8.238182327451271e-06,
+          "significant": false
+        },
+        {
+          "sourceRow": 63,
+          "sourceBlock": "exon",
+          "sequence": "TGCAGCGTCAGGCTCAGGGAGGC",
+          "classifierScore": 0.5058953,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 149634
+          },
+          "active": {
+            "indels": 0,
+            "reads": 80523
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 64,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAAGGTCCACCAGGTGGGAGGG",
+          "classifierScore": 0.500415474,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 3,
+            "reads": 117338
+          },
+          "active": {
+            "indels": 13,
+            "reads": 95522
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.00013607578374417754,
+          "significant": true
+        },
+        {
+          "sourceRow": 64,
+          "sourceBlock": "exon",
+          "sequence": "AGCAAAGTCATTCTGAGTAAGAT",
+          "classifierScore": 0.509995913,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 39667
+          },
+          "active": {
+            "indels": 1,
+            "reads": 51054
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 1.958672020370189e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 65,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAATGTCCCTAGGAAGTGAAGC",
+          "classifierScore": 0.50052211,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 2,
+            "reads": 42752
+          },
+          "active": {
+            "indels": 1,
+            "reads": 41052
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 2.4358755754756048e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 66,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAACATTTTAATTGAGTGAGAC",
+          "classifierScore": 0.500616145,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 353518
+          },
+          "active": {
+            "indels": 0,
+            "reads": 349632
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 66,
+          "sourceBlock": "exon",
+          "sequence": "TGCAGCGGCCGTGGTTTGTGAGGG",
+          "classifierScore": 0.513057725,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 34825
+          },
+          "active": {
+            "indels": 0,
+            "reads": 20825
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 67,
+          "sourceBlock": "non_exon",
+          "sequence": "AACAGCATCTTAGGGGAGTGAGGG",
+          "classifierScore": 0.500649698,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 98273
+          },
+          "active": {
+            "indels": 0,
+            "reads": 116212
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 67,
+          "sourceBlock": "exon",
+          "sequence": "GGCAGCGGCAGAGAAGAGAGAGGC",
+          "classifierScore": 0.514090956,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 46117
+          },
+          "active": {
+            "indels": 3,
+            "reads": 59016
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 5.0831088293600365e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 68,
+          "sourceBlock": "non_exon",
+          "sequence": "AGTAAAGTCAAAGTTGAGTGAAGC",
+          "classifierScore": 0.500690622,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 22387
+          },
+          "active": {
+            "indels": 0,
+            "reads": 22048
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 68,
+          "sourceBlock": "exon",
+          "sequence": "AGCAGCGTCAGCAGCAGTAAGAG",
+          "classifierScore": 0.520195477,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 12527
+          },
+          "active": {
+            "indels": 1,
+            "reads": 10817
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 9.243852837862822e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 69,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAATGTGCGTTTTGAGTAAGGG",
+          "classifierScore": 0.501056558,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 35832
+          },
+          "active": {
+            "indels": 0,
+            "reads": 47877
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 69,
+          "sourceBlock": "exon",
+          "sequence": "AGCACCGTGAGTGAGAGCGAGGC",
+          "classifierScore": 0.525053324,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 45549
+          },
+          "active": {
+            "indels": 1,
+            "reads": 35118
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 2.8474614880833738e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 70,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCATGGTCAAAGCTGAGTGAGAA",
+          "classifierScore": 0.501191876,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": null,
+          "active": {
+            "indels": 0,
+            "reads": 151750
+          },
+          "matchedActiveControlCounts": false,
+          "inactiveRaw": "#N/A",
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 70,
+          "sourceBlock": "exon",
+          "sequence": "AGCAGAGGCCACAGCAGTGAGGG",
+          "classifierScore": 0.531185463,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 113699
+          },
+          "active": {
+            "indels": 2,
+            "reads": 113254
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 1.7659108568199476e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 71,
+          "sourceBlock": "non_exon",
+          "sequence": "AGTAGTGTCTCAGAAGAGGGAGGG",
+          "classifierScore": 0.501318066,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 25072
+          },
+          "active": {
+            "indels": 135,
+            "reads": 22117
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0060668703936724785,
+          "significant": true
+        },
+        {
+          "sourceRow": 71,
+          "sourceBlock": "exon",
+          "sequence": "AGCCCCGTCATCCTGAGTGGGGT",
+          "classifierScore": 0.534675373,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 2,
+            "reads": 79814
+          },
+          "active": {
+            "indels": 4,
+            "reads": 60381
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 6.624161629543761e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 72,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGCGGCGAGGTTAGTGTGGT",
+          "classifierScore": 0.501339969,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 74589
+          },
+          "active": {
+            "indels": 1,
+            "reads": 76866
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 1.3009483913773141e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 72,
+          "sourceBlock": "exon",
+          "sequence": "AGCCCCGACTGCGAGAGTGAGGC",
+          "classifierScore": 0.53848343,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 25786
+          },
+          "active": {
+            "indels": 0,
+            "reads": 27549
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 73,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCCTCGGCCACAAGAGTGTGGG",
+          "classifierScore": 0.600014603,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 242286
+          },
+          "active": {
+            "indels": 3,
+            "reads": 294802
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 1.0176218178117739e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 73,
+          "sourceBlock": "exon",
+          "sequence": "GGCAGGGGCTGAGGGGAGTGAGGC",
+          "classifierScore": 0.603290413,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 4,
+            "reads": 35798
+          },
+          "active": {
+            "indels": 3,
+            "reads": 38327
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 7.826767545003914e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 74,
+          "sourceBlock": "non_exon",
+          "sequence": "AGTAAGGTCACTCATAAGTAAGGT",
+          "classifierScore": 0.600063028,
+          "identity": 12,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 6,
+            "reads": 31768
+          },
+          "active": {
+            "indels": 1342,
+            "reads": 24973
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.050997529925897775,
+          "significant": true
+        },
+        {
+          "sourceRow": 74,
+          "sourceBlock": "exon",
+          "sequence": "AGCACTGCCCTGGCAGAGTGAGGG",
+          "classifierScore": 0.603489792,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 37609
+          },
+          "active": {
+            "indels": 0,
+            "reads": 58924
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 75,
+          "sourceBlock": "non_exon",
+          "sequence": "TGCACCGTCCCCTCGTGTGAGGG",
+          "classifierScore": 0.600073171,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 15,
+            "reads": 183868
+          },
+          "active": {
+            "indels": 1,
+            "reads": 122741
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 8.147170487689626e-06,
+          "significant": false
+        },
+        {
+          "sourceRow": 76,
+          "sourceBlock": "non_exon",
+          "sequence": "ATCAATGTCAATTTCAGTGAGTC",
+          "classifierScore": 0.600124876,
+          "identity": 12,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 17216
+          },
+          "active": {
+            "indels": 0,
+            "reads": 17842
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 76,
+          "sourceBlock": "exon",
+          "sequence": "TGCACCGTCAAGAGTCAGTGAGAA",
+          "classifierScore": 0.604719462,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 16290
+          },
+          "active": {
+            "indels": 12,
+            "reads": 30608
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.00039190071848465056,
+          "significant": true
+        },
+        {
+          "sourceRow": 77,
+          "sourceBlock": "non_exon",
+          "sequence": "AGGAACGTCAACTCTGAGTGTGAT",
+          "classifierScore": 0.600214098,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 82674
+          },
+          "active": {
+            "indels": 0,
+            "reads": 135561
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 77,
+          "sourceBlock": "exon",
+          "sequence": "AGCACCTGCAAGAGGAAGTGAGGG",
+          "classifierScore": 0.604901257,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 52174
+          },
+          "active": {
+            "indels": 0,
+            "reads": 58416
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 78,
+          "sourceBlock": "non_exon",
+          "sequence": "ATCAATGGCTTTGTTGTGTGAGGC",
+          "classifierScore": 0.600230432,
+          "identity": 12,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 44011
+          },
+          "active": {
+            "indels": 0,
+            "reads": 55157
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 78,
+          "sourceBlock": "exon",
+          "sequence": "AGCACCCGCCCGGAGAGTGAGGC",
+          "classifierScore": 0.606934157,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 4,
+            "reads": 188964
+          },
+          "active": {
+            "indels": 2,
+            "reads": 142345
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 1.40501731683843e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 79,
+          "sourceBlock": "non_exon",
+          "sequence": "GGCAGCATCCATTTGAGGGAGGG",
+          "classifierScore": 0.600297305,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 18760
+          },
+          "active": {
+            "indels": 0,
+            "reads": 23219
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 79,
+          "sourceBlock": "exon",
+          "sequence": "AGCAGCGGCTGATGGACTGAGGC",
+          "classifierScore": 0.607840726,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 53961
+          },
+          "active": {
+            "indels": 0,
+            "reads": 34641
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 80,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAAGGGTCATCTGAGGGAGGG",
+          "classifierScore": 0.600390633,
+          "identity": 12,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 258491
+          },
+          "active": {
+            "indels": 4,
+            "reads": 384826
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 1.03942000363797e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 80,
+          "sourceBlock": "exon",
+          "sequence": "AGCAGCGTCAGGGGATTGTGGGGA",
+          "classifierScore": 0.608374174,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 20814
+          },
+          "active": {
+            "indels": 1,
+            "reads": 17015
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 5.876821814762576e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 81,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGTGGCCCAGGGAGCGAGGG",
+          "classifierScore": 0.600404713,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": null,
+          "active": {
+            "indels": 4,
+            "reads": 62385
+          },
+          "matchedActiveControlCounts": false,
+          "inactiveRaw": "#N/A",
+          "observedIndelRate": 6.411386622641812e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 81,
+          "sourceBlock": "exon",
+          "sequence": "AGCAACATCAAAGATGAGAAAGGG",
+          "classifierScore": 0.609269955,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 60397
+          },
+          "active": {
+            "indels": 0,
+            "reads": 64863
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 82,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGCGTTTGATATGAGTGATTT",
+          "classifierScore": 0.600416178,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 24738
+          },
+          "active": {
+            "indels": 0,
+            "reads": 25231
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 83,
+          "sourceBlock": "exon",
+          "sequence": "AGCACCTTCTCCTGGTAGTGAGGC",
+          "classifierScore": 0.6115908,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 182219
+          },
+          "active": {
+            "indels": 2,
+            "reads": 194124
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 1.0302586979590575e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 84,
+          "sourceBlock": "non_exon",
+          "sequence": "TGCAGCGGCGGCGGGAGGGAGGG",
+          "classifierScore": 0.600486601,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 22,
+            "reads": 405740
+          },
+          "active": {
+            "indels": 74,
+            "reads": 645609
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.00011460732278842714,
+          "significant": true
+        },
+        {
+          "sourceRow": 84,
+          "sourceBlock": "exon",
+          "sequence": "AGCAACACCAGTGGTGAGTGAGAG",
+          "classifierScore": 0.612134328,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 79564
+          },
+          "active": {
+            "indels": 0,
+            "reads": 96422
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 85,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGCGTCCAGGAGTGGGAGTC",
+          "classifierScore": 0.600548568,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 38219
+          },
+          "active": {
+            "indels": 0,
+            "reads": 33513
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 85,
+          "sourceBlock": "exon",
+          "sequence": "AGCCAGGTCACAGCTGAGAGAGGC",
+          "classifierScore": 0.612723971,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 5,
+            "reads": 130786
+          },
+          "active": {
+            "indels": 21,
+            "reads": 93677
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.00022412431428632415,
+          "significant": true
+        },
+        {
+          "sourceRow": 86,
+          "sourceBlock": "non_exon",
+          "sequence": "CGCACTGTCGTGCAGAGTGAGAC",
+          "classifierScore": 0.700047072,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 2,
+            "reads": 118270
+          },
+          "active": {
+            "indels": 0,
+            "reads": 81879
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 86,
+          "sourceBlock": "exon",
+          "sequence": "AGCCCAGTCAGTGAAGAGGGAGGC",
+          "classifierScore": 0.700883525,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 18599
+          },
+          "active": {
+            "indels": 0,
+            "reads": 14415
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 87,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGGTGCTGAGCTGAGTGAGGG",
+          "classifierScore": 0.700059995,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 35608
+          },
+          "active": {
+            "indels": 0,
+            "reads": 41349
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 87,
+          "sourceBlock": "exon",
+          "sequence": "AGCAGCGGCCGCCTGAGGGGAGC",
+          "classifierScore": 0.701477558,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 10,
+            "reads": 5349
+          },
+          "active": {
+            "indels": 19,
+            "reads": 592
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.031096563011456628,
+          "significant": true
+        },
+        {
+          "sourceRow": 88,
+          "sourceBlock": "non_exon",
+          "sequence": "ATCACTGTCCTGCTAAGTGAGTG",
+          "classifierScore": 0.700068053,
+          "identity": 12,
+          "isOnTarget": false,
+          "inactive": null,
+          "active": {
+            "indels": 0,
+            "reads": 23136
+          },
+          "matchedActiveControlCounts": false,
+          "inactiveRaw": "#N/A",
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 88,
+          "sourceBlock": "exon",
+          "sequence": "AGCAGCGGCACCTCGAGAGAGAA",
+          "classifierScore": 0.701553702,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 67048
+          },
+          "active": {
+            "indels": 1,
+            "reads": 49438
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 2.0226946337911367e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 89,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGAGGCATTGTGAGGAAGGG",
+          "classifierScore": 0.700103446,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 51179
+          },
+          "active": {
+            "indels": 2,
+            "reads": 52435
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 4e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 89,
+          "sourceBlock": "exon",
+          "sequence": "AGCAAGGTCAGCCACAGAGAGGT",
+          "classifierScore": 0.701715488,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 77564
+          },
+          "active": {
+            "indels": 2,
+            "reads": 101126
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 1.9776916383197533e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 90,
+          "sourceBlock": "non_exon",
+          "sequence": "AACAACGTTTACTGGAGTGAAGG",
+          "classifierScore": 0.700133296,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 76651
+          },
+          "active": {
+            "indels": 0,
+            "reads": 95310
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 90,
+          "sourceBlock": "exon",
+          "sequence": "ATTAGCGGCAGGCCTAAGTGTGGG",
+          "classifierScore": 0.702608144,
+          "identity": 12,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 74751
+          },
+          "active": {
+            "indels": 0,
+            "reads": 49782
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 91,
+          "sourceBlock": "non_exon",
+          "sequence": "AGTACTGGCAGGGCACAGTGAGGG",
+          "classifierScore": 0.700210117,
+          "identity": 12,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 56230
+          },
+          "active": {
+            "indels": 0,
+            "reads": 34840
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 91,
+          "sourceBlock": "exon",
+          "sequence": "AGCAACGGACAGATGTGTGAGTG",
+          "classifierScore": 0.703396676,
+          "identity": 12,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 10263
+          },
+          "active": {
+            "indels": 0,
+            "reads": 14924
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 92,
+          "sourceBlock": "exon",
+          "sequence": "AGTCGCGGCCACAGCGAGTGAGTG",
+          "classifierScore": 0.703595672,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 83776
+          },
+          "active": {
+            "indels": 0,
+            "reads": 108713
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 93,
+          "sourceBlock": "non_exon",
+          "sequence": "AGTAACGGCTGTTTGAGGGTGGA",
+          "classifierScore": 0.700240769,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 50825
+          },
+          "active": {
+            "indels": 2,
+            "reads": 55198
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 4e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 93,
+          "sourceBlock": "exon",
+          "sequence": "AGCAAGGTCACCCTCAGAGAGAG",
+          "classifierScore": 0.703755997,
+          "identity": 12,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 2,
+            "reads": 92731
+          },
+          "active": {
+            "indels": 0,
+            "reads": 80715
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 94,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGTGTCCATCAAAGTGTGAT",
+          "classifierScore": 0.700263329,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 51668
+          },
+          "active": {
+            "indels": 0,
+            "reads": 54578
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 94,
+          "sourceBlock": "exon",
+          "sequence": "TGCAAAAGCATGGTGAGTGAGGG",
+          "classifierScore": 0.704171847,
+          "identity": 12,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 164312
+          },
+          "active": {
+            "indels": 0,
+            "reads": 127255
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 95,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCACCGGCCTGGGGTGTGGGGC",
+          "classifierScore": 0.700279263,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 279975
+          },
+          "active": {
+            "indels": 4,
+            "reads": 517282
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 1e-05,
+          "significant": false
+        },
+        {
+          "sourceRow": 95,
+          "sourceBlock": "exon",
+          "sequence": "AGCAACAGCCCTGGGGGGTGAGGT",
+          "classifierScore": 0.704355754,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 5,
+            "reads": 301281
+          },
+          "active": {
+            "indels": 19,
+            "reads": 394499
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 4.816003325577033e-05,
+          "significant": true
+        },
+        {
+          "sourceRow": 96,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCCCCTTCAGCATAGAGTGAGGG",
+          "classifierScore": 0.700307136,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 1,
+            "reads": 69717
+          },
+          "active": {
+            "indels": 0,
+            "reads": 95025
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 96,
+          "sourceBlock": "exon",
+          "sequence": "AGCAACTGCGAGCTGGGTGAGGC",
+          "classifierScore": 0.705037843,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 8,
+            "reads": 25282
+          },
+          "active": {
+            "indels": 32,
+            "reads": 41364
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0.0007730215479756498,
+          "significant": true
+        },
+        {
+          "sourceRow": 97,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGGGTCTAAGGGAGTGATTT",
+          "classifierScore": 0.700312642,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 32199
+          },
+          "active": {
+            "indels": 0,
+            "reads": 52934
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 98,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGTGTCCCTACTTAGTGGGTC",
+          "classifierScore": 0.700312642,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 25403
+          },
+          "active": {
+            "indels": 0,
+            "reads": 37639
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        },
+        {
+          "sourceRow": 98,
+          "sourceBlock": "exon",
+          "sequence": "AGCAGCGACTGTGTTAAGAGAGAG",
+          "classifierScore": 0.706798166,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactive": {
+            "indels": 0,
+            "reads": 28442
+          },
+          "active": {
+            "indels": 0,
+            "reads": 23150
+          },
+          "matchedActiveControlCounts": true,
+          "inactiveRaw": null,
+          "observedIndelRate": 0,
+          "significant": false
+        }
+      ],
+      "excludedRows": [
+        {
+          "sourceRow": 6,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAAAGTCTGTACTGAGTGAGGG",
+          "classifierScore": 0.088160228,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactiveRaw": "DID NOT AMPLIFY",
+          "activeRaw": null,
+          "reason": "did not amplify in the active-ZFN sample"
+        },
+        {
+          "sourceRow": 11,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCACCGTCCCCCTCAGTGAGGC",
+          "classifierScore": 0.136262963,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactiveRaw": "DID NOT AMPLIFY",
+          "activeRaw": null,
+          "reason": "did not amplify in the active-ZFN sample"
+        },
+        {
+          "sourceRow": 34,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAGCGGCAGCCGAGAGAGAGGG",
+          "classifierScore": 0.300936332,
+          "identity": 15,
+          "isOnTarget": false,
+          "inactiveRaw": "DID NOT AMPLIFY",
+          "activeRaw": null,
+          "reason": "did not amplify in the active-ZFN sample"
+        },
+        {
+          "sourceRow": 52,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAAAGTAAAGAGAGAGTGAGGC",
+          "classifierScore": 0.401601035,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactiveRaw": "DID NOT AMPLIFY",
+          "activeRaw": null,
+          "reason": "did not amplify in the active-ZFN sample"
+        },
+        {
+          "sourceRow": 65,
+          "sourceBlock": "exon",
+          "sequence": "AGCAATGTCAGGGAGGAGTGATAC",
+          "classifierScore": 0.512226902,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactiveRaw": "DID NOT AMPLIFY",
+          "activeRaw": null,
+          "reason": "did not amplify in the active-ZFN sample"
+        },
+        {
+          "sourceRow": 75,
+          "sourceBlock": "exon",
+          "sequence": "GGAAACGGCACTGCTGAGTGAGGT",
+          "classifierScore": 0.604162296,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactiveRaw": "DID NOT AMPLIFY",
+          "activeRaw": null,
+          "reason": "did not amplify in the active-ZFN sample"
+        },
+        {
+          "sourceRow": 82,
+          "sourceBlock": "exon",
+          "sequence": "AGCAATTTCTTCTTGAGTGAGAG",
+          "classifierScore": 0.61068307,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactiveRaw": "DID NOT AMPLIFY",
+          "activeRaw": null,
+          "reason": "did not amplify in the active-ZFN sample"
+        },
+        {
+          "sourceRow": 83,
+          "sourceBlock": "non_exon",
+          "sequence": "AGCAACTTCAGAAGTGAGTTAGGG",
+          "classifierScore": 0.600449281,
+          "identity": 14,
+          "isOnTarget": false,
+          "inactiveRaw": "DID NOT AMPLIFY",
+          "activeRaw": null,
+          "reason": "did not amplify in the active-ZFN sample"
+        },
+        {
+          "sourceRow": 92,
+          "sourceBlock": "non_exon",
+          "sequence": "GTCAGGGTCACCCAGAGTGAGAC",
+          "classifierScore": 0.700214602,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactiveRaw": "DID NOT AMPLIFY",
+          "activeRaw": null,
+          "reason": "did not amplify in the active-ZFN sample"
+        },
+        {
+          "sourceRow": 97,
+          "sourceBlock": "exon",
+          "sequence": "GGCCGCGGCGCGATGAGTGGGGC",
+          "classifierScore": 0.705477672,
+          "identity": 13,
+          "isOnTarget": false,
+          "inactiveRaw": "DID NOT AMPLIFY",
+          "activeRaw": null,
+          "reason": "did not amplify in the active-ZFN sample"
+        }
+      ]
+    }
+  }
+}
