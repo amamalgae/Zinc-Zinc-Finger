@@ -18,15 +18,14 @@ test("Paschon source data reconstruct all five TRAC specificity cohorts", () => 
   assert.equal(result.pooled.positiveOffTargets, 16);
 });
 
-test("none of the Paschon pairs are silently forced into the current PROGNOS geometry", () => {
+test("all Paschon pairs retain explicit base-skipping, asymmetry, and FokI geometry", () => {
   const result = runPaschonBenchmark();
 
-  assert.equal(result.pooled.directlyPrognosCompatiblePairs, 0);
+  assert.equal(result.pooled.sequenceGeometrySupportedPairs, 5);
+  assert.equal(result.pooled.legacyContiguousEqualArmCompatiblePairs, 0);
   assert.deepEqual(
-    result.perSite.map(({ contiguousEqualArmPrognosCompatible }) =>
-      contiguousEqualArmPrognosCompatible,
-    ),
-    [false, false, false, false, false],
+    result.perSite.map(({ onTargetMaskedPrognosScore }) => onTargetMaskedPrognosScore),
+    [100, 100, 100, 100, 100],
   );
   assert.deepEqual(
     result.perSite.map(({ incompatibility }) => incompatibility),
@@ -38,4 +37,22 @@ test("none of the Paschon pairs are silently forced into the current PROGNOS geo
       ["unequal recognition-arm lengths"],
     ],
   );
+});
+
+test("masked PROGNOS metrics for the 122-site external cohort remain reproducible", () => {
+  const result = runPaschonBenchmark();
+
+  assert.ok(Math.abs(result.pooled.maskedPrognosRanking.rocAuc - 0.7594339623) < 1e-9);
+  assert.ok(Math.abs(result.pooled.maskedPrognosRanking.averagePrecision - 0.3686781242) < 1e-9);
+  assert.deepEqual(result.pooled.maskedPrognosRanking.recallAt20, {
+    recovered: 6,
+    positives: 16,
+    recall: 0.375,
+  });
+  assert.deepEqual(result.pooled.maskedPrognosRanking.recallAt50, {
+    recovered: 13,
+    positives: 16,
+    recall: 0.8125,
+  });
+  assert.ok(result.perSite[0].maskedPrognosRanking.rocAuc < 0.5);
 });

@@ -5,6 +5,7 @@ import {
   parseFastaText,
   prognosHalfSiteScore,
   prognosPairScore,
+  scorePhysicalPair,
   searchGenomeOffTargets,
 } from "../src/off-target-engine.ts";
 import { reverseComplement } from "../src/design-engine.ts";
@@ -40,6 +41,59 @@ test("PROGNOS applies the first-mismatch and polarity terms finger by finger", (
   const observed = `C${target.slice(1)}`;
   const expected = (30 + 85 + 80 + 70) / (100 + 85 + 80 + 70) * 100;
   assert.ok(Math.abs(prognosHalfSiteScore(target, observed) - expected) < 1e-9);
+});
+
+test("N-terminal FokI reverses polarity and a skipped base is not scored", () => {
+  const physicalTarget = "AAACCCAGGGTTT";
+  const observed = "AAACCCTGGGTTT";
+  const perfect = scorePhysicalPair(
+    { physicalTarget, strand: "forward", skippedBaseOffsets: [6], fokIEnd: "N" },
+    observed,
+    { physicalTarget: RIGHT, strand: "forward" },
+    RIGHT,
+  );
+  assert.equal(perfect.score, 100);
+  assert.equal(perfect.leftMismatches, 0);
+
+  const mismatchAtRecognitionStart = `C${physicalTarget.slice(1)}`;
+  assert.notEqual(
+    scorePhysicalPair(
+      { physicalTarget, strand: "forward", skippedBaseOffsets: [6], fokIEnd: "N" },
+      mismatchAtRecognitionStart,
+      { physicalTarget: RIGHT, strand: "forward" },
+      RIGHT,
+    ).leftScore,
+    scorePhysicalPair(
+      { physicalTarget, strand: "forward", skippedBaseOffsets: [6], fokIEnd: "C" },
+      mismatchAtRecognitionStart,
+      { physicalTarget: RIGHT, strand: "forward" },
+      RIGHT,
+    ).leftScore,
+  );
+});
+
+test("seed-and-verify supports asymmetric arms and one skipped base per half-site", () => {
+  const leftRecognition = "AAACCCGGGTTT";
+  const leftRecognitionSpan = "AAACCCAGGGTTT";
+  const rightRecognition = "GGGAAACCCTTTGAA";
+  const spacer = "GATTAC";
+  const pair = `${reverseComplement(leftRecognitionSpan)}${spacer}${rightRecognition}`;
+  const window = `ACGT${pair}TGCA`;
+  const candidate = {
+    id: "gapped-asymmetric",
+    leftRecognition,
+    rightRecognition,
+    leftSkippedBaseOffsets: [6],
+    spacerLength: 6,
+    targetStart: 4,
+    footprintLength: pair.length,
+  };
+  const result = searchGenomeOffTargets([{ name: "chr-gap", sequence: window }], [candidate], window);
+  const summary = result.summaries[0];
+
+  assert.equal(summary.intendedSiteFound, true);
+  assert.equal(summary.perfectPairHits, 1);
+  assert.equal(summary.perfectOffTargetHits, 0);
 });
 
 test("seed-and-verify finds intended, mismatched, and homodimeric sites", () => {

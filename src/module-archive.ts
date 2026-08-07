@@ -110,6 +110,9 @@ export const MODULE_COUNT = archiveRows.length;
 export const SP1C_N_TERMINAL_FRAMEWORK = "YKCPECGKSFS";
 export const SP1C_C_TERMINAL_FRAMEWORK = "HQRTH";
 export const INTERFINGER_LINKER = "TGEKP";
+// Paschon et al. 2019 selected this linker ("1c") to bridge one
+// unrecognized base between adjacent fingers. DOI: 10.1038/s41467-019-08867-x.
+export const BASE_SKIPPING_LINKER_1C = "THPRAPIPKP";
 
 export function fullFingerSequence(helix: string): string {
   return `${SP1C_N_TERMINAL_FRAMEWORK}${helix}${SP1C_C_TERMINAL_FRAMEWORK}`;

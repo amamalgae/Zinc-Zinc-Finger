@@ -151,13 +151,23 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .sequence-meta { display: flex; justify-content: space-between; margin-top: 8px; color: var(--muted); font-size: 10px; }
 .warning { color: var(--orange); }
 
-.control-grid { margin-top: 26px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.control-grid { margin-top: 26px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 .control-grid label { display: flex; flex-direction: column; gap: 7px; }
 .control-grid label > span { font-size: 11px; font-weight: 700; }
 .control-grid input, .control-grid select {
   width: 100%; height: 44px; padding: 0 12px; border: 1px solid #cfd7cf; border-radius: 12px; outline: none; background: white;
 }
 .control-grid small { color: var(--muted); font-size: 9px; }
+.geometry-grid {
+  margin-top: 12px; padding: 15px 17px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px;
+  border: 1px solid #d8ded4; border-radius: 14px; background: #f8f9f3;
+}
+.geometry-grid label { display: flex; flex-direction: column; gap: 7px; }
+.geometry-grid label > span { font-size: 10px; font-weight: 700; }
+.geometry-grid select { width: 100%; height: 40px; padding: 0 10px; border: 1px solid #cfd7cf; border-radius: 10px; background: white; }
+.geometry-grid p { grid-column: 1 / 3; margin: 2px 0 0; color: var(--muted); font-size: 9px; line-height: 1.6; }
+.base-skip { color: var(--orange); font-weight: 800; }
 .footprint { margin-top: 24px; padding: 15px 17px; display: grid; grid-template-columns: 1fr auto; gap: 3px 10px; border-radius: 14px; background: #edf3e8; }
 .footprint span { font-size: 11px; font-weight: 700; }
 .footprint strong { font-size: 13px; color: var(--green-dark); }
@@ -326,6 +336,8 @@ footer a { color: var(--green); text-decoration: none; }
   .hero-copy { font-size: 14px; }
   .input-card, .results-card, .design-detail, .genome-panel { padding: 20px; border-radius: 20px; }
   .control-grid { grid-template-columns: 1fr; }
+  .geometry-grid { grid-template-columns: 1fr; }
+  .geometry-grid p { grid-column: 1; }
   .candidate-row { grid-template-columns: 24px minmax(0,1fr) 52px; }
   .pair-sequence { font-size: 8px; }
   .detail-header h2 { font-size: 17px; }
