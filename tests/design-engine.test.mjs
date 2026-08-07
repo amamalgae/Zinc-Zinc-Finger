@@ -13,10 +13,6 @@ import {
   calculateModuleBScore,
   moduleArchive,
 } from "../src/module-archive.ts";
-import {
-  predictFingerPwm,
-  predictFingerPwmFromTwelveResidues,
-} from "../src/deepzf-pwm.ts";
 
 test("cleanDNA removes FASTA headers without treating header letters as bases", () => {
   assert.equal(cleanDNA(">target ACGT\naacc 11\nggtt\n"), "AACCGGTT");
@@ -35,27 +31,7 @@ test("the archive exposes experiment-selected helices and the published B-score 
   assert.equal(moduleArchive.ATC.helix, "DPGALRV");
 });
 
-test("the browser DeepZF port reproduces the upstream PWM model", () => {
-  const prediction = predictFingerPwm("RSDNLVR", "GAG");
-  assert.equal(prediction.topTriplet, "GAG");
-  assert.equal(prediction.targetRank, 1);
-  assert.ok(Math.abs(prediction.targetJointProbability - 0.9432) < 0.0001);
-});
-
-test("DeepZF accepts the actual 12-residue Cys2-to-His1 sequence", () => {
-  const fromHelix = predictFingerPwm("RSDNLVR", "GAG");
-  const fromTwelve = predictFingerPwmFromTwelveResidues(
-    "GKSFSRSDNLVR",
-    "GAG",
-  );
-  assert.deepEqual(fromTwelve, fromHelix);
-  assert.throws(
-    () => predictFingerPwmFromTwelveResidues("TOO-SHORT", "GAG"),
-    /12 residues/,
-  );
-});
-
-test("DeepZF is diagnostic only and cannot change candidate ranking", () => {
+test("an optional Persikov score only breaks otherwise equal candidates", () => {
   const common = {
     passesBScoreCutoff: true,
     combinedBScore: 18,
@@ -67,23 +43,17 @@ test("DeepZF is diagnostic only and cannot change candidate ranking", () => {
   };
   assert.equal(
     compareCandidates(
-      { ...common, deepZfTargetFit: 0.01 },
-      { ...common, deepZfTargetFit: 0.99 },
+      { ...common, persikovTargetFit: 0.01 },
+      { ...common, persikovTargetFit: 0.99 },
     ),
-    0,
+    0.98,
   );
   assert.ok(
     compareCandidates(
-      { ...common, deepZfTargetFit: 0.01 },
-      { ...common, tsoIssues: 1, deepZfTargetFit: 0.99 },
+      { ...common, combinedBScore: 19, persikovTargetFit: 0.01 },
+      { ...common, tsoIssues: 1, persikovTargetFit: 0.99 },
     ) < 0,
   );
-});
-
-test("DeepZF contains recognition signal across the 49-module archive", () => {
-  const modules = Object.values(moduleArchive);
-  assert.equal(modules.filter(({ deepZf }) => deepZf.targetRank === 1).length, 16);
-  assert.equal(modules.filter(({ deepZf }) => deepZf.targetRank <= 3).length, 25);
 });
 
 test("finger output follows protein N-to-C order", () => {
@@ -145,8 +115,7 @@ test("candidate includes B-score, Sp1C array, and spacer-matched FokI linker", (
   assert.match(candidate.leftArrayProtein, /^YKCPECGKSFS/);
   assert.match(candidate.leftArrayProtein, /TGEKP/);
   assert.equal(candidate.combinedBScore, 11);
-  assert.ok(candidate.deepZfTargetFit > 0 && candidate.deepZfTargetFit < 1);
-  assert.equal(candidate.deepZfExactModules, 3);
+  assert.equal(candidate.persikovTargetFit, undefined);
 });
 
 test("asymmetric and 1c base-skipping designs preserve finger geometry", () => {
@@ -177,7 +146,7 @@ test("CSV export contains recognition strands and N-to-C finger signatures", () 
   assert.ok(candidate);
   const csv = candidatesToCsv([candidate]);
   assert.match(csv, /left_recognition_strand_5to3/);
-  assert.match(csv, /deepzf_mean_target_fit/);
+  assert.match(csv, /persikov_svm_target_fit/);
   assert.match(csv, /GAA:QSSNLVR:B3/);
   assert.match(csv, /left_zfa_protein_NtoC/);
 });

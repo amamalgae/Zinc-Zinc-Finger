@@ -5,7 +5,7 @@ import {
   fingersForRecognitionStrand,
   reverseComplement,
 } from "../src/design-engine.ts";
-import { meanDeepZfTargetFit } from "../src/deepzf-pwm.ts";
+import { INTERFINGER_LINKER } from "../src/module-archive.ts";
 
 const COMBINATIONS = [3, 4, 5, 6].flatMap((left) =>
   [3, 4, 5, 6].map((right) => ({ left, right })),
@@ -149,7 +149,7 @@ const EXPLORATORY_L6R6_TARGETS = [
   },
 ];
 
-function scoreArrayPair(target, leftLength, rightLength) {
+export function scoreArrayPair(target, leftLength, rightLength) {
   const leftStart = target.leftTop.length - leftLength * 3;
   const leftRecognition = reverseComplement(target.leftTop.slice(leftStart));
   const rightRecognition = target.rightTop.slice(0, rightLength * 3);
@@ -165,9 +165,14 @@ function scoreArrayPair(target, leftLength, rightLength) {
     throw new Error(`${target.name} L${leftLength}+R${rightLength} cannot be assembled`);
   }
   const fingers = [...leftFingers, ...rightFingers];
+  const arrayProtein = (array) =>
+    array.map((finger) => finger.fullSequence).join(INTERFINGER_LINKER);
   return {
+    leftRecognition,
+    rightRecognition,
+    leftArrayProtein: arrayProtein(leftFingers),
+    rightArrayProtein: arrayProtein(rightFingers),
     combinedBScore: fingers.reduce((sum, finger) => sum + finger.bScore, 0),
-    deepZfTargetFit: meanDeepZfTargetFit(fingers.map((finger) => finger.deepZf)),
     tsoIssues: fingers.filter((finger) => !finger.tsoCompatible).length,
     unfavorableModules: fingers.filter(
       (finger) => finger.recommendation === "unfavorable",
@@ -232,7 +237,6 @@ function summary(rows) {
     n: rows.length,
     active: rows.filter((row) => row.active).length,
     bScoreAuc: auc(rows, byNumber("combinedBScore")),
-    deepZfAuc: auc(rows, byNumber("deepZfTargetFit")),
     currentRankingAuc: auc(rows, byCurrentRanking),
     bScore15: thresholdMetrics(rows),
   };

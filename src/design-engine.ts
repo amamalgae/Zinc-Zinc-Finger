@@ -5,10 +5,6 @@ import {
   moduleArchive,
   type ModuleRecommendation,
 } from "./module-archive.ts";
-import {
-  meanDeepZfTargetFit,
-  type FingerPwmPrediction,
-} from "./deepzf-pwm.ts";
 
 export type Base = "A" | "C" | "G" | "T";
 
@@ -21,7 +17,6 @@ export type Finger = {
   recommendation: ModuleRecommendation;
   requiresTsoContext: boolean;
   tsoCompatible: boolean;
-  deepZf: FingerPwmPrediction;
 };
 
 export type Candidate = {
@@ -49,9 +44,7 @@ export type Candidate = {
   passesBScoreCutoff: boolean;
   favorableModules: number;
   unfavorableModules: number;
-  deepZfTargetFit: number;
-  deepZfExactModules: number;
-  deepZfTop3Modules: number;
+  persikovTargetFit?: number;
   tsoIssues: number;
   fokILinker: string;
 };
@@ -60,6 +53,7 @@ export function compareCandidates(a: Candidate, b: Candidate): number {
   return (
     Number(b.passesBScoreCutoff) - Number(a.passesBScoreCutoff) ||
     b.combinedBScore - a.combinedBScore ||
+    (b.persikovTargetFit ?? 0) - (a.persikovTargetFit ?? 0) ||
     a.tsoIssues - b.tsoIssues ||
     a.unfavorableModules - b.unfavorableModules ||
     b.favorableModules - a.favorableModules ||
@@ -137,7 +131,6 @@ export function fingersForRecognitionStrand(
       recommendation: module.recommendation,
       requiresTsoContext: module.requiresTsoContext,
       tsoCompatible,
-      deepZf: module.deepZf,
     };
   });
 
@@ -172,6 +165,7 @@ export function generateCandidates(
     rightFingerCount?: number;
     leftSkipAfterFinger?: number | null;
     rightSkipAfterFinger?: number | null;
+    candidateLimit?: number;
   } = {},
 ): Candidate[] {
   const rightFingerCount = options.rightFingerCount ?? leftFingerCount;
@@ -264,22 +258,15 @@ export function generateCandidates(
         passesBScoreCutoff: combinedBScore >= 15,
         favorableModules: countRecommendation(allFingers, "favorable"),
         unfavorableModules: countRecommendation(allFingers, "unfavorable"),
-        deepZfTargetFit: meanDeepZfTargetFit(
-          allFingers.map((finger) => finger.deepZf),
-        ),
-        deepZfExactModules: allFingers.filter(
-          (finger) => finger.deepZf.targetRank === 1,
-        ).length,
-        deepZfTop3Modules: allFingers.filter(
-          (finger) => finger.deepZf.targetRank <= 3,
-        ).length,
         tsoIssues: allFingers.filter((finger) => !finger.tsoCompatible).length,
         fokILinker: FOKI_LINKERS[spacerLength],
       });
     }
   }
 
-  return candidates.sort(compareCandidates).slice(0, 30);
+  return candidates
+    .sort(compareCandidates)
+    .slice(0, options.candidateLimit ?? 30);
 }
 
 export function formatCut(value: number): string {
@@ -291,9 +278,7 @@ export function candidatesToCsv(candidates: Candidate[]): string {
     "rank",
     "combined_b_score",
     "b_score_ge_15",
-    "deepzf_mean_target_fit",
-    "deepzf_exact_modules",
-    "deepzf_top3_modules",
+    "persikov_svm_target_fit",
     "tso_warnings",
     "cut_between_bases",
     "distance",
@@ -316,9 +301,7 @@ export function candidatesToCsv(candidates: Candidate[]): string {
     index + 1,
     candidate.combinedBScore,
     candidate.passesBScoreCutoff,
-    candidate.deepZfTargetFit.toFixed(4),
-    candidate.deepZfExactModules,
-    candidate.deepZfTop3Modules,
+    candidate.persikovTargetFit?.toFixed(4) ?? "",
     candidate.tsoIssues,
     formatCut(candidate.cut),
     candidate.distance.toFixed(1),

@@ -10,6 +10,11 @@ import {
   type Finger,
 } from "./design-engine";
 import { MODULE_COUNT } from "./module-archive.ts";
+import {
+  addPersikovScores,
+  parsePersikovLinearModel,
+  type PersikovModel,
+} from "./persikov-svm.ts";
 import type {
   CandidateSpecificitySummary,
   GenomeSearchResult,
@@ -123,8 +128,6 @@ function FingerTable({
               <th>標的3-mer</th>
               <th>認識ヘリックス −1…+6</th>
               <th>B</th>
-              <th>DeepZF予測</th>
-              <th>標的順位</th>
               <th>TSO</th>
               <th>評価</th>
               <th>次linker</th>
@@ -137,8 +140,6 @@ function FingerTable({
                 <td className="mono strong">{finger.triplet}</td>
                 <td className="mono residue">{finger.helix}</td>
                 <td>{finger.bScore}</td>
-                <td className="mono">{finger.deepZf.topTriplet}</td>
-                <td>#{finger.deepZf.targetRank}</td>
                 <td className={finger.tsoCompatible ? "" : "warning"}>
                   {finger.tsoCompatible ? "—" : "要確認"}
                 </td>
@@ -182,14 +183,18 @@ export default function Home() {
     message: string;
   } | null>(null);
   const [genomeError, setGenomeError] = useState<string | null>(null);
+  const [persikovModel, setPersikovModel] = useState<PersikovModel | null>(null);
+  const [persikovFileName, setPersikovFileName] = useState<string | null>(null);
+  const [persikovError, setPersikovError] = useState<string | null>(null);
   const workerRef = useRef<Worker | null>(null);
   const dna = useMemo(() => cleanDNA(rawSequence), [rawSequence]);
   const invalidCount = rawSequence.replace(/[ACGTacgt\s\d>_-]/g, "").length;
-  const candidates = useMemo(
+  const baseCandidates = useMemo(
     () => generateCandidates(dna, desiredCut, leftFingerCount, maxDistance, {
       rightFingerCount,
       leftSkipAfterFinger,
       rightSkipAfterFinger,
+      candidateLimit: persikovModel ? Number.POSITIVE_INFINITY : 30,
     }),
     [
       dna,
@@ -199,7 +204,14 @@ export default function Home() {
       leftSkipAfterFinger,
       rightSkipAfterFinger,
       maxDistance,
+      persikovModel,
     ],
+  );
+  const candidates = useMemo(
+    () => persikovModel
+      ? addPersikovScores(baseCandidates, persikovModel).sort(compareCandidates).slice(0, 30)
+      : baseCandidates,
+    [baseCandidates, persikovModel],
   );
   const specificityById = useMemo(
     () => new Map(genomeResult?.summaries.map((summary) => [summary.candidateId, summary]) ?? []),
@@ -332,7 +344,7 @@ export default function Home() {
           <h1>標的配列から、<br />ZFN候補を瞬時に組む。</h1>
           <p className="hero-copy">
             実験選抜済みone-finger archiveから構築可能な配列だけを列挙し、
-            published B-scoreを主軸に順位付けします。DeepZFは順位に使わず、認識診断として表示します。
+            published B-scoreを主軸に順位付けし、任意のexpanded SVMとゲノムFASTAで再評価できます。
           </p>
         </div>
         <aside className="method-card">
@@ -341,7 +353,7 @@ export default function Home() {
             <div><strong>{MODULE_COUNT}</strong><small>Barbas modules</small></div>
             <div><strong>{leftFingerCount} + {rightFingerCount}</strong><small>left / right fingers</small></div>
             <div><strong>≥15</strong><small>combined B-score</small></div>
-            <div><strong>DeepZF</strong><small>PWM cross-check</small></div>
+            <div><strong>SVMl7</strong><small>optional local model</small></div>
           </div>
           <p className="method-note">再計算: B-score 20/21一致 · 異種archiveは学習に不使用</p>
         </aside>
@@ -474,6 +486,38 @@ export default function Home() {
             </p>
           </div>
 
+          <div className="geometry-grid">
+            <label className="file-picker">
+              <input
+                type="file"
+                accept=".mod,text/plain"
+                onChange={async (event) => {
+                  const file = event.target.files?.[0];
+                  if (!file) return;
+                  resetGenomeAnalysis();
+                  try {
+                    const model = parsePersikovLinearModel(await file.text());
+                    setPersikovModel(model);
+                    setPersikovFileName(file.name);
+                    setPersikovError(null);
+                  } catch (error) {
+                    setPersikovModel(null);
+                    setPersikovFileName(null);
+                    setPersikovError(error instanceof Error ? error.message : "SVM modelを解析できません。");
+                  }
+                }}
+              />
+              <span>{persikovFileName ?? "任意: SVMl7.modを読み込む"}</span>
+              <small>ファイルは端末外へ送信されません</small>
+            </label>
+            <p>
+              Persikov–Singh expanded linear SVMをB-score同点時の補助順位に使います。
+              <a href="https://zf.princeton.edu/download.php" target="_blank" rel="noreferrer">公式配布ページ</a>の
+              models.zipからSVMl7.modを選択してください。モデル本体はこのサイトに同梱していません。
+            </p>
+            {persikovError && <p className="genome-error" role="alert">{persikovError}</p>}
+          </div>
+
           <div className="footprint">
             <span>想定フットプリント</span>
             <strong>約 {footprint} bp</strong>
@@ -500,7 +544,7 @@ export default function Home() {
           <div className="result-summary">
             <strong>{rankedCandidates.length}</strong>
             <span>候補を表示</span>
-            <small>{genomeResult ? "B-score・完全一致・最大類似scoreを優先" : "spacer 5 / 6 / 7 bpを同時評価"}</small>
+            <small>{genomeResult ? "B-score・完全一致・最大類似scoreを優先" : persikovModel ? "B-score同点時にexpanded SVMを使用" : "spacer 5 / 6 / 7 bpを同時評価"}</small>
           </div>
 
           {rankedCandidates.length ? (
@@ -526,7 +570,7 @@ export default function Home() {
                     <small>
                       {specificity
                         ? `完全一致 ${specificity.perfectOffTargetHits} · B ${candidate.combinedBScore}`
-                        : `DeepZF参考 ${candidate.deepZfTargetFit.toFixed(2)} · TSO ${candidate.tsoIssues} · cut ${formatCut(candidate.cut)}`}
+                        : `${candidate.persikovTargetFit === undefined ? (persikovModel ? "SVM対象外" : "SVM未読込") : `SVM ${candidate.persikovTargetFit.toFixed(2)}`} · TSO ${candidate.tsoIssues} · cut ${formatCut(candidate.cut)}`}
                     </small>
                   </span>
                 </button>;
@@ -753,9 +797,9 @@ export default function Home() {
               <p>推奨 / 非推奨 · TSO警告 {selected.tsoIssues}</p>
             </div>
             <div>
-              <span>DeepZF target fit</span>
-              <strong>{selected.deepZfTargetFit.toFixed(3)}</strong>
-              <p>top-1一致 {selected.deepZfExactModules} / {selected.leftFingers.length + selected.rightFingers.length}</p>
+              <span>Expanded SVM target fit</span>
+              <strong>{selected.persikovTargetFit?.toFixed(3) ?? "—"}</strong>
+              <p>{selected.persikovTargetFit === undefined ? (persikovModel ? "1c base-skippingはSVM対象外" : "SVMl7.mod未読込") : "B-score同点時だけ順位に使用"}</p>
             </div>
             <div>
               <span>ZFA–FokI linker</span>
@@ -764,7 +808,7 @@ export default function Home() {
             </div>
             <p className="score-caution">
               B-score ≥15の構成はBhakta et al.の268構成中52%がSSA活性ありでしたが、これは本候補の成功確率ではありません。
-              TSO不一致は原著どおり警告であり、候補を自動除外しません。DeepZF値は結合確率ではなくPWM整合度で、順位にも使用しません。
+              TSO不一致は原著どおり警告であり、候補を自動除外しません。expanded SVM値は結合確率ではなくPWM整合度です。
               Zhu 2011の29ペアは別module archiveで現行配列と0/29一致のため、順位学習には混ぜていません。
               表示配列はSp1C型ZFAまでで、FokI、NLS、発現カセット、
               クロマチン状態の評価は含みません。FASTA検索後はB-score閾値内でゲノム特異性を優先して並べ替えます。
@@ -783,11 +827,11 @@ export default function Home() {
           </p>
         </article>
         <article>
-          <span>INDEPENDENT FORWARD MODEL</span>
-          <h2>DeepZFは診断表示だけに限定</h2>
+          <span>OPTIONAL RECOGNITION MODEL</span>
+          <h2>公開weightを同梱せず、必要時だけローカル評価</h2>
           <p>
-            原著の学習済みPWMpredictorをブラウザ用に軽量移植しました。Chen 2013の実配列82ペアでは
-            活性予測AUC 0.491だったため、候補順位には使いません。49 moduleの標的triplet整合度だけを参考表示します。
+            Persikov–Singh expanded SVMは4-bp重複認識を含むPWMを計算します。公式SVMl7.modを利用者が読み込んだ場合だけ、
+            B-score同点候補の補助順位に使います。モデルは送信・保存されません。
           </p>
         </article>
         <article>
@@ -806,7 +850,7 @@ export default function Home() {
           <a href="https://doi.org/10.1101/gr.143693.112" target="_blank" rel="noreferrer">Bhakta 2013</a>
           <a href="https://doi.org/10.1242/dev.066779" target="_blank" rel="noreferrer">Zhu 2011</a>
           <a href="https://doi.org/10.1093/nar/gkt1326" target="_blank" rel="noreferrer">Fine 2014</a>
-          <a href="https://doi.org/10.1093/nar/gks1356" target="_blank" rel="noreferrer">Chen 2013</a>
+          <a href="https://doi.org/10.1093/nar/gkt890" target="_blank" rel="noreferrer">Persikov 2014</a>
         </div>
       </footer>
     </main>

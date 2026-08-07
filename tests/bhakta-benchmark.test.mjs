@@ -30,7 +30,6 @@ test("Bhakta activity-ranking metrics remain reproducible", () => {
   const prospective = result.exactL6R6.prospective;
 
   assert.ok(Math.abs(combined.bScoreAuc - 0.6555555555555556) < 1e-12);
-  assert.ok(Math.abs(combined.deepZfAuc - 0.5222222222222223) < 1e-12);
   assert.ok(Math.abs(combined.currentRankingAuc - 0.6555555555555556) < 1e-12);
   assert.deepEqual(
     {

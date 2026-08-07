@@ -12,8 +12,8 @@
 - 各half-siteに1個まで、Paschon 1c linker（THPRAPIPKP）による1-bp base-skipping位置を指定する
 - target-site overlap（TSO）を生じるGNG moduleの隣接塩基を検査し、警告する
 - published B-score、module評価、希望切断位置で候補を順位付けする
-- DeepZF原著の学習済みPWMpredictorで各moduleの標的triplet整合度を計算する
-- DeepZF整合度は順位に使わず、独立な認識診断値として表示する
+- 任意でPersikov–Singh expanded linear SVMの公式`SVMl7.mod`を端末内だけで読み込み、4-bp重複認識を含むPWM整合度を計算する
+- expanded SVM整合度はB-scoreが同点の候補にだけ使い、モデル本体はリポジトリや公開サイトに同梱しない
 - Sp1C framework、TGEKPまたは1c interfinger linkerを含むZFAアミノ酸配列を出力する
 - spacer 5 / 6 / 7 bpに対してTGGS / TGAAAR / TGPGAAAR ZFA–FokI linkerを提案する
 - ゲノムFASTAまたはgzip圧縮FASTAを端末内だけで読み込む
@@ -120,14 +120,15 @@ Bhakta et al.のデータでは、92 array variantsに対する分類AUCは0.77�
 
 原著表から行単位で復元できるL6+R6構成21件（活性15件）を再計算しました。
 
-| 評価 | B-score単独 | DeepZF単独 | 採用順位（B-score、同点時TSO等） |
+| 評価 | B-score単独 | expanded SVM単独 | B-score→SVM同点決着 |
 |---|---:|---:|---:|
-| 21件全体のAUC | 0.656 | 0.522 | 0.656 |
-| 前向き11件のAUC | 0.875 | 0.583 | 0.917 |
+| 21件全体のAUC | 0.656 | 0.667 | 0.656 |
+| 前向き11件のAUC | 0.875 | 0.625 | 0.917 |
+| Figure 2復元92 arrayのAUC（参考） | 0.834 | 0.772 | 0.845 |
 
 module別公表値から得たL6+R6 B-scoreは20/21標的で原著表と一致しました。CS7-3だけは、原著Figure 4Aのmodule別公表値を合計すると20ですが、原著Table 1では21と記載されており、論文内に1点の不整合があります。
 
-21件全体ではDeepZFによる改善はAUC 0.011に留まり、DeepZF単独はほぼランダムです。前向き11件では改善が見えましたが、活性8・不活性3の小標本なので一般化性能とは扱いません。
+expanded SVMは21件全体でB-scoreを単独で上回る一方、前向き11件では大きく下回りました。92 arrayではB-score同点のみの決着でAUCが0.834から0.845へ上がったため、単独順位や足切りには使わず、この限定的な役割に固定しています。いずれも小標本またはFigure 2からの復元データであり、成功確率とは扱いません。
 
 ### Zhu 2011の3F modular-assemblyデータ
 
@@ -136,10 +137,6 @@ Zhu et al.のSupplementary Tables S1、S5、S7から、3F ZFN 29ペアと左右5
 ただし、このデータは現行ツールのBarbas one-finger archiveを直接検証しません。Zhuのposition-specific archiveで使われた174 recognition helixのうち現行Barbas helixと一致したのは4本だけで、左右6本すべてが一致するZFNペアは0/29でした。現行archiveで同じ標的tripletを構築可能な25ペアへ配列組成だけを転用すると、B-score AUCは0.585、採用順位は0.570でした。この値は異なるタンパク質間のtransfer解析であり、現行4–6F設計の精度値や学習データには使用しません。
 
 Table S5とS7では`sbno2`、`sgk`、`spon1b`のZFN IDが1行ずつずれているため、遺伝子名と左右の認識配列で対応を復元し、差異を回帰試験に固定しています。
-
-さらに、別研究室のCoDA ZFN 84ペアについて、補足表のcoding sequenceから各fingerのCys2–His1間12残基を抽出して外部検証しました。配列を取得できた82ペア（活性32、不活性50）では、DeepZF整合度とsomatic indel率のSpearman ρは0.053、活性閾値>0.27%に対するROC-AUCは0.491でした。最弱fingerまたは最弱monomerを使ってもAUCは0.520、0.518で、活性順位付けには使えませんでした。Chen et al. (2013), DOI: [10.1093/nar/gks1356](https://doi.org/10.1093/nar/gks1356)。
-
-以上から、DeepZFは候補順位から外し、PWM上の認識整合度を確認する診断表示だけに限定しました。ChenデータはCoDA・zebrafish胚という別方式なので、extended MAの成功率推定には混ぜていません。再計算は`npm run benchmark`で実行できます。
 
 92 array variantsについては、原著の報告AUCは0.77です。Figure 2から92件の二値ラベルを復元した参考解析もスクリプトに含めています。原著にはSupplemental Tables S1–S8がありますが、268構成の行単位データを収録した`Supplemental_Appendices.xls`という別ファイルは確認できませんでした。Data accessに記載されたBioProject PRJNA179355はT2-X6のmassively parallel sequencingデータであり、268構成のSSA成否表ではありません。このため図からの復元値は主結果には使用していません。
 
@@ -154,32 +151,35 @@ Table S5とS7では`sbno2`、`sgk`、`spon1b`のZFN IDが1行ずつずれてい�
 - クロマチン accessibility、発現量、細胞種依存性は評価しません。
 - 3-fingerでは3 mismatch以内のhalf-siteが急増するため、ブラウザ版のゲノム検索対象は4–6 fingerに限定しています。
 - B-scoreはaffinity/activityの粗い分類器であり、PWM、結合定数、indel率を予測しません。
-- DeepZF target fitはPWM上の標的塩基確率の幾何平均であり、結合確率や切断効率ではありません。
-- DeepZF target fitは候補順位に使用しません。Chen 2013の独立82ペアで活性予測AUC 0.491だったためです。
-- DeepZF PWMpredictorは天然C2H2-ZF中心のデータで学習されており、人工Barbas moduleへの分布外適用です。
+- expanded SVM target fitはPWM上の標的塩基確率の幾何平均であり、結合確率や切断効率ではありません。
+- expanded SVMはB-score同点の候補だけを決着します。単独順位、候補除外、活性閾値には使いません。
+- expanded SVMは連続的なZF arrayを前提とするため、1c base-skipping候補は採点しません。
 - TSO不一致は候補を除外せず警告します。原著Zinc Finger ToolsもTSOを警告として扱い、TSO不一致でも高affinityの例があると記載しています。
 - 6-finger arraysを増やすとaffinityが上がり得る一方、3-finger subgroupによる非意図的結合も起こり得ます。
 - 実験では複数候補をSSA等で一次スクリーニングしてください。
 
-## DeepZF PWMpredictorの軽量移植
+## 任意のPersikov–Singh expanded SVM評価器
 
-DeepZFはprotein sequenceからPWMを予測するforward modelです。本ツールは、原著リポジトリの`transfer_model100.h5`（352 KB）から推論用weightだけを変換し、同じone-hot encodingとニューラルネットワーク計算をTypeScriptで実行します。ProteinBERTを使う約122 MBのBindZFpredictorは、実験選抜済みmoduleから組む本用途には不要なので同梱していません。
+Persikov–Singh expanded linear SVMは、各fingerの7個のアミノ酸–DNA接触と4-bp認識を線形SVMで採点し、隣接finger間の重複塩基を統合したarray PWMを作ります。実装は公開された式の独立TypeScript実装です。Persikov & Singh (2014), DOI: [10.1093/nar/gkt890](https://doi.org/10.1093/nar/gkt890)。
 
-49個のBarbas moduleに対し、DeepZFの最高確率tripletが公称標的と一致したのは16/49（32.7%）、top-3以内は25/49（51.0%）でした。ランダム期待値はそれぞれ1/64（1.6%）、3/64（4.7%）なので認識情報はありますが、単独でmoduleを棄却できる精度ではありません。さらにChen 2013の実配列外部検証でも活性予測はランダム相当だったため、DeepZFは順位付けに使いません。DeepZFのfull textは確認済みです。Aizenshtein-Gazit et al. (2022), DOI: [10.1093/bioinformatics/btac469](https://doi.org/10.1093/bioinformatics/btac469)。
+学習済みモデルと公式standalone predictorは[Princetonの公式配布ページ](https://zf.princeton.edu/download.php)から取得できます。設計画面で`models.zip`内の`SVMl7.mod`を選択すると、ファイルは送信・保存されず、ブラウザ内でそのセッションだけ使われます。リポジトリにはモデル、実行ファイル、学習データを同梱しません。
 
-変換元はDeepZF commit `351da3013467631ad5390b71648680f34b2634fa`、`transfer_model100.h5`のSHA-256は`2488eb1f07a26779f03bee946bc958d42213db560de3d9cb05c0ea9cab0e656d`です。再変換には`npm run convert:deepzf -- /path/to/transfer_model100.h5`を使います。由来と利用条件は[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)を参照してください。
+公式standalone predictorとBhakta 2013復元データを使う参考benchmarkは次で再計算できます。
+
+```bash
+node scripts/benchmark-persikov-2014.mjs /path/to/pwm_predict
+```
 
 ## 科学的根拠
 
 - one-finger archiveとSp1C / Zif268 framework：Bhakta & Segal (2010), DOI: [10.1007/978-1-60761-753-2_1](https://doi.org/10.1007/978-1-60761-753-2_1)
 - extended MA、B-score、linker、活性データ：Bhakta et al. (2013), DOI: [10.1101/gr.143693.112](https://doi.org/10.1101/gr.143693.112)
 - 別module archiveの3F MA適用範囲：Zhu et al. (2011), DOI: [10.1242/dev.066779](https://doi.org/10.1242/dev.066779)
-- CoDA ZFN 84ペアの外部活性データ：Chen et al. (2013), DOI: [10.1093/nar/gks1356](https://doi.org/10.1093/nar/gks1356)
+- ZF–DNA接触とexpanded linear SVM：Persikov & Singh (2014), DOI: [10.1093/nar/gkt890](https://doi.org/10.1093/nar/gkt890)
 - ZFN off-target全候補の外部検証：Sander et al. (2013), DOI: [10.1093/nar/gkt716](https://doi.org/10.1093/nar/gkt716)
 - PROGNOS式とHBB 3F/4Fの検証：Fine et al. (2014), DOI: [10.1093/nar/gkt1326](https://doi.org/10.1093/nar/gkt1326)
 - 非連続・非対称5–6F ZFNの適用範囲：Paschon et al. (2019), DOI: [10.1038/s41467-019-08867-x](https://doi.org/10.1038/s41467-019-08867-x)
 - 最新の構造的認識コードの整理：Zhang et al. (2024), DOI: [10.1016/j.sbi.2024.102836](https://doi.org/10.1016/j.sbi.2024.102836)
-- DeepZF forward prediction：Aizenshtein-Gazit et al. (2022), DOI: [10.1093/bioinformatics/btac469](https://doi.org/10.1093/bioinformatics/btac469)
 
 出典と再利用上の整理は [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) に記載しています。
 
@@ -202,4 +202,4 @@ npm test
 
 ## ライセンス
 
-[MIT License](LICENSE)。ただしDeepZF由来の学習済みweightと文献由来データにMITを再付与するものではありません。第三者由来部分は[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)を参照してください。
+[MIT License](LICENSE)。ただし文献由来の科学データにMITを再付与するものではありません。第三者由来部分は[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)を参照してください。
