@@ -17,7 +17,7 @@
 - Sp1C framework、TGEKPまたは1c interfinger linkerを含むZFAアミノ酸配列を出力する
 - spacer 5 / 6 / 7 bpに対してTGGS / TGAAAR / TGPGAAAR ZFA–FokI linkerを提案する
 - B-score・TSO条件を優先しつつ、切断位置とmodule重複を分散した独立候補3組を選ぶ
-- SV40 NLS、Sp1C ZFA、spacer別linker、obligate-heterodimer FokI ELD/KKRを含む完全ORFをProtein FASTA、codon-optimized CDS FASTA、GenBankで保存する
+- 左ZFN（SV40 NLS–Sp1C ZFA–FokI ELD）と右ZFN（SV40 NLS–Sp1C ZFA–FokI KKR）をGSG-T2Aでつないだ単一ORFをProtein FASTA、codon-optimized CDS FASTA、GenBankで保存する
 - Auxenochlorella protothecoidesまたはhuman codon presetを選ぶ（前者は公開1056 codonの小標本なので要再確認）
 - Fauser 2024 Supplementary Data 33を利用者が読み込んだ時だけ、182件の4塩基context-aware helixで実験候補を別枠生成する
 - 選択候補のSSA reporter target duplexと、十分な周辺配列がある場合の切断amplicon primer一次案をCSVで保存する
@@ -147,7 +147,8 @@ Table S5とS7では`sbno2`、`sgk`、`spon1b`のZFN IDが1行ずつずれてい�
 
 ## 重要な制限
 
-- 完全ORFにはSV40 NLS、ZFA、ELD/KKR FokI、stop codonを含みますが、promoter、terminator、UTR、selection marker、ベクターbackboneは含みません。
+- 完全ORFは`left ELD–GSG-T2A–right KKR`の順で、各monomerにSV40 NLS、末端にstop codonを含みます。GSG-T2Aのribosomal skipping後は、左ZFNのC末端に20 aa、右ZFNのN末端にProが残ります。promoter、terminator、UTR、selection marker、ベクターbackboneは含みません。
+- GSG-T2A配列・left→right順・下流開始Met保持はKatayama 2025に合わせていますが、同論文の直接実験はZF-ND1です。本ツールのSp1C–FokI ELD/KKR構成と緑藻でのT2A効率は未検証です。
 - ELD/KKRはDoyon 2011のFokI変異をUniProt P14870 aa 384–579へ導入しています。発現系、細胞毒性、活性の実験確認が必要です。
 - Auxenochlorella codon presetはKazusaの5 CDS・1056 codonに基づくため、使用株の核遺伝子発現に対する十分な統計ではありません。
 - Fauser 4塩基context候補は主ランキングと完全ORF出力から分離しています。ZFDesign由来helixのframework互換性とZFN活性を本ツールは検証していません。
@@ -189,6 +190,7 @@ node scripts/benchmark-persikov-2014.mjs /path/to/pwm_predict
 - PROGNOS式とHBB 3F/4Fの検証：Fine et al. (2014), DOI: [10.1093/nar/gkt1326](https://doi.org/10.1093/nar/gkt1326)
 - 非連続・非対称5–6F ZFNの適用範囲：Paschon et al. (2019), DOI: [10.1038/s41467-019-08867-x](https://doi.org/10.1038/s41467-019-08867-x)
 - obligate-heterodimer FokI ELD/KKR：Doyon et al. (2011), DOI: [10.1038/nmeth.1539](https://doi.org/10.1038/nmeth.1539)
+- GSG-T2Aによる左右ZFN単一ORF：Katayama & Yamamoto (2025), DOI: [10.3390/ijms26157602](https://doi.org/10.3390/ijms26157602)
 - 4塩基context helixの実験比較：Fauser et al. (2024), DOI: [10.1038/s41467-024-45100-w](https://doi.org/10.1038/s41467-024-45100-w)
 - 最新の構造的認識コードの整理：Zhang et al. (2024), DOI: [10.1016/j.sbi.2024.102836](https://doi.org/10.1016/j.sbi.2024.102836)
 

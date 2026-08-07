@@ -316,10 +316,15 @@ th { color: var(--muted); font-size: 8px; text-transform: uppercase; letter-spac
 .construct-grid strong { font-size: 10px; text-align: right; }
 .construct-grid small { grid-column: 1 / 3; color: var(--muted); font-size: 8px; }
 .construct-grid code { grid-column: 1 / 3; max-height: 70px; margin-top: 5px; overflow: auto; word-break: break-all; color: var(--green-dark); font-size: 8px; line-height: 1.55; }
+.construct-grid .bicistronic-card { grid-column: 1 / -1; }
 .construct-actions { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 7px; }
 .construct-actions button { padding: 9px 11px; border: 1px solid #b8c8ba; border-radius: 9px; background: white; color: var(--green-dark); font-size: 9px; font-weight: 800; cursor: pointer; }
 .construct-actions button:disabled { opacity: .4; cursor: default; }
 .construct-caution { margin: 12px 0 0; color: #5c695f; font-size: 8px; line-height: 1.65; }
+.origin-list { margin-top: 12px; padding: 11px 12px; border-radius: 11px; background: #fff; color: #4e5c51; }
+.origin-list > span { color: var(--green); font-size: 9px; font-weight: 800; }
+.origin-list p { margin: 6px 0 4px; font-size: 8px; line-height: 1.65; }
+.origin-list small { font-size: 8px; line-height: 1.55; }
 
 .assay-output { margin-top: 20px; padding: 20px; border: 1px solid #d7c7b3; border-radius: 18px; background: #fff9f0; }
 .assay-output .construct-heading button { padding: 9px 12px; border: 1px solid #d0b998; border-radius: 9px; background: white; color: #704c21; font-size: 9px; font-weight: 800; cursor: pointer; }

@@ -12,6 +12,17 @@ export type ZfnConstruct = {
   gcPercent: number;
 };
 
+export type BicistronicZfnConstruct = {
+  name: string;
+  protein: string;
+  cds: string;
+  gcPercent: number;
+  left: ZfnConstruct;
+  right: ZfnConstruct;
+  processedLeftProtein: string;
+  processedRightProtein: string;
+};
+
 // UniProt P14870 residues 384-579 (196 aa), matching the residue numbering
 // used for the Doyon ELD/KKR substitutions. The older J04623 translation has
 // four additional N-terminal residues; its residues 388-583 are equivalent.
@@ -19,6 +30,12 @@ export const FOKI_CLEAVAGE_DOMAIN_WT =
   "QLVKSELEEKKSELRHKLKYVPHEYIELIEIARNSTQDRILEMKVMEFFMKVYGYRGKHLGGSRKPDGAIYTVGSPIDYGVIVDTKAYSGGYNLPIGQADEMQRYVEENQTRNKHINPNEWWKVYPSSVTEFKFLFVSGHFKGNYKAQLTRLNHITNCNGAVLSVEELLIGGEMIKAGTLTLEEVRRKFNNGEINF";
 
 export const SV40_NLS_PREFIX = "MAPKKKRKV";
+
+// Katayama & Yamamoto used a GSG-prefixed Thosea asigna virus 2A peptide
+// between two ZFN monomers. Ribosomal skipping occurs between the terminal
+// glycine and proline: the upstream product retains the first 20 residues and
+// the downstream product starts with proline. DOI: 10.3390/ijms26157602.
+export const GSG_T2A = "GSGEGRGSLLTCGDVEENPGP";
 
 function mutateFokI(mutations: Array<[number, string, string]>): string {
   const sequence = FOKI_CLEAVAGE_DOMAIN_WT.split("");
@@ -133,6 +150,22 @@ export function buildZfnPair(candidate: Candidate, preset: CodonPreset): ZfnCons
   });
 }
 
+export function buildBicistronicZfn(candidate: Candidate, preset: CodonPreset): BicistronicZfnConstruct {
+  const [left, right] = buildZfnPair(candidate, preset);
+  const protein = `${left.protein}${GSG_T2A}${right.protein}`;
+  const cds = `${optimizeCodingSequence(protein, preset)}${optimizeCodingSequence("*", preset)}`;
+  return {
+    name: `zfn_${candidate.id}_left_ELD_T2A_right_KKR`,
+    protein,
+    cds,
+    gcPercent: gcPercent(cds),
+    left,
+    right,
+    processedLeftProtein: `${left.protein}${GSG_T2A.slice(0, -1)}`,
+    processedRightProtein: `${GSG_T2A.slice(-1)}${right.protein}`,
+  };
+}
+
 function wrap(value: string, width: number): string[] {
   const rows: string[] = [];
   for (let index = 0; index < value.length; index += width) rows.push(value.slice(index, index + width));
@@ -142,6 +175,16 @@ function wrap(value: string, width: number): string[] {
 export function constructsToFasta(constructs: ZfnConstruct[], kind: "protein" | "cds"): string {
   return constructs.flatMap((construct) => [
     `>${construct.name} ${kind}; FokI-${construct.fokIVariant}; SV40_NLS`,
+    ...wrap(construct[kind], 70),
+  ]).join("\n");
+}
+
+export function bicistronicConstructsToFasta(
+  constructs: BicistronicZfnConstruct[],
+  kind: "protein" | "cds",
+): string {
+  return constructs.flatMap((construct) => [
+    `>${construct.name} ${kind}; left FokI-ELD; GSG-T2A; right FokI-KKR; SV40_NLS_each_monomer`,
     ...wrap(construct[kind], 70),
   ]).join("\n");
 }
@@ -166,6 +209,54 @@ export function constructsToGenBank(constructs: ZfnConstruct[], preset: CodonPre
       `                     /gene="${construct.name}"`,
       `                     /note="SV40 NLS; Sp1C ZFA; FokI-${construct.fokIVariant}; codon preset ${preset}"`,
       `                     /translation="${construct.protein}"`,
+      "ORIGIN",
+      ...origin,
+      "//",
+    ].join("\n");
+  }).join("\n");
+}
+
+export function bicistronicConstructsToGenBank(
+  constructs: BicistronicZfnConstruct[],
+  preset: CodonPreset,
+): string {
+  return constructs.map((construct) => {
+    const codingEnd = construct.cds.length - 3;
+    const leftEnd = construct.left.protein.length * 3;
+    const t2aStart = leftEnd + 1;
+    const t2aEnd = (construct.left.protein.length + GSG_T2A.length) * 3;
+    const rightStart = t2aEnd + 1;
+    const downstreamProductStart = t2aEnd - 2;
+    const rightNlsEnd = rightStart + SV40_NLS_PREFIX.length * 3 - 1;
+    const origin = wrap(construct.cds.toLowerCase(), 60).map((line, index) => {
+      const groups = line.match(/.{1,10}/g)?.join(" ") ?? line;
+      return `${String(index * 60 + 1).padStart(9)} ${groups}`;
+    });
+    return [
+      `LOCUS       ${construct.name.slice(0, 16).padEnd(16)} ${String(construct.cds.length).padStart(7)} bp    DNA     linear   SYN 01-JAN-2000`,
+      "DEFINITION  Synthetic bicistronic left-ELD/GSG-T2A/right-KKR ZFN coding sequence.",
+      "ACCESSION   .",
+      "VERSION     .",
+      "KEYWORDS    synthetic construct; zinc finger nuclease; T2A.",
+      "SOURCE      synthetic DNA construct",
+      "  ORGANISM  synthetic DNA construct",
+      "FEATURES             Location/Qualifiers",
+      `     CDS             1..${codingEnd}`,
+      `                     /gene="${construct.name}"`,
+      `                     /note="single ORF; SV40 NLS on each monomer; Sp1C ZFA; left FokI-ELD; GSG-T2A; right FokI-KKR; codon preset ${preset}"`,
+      `                     /translation="${construct.protein}"`,
+      `     misc_feature    1..${leftEnd}`,
+      "                     /note=\"left ZFN: SV40 NLS-Sp1C ZFA-linker-FokI ELD\"",
+      `     misc_feature    ${t2aStart}..${t2aEnd}`,
+      "                     /note=\"GSG-prefixed Thosea asigna virus 2A; ribosomal skip between terminal Gly and Pro\"",
+      `     misc_feature    ${rightStart}..${codingEnd}`,
+      "                     /note=\"right ZFN: SV40 NLS-Sp1C ZFA-linker-FokI KKR\"",
+      `     mat_peptide     1..${t2aEnd - 3}`,
+      "                     /product=\"left ZFN with 20-aa GSG-T2A remnant\"",
+      `     mat_peptide     ${downstreamProductStart}..${codingEnd}`,
+      "                     /product=\"Pro-right ZFN after T2A ribosomal skipping\"",
+      `     misc_feature    ${rightStart}..${rightNlsEnd}`,
+      "                     /note=\"downstream SV40 NLS coding region; initiating Met retained after T2A Pro as in Katayama 2025 construct\"",
       "ORIGIN",
       ...origin,
       "//",

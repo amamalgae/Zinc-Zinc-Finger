@@ -35,6 +35,8 @@ The recognition-helix sequences, target triplets, and module recommendations in 
 
 The code in this repository was written independently. The repository's MIT license applies to that code and does not purport to relicense third-party publications, patents, plasmids, or biological materials.
 
+The generated recognition helices are inserted into the designed human Sp1-derived Sp1C consensus framework. The Barbas phage-display lineage used C7/C7.GAT, variants of murine Zif268, as the selection scaffold. The helix sequences are engineered selections or designs rather than natural proteins attributable one-to-one to additional donor species. The current complete-ORF exporter does not use the separate Zhu position-specific archive or the optional Fauser context candidates.
+
 ## Zhu 2011 modular-assembly applicability data
 
 `data/zhu-2011-ma-zfn-benchmark.json` is a machine-readable transcription of target sites, recognition helices, bacterial one-hybrid measurements, somatic lesion measurements, and founder rates from Supplementary Tables S1, S5, and S7 of:
@@ -71,6 +73,14 @@ No ZFDesign code or restricted training data are included here.
 - ENA/GenBank J04623, the original FokI coding sequence.
 
 The generated DNA is a computed synthetic coding sequence, not a plasmid or expression cassette copied from a repository. No Addgene plasmid sequence or biological material is included. Sequence output does not grant patent, material-transfer, biosafety, or freedom-to-operate rights.
+
+## GSG-T2A bicistronic ZFN output
+
+`src/construct-output.ts` joins the left FokI-ELD ZFN and right FokI-KKR ZFN in one ORF using the GSG-prefixed T2A amino-acid sequence `GSGEGRGSLLTCGDVEENPGP` reported in:
+
+- Katayama S, Yamamoto T (2025), *Efficient Genome Editing Using the T2A-Coupled Co-Expression of Two ZFN Monomers*, DOI: 10.3390/ijms26157602. The article and supplementary material are distributed under CC BY 4.0.
+
+The paper directly tested ZF-ND1 monomers and cited earlier ZF-FokI precedents. This project applies the same left-to-right order, retains the downstream initiating methionine, and codon-optimizes the amino-acid sequence rather than copying the paper's mammalian DNA sequence. Ribosomal skipping leaves the first 20 GSG-T2A residues on the upstream ZFN and proline on the downstream ZFN. T2A derives from Thosea asigna virus, classified in the ICTV species *Alphapermutotetravirus thoseae*.
 
 ## Fauser 2024 four-base context data
 

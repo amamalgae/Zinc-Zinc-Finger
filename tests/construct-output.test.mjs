@@ -6,6 +6,9 @@ import {
   FOKI_CLEAVAGE_DOMAIN_WT,
   FOKI_ELD,
   FOKI_KKR,
+  GSG_T2A,
+  bicistronicConstructsToGenBank,
+  buildBicistronicZfn,
   buildZfnPair,
   constructsToGenBank,
   translateDna,
@@ -42,6 +45,21 @@ test("complete ZFN CDS translates back to the designed protein and stop", () => 
   }
 });
 
+test("single-ORF T2A construct preserves both NLS-bearing monomers and product boundaries", () => {
+  const candidate = generateCandidates(target, 21, 6, 20).find(({ id }) => id === "0-6");
+  assert.ok(candidate);
+  assert.equal(GSG_T2A, "GSGEGRGSLLTCGDVEENPGP");
+  for (const preset of ["auxenochlorella", "human"]) {
+    const construct = buildBicistronicZfn(candidate, preset);
+    assert.equal(translateDna(construct.cds), `${construct.protein}*`);
+    assert.equal(construct.protein, `${construct.left.protein}${GSG_T2A}${construct.right.protein}`);
+    assert.equal(construct.processedLeftProtein, `${construct.left.protein}${GSG_T2A.slice(0, -1)}`);
+    assert.equal(construct.processedRightProtein, `P${construct.right.protein}`);
+    assert.match(construct.processedRightProtein, /^PMAPKKKRKVYKCPECGKSFS/);
+    assert.equal(construct.cds.length % 3, 0);
+  }
+});
+
 test("GenBank output contains two complete CDS records", () => {
   const candidate = generateCandidates(target, 21, 6, 20).find(({ id }) => id === "0-6");
   assert.ok(candidate);
@@ -50,4 +68,18 @@ test("GenBank output contains two complete CDS records", () => {
   assert.equal(genbank.match(/^\/\//gm)?.length, 2);
   assert.match(genbank, /FokI-ELD/);
   assert.match(genbank, /FokI-KKR/);
+});
+
+test("bicistronic GenBank output contains one annotated ORF and overlapping T2A products", () => {
+  const candidate = generateCandidates(target, 21, 6, 20).find(({ id }) => id === "0-6");
+  assert.ok(candidate);
+  const genbank = bicistronicConstructsToGenBank(
+    [buildBicistronicZfn(candidate, "auxenochlorella")],
+    "auxenochlorella",
+  );
+  assert.equal(genbank.match(/^LOCUS/gm)?.length, 1);
+  assert.equal(genbank.match(/^\/\//gm)?.length, 1);
+  assert.equal(genbank.match(/^     mat_peptide/gm)?.length, 2);
+  assert.match(genbank, /left FokI-ELD; GSG-T2A; right FokI-KKR/);
+  assert.match(genbank, /initiating Met retained after T2A Pro/);
 });
