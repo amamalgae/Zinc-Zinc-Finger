@@ -1,212 +1,51 @@
 # Zinc Zinc Finger
 
-標的DNA配列から、extended modular assembly（extended MA）型ZFNの候補ペアをブラウザ内で設計するツールです。
+Zhu 2011の位置別Zif268モジュールを使い、左右3-fingerのZFN候補をブラウザ内で設計するツールです。
 
-公開ページ（GitHub Pages）：<https://amamalgae.github.io/Zinc-Zinc-Finger/>
+公開ページ：<https://amamalgae.github.io/Zinc-Zinc-Finger/>
 
-## 現在できること
+## 現在の設計範囲
 
-- FASTAまたは塩基配列をブラウザ内で読み込む
-- 実験選抜済みBarbas one-finger archive（49 modules）だけで構築可能な候補を列挙する
-- 左右それぞれ3–6 finger、spacer 5–7 bpを探索し、5F/6Fなど非対称ペアも生成する
-- 各half-siteに1個まで、Paschon 1c linker（THPRAPIPKP）による1-bp base-skipping位置を指定する
-- target-site overlap（TSO）を生じるGNG moduleの隣接塩基を検査し、警告する
-- published B-score、module評価、希望切断位置で候補を順位付けする
-- 任意でPersikov–Singh expanded linear SVMの公式`SVMl7.mod`を端末内だけで読み込み、4-bp重複認識を含むPWM整合度を計算する
-- expanded SVM整合度はB-scoreが同点の候補にだけ使い、モデル本体はリポジトリや公開サイトに同梱しない
-- Sp1C framework、TGEKPまたは1c interfinger linkerを含むZFAアミノ酸配列を出力する
-- spacer 5 / 6 / 7 bpに対してTGGS / TGAAAR / TGPGAAAR ZFA–FokI linkerを提案する
-- B-score・TSO条件を優先しつつ、切断位置とmodule重複を分散した独立候補3組を選ぶ
-- 左ZFN（SV40 NLS–Sp1C ZFA–FokI ELD）と右ZFN（SV40 NLS–Sp1C ZFA–FokI KKR）をGSG-T2Aでつないだ単一ORFをProtein FASTA、codon-optimized CDS FASTA、GenBankで保存する
-- 単一ORFの各構成部品と核酸供与体4種の対応を画面とGenBankに表示する
-- Auxenochlorella protothecoidesまたはhuman codon presetを選ぶ（前者は公開1056 codonの小標本なので要再確認）
-- Fauser 2024 Supplementary Data 33を利用者が読み込んだ時だけ、182件の4塩基context-aware helixで実験候補を別枠生成する
-- 選択候補のSSA reporter target duplexと、十分な周辺配列がある場合の切断amplicon primer一次案をCSVで保存する
-- ゲノムFASTAまたはgzip圧縮FASTAを端末内だけで読み込む
-- 左右4–6 finger、最大30候補について、非対称armと片側1個までのbase-skippingを含め、少なくとも片側のhalf-siteが3 mismatch以内のZFNペアをゲノムwide検索する
-- 正向き・逆向きheterodimer（LR / RL）とhomodimer（LL / RR）を区別する
-- PROGNOS ZFN v2.0を独立実装し、候補off-targetを相対順位化する
-- B-score ≥15を優先した上で、完全一致off-target、最大PROGNOS score、homodimer候補数の順に候補を並べ替える。`score ≥50`の部位数は表示だけに残し、実験陽性の判定や候補順位には使わない
-- 候補と配列をCSVで保存する
-- 上位off-target座標・配列・mismatch数・PROGNOS scoreをCSVで保存する
+- 27種類のDNA triplet × F1/F2/F3の3位置、計81モジュールを使用
+- 左右とも3-fingerに固定し、5–7 bp spacerを探索
+- GNNモジュール数、Zhu 2011で比較的安定だったモジュール、希望切断位置への近さで候補を順位付け
+- 各fingerの標的triplet、7 aa recognition helix、由来を表示
+- `NLS–Zif268 3F–FokI ELD–F2A–NLS–Zif268 3F–FokI KKR`の単一ORFを生成
+- Protein FASTA、codon-optimized CDS FASTA、GenBankを保存
+- Auxenochlorellaまたはhumanのcodon presetを選択
 
-入力配列はブラウザ内だけで処理されます。API、アクセス解析、外部保存処理はありません。
+入力配列はブラウザ内だけで処理され、外部へ送信されません。
 
-## ゲノムwide off-target検索
+## 構成
 
-ゲノムFASTAはサーバーへアップロードせず、Web Worker内で読み込み・検索します。`N`とcontig境界を保持するため、座標がずれたりcontigをまたいだ偽ヒットが生じたりしません。
+```text
+Promoter → NLS–ZF-L(3F)–FokI ELD → F2A → NLS–ZF-R(3F)–FokI KKR → Terminator
+```
 
-検索は認識対象塩基を2個のseedに分けるseed-and-verify方式です。half-siteの総mismatchが3以下なら、2個のseedの少なくとも一方は1 mismatch以下になるため、そのseed集合をゲノム走査して完全長half-siteを再検証します。base-skippingでは1c linkerが飛ばす1塩基をspaced seedと完全長照合の両方から除外します。左右どちらかがanchor条件を満たすペアを列挙し、反対側half-siteはmismatch数で打ち切らずPROGNOSで採点します。Sander 2013の独立陽性51 lociは全て少なくとも片側が3 mismatch以内でした。これはBLASTの局所アラインメントではなく、12–18個の認識塩基に対する置換探索です。通常の挿入・欠失やbulgeは探索しません。
+F2Aのribosomal skippingにより、ELD側とKKR側を1本の転写産物から発現させる設計です。F2AはDueñas 2025でAuxenochlorellaにおけるGFP/F2A/LUCの両側発現が確認された22 aa配列を使います。
 
-PROGNOS ZFN v2.0はfingerごとの初回mismatch penalty 70、追加mismatch penalty 65、標的G一致bonus 17.5（triplet 5′端Gは2倍）、FokIからの距離に応じたpolarity 1.00 / 0.85 / 0.80 / 0.70、dimer exponent 1.75を実装しています。Fine et al. (2014), DOI: [10.1093/nar/gkt1326](https://doi.org/10.1093/nar/gkt1326)。
+Zif268 fingerはDNAと逆平行に結合します。たとえば認識鎖が`5′-GGA-GAT-GGC-3′`なら、タンパク質のN→C末端は`F1=GGC、F2=GAT、F3=GGA`です。
 
-### Sander 2013外部陽性データとの照合
+## 参考文献
 
-Sander et al. (2013)のmain-text Tables 3–4から、同研究で新規に検証された陽性部位を行単位で再構成しました。CCR5は重複するSKAP2 windowをまとめて25 loci、VEGFAは26 lociです。DOI: [10.1093/nar/gkt716](https://doi.org/10.1093/nar/gkt716)。
-
-| 評価 | CCR5 4ZF | VEGFA 3ZF | 合計 |
-|---|---:|---:|---:|
-| 独立陽性loci | 25 | 26 | 51 |
-| 旧条件：左右とも≤3 mismatch | 5/25 | 25/26 | 30/51 |
-| 新条件：少なくとも片側≤3 mismatch | 25/25 | 26/26 | 51/51 |
-| PROGNOS score vs indel率 Spearman ρ | 0.103 | −0.000 | −0.076 |
-| 単純identity vs indel率 Spearman ρ | 0.077 | 0.037 | −0.090 |
-
-このデータは陽性部位だけなので、ROC-AUCやprecisionは計算できません。PROGNOS scoreはoff-targetの定量indel率を予測せず、score ≥50も陽性判定閾値として使えません。一方、少なくとも片側を≤3 mismatchのanchorとして探索する規則は、独立陽性51/51 lociを包含しました。ブラウザ版は3ZFを計算量上の理由で受け付けないため、実装回帰試験はCCR5 4ZFの25/25 lociを対象にしています。
-
-再構成データSHA-256: `635ce1d3373b3f3a0ab2f3ef9ff37041c06debc6ba2dce66bd55d87a23328a2f`
-
-20 Mbp・30候補の合成ゲノムで、新しい高感度探索は6ZFで約1.72秒、4ZFで約36.55秒でした（desktop Node.js）。4ZFは短いanchorが多数出るため、スマートフォンではさらに時間がかかる可能性があります。
-
-### Sander 2013の全陽性・陰性候補による順位検証
-
-Supplementary Tables 3・6に掲載された候補を、実験陰性を含めて再構成しました。掲載310行のうち、PCRで評価可能だった297行には各ZFNのon-targetが1行ずつ含まれるため、実際のoff-target候補は295部位です。論文が有意なoff-targetとして報告した行を陽性ラベルとしました。Sander et al. (2013), DOI: [10.1093/nar/gkt716](https://doi.org/10.1093/nar/gkt716)。
-
-| 評価 | CCR5 4ZF | VEGFA 3ZF |
-|---|---:|---:|
-| 掲載行 | 141 | 169 |
-| 評価可能行（on-targetを含む） | 138 | 159 |
-| off-target候補 | 137 | 158 |
-| 実験陽性 | 22 | 34 |
-| PROGNOS ROC-AUC | 0.642 | 0.677 |
-| Average precision | 0.338 | 0.428 |
-| Recall@20 | 6/22 | 10/34 |
-| Recall@50 | 10/22 | 18/34 |
-| `score ≥50`の候補 | 14/137 | 77/158 |
-| `score ≥50`で回収した陽性 | 5/22 | 21/34 |
-
-PROGNOSはランダムよりよい相対順位を持ちますが、上位20件でも陽性の27–29%しか回収せず、固定の`score ≥50`はCCR5とVEGFAで挙動が大きく異なります。このため`score ≥50`の件数を候補順位から外し、画面上の参考表示だけにしました。左右half-site scoreの幾何平均は事後解析でAUCがCCR5 0.680、VEGFA 0.711へ上がりましたが、候補集合がSander classifierで事前選抜されており、同一データ内の比較でもあるため、PROGNOS式の置換や再学習は行っていません。これらのprecision指標は全ゲノムprecisionではなく、選抜済み候補集合内の値です。
-
-再構成データSHA-256: `bad9bf02412f9424118ae0cfc79e432a5cba02cad4085d1cbec124ead14f554b`
-
-### Fine 2014の陽性・陰性データとの照合
-
-Fine et al. (2014)のSupplementary Tables 8–9を、陰性候補とread countを含めて再構成しました。DOI: [10.1093/nar/gkt1326](https://doi.org/10.1093/nar/gkt1326)。独立実装したPROGNOS scoreは、掲載46候補すべてのhalf-site mismatch数と、掲載されたZFN v2.0順位の相対順序を再現しました。
-
-| HBB ZFN | 評価可能off-target | 実験陽性 | PROGNOS ROC-AUC | Average precision | Recall@10 |
-|---|---:|---:|---:|---:|---:|
-| 3F | 22 | 6 | 0.698 | 0.399 | 4/6 |
-| 4F | 22 | 1 | 0.524 | 0.091 | 0/1 |
-
-この結果は、実装式の再現性は高い一方、PROGNOS順位を切断陽性の判定器として扱えないことを示します。特に4Fは陽性が1部位しかないためAUCの不確実性が大きく、再学習には使いません。3Fでは単純Homology順位のaverage precision 0.506がZFN v2.0の0.399を上回りましたが、同じ22候補内の事後比較なので、順位式の置換根拠にはしていません。
-
-同じHBB領域では、on-target indelが3Fの1.9%から4Fの6.3%へ増え、検出されたoff-targetは6/22から1/22へ減りました。また3Fで陽性だった5部位の4F再検査は、評価可能4部位すべてで有意差なしでした。これはfinger数を増やす設計を支持しますが、3Fと4Fで候補抽出条件が異なるため、6/22対1/22を一般的な効果量とは解釈しません。
-
-再構成したSupplementary PDF SHA-256: `dbf9d5e05fa081e9754ef96df34be1fd30bef1844e3707371b86af730675e1b5`
-
-入力した標的windowがゲノム内で一意に見つかった場合だけ、その1部位をintended siteとしてoff-target集計から除外します。一意に同定できなければ、完全一致部位も保守的にoff-targetとして数えます。PROGNOS scoreは0–100の相対順位であり、切断確率や安全性の尺度ではありません。
-
-### Paschon 2019の非連続・非対称5–6F外部検証
-
-Paschon et al. (2019)のSource Data Figure 5から、TRAC 1–5の122 off-target候補（実験陽性16部位）とon-target indelを再構成しました。陽性数はTRAC 1–5で4、8、4、0、0、on-target indelは79.37–85.14%です。DOI: [10.1038/s41467-019-08867-x](https://doi.org/10.1038/s41467-019-08867-x)。
-
-Supplementary Figure 21とTable 2を全文照合し、各1c linker位置、左右finger数、認識strand、FokIのN/C末端位置を復元しました。TRAC 1–4の飛ばし塩基をPROGNOS入力から除外し、TRAC 3–4ではN末端FokIに合わせてpolarityを反転し、TRAC 5は6F/5Fのまま採点します。各候補のhg38配列は[UCSC Genome Browser API](https://api.genome.ucsc.edu/)から取得し、両orientation・spacer 5–7 bpで最大scoreの配置を使いました。5/5 on-targetはscore 100で復元できました。
-
-| TRAC | 構成 | off-target陽性 | masked PROGNOS ROC-AUC | Average precision | Recall@10 |
-|---|---|---:|---:|---:|---:|
-| 1 | canonical・両側1c | 4/23 | 0.421 | 0.200 | 2/4 |
-| 2 | canonical・右1c | 8/23 | 0.742 | 0.684 | 6/8 |
-| 3 | NC・両側1c | 4/23 | 0.803 | 0.378 | 4/4 |
-| 4 | NC・左1c | 0/26 | — | — | — |
-| 5 | canonical・6F/5F | 0/27 | — | — | — |
-
-122候補をpoolするとROC-AUC 0.759、average precision 0.369、Recall@20 6/16、Recall@50 13/16でした。ただし標的別ではTRAC 1がAUC 0.421でランダム未満です。したがって、base-skipping対応は探索可能範囲を広げますが、masked PROGNOSを切断陽性判定器へ昇格させる根拠にはなりません。TRAC 4–5は陽性0件なので、低score順位の正しさもAUCでは評価できません。
-
-実験・geometryデータSHA-256: `2c3d745b88c42e3de14dced4ad19652d438d4ea92f08d33d022608d76db19e24`
-
-hg38配列・scoreデータSHA-256: `ad630d308c628b067ba37fcc42bdddc960ba9299010a7f55bcc0612399c80a24`
-
-## スコアの意味
-
-B-scoreは各moduleで、標的塩基と認識ヘリックス間に期待される二価水素結合（G–Arg、A–Gln/Asn）を0–3点で評価し、左右ZFAについて合算した値です。実装には単純な再計算値ではなくBhakta et al.のmodule別公表値を使用します。AAG、AGG、AGT、ATTは単純な接触数と公表値が一致せず、ATCは旧実装のarchiveから欠落していたためです。
-
-Bhakta et al.のデータでは、92 array variantsに対する分類AUCは0.77、268 ZFN構成全体ではcombined B-score ≥15の52%がSSA活性ありでした。これは本ツールが表示する各候補の成功確率ではありません。Bhakta et al. (2013), DOI: [10.1101/gr.143693.112](https://doi.org/10.1101/gr.143693.112)。
-
-## 実験データとの照合
-
-原著表から行単位で復元できるL6+R6構成21件（活性15件）を再計算しました。
-
-| 評価 | B-score単独 | expanded SVM単独 | B-score→SVM同点決着 |
-|---|---:|---:|---:|
-| 21件全体のAUC | 0.656 | 0.667 | 0.656 |
-| 前向き11件のAUC | 0.875 | 0.625 | 0.917 |
-| Figure 2復元92 arrayのAUC（参考） | 0.834 | 0.772 | 0.845 |
-
-module別公表値から得たL6+R6 B-scoreは20/21標的で原著表と一致しました。CS7-3だけは、原著Figure 4Aのmodule別公表値を合計すると20ですが、原著Table 1では21と記載されており、論文内に1点の不整合があります。
-
-expanded SVMは21件全体でB-scoreを単独で上回る一方、前向き11件では大きく下回りました。92 arrayではB-score同点のみの決着でAUCが0.834から0.845へ上がったため、単独順位や足切りには使わず、この限定的な役割に固定しています。いずれも小標本またはFigure 2からの復元データであり、成功確率とは扱いません。
-
-### Zhu 2011の3F modular-assemblyデータ
-
-Zhu et al.のSupplementary Tables S1、S5、S7から、3F ZFN 29ペアと左右58 array、実際に使われた174 moduleを行単位で復元しました。原著の記載どおり、最大somatic lesion frequencyが1%以上のペアは8/29でした。Zhu et al. (2011), DOI: [10.1242/dev.066779](https://doi.org/10.1242/dev.066779)。
-
-ただし、このデータは現行ツールのBarbas one-finger archiveを直接検証しません。Zhuのposition-specific archiveで使われた174 recognition helixのうち現行Barbas helixと一致したのは4本だけで、左右6本すべてが一致するZFNペアは0/29でした。現行archiveで同じ標的tripletを構築可能な25ペアへ配列組成だけを転用すると、B-score AUCは0.585、採用順位は0.570でした。この値は異なるタンパク質間のtransfer解析であり、現行4–6F設計の精度値や学習データには使用しません。
-
-Table S5とS7では`sbno2`、`sgk`、`spon1b`のZFN IDが1行ずつずれているため、遺伝子名と左右の認識配列で対応を復元し、差異を回帰試験に固定しています。
-
-92 array variantsについては、原著の報告AUCは0.77です。Figure 2から92件の二値ラベルを復元した参考解析もスクリプトに含めています。原著にはSupplemental Tables S1–S8がありますが、268構成の行単位データを収録した`Supplemental_Appendices.xls`という別ファイルは確認できませんでした。Data accessに記載されたBioProject PRJNA179355はT2-X6のmassively parallel sequencingデータであり、268構成のSSA成否表ではありません。このため図からの復元値は主結果には使用していません。
+| 用途 | 文献 |
+|---|---|
+| 3-finger位置別モジュール | Zhu et al. (2011), DOI: [10.1242/dev.066779](https://doi.org/10.1242/dev.066779) |
+| obligate heterodimer FokI ELD/KKR | Doyon et al. (2011), DOI: [10.1038/nmeth.1539](https://doi.org/10.1038/nmeth.1539) |
+| AuxenochlorellaでのF2A | Dueñas et al. (2025), DOI: [10.1073/pnas.2417695122](https://doi.org/10.1073/pnas.2417695122) |
+| 哺乳類ZFNのF2A単一ORF先例 | Lei et al. (2011), DOI: [10.1038/mt.2011.12](https://doi.org/10.1038/mt.2011.12) |
+| ZF–DNA認識のレビュー | Zhang et al. (2024), DOI: [10.1016/j.sbi.2024.102836](https://doi.org/10.1016/j.sbi.2024.102836) |
 
 ## 重要な制限
 
-単一ORFに含まれる構成部品と核酸供与体は、全候補で共通して次の4種です。
+- Zhu 2011では29 ZFNペア中8組がゼブラフィッシュで1%以上のsomatic lesionを示しました。これは各候補の成功確率ではありません。
+- 現在は文献の位置別ライブラリをそのまま扱える3-fingerに限定しています。6-fingerは、連結方法と実験的根拠を別途確定してから追加します。
+- 配列一致だけでは結合・切断・off-targetを保証できません。複数候補を発現系とSSA等で比較してください。
+- ELD/KKR、F2A、Zif268 3Fを組み合わせた完全構成そのものは本ツールの提案であり、同一条件での実験検証は未実施です。
+- Auxenochlorella codon presetは公開CDSの小標本に基づくため、使用株に合わせた再確認が必要です。
+- 出力はORFです。promoter、terminator、UTR、選択マーカー、vector backboneは含みません。
 
-| ORF内の構成部品 | 核酸供与体 | 注記 |
-|---|---|---|
-| SV40 NLS（左右） | *Betapolyomavirus macacae* | simian virus 40由来NLS |
-| Sp1C ZFA framework（左右） | *Homo sapiens* | SP1由来framework |
-| FokI切断ドメイン（ELD / KKR） | *Flavobacterium okeanokoites* | ELD / KKRは人工変異 |
-| T2A | *Alphapermutotetravirus thoseae* | Thosea asigna virus由来2A。先頭GSGは人工配列 |
-
-Zif268/C7 library（*Mus musculus*）はrecognition helix選択の設計系譜であり、出力ORFのSp1C frameworkには含まれないため、核酸供与体4種には含めません。recognition helix、ELD/KKR変異、linker、GSG、codon optimizationは人工改変・人工配列です。
-
-- 完全ORFは`left ELD–GSG-T2A–right KKR`の順で、各monomerにSV40 NLS、末端にstop codonを含みます。GSG-T2Aのribosomal skipping後は、左ZFNのC末端に20 aa、右ZFNのN末端にProが残ります。promoter、terminator、UTR、selection marker、ベクターbackboneは含みません。
-- GSG-T2A配列・left→right順・下流開始Met保持はKatayama 2025に合わせていますが、同論文の直接実験はZF-ND1です。本ツールのSp1C–FokI ELD/KKR構成と緑藻でのT2A効率は未検証です。
-- ELD/KKRはDoyon 2011のFokI変異をUniProt P14870 aa 384–579へ導入しています。発現系、細胞毒性、活性の実験確認が必要です。
-- Auxenochlorella codon presetはKazusaの5 CDS・1056 codonに基づくため、使用株の核遺伝子発現に対する十分な統計ではありません。
-- Fauser 4塩基context候補は主ランキングと完全ORF出力から分離しています。ZFDesign由来helixのframework互換性とZFN活性を本ツールは検証していません。
-- PCR primerは簡易Tm式による一次案で、Primer3、参照ゲノムBLAST、dimer/hairpin評価を代替しません。SSA insertにはクローニングoverhangを含みません。
-- ゲノムwide検索は塩基置換だけを扱い、bulge、挿入・欠失、構造変異は探索しません。
-- PROGNOS ZFN v2.0は3–4 finger ZFNを中心に構築されており、5–6 fingerは外挿です。
-- 設計画面はC末端FokIのcanonical構成を生成します。N末端FokIを含むNC/CN/NN構成はPaschon外部データの採点には実装しましたが、ZFA–FokI全長配列としては出力しません。
-- base-skippingはPaschon 1cによる1-bp gapを各half-site 1個まで扱います。2-bp gap、複数gap、別linkerは未対応です。
-- 検索の完全列挙保証は「少なくとも片側のhalf-siteが3 mismatch以内」の範囲です。左右とも4 mismatch以上の部位は列挙しません。
-- クロマチン accessibility、発現量、細胞種依存性は評価しません。
-- 3-fingerでは3 mismatch以内のhalf-siteが急増するため、ブラウザ版のゲノム検索対象は4–6 fingerに限定しています。
-- B-scoreはaffinity/activityの粗い分類器であり、PWM、結合定数、indel率を予測しません。
-- expanded SVM target fitはPWM上の標的塩基確率の幾何平均であり、結合確率や切断効率ではありません。
-- expanded SVMはB-score同点の候補だけを決着します。単独順位、候補除外、活性閾値には使いません。
-- expanded SVMは連続的なZF arrayを前提とするため、1c base-skipping候補は採点しません。
-- TSO不一致は候補を除外せず警告します。原著Zinc Finger ToolsもTSOを警告として扱い、TSO不一致でも高affinityの例があると記載しています。
-- 6-finger arraysを増やすとaffinityが上がり得る一方、3-finger subgroupによる非意図的結合も起こり得ます。
-- 実験では複数候補をSSA等で一次スクリーニングしてください。
-
-## 任意のPersikov–Singh expanded SVM評価器
-
-Persikov–Singh expanded linear SVMは、各fingerの7個のアミノ酸–DNA接触と4-bp認識を線形SVMで採点し、隣接finger間の重複塩基を統合したarray PWMを作ります。実装は公開された式の独立TypeScript実装です。Persikov & Singh (2014), DOI: [10.1093/nar/gkt890](https://doi.org/10.1093/nar/gkt890)。
-
-学習済みモデルと公式standalone predictorは[Princetonの公式配布ページ](https://zf.princeton.edu/download.php)から取得できます。設計画面で`models.zip`内の`SVMl7.mod`を選択すると、ファイルは送信・保存されず、ブラウザ内でそのセッションだけ使われます。リポジトリにはモデル、実行ファイル、学習データを同梱しません。
-
-公式standalone predictorとBhakta 2013復元データを使う参考benchmarkは次で再計算できます。
-
-```bash
-node scripts/benchmark-persikov-2014.mjs /path/to/pwm_predict
-```
-
-## 科学的根拠
-
-- one-finger archiveとSp1C / Zif268 framework：Bhakta & Segal (2010), DOI: [10.1007/978-1-60761-753-2_1](https://doi.org/10.1007/978-1-60761-753-2_1)
-- extended MA、B-score、linker、活性データ：Bhakta et al. (2013), DOI: [10.1101/gr.143693.112](https://doi.org/10.1101/gr.143693.112)
-- 別module archiveの3F MA適用範囲：Zhu et al. (2011), DOI: [10.1242/dev.066779](https://doi.org/10.1242/dev.066779)
-- ZF–DNA接触とexpanded linear SVM：Persikov & Singh (2014), DOI: [10.1093/nar/gkt890](https://doi.org/10.1093/nar/gkt890)
-- ZFN off-target全候補の外部検証：Sander et al. (2013), DOI: [10.1093/nar/gkt716](https://doi.org/10.1093/nar/gkt716)
-- PROGNOS式とHBB 3F/4Fの検証：Fine et al. (2014), DOI: [10.1093/nar/gkt1326](https://doi.org/10.1093/nar/gkt1326)
-- 非連続・非対称5–6F ZFNの適用範囲：Paschon et al. (2019), DOI: [10.1038/s41467-019-08867-x](https://doi.org/10.1038/s41467-019-08867-x)
-- obligate-heterodimer FokI ELD/KKR：Doyon et al. (2011), DOI: [10.1038/nmeth.1539](https://doi.org/10.1038/nmeth.1539)
-- GSG-T2Aによる左右ZFN単一ORF：Katayama & Yamamoto (2025), DOI: [10.3390/ijms26157602](https://doi.org/10.3390/ijms26157602)
-- 4塩基context helixの実験比較：Fauser et al. (2024), DOI: [10.1038/s41467-024-45100-w](https://doi.org/10.1038/s41467-024-45100-w)
-- 最新の構造的認識コードの整理：Zhang et al. (2024), DOI: [10.1016/j.sbi.2024.102836](https://doi.org/10.1016/j.sbi.2024.102836)
-
-出典と再利用上の整理は [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) に記載しています。
+第三者由来データと配列の整理は[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)に記載しています。
 
 ## ローカル実行
 
@@ -227,4 +66,4 @@ npm test
 
 ## ライセンス
 
-[MIT License](LICENSE)。ただし文献由来の科学データにMITを再付与するものではありません。第三者由来部分は[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)を参照してください。
+[MIT License](LICENSE)。文献由来の科学データにMITを再付与するものではありません。
