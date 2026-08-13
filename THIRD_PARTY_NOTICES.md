@@ -37,13 +37,15 @@ The code in this repository was written independently. The repository's MIT lice
 
 These legacy modules and their associated analysis remain in the repository for reproducibility, but are not used by the current public 3-finger interface or its complete-ORF exporter.
 
-## Zhu 2011 modular-assembly applicability data
+## CoDA 2011 context-dependent assembly data
 
-`src/zhu-module-archive.ts` contains the 27 triplets at each of the three Zif268 finger positions (81 position-specific modules), and `data/zhu-2011-ma-zfn-benchmark.json` is a machine-readable transcription of target sites, recognition helices, bacterial one-hybrid measurements, somatic lesion measurements, and founder rates from Supplementary Tables S1, S5, and S7 of:
+`data/coda-2011-units.json` contains 319 F1 units, 18 fixed F2 contexts, and 344 F3 units transcribed from Supplementary Tables 1 and 2 of:
 
-- Zhu C et al. (2011), *Evaluation and application of modularly assembled zinc-finger nucleases in zebrafish*, DOI: 10.1242/dev.066779.
+- Sander JD et al. (2011), *Selection-free zinc-finger-nuclease engineering by context-dependent assembly (CoDA)*, DOI: 10.1038/nmeth.1542.
 
-The current public interface uses this position-specific archive to assemble three-finger Zif268 arrays. Recognition helices are engineered selections or designs inserted into the murine Egr1/Zif268 framework; they are not natural proteins attributable one-to-one to the source labels in the table. The repository MIT license does not relicense the article, its supplementary workbooks, or the extracted scientific data.
+`src/coda-module-archive.ts` independently implements the exact-F2-context lookup and constructs complete fingers using framework sequences and the canonical TGEKP inter-finger linker described in WO2011017293A2 (SEQ ID NOs: 841–844). Empty table cells remain unavailable and are not predicted or imputed. The repository MIT license does not relicense the article, supplementary material, patent disclosure, extracted scientific data, or sequences.
+
+`data/zhu-2011-ma-zfn-benchmark.json` and its benchmark script remain only as legacy comparative evidence and are not used by the current public designer or sequence exporter.
 
 ## Persikov–Singh expanded linear SVM
 
@@ -76,12 +78,12 @@ The generated DNA is a computed synthetic coding sequence, not a plasmid or expr
 
 ## F2A bicistronic ZFN output
 
-`src/construct-output.ts` and `src/zhu-construct-output.ts` join the left FokI-ELD ZFN and right FokI-KKR ZFN in one ORF using the 22-aa F2A sequence `VKQLLNFDLLKLAGDVESNPGP` reported in:
+`src/construct-output.ts` and `src/coda-construct-output.ts` join the left FokI-ELD ZFN and right FokI-KKR ZFN in one ORF using the 22-aa F2A sequence `VKQLLNFDLLKLAGDVESNPGP` reported in:
 
 - Dueñas ME et al. (2025), *A versatile green algal platform for light-driven protein production*, DOI: 10.1073/pnas.2417695122.
 - Lei Y et al. (2011), *Gene editing of human embryonic stem cells via an engineered baculoviral vector carrying zinc-finger nucleases*, DOI: 10.1038/mt.2011.12.
 
-Dueñas directly compared GFP–2A–luciferase constructs in *Auxenochlorella protothecoides*; the F2A construct supported both reporter outputs. The sequence derives from foot-and-mouth disease virus. Ribosomal skipping occurs between its terminal glycine and proline, leaving the first 21 residues on the upstream ZFN and proline on the downstream ZFN. The complete Zhu-3F/ELD/F2A/KKR combination generated here is a design proposal and has not itself been experimentally validated.
+Dueñas directly compared GFP–2A–luciferase constructs in *Auxenochlorella protothecoides*; the F2A construct supported both reporter outputs. The sequence derives from foot-and-mouth disease virus. Ribosomal skipping occurs between its terminal glycine and proline, leaving the first 21 residues on the upstream ZFN and proline on the downstream ZFN. The complete CoDA-3F/ELD/F2A/KKR combination generated here is a design proposal and has not itself been experimentally validated.
 
 ## Fauser 2024 four-base context data
 
