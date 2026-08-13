@@ -8,6 +8,7 @@ Zhu 2011の位置別Zif268モジュールを使い、左右3-fingerのZFN候補�
 
 - 27種類のDNA triplet × F1/F2/F3の3位置、計81モジュールを使用
 - 左右とも3-fingerに固定し、5–7 bp spacerを探索
+- 希望切断位置からの探索範囲を数値指定（初期値±500 bp）
 - GNNモジュール数、Zhu 2011で比較的安定だったモジュール、希望切断位置への近さで候補を順位付け
 - 各fingerの標的triplet、7 aa recognition helix、由来を表示
 - `NLS–Zif268 3F–FokI ELD–F2A–NLS–Zif268 3F–FokI KKR`の単一ORFを生成
