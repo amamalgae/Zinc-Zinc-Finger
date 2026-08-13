@@ -13,8 +13,8 @@ Sander 2011のContext-Dependent Assembly（CoDA）archiveを使い、左右3-fin
 - 希望切断位置への近さ、次に6 bp spacerへの近さで候補を順位付け
 - 各fingerの標的triplet、7 aa recognition helix、F2 context、完全array配列を表示
 - `NLS–CoDA 3F–FokI ELD–F2A–NLS–CoDA 3F–FokI KKR`の単一ORFを生成
-- Protein FASTA、codon-optimized CDS FASTA、GenBankを保存
-- Auxenochlorellaまたはhumanのcodon presetを選択
+- 前駆体polyproteinとF2A処理後の左右産物をProtein FASTAで保存
+- 塩基配列、codon-optimized CDS、GenBankは生成しない
 
 入力配列はブラウザ内だけで処理され、外部へ送信されません。
 
@@ -31,6 +31,8 @@ Promoter → NLS–ZF-L(3F)–FokI ELD → F2A → NLS–ZF-R(3F)–FokI KKR →
 ```
 
 F2Aのribosomal skippingにより、ELD側とKKR側を1本の転写産物から発現させる設計です。F2AはDueñas 2025でAuxenochlorellaにおけるGFP/F2A/LUCの両側発現が確認された22 aa配列を使います。
+
+本ツールが固定するのはアミノ酸配列です。CoDA array、finger間linker、ZF–FokI linker、SV40 NLS、FokI ELD/KKR、F2Aはいずれもペプチドとして定義し、特定の同義コドン列には固定しません。DNA合成時に、実際の宿主・オルガネラ・発現ベクターに合わせて別途コドン最適化と配列QCを行います。
 
 ## データ源
 
@@ -49,8 +51,7 @@ CoDA unit tableはSander 2011のSupplementary Tables 1–2を転記し、件数�
 - 原著は181個のCoDA arrayをB2Hで評価し、ZFNとして20遺伝子の変異導入を報告していますが、archiveにある個々の新規組合せの成功を保証するものではありません。
 - 候補順位に未測定の活性スコアは加えていません。複数候補を発現系とSSA等で比較してください。
 - ELD/KKR、F2A、CoDA 3Fを組み合わせた完全構成そのものは本ツールの設計提案であり、同一条件での実験検証は未実施です。
-- Auxenochlorella codon presetは公開CDSの小標本に基づくため、使用株に合わせた再確認が必要です。
-- 出力はORFです。promoter、terminator、UTR、選択マーカー、vector backboneは含みません。
+- 出力はアミノ酸配列です。塩基配列、promoter、terminator、UTR、選択マーカー、vector backboneは含みません。
 - 公開情報を実装したことはFTOを意味しません。特許・ライセンスは用途と地域に応じて別途確認してください。
 
 第三者由来データと配列の整理は[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)に記載しています。

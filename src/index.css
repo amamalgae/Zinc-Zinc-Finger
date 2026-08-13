@@ -168,8 +168,7 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .sequence-details code { max-height: 90px; overflow: auto; overflow-wrap: anywhere; color: var(--green); font-size: 8px; line-height: 1.65; }
 
 .output-card { margin-top: 28px; padding: 24px; border-radius: 18px; background: #edf3e9; }
-.output-heading label { display: grid; gap: 5px; color: var(--muted); font-size: 8px; }
-.output-heading select { min-width: 230px; height: 38px; padding: 0 10px; border: 1px solid #bfccbf; border-radius: 9px; background: #fff; }
+.protein-only-badge { padding: 7px 10px; border: 1px solid #abc1ae; border-radius: 999px; background: #fff; color: var(--green); font-size: 7px; font-weight: 900; letter-spacing: .12em; }
 .output-card .architecture { margin-top: 20px; }
 .output-stats { margin-top: 11px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
 .output-stats span { padding: 10px; border-radius: 9px; background: #fff; color: var(--muted); font-size: 8px; text-align: center; }
@@ -177,6 +176,7 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .download-row { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 7px; }
 .download-row button { padding: 10px 13px; border: 1px solid #b6c7b8; border-radius: 9px; background: #fff; color: var(--green); font-size: 9px; font-weight: 900; cursor: pointer; }
 .sequence-details.compact { background: #fff; }
+.output-note { margin: 12px 0 0; padding: 11px 13px; border-left: 3px solid var(--green); background: rgba(255,255,255,.62); color: var(--muted); font-size: 8px; line-height: 1.7; }
 .donor-card { margin-top: 14px; padding: 18px; border: 1px solid var(--line); border-radius: 15px; }
 .donor-card > div { display: flex; align-items: center; justify-content: space-between; }
 .donor-card > div span { color: var(--green); font-size: 10px; font-weight: 900; }
@@ -224,7 +224,6 @@ footer p { margin: 0; }
   .finger-cards { gap: 5px; }
   .finger-card { padding: 8px; }
   .finger-card > strong { font-size: 14px; }
-  .output-heading select { width: 100%; min-width: 0; }
   .output-stats { grid-template-columns: 1fr 1fr; }
   footer { flex-direction: column; }
 }

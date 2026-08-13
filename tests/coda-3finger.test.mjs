@@ -1,11 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { translateDna } from "../src/construct-output.ts";
 import {
   buildCodaBicistronicZfn,
   CODA_ZFN_DONORS,
-  codaConstructToGenBank,
+  codaConstructToProteinFasta,
 } from "../src/coda-construct-output.ts";
 import { generateCodaCandidates, reverseComplement } from "../src/coda-design-engine.ts";
 import {
@@ -52,16 +51,18 @@ test("ZFN scanning preserves strand orientation and 5-7 bp spacer geometry", () 
   assert.deepEqual(candidate.rightArray.fingers.map(({ triplet }) => triplet), ["GAG", "GGG", "GTG"]);
 });
 
-test("CoDA construct uses complete arrays, ELD/F2A/KKR, and translates exactly", () => {
+test("CoDA output contains complete protein arrays, ELD/F2A/KKR, and no generated CDS", () => {
   const candidate = generateCodaCandidates(target, 12, 20).find(({ id }) => id === "0-6");
   assert.ok(candidate);
-  const construct = buildCodaBicistronicZfn(candidate, "auxenochlorella");
-  assert.equal(translateDna(construct.cds), `${construct.protein}*`);
+  const construct = buildCodaBicistronicZfn(candidate);
+  assert.equal("cds" in construct, false);
+  assert.equal("gcPercent" in construct, false);
   assert.match(construct.processedLeftProtein, /^MAPKKKRKVFQCRICMRNFS/);
   assert.match(construct.processedRightProtein, /^PMAPKKKRKVFQCRICMRNFS/);
   assert.equal(CODA_ZFN_DONORS.length, 4);
-  const genbank = codaConstructToGenBank(construct, "auxenochlorella");
-  assert.match(genbank, /Sander 2011 CoDA 3-finger arrays/);
-  assert.match(genbank, /FokI ELD/);
-  assert.match(genbank, /FokI KKR/);
+  const fasta = codaConstructToProteinFasta(construct);
+  assert.match(fasta, /precursor_polyprotein/);
+  assert.match(fasta, /processed_left/);
+  assert.match(fasta, /processed_right/);
+  assert.doesNotMatch(fasta, /\bCDS\b|codon|GenBank/i);
 });
