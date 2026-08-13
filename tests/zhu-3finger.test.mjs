@@ -39,6 +39,14 @@ test("3-finger mapping follows antiparallel F1/F2/F3 recognition order", () => {
   assert.match(candidate.leftArrayProtein, /GEKPFACDICGRKFA/);
 });
 
+test("default search radius is 500 bp for KI-oriented target discovery", () => {
+  const target = `${reverseComplement("GGAGATGGC")}GATTACGTGGATGAG`;
+  const candidate = generateZhuCandidates(target, 400).find(({ id }) => id === "0-6");
+  assert.ok(candidate);
+  assert.ok(candidate.distance > 40);
+  assert.ok(candidate.distance <= 500);
+});
+
 test("Zhu construct uses ELD/F2A/KKR and translates exactly", () => {
   const target = `${reverseComplement("GGAGATGGC")}GATTACGTGGATGAG`;
   const candidate = generateZhuCandidates(target, 12, 20).find(({ id }) => id === "0-6");

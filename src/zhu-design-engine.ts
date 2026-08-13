@@ -79,7 +79,7 @@ function compareCandidates(left: ZhuCandidate, right: ZhuCandidate): number {
 export function generateZhuCandidates(
   dna: string,
   desiredCut: number,
-  maxDistance = 40,
+  maxDistance = 500,
   limit = 30,
 ): ZhuCandidate[] {
   const candidates: ZhuCandidate[] = [];

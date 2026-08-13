@@ -89,7 +89,7 @@ function CandidateRow({ candidate, rank, selected, onSelect }: {
 export default function Home() {
   const [rawSequence, setRawSequence] = useState(EXAMPLE_SEQUENCE);
   const [desiredCut, setDesiredCut] = useState(18);
-  const [maxDistance, setMaxDistance] = useState(40);
+  const [maxDistance, setMaxDistance] = useState(500);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [codonPreset, setCodonPreset] = useState<CodonPreset>("auxenochlorella");
 
@@ -145,9 +145,9 @@ export default function Home() {
           <div className="input-meta"><span>{dna.length} bp</span><span className={invalidCount ? "warning" : ""}>{invalidCount ? `${invalidCount}文字を除外` : "ACGTのみ"}</span></div>
           <div className="simple-controls">
             <label><span>希望切断位置</span><input type="number" min={0} max={dna.length} value={desiredCut} onChange={(event) => { setDesiredCut(Number(event.target.value)); setSelectedId(null); }} /><small>5′端からの塩基間座標</small></label>
-            <label><span>探索範囲</span><select value={maxDistance} onChange={(event) => { setMaxDistance(Number(event.target.value)); setSelectedId(null); }}><option value={20}>±20 bp</option><option value={40}>±40 bp</option><option value={80}>±80 bp</option></select><small>希望位置から</small></label>
+            <label><span>探索範囲（±bp）</span><input type="number" min={0} max={100000} step={50} value={maxDistance} onChange={(event) => { setMaxDistance(Math.max(0, Number(event.target.value))); setSelectedId(null); }} /><small>希望位置から。初期値500 bp</small></label>
           </div>
-          <button className="example-button" type="button" onClick={() => { setRawSequence(EXAMPLE_SEQUENCE); setDesiredCut(18); setMaxDistance(40); setSelectedId(null); }}>例を復元</button>
+          <button className="example-button" type="button" onClick={() => { setRawSequence(EXAMPLE_SEQUENCE); setDesiredCut(18); setMaxDistance(500); setSelectedId(null); }}>例を復元</button>
           <p className="input-note">候補順位はGNN module数、Zhu論文で安定だったmodule数、希望切断位置への近さの順です。成功確率ではありません。</p>
         </div>
 
