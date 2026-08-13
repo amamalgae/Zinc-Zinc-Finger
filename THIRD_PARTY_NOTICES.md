@@ -35,15 +35,15 @@ The recognition-helix sequences, target triplets, and module recommendations in 
 
 The code in this repository was written independently. The repository's MIT license applies to that code and does not purport to relicense third-party publications, patents, plasmids, or biological materials.
 
-The generated recognition helices are inserted into the designed human Sp1-derived Sp1C consensus framework. The Barbas phage-display lineage used C7/C7.GAT, variants of murine Zif268, as the selection scaffold. The helix sequences are engineered selections or designs rather than natural proteins attributable one-to-one to additional donor species. The current complete-ORF exporter does not use the separate Zhu position-specific archive or the optional Fauser context candidates.
+These legacy modules and their associated analysis remain in the repository for reproducibility, but are not used by the current public 3-finger interface or its complete-ORF exporter.
 
 ## Zhu 2011 modular-assembly applicability data
 
-`data/zhu-2011-ma-zfn-benchmark.json` is a machine-readable transcription of target sites, recognition helices, bacterial one-hybrid measurements, somatic lesion measurements, and founder rates from Supplementary Tables S1, S5, and S7 of:
+`src/zhu-module-archive.ts` contains the 27 triplets at each of the three Zif268 finger positions (81 position-specific modules), and `data/zhu-2011-ma-zfn-benchmark.json` is a machine-readable transcription of target sites, recognition helices, bacterial one-hybrid measurements, somatic lesion measurements, and founder rates from Supplementary Tables S1, S5, and S7 of:
 
 - Zhu C et al. (2011), *Evaluation and application of modularly assembled zinc-finger nucleases in zebrafish*, DOI: 10.1242/dev.066779.
 
-The data are used only to test whether this different, position-specific three-finger module archive can directly validate the Barbas extended-MA proteins generated here. The repository MIT license does not relicense the article, its supplementary workbooks, or the extracted scientific data.
+The current public interface uses this position-specific archive to assemble three-finger Zif268 arrays. Recognition helices are engineered selections or designs inserted into the murine Egr1/Zif268 framework; they are not natural proteins attributable one-to-one to the source labels in the table. The repository MIT license does not relicense the article, its supplementary workbooks, or the extracted scientific data.
 
 ## Persikov–Singh expanded linear SVM
 
@@ -74,13 +74,14 @@ No ZFDesign code or restricted training data are included here.
 
 The generated DNA is a computed synthetic coding sequence, not a plasmid or expression cassette copied from a repository. No Addgene plasmid sequence or biological material is included. Sequence output does not grant patent, material-transfer, biosafety, or freedom-to-operate rights.
 
-## GSG-T2A bicistronic ZFN output
+## F2A bicistronic ZFN output
 
-`src/construct-output.ts` joins the left FokI-ELD ZFN and right FokI-KKR ZFN in one ORF using the GSG-prefixed T2A amino-acid sequence `GSGEGRGSLLTCGDVEENPGP` reported in:
+`src/construct-output.ts` and `src/zhu-construct-output.ts` join the left FokI-ELD ZFN and right FokI-KKR ZFN in one ORF using the 22-aa F2A sequence `VKQLLNFDLLKLAGDVESNPGP` reported in:
 
-- Katayama S, Yamamoto T (2025), *Efficient Genome Editing Using the T2A-Coupled Co-Expression of Two ZFN Monomers*, DOI: 10.3390/ijms26157602. The article and supplementary material are distributed under CC BY 4.0.
+- Dueñas ME et al. (2025), *A versatile green algal platform for light-driven protein production*, DOI: 10.1073/pnas.2417695122.
+- Lei Y et al. (2011), *Gene editing of human embryonic stem cells via an engineered baculoviral vector carrying zinc-finger nucleases*, DOI: 10.1038/mt.2011.12.
 
-The paper directly tested ZF-ND1 monomers and cited earlier ZF-FokI precedents. This project applies the same left-to-right order, retains the downstream initiating methionine, and codon-optimizes the amino-acid sequence rather than copying the paper's mammalian DNA sequence. Ribosomal skipping leaves the first 20 GSG-T2A residues on the upstream ZFN and proline on the downstream ZFN. T2A derives from Thosea asigna virus, classified in the ICTV species *Alphapermutotetravirus thoseae*.
+Dueñas directly compared GFP–2A–luciferase constructs in *Auxenochlorella protothecoides*; the F2A construct supported both reporter outputs. The sequence derives from foot-and-mouth disease virus. Ribosomal skipping occurs between its terminal glycine and proline, leaving the first 21 residues on the upstream ZFN and proline on the downstream ZFN. The complete Zhu-3F/ELD/F2A/KKR combination generated here is a design proposal and has not itself been experimentally validated.
 
 ## Fauser 2024 four-base context data
 
