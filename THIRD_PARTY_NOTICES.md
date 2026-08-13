@@ -93,10 +93,6 @@ Dueñas directly compared GFP–2A–luciferase constructs in *Auxenochlorella p
 
 The 182-row workbook is not bundled. Users retrieve it from the publisher and select it locally; the browser does not upload or retain it. Context-derived candidates are kept out of the primary Barbas/B-score ranking and complete-ORF export because framework compatibility and direct ZFN activity have not been established here.
 
-## Codon-use presets
-
-The optional *Auxenochlorella protothecoides* preset is derived from the Kazusa Codon Usage Database species entry 3075. That entry contains only 5 CDS and 1,056 codons and is therefore exposed with an explicit small-sample warning. The human preset uses standard high-frequency human codon choices. Neither preset is a validated expression model for a particular strain, compartment, vector, or culture condition.
-
 ## fflate
 
 The application uses `fflate` 0.8.2 to decompress locally selected `.xlsx` files in the browser. fflate is copyright 2020–2023 Arjun Barrett and is distributed under the MIT License. Its package license text is available in the installed npm distribution and at <https://github.com/101arrowz/fflate>.

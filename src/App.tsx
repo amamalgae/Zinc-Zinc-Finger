@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { DUENAS_F2A, type CodonPreset } from "./construct-output.ts";
+import { DUENAS_F2A } from "./construct-output.ts";
 import {
   codaCandidatesToCsv,
   cleanDNA,
@@ -11,8 +11,7 @@ import {
 import {
   buildCodaBicistronicZfn,
   CODA_ZFN_DONORS,
-  codaConstructToFasta,
-  codaConstructToGenBank,
+  codaConstructToProteinFasta,
 } from "./coda-construct-output.ts";
 import {
   CODA_F1_UNIT_COUNT,
@@ -96,13 +95,12 @@ export default function Home() {
   const [desiredCut, setDesiredCut] = useState(18);
   const [maxDistance, setMaxDistance] = useState(500);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [codonPreset, setCodonPreset] = useState<CodonPreset>("auxenochlorella");
 
   const dna = useMemo(() => cleanDNA(rawSequence), [rawSequence]);
   const invalidCount = rawSequence.replace(/[ACGTacgt\s\d>_-]/g, "").length;
   const candidates = useMemo(() => generateCodaCandidates(dna, desiredCut, maxDistance), [dna, desiredCut, maxDistance]);
   const selected = candidates.find(({ id }) => id === selectedId) ?? candidates[0] ?? null;
-  const construct = useMemo(() => selected ? buildCodaBicistronicZfn(selected, codonPreset) : null, [selected, codonPreset]);
+  const construct = useMemo(() => selected ? buildCodaBicistronicZfn(selected) : null, [selected]);
 
   return (
     <main>
@@ -134,7 +132,7 @@ export default function Home() {
       </section>
 
       <section className="construct-overview">
-        <div className="section-intro"><span>CONSTRUCT OVERVIEW</span><h2>1本のORFから、左右2本のZFNを作る</h2><p>F2Aで翻訳を分け、ELDとKKRが標的上でそろったときにFokI切断ドメインを形成します。出力は色付き部分のORFで、promoterとterminatorは発現系に合わせて別途選びます。</p></div>
+        <div className="section-intro"><span>CONSTRUCT OVERVIEW</span><h2>1本のORFから、左右2本のZFNを作る</h2><p>F2Aで翻訳を分け、ELDとKKRが標的上でそろったときにFokI切断ドメインを形成します。サイトは色付き部分のアミノ酸配列だけを出力し、promoter、terminator、コドンは発現系に合わせて別途選びます。</p></div>
         <ArchitectureDiagram expressionCassette />
         <div className="processed-products">
           <span><i className="eld-dot" /><strong>翻訳産物1</strong>NLS–ZF-L–FokI ELD–F2A残基</span>
@@ -172,15 +170,14 @@ export default function Home() {
           <details className="sequence-details"><summary>ZF array全アミノ酸配列を見る</summary><div><span>Left array N→C</span><code>{selected.leftArray.protein}</code></div><div><span>Right array N→C</span><code>{selected.rightArray.protein}</code></div></details>
 
           <div className="output-card">
-            <div className="output-heading"><div><span>04 · SEQUENCE OUTPUT</span><h2>ELD–F2A–KKR single ORF</h2></div><label><span>Codon preset</span><select value={codonPreset} onChange={(event) => setCodonPreset(event.target.value as CodonPreset)}><option value="auxenochlorella">Auxenochlorella protothecoides</option><option value="human">Homo sapiens</option></select></label></div>
+            <div className="output-heading"><div><span>04 · AMINO-ACID OUTPUT</span><h2>ELD–F2A–KKR precursor polyprotein</h2></div><span className="protein-only-badge">PROTEIN ONLY</span></div>
             <ArchitectureDiagram />
-            <div className="output-stats"><span><strong>{construct.protein.length}</strong>aa polyprotein</span><span><strong>{construct.cds.length}</strong>bp CDS</span><span><strong>{construct.gcPercent.toFixed(1)}%</strong>GC</span><span><strong>{DUENAS_F2A.length}</strong>aa F2A</span></div>
+            <div className="output-stats"><span><strong>{construct.protein.length}</strong>aa precursor</span><span><strong>{construct.processedLeftProtein.length}</strong>aa left product</span><span><strong>{construct.processedRightProtein.length}</strong>aa right product</span><span><strong>{DUENAS_F2A.length}</strong>aa F2A</span></div>
             <div className="download-row">
-              <button type="button" onClick={() => downloadText(codaConstructToFasta(construct, "protein"), `${construct.name}-protein.fasta`)}>Protein FASTA</button>
-              <button type="button" onClick={() => downloadText(codaConstructToFasta(construct, "cds"), `${construct.name}-cds.fasta`)}>CDS FASTA</button>
-              <button type="button" onClick={() => downloadText(codaConstructToGenBank(construct, codonPreset), `${construct.name}.gb`, "text/plain;charset=utf-8")}>GenBank</button>
+              <button type="button" onClick={() => downloadText(codaConstructToProteinFasta(construct), `${construct.name}-protein.fasta`)}>Protein FASTA（3配列）</button>
             </div>
-            <details className="sequence-details compact"><summary>翻訳産物とCDSを確認する</summary><div><span>Processed left</span><code>{construct.processedLeftProtein}</code></div><div><span>Processed right</span><code>{construct.processedRightProtein}</code></div><div><span>Full CDS</span><code>{construct.cds}</code></div></details>
+            <details className="sequence-details compact"><summary>前駆体とF2A処理後の予測産物を見る</summary><div><span>Precursor polyprotein</span><code>{construct.protein}</code></div><div><span>Processed left</span><code>{construct.processedLeftProtein}</code></div><div><span>Processed right</span><code>{construct.processedRightProtein}</code></div></details>
+            <p className="output-note">塩基配列は生成しません。DNA合成時に、実際の宿主・オルガネラ・発現ベクターに合わせてコドン最適化と配列QCを行ってください。</p>
           </div>
 
           <div className="donor-card"><div><span>核酸供与体</span><strong>{CODA_ZFN_DONORS.length}区分</strong></div><ul>{CODA_ZFN_DONORS.map((donor) => <li key={donor.component}><span>{donor.component}</span><i>{donor.scientificName}</i><small>{donor.detail}</small></li>)}</ul></div>
