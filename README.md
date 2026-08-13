@@ -18,6 +18,7 @@
 - spacer 5 / 6 / 7 bpに対してTGGS / TGAAAR / TGPGAAAR ZFA–FokI linkerを提案する
 - B-score・TSO条件を優先しつつ、切断位置とmodule重複を分散した独立候補3組を選ぶ
 - 左ZFN（SV40 NLS–Sp1C ZFA–FokI ELD）と右ZFN（SV40 NLS–Sp1C ZFA–FokI KKR）をGSG-T2Aでつないだ単一ORFをProtein FASTA、codon-optimized CDS FASTA、GenBankで保存する
+- 単一ORFの各構成部品と核酸供与体4種の対応を画面とGenBankに表示する
 - Auxenochlorella protothecoidesまたはhuman codon presetを選ぶ（前者は公開1056 codonの小標本なので要再確認）
 - Fauser 2024 Supplementary Data 33を利用者が読み込んだ時だけ、182件の4塩基context-aware helixで実験候補を別枠生成する
 - 選択候補のSSA reporter target duplexと、十分な周辺配列がある場合の切断amplicon primer一次案をCSVで保存する
@@ -146,6 +147,17 @@ Table S5とS7では`sbno2`、`sgk`、`spon1b`のZFN IDが1行ずつずれてい�
 92 array variantsについては、原著の報告AUCは0.77です。Figure 2から92件の二値ラベルを復元した参考解析もスクリプトに含めています。原著にはSupplemental Tables S1–S8がありますが、268構成の行単位データを収録した`Supplemental_Appendices.xls`という別ファイルは確認できませんでした。Data accessに記載されたBioProject PRJNA179355はT2-X6のmassively parallel sequencingデータであり、268構成のSSA成否表ではありません。このため図からの復元値は主結果には使用していません。
 
 ## 重要な制限
+
+単一ORFに含まれる構成部品と核酸供与体は、全候補で共通して次の4種です。
+
+| ORF内の構成部品 | 核酸供与体 | 注記 |
+|---|---|---|
+| SV40 NLS（左右） | *Betapolyomavirus macacae* | simian virus 40由来NLS |
+| Sp1C ZFA framework（左右） | *Homo sapiens* | SP1由来framework |
+| FokI切断ドメイン（ELD / KKR） | *Flavobacterium okeanokoites* | ELD / KKRは人工変異 |
+| T2A | *Alphapermutotetravirus thoseae* | Thosea asigna virus由来2A。先頭GSGは人工配列 |
+
+Zif268/C7 library（*Mus musculus*）はrecognition helix選択の設計系譜であり、出力ORFのSp1C frameworkには含まれないため、核酸供与体4種には含めません。recognition helix、ELD/KKR変異、linker、GSG、codon optimizationは人工改変・人工配列です。
 
 - 完全ORFは`left ELD–GSG-T2A–right KKR`の順で、各monomerにSV40 NLS、末端にstop codonを含みます。GSG-T2Aのribosomal skipping後は、左ZFNのC末端に20 aa、右ZFNのN末端にProが残ります。promoter、terminator、UTR、selection marker、ベクターbackboneは含みません。
 - GSG-T2A配列・left→right順・下流開始Met保持はKatayama 2025に合わせていますが、同論文の直接実験はZF-ND1です。本ツールのSp1C–FokI ELD/KKR構成と緑藻でのT2A効率は未検証です。
