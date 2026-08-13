@@ -1,24 +1,29 @@
 import { useMemo, useState } from "react";
 import { DUENAS_F2A, type CodonPreset } from "./construct-output.ts";
 import {
+  codaCandidatesToCsv,
   cleanDNA,
   formatCut,
-  generateZhuCandidates,
+  generateCodaCandidates,
   reverseComplement,
-  zhuCandidatesToCsv,
-  type ZhuCandidate,
-  type ZhuFinger,
-} from "./zhu-design-engine.ts";
+  type CodaCandidate,
+} from "./coda-design-engine.ts";
 import {
-  buildZhuBicistronicZfn,
-  ZHU_ZFN_DONORS,
-  zhuConstructToFasta,
-  zhuConstructToGenBank,
-} from "./zhu-construct-output.ts";
-import { ZHU_MODULE_COUNT, ZHU_TRIPLET_COUNT } from "./zhu-module-archive.ts";
+  buildCodaBicistronicZfn,
+  CODA_ZFN_DONORS,
+  codaConstructToFasta,
+  codaConstructToGenBank,
+} from "./coda-construct-output.ts";
+import {
+  CODA_F1_UNIT_COUNT,
+  CODA_F2_CONTEXT_COUNT,
+  CODA_F3_UNIT_COUNT,
+  CODA_UNIT_COUNT,
+  type CodaFinger,
+} from "./coda-module-archive.ts";
 
-const EXAMPLE_LEFT_RECOGNITION = "GGAGATGGC";
-const EXAMPLE_RIGHT_RECOGNITION = "GTGGATGAG";
+const EXAMPLE_LEFT_RECOGNITION = "GTGGGGGAG";
+const EXAMPLE_RIGHT_RECOGNITION = "GTGGGGGAG";
 const EXAMPLE_SEQUENCE = `CAGTCA${reverseComplement(EXAMPLE_LEFT_RECOGNITION)}GATTAC${EXAMPLE_RIGHT_RECOGNITION}TGACGT`;
 
 function downloadText(contents: string, filename: string, type = "text/plain;charset=utf-8") {
@@ -48,7 +53,7 @@ function ArchitectureDiagram({ expressionCassette = false }: { expressionCassett
   );
 }
 
-function FingerCard({ finger }: { finger: ZhuFinger }) {
+function FingerCard({ finger }: { finger: CodaFinger }) {
   return (
     <article className="finger-card">
       <div><span>F{finger.position}</span><small>N → C</small></div>
@@ -59,7 +64,7 @@ function FingerCard({ finger }: { finger: ZhuFinger }) {
   );
 }
 
-function FingerGroup({ title, fingers }: { title: string; fingers: readonly ZhuFinger[] }) {
+function FingerGroup({ title, fingers }: { title: string; fingers: readonly CodaFinger[] }) {
   return (
     <section className="finger-group">
       <div className="finger-title"><h3>{title}</h3><span>protein N→C</span></div>
@@ -72,7 +77,7 @@ function FingerGroup({ title, fingers }: { title: string; fingers: readonly ZhuF
 }
 
 function CandidateRow({ candidate, rank, selected, onSelect }: {
-  candidate: ZhuCandidate;
+  candidate: CodaCandidate;
   rank: number;
   selected: boolean;
   onSelect: () => void;
@@ -81,7 +86,7 @@ function CandidateRow({ candidate, rank, selected, onSelect }: {
     <button className={`candidate ${selected ? "selected" : ""}`} type="button" onClick={onSelect}>
       <span className="candidate-rank">{String(rank).padStart(2, "0")}</span>
       <span className="candidate-sequence"><b>{candidate.leftTop}</b><i>{candidate.spacer}</i><b>{candidate.rightTop}</b></span>
-      <span className="candidate-summary"><strong>GNN {candidate.gnnModules}/6</strong><small>cut {formatCut(candidate.cut)} · spacer {candidate.spacerLength} bp</small></span>
+      <span className="candidate-summary"><strong>F2 {candidate.leftArray.f2Context} / {candidate.rightArray.f2Context}</strong><small>cut {formatCut(candidate.cut)} · spacer {candidate.spacerLength} bp</small></span>
     </button>
   );
 }
@@ -95,9 +100,9 @@ export default function Home() {
 
   const dna = useMemo(() => cleanDNA(rawSequence), [rawSequence]);
   const invalidCount = rawSequence.replace(/[ACGTacgt\s\d>_-]/g, "").length;
-  const candidates = useMemo(() => generateZhuCandidates(dna, desiredCut, maxDistance), [dna, desiredCut, maxDistance]);
+  const candidates = useMemo(() => generateCodaCandidates(dna, desiredCut, maxDistance), [dna, desiredCut, maxDistance]);
   const selected = candidates.find(({ id }) => id === selectedId) ?? candidates[0] ?? null;
-  const construct = useMemo(() => selected ? buildZhuBicistronicZfn(selected, codonPreset) : null, [selected, codonPreset]);
+  const construct = useMemo(() => selected ? buildCodaBicistronicZfn(selected, codonPreset) : null, [selected, codonPreset]);
 
   return (
     <main>
@@ -111,12 +116,12 @@ export default function Home() {
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <span className="eyebrow">ZHU 2011 MODULAR ASSEMBLY</span>
+          <span className="eyebrow">SANDER 2011 · CoDA</span>
           <h1>3つのfingerで、<br />9塩基を認識する。</h1>
-          <p>Zhuらが公開した位置別モジュールだけを使い、左右3-fingerのZFN候補を探します。現在は文献で直接検証された範囲に限定し、6-finger設計は扱いません。</p>
+          <p>実験選択済みのF1/F2とF2/F3文脈を共通F2で接続し、標的ごとの追加selectionなしで左右3-fingerのZFN候補を探します。</p>
           <div className="hero-stats">
-            <span><strong>{ZHU_TRIPLET_COUNT}</strong>認識可能な3-mer</span>
-            <span><strong>{ZHU_MODULE_COUNT}</strong>位置別module</span>
+            <span><strong>{CODA_F2_CONTEXT_COUNT}</strong>固定F2 context</span>
+            <span><strong>{CODA_UNIT_COUNT}</strong>F1 / F3 units</span>
             <span><strong>3 + 3</strong>左右のfinger</span>
           </div>
         </div>
@@ -124,7 +129,7 @@ export default function Home() {
           <span>今回の設計範囲</span>
           <strong>片側3ZF × 左右2本</strong>
           <div className="target-mini"><b>9 bp</b><i>5–7 bp spacer</i><b>9 bp</b></div>
-          <p>27種類の3-merで組める場所だけを提示します。候補がない場合、配列を推測で補いません。</p>
+          <p>F1 {CODA_F1_UNIT_COUNT}件・F3 {CODA_F3_UNIT_COUNT}件の公開archiveで両側を構成できる場所だけを提示し、欠損配列は推測で補いません。</p>
         </aside>
       </section>
 
@@ -148,52 +153,52 @@ export default function Home() {
             <label><span>探索範囲（±bp）</span><input type="number" min={0} max={100000} step={50} value={maxDistance} onChange={(event) => { setMaxDistance(Math.max(0, Number(event.target.value))); setSelectedId(null); }} /><small>希望位置から。初期値500 bp</small></label>
           </div>
           <button className="example-button" type="button" onClick={() => { setRawSequence(EXAMPLE_SEQUENCE); setDesiredCut(18); setMaxDistance(500); setSelectedId(null); }}>例を復元</button>
-          <p className="input-note">候補順位はGNN module数、Zhu論文で安定だったmodule数、希望切断位置への近さの順です。成功確率ではありません。</p>
+          <p className="input-note">候補順位は希望切断位置への近さ、次に6 bp spacerへの近さです。archive内の候補間に、未測定の活性差は付けていません。</p>
         </div>
 
         <div className="results-panel">
-          <div className="panel-heading"><span>02</span><div><small>RESULTS</small><h2>組めるZFNペア</h2></div><button type="button" disabled={!candidates.length} onClick={() => downloadText(zhuCandidatesToCsv(candidates), "zhu-3finger-zfn-candidates.csv", "text/csv;charset=utf-8")}>CSV</button></div>
+          <div className="panel-heading"><span>02</span><div><small>RESULTS</small><h2>組めるCoDA ZFNペア</h2></div><button type="button" disabled={!candidates.length} onClick={() => downloadText(codaCandidatesToCsv(candidates), "coda-3finger-zfn-candidates.csv", "text/csv;charset=utf-8")}>CSV</button></div>
           <div className="result-count"><strong>{candidates.length}</strong><span>候補</span><small>spacer 5 / 6 / 7 bpを探索</small></div>
-          {candidates.length ? <div className="candidate-list">{candidates.slice(0, 12).map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} />)}</div> : <div className="empty-state"><strong>候補がありません</strong><p>27種類のmoduleで左右9 bpを構成できる部位がありません。探索範囲または入力配列を変更してください。</p></div>}
+          {candidates.length ? <div className="candidate-list">{candidates.slice(0, 12).map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} />)}</div> : <div className="empty-state"><strong>候補がありません</strong><p>CoDA archiveで左右9 bpを構成できる部位がありません。探索範囲または入力配列を変更してください。</p></div>}
         </div>
       </section>
 
       {selected && construct && (
         <section className="selected-design">
-          <div className="selected-heading"><div><span>03 · SELECTED DESIGN</span><h2>cut {formatCut(selected.cut)} · spacer {selected.spacerLength} bp</h2></div><div className="gnn-badge"><strong>{selected.gnnModules}/6</strong><small>GNN modules</small></div></div>
+          <div className="selected-heading"><div><span>03 · SELECTED DESIGN</span><h2>cut {formatCut(selected.cut)} · spacer {selected.spacerLength} bp</h2></div><div className="gnn-badge"><strong>2/2</strong><small>CoDA arrays</small></div></div>
           <div className="target-layout"><span>5′</span><b>{selected.leftTop}</b><i>{selected.spacer}</i><b>{selected.rightTop}</b><span>3′</span><small>ZF-L half-site</small><small>切断領域</small><small>ZF-R half-site</small></div>
           <div className="strand-row"><span><small>Left recognition strand 5′→3′</small><code>{selected.leftRecognition}</code></span><span><small>Right recognition strand 5′→3′</small><code>{selected.rightRecognition}</code></span></div>
-          <div className="finger-pair"><FingerGroup title="Left ZF · Zif268" fingers={selected.leftFingers} /><FingerGroup title="Right ZF · Zif268" fingers={selected.rightFingers} /></div>
-          <details className="sequence-details"><summary>ZF array全アミノ酸配列を見る</summary><div><span>Left array N→C</span><code>{selected.leftArrayProtein}</code></div><div><span>Right array N→C</span><code>{selected.rightArrayProtein}</code></div></details>
+          <div className="finger-pair"><FingerGroup title={`Left ZF · CoDA F2=${selected.leftArray.f2Context}`} fingers={selected.leftArray.fingers} /><FingerGroup title={`Right ZF · CoDA F2=${selected.rightArray.f2Context}`} fingers={selected.rightArray.fingers} /></div>
+          <details className="sequence-details"><summary>ZF array全アミノ酸配列を見る</summary><div><span>Left array N→C</span><code>{selected.leftArray.protein}</code></div><div><span>Right array N→C</span><code>{selected.rightArray.protein}</code></div></details>
 
           <div className="output-card">
             <div className="output-heading"><div><span>04 · SEQUENCE OUTPUT</span><h2>ELD–F2A–KKR single ORF</h2></div><label><span>Codon preset</span><select value={codonPreset} onChange={(event) => setCodonPreset(event.target.value as CodonPreset)}><option value="auxenochlorella">Auxenochlorella protothecoides</option><option value="human">Homo sapiens</option></select></label></div>
             <ArchitectureDiagram />
             <div className="output-stats"><span><strong>{construct.protein.length}</strong>aa polyprotein</span><span><strong>{construct.cds.length}</strong>bp CDS</span><span><strong>{construct.gcPercent.toFixed(1)}%</strong>GC</span><span><strong>{DUENAS_F2A.length}</strong>aa F2A</span></div>
             <div className="download-row">
-              <button type="button" onClick={() => downloadText(zhuConstructToFasta(construct, "protein"), `${construct.name}-protein.fasta`)}>Protein FASTA</button>
-              <button type="button" onClick={() => downloadText(zhuConstructToFasta(construct, "cds"), `${construct.name}-cds.fasta`)}>CDS FASTA</button>
-              <button type="button" onClick={() => downloadText(zhuConstructToGenBank(construct, codonPreset), `${construct.name}.gb`, "text/plain;charset=utf-8")}>GenBank</button>
+              <button type="button" onClick={() => downloadText(codaConstructToFasta(construct, "protein"), `${construct.name}-protein.fasta`)}>Protein FASTA</button>
+              <button type="button" onClick={() => downloadText(codaConstructToFasta(construct, "cds"), `${construct.name}-cds.fasta`)}>CDS FASTA</button>
+              <button type="button" onClick={() => downloadText(codaConstructToGenBank(construct, codonPreset), `${construct.name}.gb`, "text/plain;charset=utf-8")}>GenBank</button>
             </div>
             <details className="sequence-details compact"><summary>翻訳産物とCDSを確認する</summary><div><span>Processed left</span><code>{construct.processedLeftProtein}</code></div><div><span>Processed right</span><code>{construct.processedRightProtein}</code></div><div><span>Full CDS</span><code>{construct.cds}</code></div></details>
           </div>
 
-          <div className="donor-card"><div><span>核酸供与体</span><strong>{ZHU_ZFN_DONORS.length}区分</strong></div><ul>{ZHU_ZFN_DONORS.map((donor) => <li key={donor.component}><span>{donor.component}</span><i>{donor.scientificName}</i><small>{donor.detail}</small></li>)}</ul></div>
+          <div className="donor-card"><div><span>核酸供与体</span><strong>{CODA_ZFN_DONORS.length}区分</strong></div><ul>{CODA_ZFN_DONORS.map((donor) => <li key={donor.component}><span>{donor.component}</span><i>{donor.scientificName}</i><small>{donor.detail}</small></li>)}</ul></div>
         </section>
       )}
 
       <section className="evidence">
         <div className="section-intro"><span>EVIDENCE</span><h2>各部品の根拠</h2><p>設計法・FokI・2Aを別々の原著に対応させています。</p></div>
         <div className="reference-grid">
-          <article><span>3-FINGER MODULE</span><h3>Zhu et al. 2011</h3><p>27種類×3位置のZif268 module。29 ZFNペア中8組で1%以上のlesionを確認。</p><a href="https://doi.org/10.1242/dev.066779" target="_blank" rel="noreferrer">DOI 10.1242/dev.066779</a></article>
+          <article><span>3-FINGER CoDA</span><h3>Sander et al. 2011</h3><p>319 F1 units、18 fixed F2、344 F3 unitsを文脈依存で接続。標的別selectionを不要にした設計法。</p><a href="https://doi.org/10.1038/nmeth.1542" target="_blank" rel="noreferrer">DOI 10.1038/nmeth.1542</a></article>
           <article><span>FOKI HETERODIMER</span><h3>Doyon et al. 2011</h3><p>ELD/KKR obligate heterodimerを比較し、高活性とhomodimer抑制を示した研究。</p><a href="https://doi.org/10.1038/nmeth.1539" target="_blank" rel="noreferrer">DOI 10.1038/nmeth.1539</a></article>
           <article><span>AUXENOCHLORELLA F2A</span><h3>Dueñas et al. 2025</h3><p>EK–GFP–F2A–LUCで上下流双方の発現を確認。本出力は同論文のF2A配列を使用。</p><a href="https://doi.org/10.1073/pnas.2417695122" target="_blank" rel="noreferrer">DOI 10.1073/pnas.2417695122</a></article>
           <article><span>MAMMALIAN F2A–ZFN</span><h3>Lei et al. 2011</h3><p>F2Aで左右ZFNを連結し、ヒト細胞でCCR5編集を実施した先例。</p><a href="https://doi.org/10.1038/mt.2011.12" target="_blank" rel="noreferrer">DOI 10.1038/mt.2011.12</a></article>
         </div>
-        <p className="evidence-note">このツールは候補を絞るための設計支援です。約28%というZhu論文の結果はゼブラフィッシュでの集団成績であり、個別候補の成功確率ではありません。発現、標的結合、切断、off-targetは実験で確認してください。</p>
+        <p className="evidence-note">CoDAは設計時の標的別selectionを省けますが、実装後の発現、標的結合、切断効率、毒性、off-targetの検証は省けません。archiveに存在することを個別候補の成功保証として扱わないでください。</p>
       </section>
 
-      <footer><p>Zinc Zinc Finger · 3-finger modular design</p><p>現在: Zhu 2011 MA · 将来候補: 検証可能な6-finger設計</p></footer>
+      <footer><p>Zinc Zinc Finger · 3-finger context-dependent design</p><p>現在: Sander 2011 CoDA · F1 {CODA_F1_UNIT_COUNT} / F3 {CODA_F3_UNIT_COUNT}</p></footer>
     </main>
   );
 }
