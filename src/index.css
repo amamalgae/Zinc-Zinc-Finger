@@ -321,10 +321,17 @@ th { color: var(--muted); font-size: 8px; text-transform: uppercase; letter-spac
 .construct-actions button { padding: 9px 11px; border: 1px solid #b8c8ba; border-radius: 9px; background: white; color: var(--green-dark); font-size: 9px; font-weight: 800; cursor: pointer; }
 .construct-actions button:disabled { opacity: .4; cursor: default; }
 .construct-caution { margin: 12px 0 0; color: #5c695f; font-size: 8px; line-height: 1.65; }
-.origin-list { margin-top: 12px; padding: 11px 12px; border-radius: 11px; background: #fff; color: #4e5c51; }
-.origin-list > span { color: var(--green); font-size: 9px; font-weight: 800; }
-.origin-list p { margin: 6px 0 4px; font-size: 8px; line-height: 1.65; }
-.origin-list small { font-size: 8px; line-height: 1.55; }
+.origin-list { margin-top: 12px; padding: 14px; border-radius: 11px; background: #fff; color: #4e5c51; }
+.origin-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.origin-heading span { color: var(--green); font-size: 9px; font-weight: 800; }
+.origin-heading strong { padding: 4px 8px; border-radius: 999px; background: var(--green); color: #fff; font-size: 9px; }
+.origin-list dl { margin: 10px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+.origin-list dl > div { min-width: 0; padding: 9px 10px; border: 1px solid #e1e8df; border-radius: 9px; background: #fbfcf8; }
+.origin-list dt { display: flex; align-items: center; gap: 7px; color: var(--green-dark); font-size: 8px; font-weight: 800; }
+.origin-list dt b { display: grid; flex: 0 0 18px; height: 18px; place-items: center; border-radius: 50%; background: #dff0c1; font-size: 8px; }
+.origin-list dd { margin: 7px 0 0 25px; font-size: 9px; }
+.origin-list dd small { display: block; margin-top: 3px; color: var(--muted); font-size: 8px; line-height: 1.5; }
+.origin-list p { margin: 10px 0 0; padding-top: 9px; border-top: 1px solid #e1e8df; font-size: 8px; line-height: 1.65; }
 
 .assay-output { margin-top: 20px; padding: 20px; border: 1px solid #d7c7b3; border-radius: 18px; background: #fff9f0; }
 .assay-output .construct-heading button { padding: 9px 12px; border: 1px solid #d0b998; border-radius: 9px; background: white; color: #704c21; font-size: 9px; font-weight: 800; cursor: pointer; }
@@ -387,6 +394,7 @@ footer a { color: var(--green); text-decoration: none; }
   .primer-grid > p { grid-column: 1; }
   .construct-heading { align-items: stretch; flex-direction: column; }
   .construct-heading select { width: 100%; min-width: 0; }
+  .origin-list dl { grid-template-columns: 1fr; }
   .control-grid { grid-template-columns: 1fr 1fr; }
   .specificity-summary { grid-template-columns: 1fr 1fr; }
   .genome-intro { align-items: flex-start; flex-direction: column; gap: 10px; }

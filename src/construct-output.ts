@@ -3,6 +3,35 @@ import type { Candidate } from "./design-engine.ts";
 export type CodonPreset = "auxenochlorella" | "human";
 export type FokIVariant = "ELD" | "KKR";
 
+export type NucleicAcidDonor = {
+  component: string;
+  scientificName: string;
+  detail: string;
+};
+
+export const ZFN_NUCLEIC_ACID_DONORS: readonly NucleicAcidDonor[] = [
+  {
+    component: "SV40 NLS（左右）",
+    scientificName: "Betapolyomavirus macacae",
+    detail: "simian virus 40由来NLS",
+  },
+  {
+    component: "Sp1C ZFA framework（左右）",
+    scientificName: "Homo sapiens",
+    detail: "SP1由来framework",
+  },
+  {
+    component: "FokI切断ドメイン（ELD / KKR）",
+    scientificName: "Flavobacterium okeanokoites",
+    detail: "FokI由来。ELD / KKRは人工変異",
+  },
+  {
+    component: "T2A",
+    scientificName: "Alphapermutotetravirus thoseae",
+    detail: "Thosea asigna virus由来2A。先頭GSGは人工配列",
+  },
+];
+
 export type ZfnConstruct = {
   name: string;
   arm: "left" | "right";
@@ -243,14 +272,14 @@ export function bicistronicConstructsToGenBank(
       "FEATURES             Location/Qualifiers",
       `     CDS             1..${codingEnd}`,
       `                     /gene="${construct.name}"`,
-      `                     /note="single ORF; SV40 NLS on each monomer; Sp1C ZFA; left FokI-ELD; GSG-T2A; right FokI-KKR; codon preset ${preset}"`,
+      `                     /note="single ORF; SV40 NLS on each monomer; Sp1C ZFA; left FokI-ELD; GSG-T2A; right FokI-KKR; codon preset ${preset}; nucleic-acid donors (4 taxa): Betapolyomavirus macacae, Homo sapiens, Flavobacterium okeanokoites, Alphapermutotetravirus thoseae"`,
       `                     /translation="${construct.protein}"`,
       `     misc_feature    1..${leftEnd}`,
-      "                     /note=\"left ZFN: SV40 NLS-Sp1C ZFA-linker-FokI ELD\"",
+      "                     /note=\"left ZFN: SV40 NLS (Betapolyomavirus macacae)-Sp1C ZFA (Homo sapiens)-linker-FokI ELD (Flavobacterium okeanokoites; engineered ELD mutations)\"",
       `     misc_feature    ${t2aStart}..${t2aEnd}`,
-      "                     /note=\"GSG-prefixed Thosea asigna virus 2A; ribosomal skip between terminal Gly and Pro\"",
+      "                     /note=\"artificial GSG followed by Thosea asigna virus 2A (species Alphapermutotetravirus thoseae); ribosomal skip between terminal Gly and Pro\"",
       `     misc_feature    ${rightStart}..${codingEnd}`,
-      "                     /note=\"right ZFN: SV40 NLS-Sp1C ZFA-linker-FokI KKR\"",
+      "                     /note=\"right ZFN: SV40 NLS (Betapolyomavirus macacae)-Sp1C ZFA (Homo sapiens)-linker-FokI KKR (Flavobacterium okeanokoites; engineered KKR mutations)\"",
       `     mat_peptide     1..${t2aEnd - 3}`,
       "                     /product=\"left ZFN with 20-aa GSG-T2A remnant\"",
       `     mat_peptide     ${downstreamProductStart}..${codingEnd}`,

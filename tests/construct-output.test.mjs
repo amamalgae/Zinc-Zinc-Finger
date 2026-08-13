@@ -7,12 +7,27 @@ import {
   FOKI_ELD,
   FOKI_KKR,
   GSG_T2A,
+  ZFN_NUCLEIC_ACID_DONORS,
   bicistronicConstructsToGenBank,
   buildBicistronicZfn,
   buildZfnPair,
   constructsToGenBank,
   translateDna,
 } from "../src/construct-output.ts";
+
+test("ZFN ORF donor map contains exactly four component-to-taxon mappings", () => {
+  assert.deepEqual(
+    ZFN_NUCLEIC_ACID_DONORS.map(({ scientificName }) => scientificName),
+    [
+      "Betapolyomavirus macacae",
+      "Homo sapiens",
+      "Flavobacterium okeanokoites",
+      "Alphapermutotetravirus thoseae",
+    ],
+  );
+  assert.equal(new Set(ZFN_NUCLEIC_ACID_DONORS.map(({ scientificName }) => scientificName)).size, 4);
+  assert.equal(ZFN_NUCLEIC_ACID_DONORS.some(({ scientificName }) => scientificName === "Mus musculus"), false);
+});
 
 const leftRecognition = "GACGAAGATGCAGCCGGT";
 const rightRecognition = "GGAGGCGGTGACGAACTA";
@@ -81,5 +96,7 @@ test("bicistronic GenBank output contains one annotated ORF and overlapping T2A 
   assert.equal(genbank.match(/^\/\//gm)?.length, 1);
   assert.equal(genbank.match(/^     mat_peptide/gm)?.length, 2);
   assert.match(genbank, /left FokI-ELD; GSG-T2A; right FokI-KKR/);
+  assert.match(genbank, /nucleic-acid donors \(4 taxa\)/);
+  for (const { scientificName } of ZFN_NUCLEIC_ACID_DONORS) assert.match(genbank, new RegExp(scientificName));
   assert.match(genbank, /initiating Met retained after T2A Pro/);
 });

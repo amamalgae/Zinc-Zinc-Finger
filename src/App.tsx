@@ -25,6 +25,7 @@ import {
   bicistronicConstructsToFasta,
   bicistronicConstructsToGenBank,
   buildBicistronicZfn,
+  ZFN_NUCLEIC_ACID_DONORS,
   type CodonPreset,
 } from "./construct-output.ts";
 import {
@@ -1014,9 +1015,23 @@ export default function Home() {
               Auxenochlorella presetは公開1056 codon由来の小標本なので、合成前に使用株・核発現系で再確認してください。
             </p>
             <div className="origin-list">
-              <span>ZFN ORFの核酸供与体候補・設計由来（全候補共通）</span>
-              <p><i>Betapolyomavirus macacae</i>（SV40 NLS） · <i>Homo sapiens</i>（Sp1由来Sp1C framework） · <i>Mus musculus</i>（Zif268/C7由来libraryの設計系譜） · <i>Flavobacterium okeanokoites</i>（FokI） · <i>Alphapermutotetravirus thoseae</i>（Thosea asigna virus; T2A）</p>
-              <small>recognition helix、ELD/KKR変異、linker、codon optimizationは人工配列です。候補ごとに追加される生物種はありません。</small>
+              <div className="origin-heading">
+                <span>ZFN ORFの核酸供与体（全候補共通）</span>
+                <strong>4種</strong>
+              </div>
+              <dl>
+                {ZFN_NUCLEIC_ACID_DONORS.map((donor, index) => (
+                  <div key={donor.component}>
+                    <dt><b>{index + 1}</b>{donor.component}</dt>
+                    <dd><i>{donor.scientificName}</i><small>{donor.detail}</small></dd>
+                  </div>
+                ))}
+              </dl>
+              <p>
+                Zif268/C7 library（<i>Mus musculus</i>）はrecognition helix選択の設計系譜であり、
+                出力ORFのSp1C frameworkには含まれないため、この4種には数えません。
+                recognition helix、ELD/KKR変異、linker、GSG、codon optimizationは人工改変・人工配列です。
+              </p>
             </div>
           </section>
 
