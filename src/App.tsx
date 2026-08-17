@@ -211,7 +211,6 @@ export default function Home() {
           </div>
           <ul className="hero-benefits" aria-label="ツールの特徴">
             <li>ブラウザ内で処理</li>
-            <li>構成可能なペアだけを提示</li>
             <li>Protein FASTA出力</li>
           </ul>
         </div>
