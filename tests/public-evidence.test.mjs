@@ -71,7 +71,9 @@ test("an original 3ZF mechanism diagram explains the design before sequence inpu
   const patch = readFileSync(new URL("../src/ui-patch.css", import.meta.url), "utf8");
 
   assert.ok(app.indexOf("<ZfnOverviewDiagram />") < app.indexOf('<section className="designer"'));
-  assert.match(diagram, /3本のfingerで9 bp/);
+  assert.match(diagram, /ZFNがDNAを認識して<br \/>切断する仕組み/);
+  assert.match(diagram, /1 fingerが3 bp、3 fingerで9 bpを認識します/);
+  assert.doesNotMatch(diagram, /およそ3 bp|左右2本で標的を挟む/);
   assert.match(diagram, /Left ZFN · protein N → C/);
   assert.match(diagram, /Right ZFN · protein N → C/);
   assert.match(diagram, /ELD（−）/);
