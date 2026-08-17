@@ -118,7 +118,7 @@ export default function ZfnOverviewDiagram() {
       <div className="mechanism-heading">
         <div>
           <span>HOW A 3-FINGER ZFN PAIR WORKS</span>
-          <h2 id="mechanism-title">3本のfingerで9 bp。<br />左右2本で標的を挟む。</h2>
+          <h2 id="mechanism-title">ZFNがDNAを認識して<br />切断する仕組み</h2>
         </div>
         <p>ZFはDNA配列を見分ける部分、FokIはDNAを切るヌクレアーゼです。左右のZFNがそれぞれ9 bpへ結合すると、spacer上で2種類のFokIが組み合わさり、切断可能な複合体になります。</p>
       </div>
@@ -197,7 +197,7 @@ export default function ZfnOverviewDiagram() {
       </figure>
 
       <ol className="mechanism-steps">
-        <li><span>01</span><div><strong>配列を認識</strong><p>1 fingerがおよそ3 bp、3 fingerで9 bpを認識します。</p></div></li>
+        <li><span>01</span><div><strong>配列を認識</strong><p>1 fingerが3 bp、3 fingerで9 bpを認識します。</p></div></li>
         <li><span>02</span><div><strong>中央で会合</strong><p>ELD（−）とKKR（＋）のFokIが異種二量体を形成します。</p></div></li>
         <li><span>03</span><div><strong>DNAを切断</strong><p>左右の認識部位に挟まれた5–7 bp spacerが切断領域になります。</p></div></li>
       </ol>
