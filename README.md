@@ -13,6 +13,7 @@ Sander 2011のContext-Dependent Assembly（CoDA）archiveを使い、左右3-fin
 - F1–F2とF2–F3で同じF2 target / recognition helixを共有する場合だけ組み立て
 - archiveにない組合せを予測や補間で埋めない
 - 希望スペーサー中心への近さ、次に6 bp spacerへの近さで候補を順位付け（実切断塩基を予測する値ではありません）
+- 選択候補について、F/R配列とZF1–ZF6の対応、左右3ZFのN→C方向、FokI ELD（−）/KKR（＋）のヘテロ二量体を動的な構成図で表示
 - 各fingerの標的triplet、7 aa recognition helix、F2 context、完全array配列を表示
 - `NLS–CoDA 3F–FokI ELD–F2A–NLS–CoDA 3F–FokI KKR`の単一ORFを生成
 - 前駆体polyproteinとF2A処理後の左右産物をProtein FASTAで保存
@@ -36,7 +37,7 @@ CoDAを採用したのは、文脈依存で実験選択された有限のunit ar
 Promoter → NLS–ZF-L(3F)–FokI ELD → F2A → NLS–ZF-R(3F)–FokI KKR → Terminator
 ```
 
-F2Aのribosomal skippingにより、ELD側とKKR側を1本の転写産物から発現させる設計です。現在の22 aa配列はfoot-and-mouth disease virus由来のF2Aです。左右ZFNをF2Aで連結した単一ORFの実施先例として、Lei 2011の哺乳類細胞でのCCR5編集を根拠にしています。
+FokIはDNAを切断するヌクレアーゼドメインです。左右には二量体化界面の電荷が異なるELD（−）とKKR（＋）を割り当て、異種間で機能するobligate heterodimerとして表示します。F2Aのribosomal skippingにより、ELD側とKKR側を1本の転写産物から発現させる設計です。現在の22 aa配列はfoot-and-mouth disease virus由来のF2Aです。左右ZFNをF2Aで連結した単一ORFの実施先例として、Lei 2011の哺乳類細胞でのCCR5編集を根拠にしています。
 
 本ツールが固定するのはアミノ酸配列です。CoDA array、finger間linker、ZF–FokI linker、SV40 NLS、FokI ELD/KKR、F2Aはいずれもペプチドとして定義し、特定の同義コドン列には固定しません。DNA合成時に、実際の宿主・オルガネラ・発現ベクターに合わせて別途コドン最適化と配列QCを行います。
 

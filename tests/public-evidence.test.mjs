@@ -50,3 +50,14 @@ test("interactive controls remain distinguishable from informational labels", ()
   assert.match(css, /\.technical-details > summary::after/);
   assert.match(css, /\.candidate-action/);
 });
+
+test("selected-pair diagram maps six fingers and reserves plus/minus for the FokI interface", () => {
+  const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
+
+  assert.match(app, /buildZfnBindingMap/);
+  assert.match(app, /FokI · ELD（−）/);
+  assert.match(app, /FokI · KKR（＋）/);
+  assert.match(app, /strand-name">F</);
+  assert.match(app, /strand-name">R</);
+  assert.doesNotMatch(app, /＋鎖|−鎖/);
+});
