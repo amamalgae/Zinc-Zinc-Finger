@@ -33,9 +33,9 @@ function Finger({ x, label, side }: { x: number; label: string; side: "left" | "
   );
 }
 
-function LightningIcon() {
+function LightningIcon({ position }: { position: "top" | "bottom" }) {
   return (
-    <svg className="overview-mobile-lightning" viewBox="0 0 24 30" aria-hidden="true">
+    <svg className={`overview-mobile-lightning ${position}`} viewBox="0 0 24 30" aria-hidden="true">
       <path d="M10 1 H21 L15 11 H22 L5 29 L10 16 H2 Z" />
     </svg>
   );
@@ -75,7 +75,11 @@ function MobileOverviewDiagram() {
         <MobileDnaCell side="left" />
         <MobileDnaCell side="left" />
         <MobileDnaCell side="left" />
-        <div className="overview-mobile-spacer"><span>5–7 bp</span><LightningIcon /></div>
+        <div className="overview-mobile-spacer">
+          <span>5–7 bp spacer</span>
+          <small className="cut-label">切断部位</small>
+          <LightningIcon position="top" />
+        </div>
         <MobileDnaCell side="right" />
         <MobileDnaCell side="right" />
         <MobileDnaCell side="right" />
@@ -86,7 +90,11 @@ function MobileOverviewDiagram() {
         <MobileDnaCell side="left" />
         <MobileDnaCell side="left" />
         <MobileDnaCell side="left" />
-        <div className="overview-mobile-spacer"><span>spacer</span><LightningIcon /></div>
+        <div className="overview-mobile-spacer">
+          <span>5–7 bp spacer</span>
+          <small className="cut-label">切断部位</small>
+          <LightningIcon position="bottom" />
+        </div>
         <MobileDnaCell side="right" />
         <MobileDnaCell side="right" />
         <MobileDnaCell side="right" />
@@ -178,10 +186,10 @@ export default function ZfnOverviewDiagram() {
 
             <rect className="overview-spacer" x="430" y="190" width="195" height="38" rx="4" />
             <rect className="overview-spacer" x="430" y="236" width="195" height="38" rx="4" />
-            <path className="overview-lightning" d="M469 193 H488 L481 204 H495 L467 225 L475 211 H461 Z" />
-            <path className="overview-lightning" d="M565 239 H584 L577 250 H591 L563 271 L571 257 H557 Z" />
-            <text className="overview-spacer-length" x="532" y="215">5–7 bp</text>
-            <text className="overview-spacer-label" x="522" y="260">spacer</text>
+            <path className="overview-lightning" d="M518.5 174 H537.5 L530.5 185 H544.5 L516.5 206 L524.5 192 H510.5 Z" />
+            <path className="overview-lightning" d="M518.5 258 H537.5 L530.5 269 H544.5 L516.5 290 L524.5 276 H510.5 Z" />
+            <text className="overview-spacer-length" x="527.5" y="207">5–7 bp spacer</text>
+            <text className="overview-spacer-label" x="527.5" y="260">切断部位</text>
           </svg>
         </div>
         <MobileOverviewDiagram />
