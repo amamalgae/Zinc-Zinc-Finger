@@ -8,7 +8,7 @@ Before changing this repository, read [docs/AI_HANDOFF.md](docs/AI_HANDOFF.md) i
 - It must only assemble exact F1-F2-F3 combinations present in the Sander 2011 CoDA archive. Do not impute missing units or silently substitute legacy Barbas/Zhu modules.
 - The target geometry is 9 bp + 5-7 bp spacer + 9 bp. Preserve strand orientation, ambiguous-base coordinates, and the meaning of the displayed spacer center.
 - The public exporter is protein-only: precursor polyprotein plus predicted F2A-processed products. Do not restore codon presets, CDS, or GenBank without an explicit product decision.
-- Candidate order is geometric, not an activity prediction: distance to the requested spacer center, then closeness to a 6 bp spacer, then genomic start.
+- Candidate order is not a candidate-specific activity prediction: distance to the requested spacer center remains primary, then the evidence-informed spacer preference is 6 bp, 5 bp, and 7 bp, followed by genomic start.
 - Input and optional local files must stay in the browser; do not add telemetry or sequence upload.
 
 ## Scientific and regulatory guardrails

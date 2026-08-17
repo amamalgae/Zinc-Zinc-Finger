@@ -53,6 +53,17 @@ CoDA is included because its finite unit archive and exact shared-F2 assembly ru
 
 The project deliberately does not bundle ZFDesign code/data, DeepZF weights, or the official Persikov model. ZFDesign's article requires an academic material transfer agreement for the selection data and code; the other external model files did not carry redistribution terms sufficiently explicit for this project when reviewed. Their omission avoids representing third-party weights or restricted data as MIT-licensed project assets. CoDA's own patent family, sequence disclosures, and any claims applicable to a country, date, product, or commercial use still require a separate freedom-to-operate review. A public patent document or a ceased PCT application is not, by itself, a worldwide FTO conclusion.
 
+## Spacer priority and ZF-FokI linker mapping
+
+`src/coda-design-engine.ts` keeps requested spacer-center distance as the primary candidate-order criterion. Candidates at equal distance use the coarse preference 6 bp, 5 bp, then 7 bp, and the generated proteins use `TGGS`, `TGAAAR`, and `TGPGAAAR` for 5-, 6-, and 7-bp spacers, respectively. These decisions draw on:
+
+- Händel EM et al. (2009), *Expanding or restricting the target site repertoire of zinc-finger nucleases: the inter-domain linker as a major determinant of target site selectivity*, DOI: 10.1038/mt.2008.233.
+- Shimizu Y et al. (2009), *Restricted spacer tolerance of a zinc finger nuclease with a six amino acid linker*, DOI: 10.1016/j.bmcl.2009.02.109.
+- Bhakta MS et al. (2013), *Highly active zinc-finger nucleases by extended modular assembly*, DOI: 10.1101/gr.143693.112.
+- Chen S et al. (2013), *A large-scale in vivo analysis reveals that TALENs are significantly more mutagenic than ZFNs generated using context-dependent assembly*, DOI: 10.1093/nar/gks1356.
+
+No article code or row-level dataset from these publications is included for this rule. The spacer preference is not an indel-rate model and does not validate the complete CoDA-3F/ELD/F2A/KKR construct.
+
 ## Persikov–Singh expanded linear SVM
 
 `src/persikov-svm.ts` is an independent TypeScript implementation of the published seven-contact expanded linear SVM and overlapping four-base recognition model described in:

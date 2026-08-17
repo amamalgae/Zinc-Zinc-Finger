@@ -12,7 +12,7 @@ Sander 2011のContext-Dependent Assembly（CoDA）archiveを使い、左右3-fin
 - 左右とも3-fingerに固定し、5–7 bp spacerを探索
 - F1–F2とF2–F3で同じF2 target / recognition helixを共有する場合だけ組み立て
 - archiveにない組合せを予測や補間で埋めない
-- 希望スペーサー中心への近さ、次に6 bp spacerへの近さで候補を順位付け（実切断塩基を予測する値ではありません）
+- 希望スペーサー中心への近さを最優先し、同距離では実験傾向に基づき6 bp、5 bp、7 bpの順で候補を順位付け（候補固有の活性や実切断塩基を予測する値ではありません）
 - 選択候補について、F/R配列とZF1–ZF6の対応、左右3ZFのN→C方向、FokI ELD（−）/KKR（＋）のヘテロ二量体を動的な構成図で表示
 - 各fingerの標的triplet、7 aa recognition helix、F2 context、完全array配列を表示
 - `NLS–CoDA 3F–FokI ELD–F2A–NLS–CoDA 3F–FokI KKR`の単一ORFを生成
@@ -50,6 +50,9 @@ CoDA unit tableはSander 2011のSupplementary Tables 1–2を転記し、件数�
 | 用途 | 文献 |
 |---|---|
 | 3-finger CoDA | Sander et al. (2011), DOI: [10.1038/nmeth.1542](https://doi.org/10.1038/nmeth.1542) |
+| 5–7 bp ZF–FokI linker比較 | Händel et al. (2009), DOI: [10.1038/mt.2008.233](https://doi.org/10.1038/mt.2008.233) |
+| 6 bp `TGAAAR` spacer選択性 | Shimizu et al. (2009), DOI: [10.1016/j.bmcl.2009.02.109](https://doi.org/10.1016/j.bmcl.2009.02.109) |
+| CoDA ZFNの5–7 bp活性傾向 | Chen et al. (2013), DOI: [10.1093/nar/gks1356](https://doi.org/10.1093/nar/gks1356) |
 | CoDA unit framework | [WO2011017293A2](https://patents.google.com/patent/WO2011017293A2/en) |
 | obligate heterodimer FokI ELD/KKR | Doyon et al. (2011), DOI: [10.1038/nmeth.1539](https://doi.org/10.1038/nmeth.1539) |
 | 哺乳類ZFNのF2A単一ORF先例 | Lei et al. (2011), DOI: [10.1038/mt.2011.12](https://doi.org/10.1038/mt.2011.12) |

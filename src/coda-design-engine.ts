@@ -70,10 +70,17 @@ export function reverseComplement(value: string): string {
   return value.toUpperCase().split("").reverse().map((base) => complement[base] ?? "N").join("");
 }
 
-function compareCandidates(left: CodaCandidate, right: CodaCandidate): number {
+const SPACER_PRIORITY: Readonly<Record<number, number>> = {
+  6: 0,
+  5: 1,
+  7: 2,
+};
+
+export function compareCodaCandidates(left: CodaCandidate, right: CodaCandidate): number {
   return (
     left.distance - right.distance ||
-    Math.abs(left.spacerLength - 6) - Math.abs(right.spacerLength - 6) ||
+    (SPACER_PRIORITY[left.spacerLength] ?? Number.MAX_SAFE_INTEGER) -
+      (SPACER_PRIORITY[right.spacerLength] ?? Number.MAX_SAFE_INTEGER) ||
     left.start - right.start
   );
 }
@@ -125,7 +132,7 @@ export function generateCodaCandidates(
       });
     }
   }
-  return candidates.sort(compareCandidates).slice(0, resultLimit);
+  return candidates.sort(compareCodaCandidates).slice(0, resultLimit);
 }
 
 export function formatCut(value: number): string {
