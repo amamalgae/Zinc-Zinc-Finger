@@ -152,7 +152,7 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .binding-figure figcaption > span { color: var(--green); font-size: 8px; font-weight: 900; letter-spacing: .15em; }
 .binding-figure figcaption h3 { margin: 6px 0 5px; font-size: 19px; letter-spacing: -.025em; }
 .binding-figure figcaption p { margin: 0; color: var(--muted); font-size: 9px; line-height: 1.7; }
-.monomer-map { margin-top: 20px; display: grid; grid-template-columns: 1fr 170px 1fr; gap: 8px 12px; align-items: center; }
+.monomer-map { margin-top: 20px; display: grid; grid-template-columns: 1fr 200px 1fr; gap: 8px 12px; align-items: center; }
 .protein-lane { min-width: 0; display: flex; align-items: stretch; }
 .protein-lane > span { display: grid; min-height: 58px; place-items: center; text-align: center; }
 .protein-lane .terminus { min-width: 25px; color: var(--muted); font-size: 9px; font-weight: 900; }
@@ -170,7 +170,7 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .nuclease-domain.negative { border-color: #bd5d4d; background: #f8ddd7; color: #873b30; }
 .nuclease-domain.positive { border-color: #5a7898; background: #dfeaf4; color: #315675; }
 .heterodimer-callout { min-height: 86px; padding: 12px; display: grid; align-content: center; gap: 3px; border-block: 4px double #c4693c; text-align: center; }
-.heterodimer-callout strong { color: #873d1d; font-size: 15px; }
+.heterodimer-callout strong { color: #873d1d; font-size: 13px; white-space: nowrap; }
 .heterodimer-callout strong b { padding: 0 5px; color: var(--orange); font-size: 13px; }
 .heterodimer-callout span { color: var(--ink); font-size: 9px; font-weight: 900; }
 .heterodimer-callout small { color: var(--muted); font-size: 7px; line-height: 1.5; }

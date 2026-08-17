@@ -1,6 +1,6 @@
 # Zinc Zinc Finger: AI handoff and decision record
 
-Last reconciled: 2026-08-17, for PR #26 based on `main` commit `d07c48e`, plus the source files listed in section 10.
+Last reconciled: 2026-08-17, for PR #27 based on `main` commit `69d3f88`, plus the source files listed in section 10.
 
 This document is the durable context for a new AI or developer who has no access to the prior ChatGPT conversations. Read it before modifying the scientific logic. The current README explains what the public site does; this file also explains what it used to do, why approaches were removed, what the evidence can and cannot support, and which questions remain open.
 
@@ -360,6 +360,7 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 | 2026-08-17 | `3de0489` / #24 | Rebuilt the public landing flow around the user's goal, fixed the hero label as `SANDER 2011 · CoDA-based ZFN Designer`, displayed the Sander 19/38 cohort result with its scientific limitation, moved input directly below the hero, and deferred finger-level technical details until after protein output. |
 | 2026-08-17 | `d07c48e` / #25 | Separated interactive controls from passive information through consistent action styling, explicit action/state text, keyboard focus, `aria-pressed`, and disclosure open/close cues. |
 | 2026-08-17 | PR #26 | Added a selected-sequence 3ZF–FokI diagram with tested ZF1–ZF6/F–R mapping, N/C orientation, and ELD (−)/KKR (+) nuclease heterodimer explanation. |
+| 2026-08-17 | PR #27 | Kept the central ELD (−) / KKR (+) heterodimer label on one line after visual inspection of the deployed diagram. |
 
 The abandoned T2A stage cited Katayama and Yamamoto (2025), DOI `10.3390/ijms26157602`, as a GSG-T2A ZFN precedent. It is historical only: current output uses an FMDV-derived F2A sequence without the old GSG-T2A implementation.
 
