@@ -46,6 +46,8 @@ test("interactive controls remain distinguishable from informational labels", ()
   assert.match(app, /CSVを保存/);
   assert.match(app, /Protein FASTAを保存/);
   assert.match(app, /<ul className="hero-benefits"/);
+  assert.doesNotMatch(app, /構成可能なペアだけを提示/);
+  assert.match(app, /<ul className="hero-benefits"[\s\S]*?<li>ブラウザ内で処理<\/li>[\s\S]*?<li>Protein FASTA出力<\/li>[\s\S]*?<\/ul>/);
   assert.match(css, /button:focus-visible, a:focus-visible, summary:focus-visible/);
   assert.match(css, /\.technical-details > summary::after/);
   assert.match(css, /\.candidate-action/);
