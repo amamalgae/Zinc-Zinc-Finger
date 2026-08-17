@@ -163,7 +163,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .arch-block.f2a { background: var(--purple-soft); color: var(--purple); }
 .arch-block.kkr { background: #f7e3d9; color: #a04e25; }
 .designer { width: min(1180px, calc(100% - 40px)); margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; scroll-margin-top: 18px; }
-.input-panel, .results-panel, .selected-design, .evidence { border: 1px solid var(--line); border-radius: 24px; background: #fff; }
+.input-panel, .results-panel, .evidence { border: 1px solid var(--line); border-radius: 24px; background: #fff; }
 .input-panel, .results-panel { padding: 26px; min-width: 0; }
 .panel-heading { min-height: 45px; display: flex; align-items: center; gap: 12px; }
 .panel-heading > span { display: grid; width: 38px; height: 34px; place-items: center; border-right: 3px solid var(--green); color: var(--green); font-size: 11px; font-weight: 900; }
@@ -210,28 +210,29 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .empty-state strong { font-size: 14px; }
 .empty-state p { max-width: 390px; margin: 7px auto 0; color: var(--muted); font-size: 10px; line-height: 1.7; }
 
-.selected-design { width: min(1180px, calc(100% - 40px)); margin: 18px auto 0; padding: 34px; }
+.selected-design { width: min(1180px, calc(100% - 40px)); margin: 18px auto 0; padding: 34px; border: 0; border-radius: 24px; background: #edf3ed; }
 .selected-heading, .output-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .selected-heading h2, .output-heading h2 { margin: 6px 0 0; font-size: 22px; }
 .selected-heading > div:first-child { flex: 1; }
 .selected-heading p { max-width: 680px; margin: 8px 0 0; color: var(--muted); font-size: 9px; line-height: 1.7; }
+.display-kicker { display: inline-flex; align-items: center; gap: 7px; }
+.display-kicker i { width: 7px; height: 7px; border-radius: 50%; background: #66a953; }
 .selected-metrics { display: flex; align-items: stretch; gap: 18px; }
 .selected-metrics > div { min-width: 86px; padding-left: 12px; display: grid; align-content: center; gap: 3px; border-left: 3px solid var(--green); }
 .selected-metrics small { color: var(--muted); font-size: 8px; }
 .selected-metrics strong { color: var(--green); font-size: 17px; }
-.binding-figure { margin: 24px 0 0; padding: 24px; border: 1px solid #cbd8d0; border-radius: 18px; background: #f9fbf8; }
+.binding-figure { margin: 24px 0 0; padding: 0; border: 0; background: transparent; }
 .binding-figure figcaption > span { color: var(--green); font-size: 8px; font-weight: 900; letter-spacing: .15em; }
 .binding-figure figcaption h3 { margin: 6px 0 5px; font-size: 19px; letter-spacing: -.025em; }
 .binding-figure figcaption p { margin: 0; color: var(--muted); font-size: 9px; line-height: 1.7; }
-.target-summary { margin-top: 18px; display: grid; grid-template-columns: 3fr minmax(120px, 1.15fr) 3fr; overflow: hidden; border: 1px solid #cbd8d0; border-radius: 12px; background: #fff; }
-.target-summary > div { min-width: 0; padding: 12px 15px; display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 4px 10px; color: var(--green); }
-.target-summary > div + div { border-left: 1px solid #d8e1db; }
-.target-summary > div.right { color: var(--blue); }
+.target-summary { margin-top: 18px; display: grid; grid-template-columns: 3fr minmax(120px, 1.15fr) 3fr; gap: 5px; background: transparent; }
+.target-summary > div { min-width: 0; padding: 12px 15px; display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 4px 10px; border-radius: 10px; background: rgba(255,255,255,.72); color: var(--green); }
+.target-summary > div.right { background: rgba(232,242,246,.9); color: var(--blue); }
 .target-summary > div.spacer { background: #fff3eb; color: #95461f; text-align: center; }
 .target-summary span { grid-column: 1 / -1; color: var(--muted); font-size: 7px; font-weight: 900; letter-spacing: .08em; }
 .target-summary strong { min-width: 0; overflow-wrap: anywhere; font: 900 12px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .1em; }
 .target-summary small { color: currentColor; font-size: 7px; font-weight: 900; white-space: nowrap; }
-.dna-scroll { margin-top: 14px; overflow: hidden; border: 1px solid #31473e; border-radius: 14px; background: #18231f; }
+.dna-scroll { margin-top: 14px; overflow: hidden; border: 0; border-radius: 14px; background: #18231f; }
 .dna-map { min-width: 0; padding: 18px 14px; color: #fff; }
 .dna-group-labels, .dna-row { display: grid; grid-template-columns: 44px 25px repeat(3, minmax(0, 1fr)) minmax(88px, .9fr) repeat(3, minmax(0, 1fr)) 25px; align-items: stretch; gap: 3px; }
 .dna-group-labels { margin-bottom: 10px; }
@@ -283,7 +284,7 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .sequence-details span { color: var(--muted); font-size: 8px; }
 .sequence-details code { max-height: 90px; overflow: auto; overflow-wrap: anywhere; color: var(--green); font-size: 8px; line-height: 1.65; }
 
-.output-card { margin-top: 28px; padding: 24px; border-radius: 18px; background: #edf3e9; }
+.output-card { margin-top: 28px; padding: 24px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
 .protein-only-badge { color: var(--green); font-size: 8px; font-weight: 900; letter-spacing: .06em; }
 .protein-only-badge::before { content: "●"; margin-right: 7px; color: #66a953; }
 .output-card .architecture { margin-top: 20px; }
@@ -381,7 +382,8 @@ footer p { margin: 0; }
   .mechanism-steps { grid-template-columns: 1fr; gap: 13px; }
   .mechanism-footer { align-items: stretch; flex-direction: column; }
   .mechanism-footer a { width: 100%; }
-  .input-panel, .results-panel, .selected-design, .evidence { padding: 19px; border-radius: 18px; }
+  .input-panel, .results-panel, .evidence { padding: 19px; border-radius: 18px; }
+  .selected-design { padding: 19px; border-radius: 18px; }
   .simple-controls, .donor-card ul, .reference-grid { grid-template-columns: 1fr; }
   .candidate { grid-template-columns: 24px minmax(0, 1fr); }
   .candidate-summary { grid-column: 2; text-align: left; }
