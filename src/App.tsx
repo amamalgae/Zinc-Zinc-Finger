@@ -203,7 +203,7 @@ export default function Home() {
       <section className="hero" id="top">
         <div className="hero-copy">
           <span className="eyebrow">SANDER 2011 · CoDA-based ZFN Designer</span>
-          <h1>標的DNAから、<br />ZFNペア候補を設計。</h1>
+          <h1>ZFNペアを設計</h1>
           <p>標的周辺配列を貼り付けると、CoDAで構成可能な左右ZFNペアを検索し、実験に使う完全アミノ酸配列まで出力します。</p>
           <div className="hero-actions">
             <a className="primary-cta" href="#designer">配列を入力して設計する<span aria-hidden="true">↓</span></a>
