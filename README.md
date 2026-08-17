@@ -4,6 +4,8 @@ Sander 2011のContext-Dependent Assembly（CoDA）archiveを使い、左右3-fin
 
 公開ページ：<https://amamalgae.github.io/Zinc-Zinc-Finger/>
 
+別のAI・開発者へ引き継ぐ場合は、現行仕様だけでなく採用・不採用の根拠、過去の検証値、全変更履歴、一次資料の対応をまとめた[AI handoff and decision record](docs/AI_HANDOFF.md)を最初に参照してください。自動化されたcoding agent向けの不変条件は[AGENTS.md](AGENTS.md)にあります。
+
 ## 現在の設計範囲
 
 - 公開archiveのF1 unit 319件、固定F2 context 18種、F3 unit 344件を収録
