@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import test from "node:test";
 
@@ -22,7 +23,8 @@ test("study card names the organisms actually tested in Sander 2011", async () =
 });
 
 test("design computation contains no runtime network API", async () => {
-  const sourceFiles = await listFiles(new URL("../src", import.meta.url));
+  const sourceDir = fileURLToPath(new URL("../src", import.meta.url));
+  const sourceFiles = await listFiles(sourceDir);
   const networkApi = /\bfetch\s*\(|\bXMLHttpRequest\b|\bWebSocket\b|\bsendBeacon\s*\(/;
   for (const file of sourceFiles) {
     const source = await readFile(file, "utf8");
