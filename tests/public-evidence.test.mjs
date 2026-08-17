@@ -54,6 +54,11 @@ test("interactive controls remain distinguishable from informational labels", ()
   assert.match(css, /button:focus-visible, a:focus-visible, summary:focus-visible/);
   assert.match(css, /\.technical-details > summary::after/);
   assert.match(css, /\.candidate-action/);
+  assert.match(app, /この欄は表示専用です。設計を変更する場合は、02で別の候補を選択してください。/);
+  assert.match(css, /\.input-panel, \.results-panel, \.evidence \{ border: 1px solid/);
+  assert.match(css, /\.selected-design \{[^}]*border: 0;[^}]*background: #edf3ed/);
+  assert.match(css, /\.binding-figure \{[^}]*border: 0;[^}]*background: transparent/);
+  assert.doesNotMatch(css, /\.input-panel, \.results-panel, \.selected-design/);
 });
 
 test("selected-design diagram foregrounds the variable target sequence and six-finger mapping", () => {
@@ -61,7 +66,7 @@ test("selected-design diagram foregrounds the variable target sequence and six-f
   const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
 
   assert.match(app, /buildZfnBindingMap/);
-  assert.match(app, /SELECTED DESIGN/);
+  assert.match(app, /選択内容の表示/);
   assert.match(app, /標的塩基配列とfingerの対応/);
   assert.match(app, /選択した標的塩基配列/);
   assert.match(app, /左ZFN標的 · 9 bp/);
