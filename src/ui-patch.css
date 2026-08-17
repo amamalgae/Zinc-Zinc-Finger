@@ -24,6 +24,7 @@
 }
 
 .overview-spacer-label {
+  font-size: 12px;
   transform: translateY(-5px);
 }
 
@@ -40,7 +41,7 @@
 .overview-mobile-spacer .cut-label {
   margin-top: 2px;
   color: #a45c39;
-  font-size: 5px;
+  font-size: 8px;
   line-height: 1;
   font-weight: 900;
   white-space: nowrap;
