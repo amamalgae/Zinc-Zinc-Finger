@@ -228,9 +228,9 @@ export default function Home() {
         <section className="selected-design">
           <div className="selected-heading">
             <div>
-              <span>SELECTED DESIGN</span>
+              <span className="display-kicker"><i aria-hidden="true" />選択内容の表示</span>
               <h2>標的塩基配列とfingerの対応</h2>
-              <p>02で選択したZFNペアの設計内容です。候補を変更すると、この配列図も切り替わります。</p>
+              <p>この欄は表示専用です。設計を変更する場合は、02で別の候補を選択してください。</p>
             </div>
             <div className="selected-metrics">
               <div><small>spacer中心</small><strong>{formatCut(selected.cut)}</strong></div>
