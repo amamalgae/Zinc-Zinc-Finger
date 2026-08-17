@@ -16,9 +16,7 @@ import {
 } from "./coda-construct-output.ts";
 import {
   CODA_F1_UNIT_COUNT,
-  CODA_F2_CONTEXT_COUNT,
   CODA_F3_UNIT_COUNT,
-  CODA_UNIT_COUNT,
   type CodaFinger,
 } from "./coda-module-archive.ts";
 
@@ -35,10 +33,9 @@ function downloadText(contents: string, filename: string, type = "text/plain;cha
   URL.revokeObjectURL(url);
 }
 
-function ArchitectureDiagram({ expressionCassette = false }: { expressionCassette?: boolean }) {
+function ArchitectureDiagram() {
   return (
     <div className="architecture" aria-label="single ORF ZFN construct">
-      {expressionCassette && <><div className="arch-block regulatory optional"><span>別途選択</span><strong>Promoter</strong></div><i aria-hidden="true">→</i></>}
       <div className="arch-block nls"><span>核移行</span><strong>NLS</strong></div>
       <div className="arch-block zf"><span>9 bp認識</span><strong>ZF-L · 3F</strong></div>
       <div className="arch-block eld"><span>切断</span><strong>FokI ELD</strong></div>
@@ -48,7 +45,6 @@ function ArchitectureDiagram({ expressionCassette = false }: { expressionCassett
       <div className="arch-block nls"><span>核移行</span><strong>NLS</strong></div>
       <div className="arch-block zf"><span>9 bp認識</span><strong>ZF-R · 3F</strong></div>
       <div className="arch-block kkr"><span>切断</span><strong>FokI KKR</strong></div>
-      {expressionCassette && <><i aria-hidden="true">→</i><div className="arch-block regulatory optional"><span>別途選択</span><strong>Terminator</strong></div></>}
     </div>
   );
 }
@@ -121,35 +117,31 @@ export default function Home() {
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <span className="eyebrow">SANDER 2011 · CoDA</span>
-          <h1>3つのfingerで、<br />9塩基を認識する。</h1>
-          <p>実験選択済みのF1/F2とF2/F3文脈を共通F2で接続し、標的ごとの追加selectionなしで左右3-fingerのZFN候補を探します。</p>
-          <div className="hero-stats">
-            <span><strong>{CODA_F2_CONTEXT_COUNT}</strong>固定F2 context</span>
-            <span><strong>{CODA_UNIT_COUNT}</strong>F1 / F3 units</span>
-            <span><strong>3 + 3</strong>左右のfinger</span>
+          <span className="eyebrow">SANDER 2011 · CoDA-based ZFN Designer</span>
+          <h1>標的DNAから、<br />ZFNペア候補を設計。</h1>
+          <p>標的周辺配列を貼り付けると、CoDAで構成可能な左右ZFNペアを検索し、実験に使う完全アミノ酸配列まで出力します。</p>
+          <div className="hero-actions">
+            <a className="primary-cta" href="#designer">配列を入力して設計する</a>
+            <span className="privacy-note"><i />入力配列は外部へ送信しません</span>
+          </div>
+          <div className="hero-benefits" aria-label="tool benefits">
+            <span>ブラウザ内で処理</span>
+            <span>構成可能なペアだけを提示</span>
+            <span>Protein FASTA出力</span>
           </div>
         </div>
-        <aside className="scope-card">
-          <span>今回の設計範囲</span>
-          <strong>片側3ZF × 左右2本</strong>
-          <div className="target-mini"><b>9 bp</b><i>5–7 bp spacer</i><b>9 bp</b></div>
-          <p>F1 {CODA_F1_UNIT_COUNT}件・F3 {CODA_F3_UNIT_COUNT}件の公開archiveで両側を構成できる場所だけを提示し、欠損配列は推測で補いません。</p>
+        <aside className="study-card">
+          <span>CODA ORIGINAL STUDY</span>
+          <div className="study-value"><strong>50</strong><small>%</small></div>
+          <h2>38標的中19標的で<br />変異導入を検出</h2>
+          <p>Sander 2011の実験条件で得られた集団成績です。本サイトが提示する各候補の成功確率ではありません。</p>
+          <a href="https://doi.org/10.1038/nmeth.1542" target="_blank" rel="noreferrer">Sander et al. 2011 · DOI 10.1038/nmeth.1542</a>
         </aside>
       </section>
 
-      <section className="construct-overview">
-        <div className="section-intro"><span>CONSTRUCT OVERVIEW</span><h2>1本のORFから、左右2本のZFNを作る</h2><p>F2Aで翻訳を分け、ELDとKKRが標的上でそろったときにFokI切断ドメインを形成します。サイトは色付き部分のアミノ酸配列だけを出力し、promoter、terminator、コドンは発現系に合わせて別途選びます。</p></div>
-        <ArchitectureDiagram expressionCassette />
-        <div className="processed-products">
-          <span><i className="eld-dot" /><strong>翻訳産物1</strong>NLS–ZF-L–FokI ELD–F2A残基</span>
-          <span><i className="kkr-dot" /><strong>翻訳産物2</strong>Pro–NLS–ZF-R–FokI KKR</span>
-        </div>
-      </section>
-
-      <section className="designer">
+      <section className="designer" id="designer">
         <div className="input-panel">
-          <div className="panel-heading"><span>01</span><div><small>INPUT</small><h2>標的周辺配列</h2></div></div>
+          <div className="panel-heading"><span>01</span><div><small>INPUT</small><h2>標的周辺配列を入力</h2></div></div>
           <label htmlFor="target-sequence">上鎖 5′→3′（FASTA可）</label>
           <textarea id="target-sequence" value={rawSequence} onChange={(event) => { setRawSequence(event.target.value); setSelectedId(null); }} spellCheck={false} />
           <div className="input-meta"><span>{dna.length} bp</span><span className={ambiguousBaseCount ? "warning" : ""}>{ambiguousBaseCount ? `曖昧塩基 ${ambiguousBaseCount} bp（候補から除外）` : "曖昧塩基なし"}</span><span className={invalidCharacterCount ? "warning" : ""}>{invalidCharacterCount ? `未対応文字 ${invalidCharacterCount}件` : "入力形式OK"}</span></div>
@@ -158,26 +150,25 @@ export default function Home() {
             <label><span>探索範囲（±bp）</span><input type="number" min={0} max={100000} step={50} value={maxDistance} onChange={(event) => { setMaxDistance(Math.max(0, Number(event.target.value))); setSelectedId(null); }} /><small>希望位置から。初期値500 bp</small></label>
           </div>
           <button className="example-button" type="button" onClick={() => { setRawSequence(EXAMPLE_SEQUENCE); setDesiredCut(18); setMaxDistance(500); setSelectedId(null); }}>例を復元</button>
-          <p className="input-note">候補順位は希望スペーサー中心への近さ、次に6 bp spacerへの近さです。IUPAC曖昧塩基はNとして座標を保持し、その塩基をまたぐ候補を除外します。archive内の候補間に、未測定の活性差は付けていません。</p>
+          <p className="input-note">候補は希望スペーサー中心への近さで並び、活性予測順ではありません。IUPAC曖昧塩基は座標を保持したまま候補から除外します。</p>
         </div>
 
         <div className="results-panel">
-          <div className="panel-heading"><span>02</span><div><small>RESULTS</small><h2>組めるCoDA ZFNペア</h2></div><button type="button" disabled={!candidates.length} onClick={() => downloadText(codaCandidatesToCsv(candidates), "coda-3finger-zfn-candidates.csv", "text/csv;charset=utf-8")}>CSV</button></div>
-          <div className="result-count"><strong>{candidates.length}</strong><span>上位候補</span><small>{candidates.length > 12 ? "このうち12件を表示 · " : ""}spacer 5 / 6 / 7 bpを探索（最大30件）</small></div>
+          <div className="panel-heading"><span>02</span><div><small>RESULTS</small><h2>ZFNペア候補を選択</h2></div><button type="button" disabled={!candidates.length} onClick={() => downloadText(codaCandidatesToCsv(candidates), "coda-3finger-zfn-candidates.csv", "text/csv;charset=utf-8")}>CSV</button></div>
+          <div className="result-count"><strong>{candidates.length}</strong><span>設計候補</span><small>{candidates.length > 12 ? "12件を表示 · " : ""}希望位置に近い順</small></div>
           {candidates.length ? <div className="candidate-list">{candidates.slice(0, 12).map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} />)}</div> : <div className="empty-state"><strong>{invalidCharacterCount ? "未対応文字があります" : "候補がありません"}</strong><p>{invalidCharacterCount ? "赤字の未対応文字を修正してから設計してください。IUPAC曖昧塩基は入力できます。" : "CoDA archiveで左右9 bpを構成できる部位がありません。探索範囲または入力配列を変更してください。"}</p></div>}
         </div>
       </section>
 
       {selected && construct && (
         <section className="selected-design">
-          <div className="selected-heading"><div><span>03 · SELECTED DESIGN</span><h2>spacer中心 {formatCut(selected.cut)} · {selected.spacerLength} bp</h2></div><div className="gnn-badge"><strong>2/2</strong><small>CoDA arrays</small></div></div>
+          <div className="selected-heading"><div><span>03 · SELECTED ZFN PAIR</span><h2>選択したZFNペア · spacer中心 {formatCut(selected.cut)}</h2></div><div className="gnn-badge"><strong>{selected.spacerLength}</strong><small>bp spacer</small></div></div>
           <div className="target-layout"><span>5′</span><b>{selected.leftTop}</b><i>{selected.spacer}</i><b>{selected.rightTop}</b><span>3′</span><small>ZF-L half-site</small><small>切断領域</small><small>ZF-R half-site</small></div>
           <div className="strand-row"><span><small>Left recognition strand 5′→3′</small><code>{selected.leftRecognition}</code></span><span><small>Right recognition strand 5′→3′</small><code>{selected.rightRecognition}</code></span></div>
-          <div className="finger-pair"><FingerGroup title={`Left ZF · CoDA F2=${selected.leftArray.f2Context}`} fingers={selected.leftArray.fingers} /><FingerGroup title={`Right ZF · CoDA F2=${selected.rightArray.f2Context}`} fingers={selected.rightArray.fingers} /></div>
-          <details className="sequence-details"><summary>ZF array全アミノ酸配列を見る</summary><div><span>Left array N→C</span><code>{selected.leftArray.protein}</code></div><div><span>Right array N→C</span><code>{selected.rightArray.protein}</code></div></details>
 
           <div className="output-card">
-            <div className="output-heading"><div><span>04 · AMINO-ACID OUTPUT</span><h2>ELD–F2A–KKR precursor polyprotein</h2></div><span className="protein-only-badge">PROTEIN ONLY</span></div>
+            <div className="output-heading"><div><span>04 · PROTEIN OUTPUT</span><h2>1本のORFで、左右2本のZFNを発現</h2></div><span className="protein-only-badge">PROTEIN FASTA</span></div>
+            <p className="output-intro">選択した左右CoDA arrayをFokI ELD/KKRと組み合わせ、F2Aで連結した完全アミノ酸配列を出力します。</p>
             <ArchitectureDiagram />
             <div className="output-stats"><span><strong>{construct.protein.length}</strong>aa precursor</span><span><strong>{construct.processedLeftProtein.length}</strong>aa left product</span><span><strong>{construct.processedRightProtein.length}</strong>aa right product</span><span><strong>{FMDV_F2A.length}</strong>aa F2A</span></div>
             <div className="download-row">
@@ -187,12 +178,20 @@ export default function Home() {
             <p className="output-note">塩基配列は生成しません。DNA合成時に、実際の宿主・オルガネラ・発現ベクターに合わせてコドン最適化と配列QCを行ってください。</p>
           </div>
 
+          <details className="technical-details">
+            <summary>finger構成と設計詳細を見る</summary>
+            <div className="technical-details-body">
+              <div className="finger-pair"><FingerGroup title={`Left ZF · CoDA F2=${selected.leftArray.f2Context}`} fingers={selected.leftArray.fingers} /><FingerGroup title={`Right ZF · CoDA F2=${selected.rightArray.f2Context}`} fingers={selected.rightArray.fingers} /></div>
+              <div className="sequence-details embedded"><div><span>Left array N→C</span><code>{selected.leftArray.protein}</code></div><div><span>Right array N→C</span><code>{selected.rightArray.protein}</code></div></div>
+            </div>
+          </details>
+
           <div className="donor-card"><div><span>核酸供与体</span><strong>{CODA_ZFN_DONORS.length}区分</strong></div><ul>{CODA_ZFN_DONORS.map((donor) => <li key={donor.component}><span>{donor.component}</span><i>{donor.scientificName}</i><small>{donor.detail}</small></li>)}</ul></div>
         </section>
       )}
 
       <section className="evidence">
-        <div className="section-intro"><span>EVIDENCE</span><h2>各部品の根拠</h2><p>設計法・FokI・2Aを別々の原著に対応させています。</p></div>
+        <div className="section-intro"><span>EVIDENCE</span><h2>設計と構成の科学的根拠</h2><p>候補選択、FokI、F2A連結を、それぞれ対応する原著に基づいて構成しています。</p></div>
         <div className="reference-grid">
           <article><span>3-FINGER CoDA</span><h3>Sander et al. 2011</h3><p>319 F1 units、18 fixed F2、344 F3 unitsを文脈依存で接続。標的別selectionを不要にした設計法。</p><a href="https://doi.org/10.1038/nmeth.1542" target="_blank" rel="noreferrer">DOI 10.1038/nmeth.1542</a></article>
           <article><span>FOKI HETERODIMER</span><h3>Doyon et al. 2011</h3><p>ELD/KKR obligate heterodimerを比較し、高活性とhomodimer抑制を示した研究。</p><a href="https://doi.org/10.1038/nmeth.1539" target="_blank" rel="noreferrer">DOI 10.1038/nmeth.1539</a></article>

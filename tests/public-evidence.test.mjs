@@ -25,3 +25,14 @@ test("public evidence excludes host-specific F2A paper and retains Lei paired-ZF
   assert.match(contents, /Lei et al\. \(2011\)|Lei 2011/);
   assert.match(contents, /10\.1038\/mt\.2011\.12/);
 });
+
+test("landing page leads with the CoDA-based value proposition and qualifies the 50% cohort result", () => {
+  const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
+
+  assert.match(app, /SANDER 2011 · CoDA-based ZFN Designer/);
+  assert.match(app, /標的DNAから、/);
+  assert.match(app, /配列を入力して設計する/);
+  assert.match(app, /38標的中19標的で/);
+  assert.match(app, /各候補の成功確率ではありません/);
+  assert.doesNotMatch(app, /3つのfingerで/i);
+});

@@ -8,7 +8,7 @@ import {
 } from "../src/app-version.ts";
 
 test("displayed version number maps directly to its implementation PR", () => {
-  assert.equal(APP_VERSION_NUMBER, 23);
-  assert.equal(APP_VERSION, "ver.23 (PR #23)");
-  assert.equal(APP_VERSION_PR_URL, "https://github.com/amamalgae/Zinc-Zinc-Finger/pull/23");
+  assert.equal(APP_VERSION_NUMBER, 24);
+  assert.equal(APP_VERSION, "ver.24 (PR #24)");
+  assert.equal(APP_VERSION_PR_URL, "https://github.com/amamalgae/Zinc-Zinc-Finger/pull/24");
 });
