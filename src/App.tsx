@@ -204,7 +204,7 @@ export default function Home() {
         <div className="hero-copy">
           <span className="eyebrow">SANDER 2011 · CoDA-based ZFN Designer</span>
           <h1>ZFNペアを設計</h1>
-          <p>標的周辺配列を貼り付けると、CoDAで構成可能な左右ZFNペアを検索し、実験に使う完全アミノ酸配列まで出力します。</p>
+          <p>標的周辺配列を貼り付けると、CoDAで構成可能な左右ZFNペアを検索し、アミノ酸配列を出力します。</p>
           <div className="hero-actions">
             <a className="primary-cta" href="#designer">配列を入力して設計する<span aria-hidden="true">↓</span></a>
             <span className="privacy-note"><i />入力配列は外部へ送信しません</span>
