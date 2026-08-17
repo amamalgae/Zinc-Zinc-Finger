@@ -1,6 +1,6 @@
 # Zinc Zinc Finger: AI handoff and decision record
 
-Last reconciled: 2026-08-17, for PR #27 based on `main` commit `69d3f88`, plus the source files listed in section 10.
+Last reconciled: 2026-08-17, for PR #28 based on `main` commit `3a9cc34`, plus the source files listed in section 10.
 
 This document is the durable context for a new AI or developer who has no access to the prior ChatGPT conversations. Read it before modifying the scientific logic. The current README explains what the public site does; this file also explains what it used to do, why approaches were removed, what the evidence can and cannot support, and which questions remain open.
 
@@ -35,9 +35,10 @@ The intended use is practical ZFN site selection for knock-in and related genome
 7. **Several candidates should be tested.** Archive membership and geometric rank are not activity estimates. A practical experiment should compare multiple candidates in the relevant expression system, ideally with an SSA or another cleavage pre-screen before relying on KI.
 8. **No FTO conclusion in the software.** Public disclosure, an expired patent, or an independently written implementation does not by itself establish freedom to operate for a use and jurisdiction.
 9. **Future 6-finger work is a separate design decision.** Do not obtain "6F" merely by concatenating two current CoDA 3F arrays without a defined construction rule and supporting validation.
-10. **Lead the public page with the user outcome, not the molecular mechanism.** The hero must identify the tool as `SANDER 2011 · CoDA-based ZFN Designer`, explain that it finds a left/right ZFN pair from target DNA and emits complete protein sequences, and place the sequence input immediately after that value proposition. The original-study result may be displayed as **19 of 38 targets (50%) with detected mutations**, with Sander 2011 named and linked, but must be labeled as a cohort result rather than a candidate-specific probability. Finger composition and other technical detail belong after the selected target and protein output, preferably collapsed by default.
+10. **Lead the public page with the user outcome, then explain the mechanism before input.** The hero must identify the tool as `SANDER 2011 · CoDA-based ZFN Designer`, explain that it finds a left/right ZFN pair from target DNA, and state that it emits complete protein sequences. The original-study result may be displayed as **19 of 38 targets (50%) with detected mutations**, with Sander 2011 named and linked, but must be labeled as a cohort result rather than a candidate-specific probability. Immediately after the hero, show the original introductory 3ZF–FokI mechanism figure; place sequence input after that figure. Candidate-specific finger detail still belongs after candidate selection and protein output.
 11. **Interactive elements must not resemble passive labels.** Buttons and selectable candidates use a consistent action treatment: strong border or solid fill, an action verb, a directional/download marker where helpful, a sufficiently large hit area, and visible keyboard focus. Candidate selection must be conveyed in text as well as color. Disclosure summaries must show explicit open/close affordances. Passive facts and feature labels should remain plain text or use low-emphasis markers rather than outlined pills that could be mistaken for buttons.
 12. **Explain the selected molecular geometry with the selected sequence.** The selected-pair section must map the actual F/R duplex to six global display labels: left monomer ZF1–ZF3 and right monomer ZF4–ZF6. Along F from left to right, the labels are ZF1–ZF2–ZF3, spacer, ZF6–ZF5–ZF4 because C2H2 arrays bind antiparallel. The protein lanes must show N→C and place both C-terminal FokI domains toward the spacer. Use plus/minus only for the FokI dimerization interfaces—ELD (−) and KKR (+)—not as DNA strand names. The global ZF1–ZF6 labels are explanatory; archive logic still calls each monomer's units F1–F3.
+13. **Teach the ZFN architecture before asking for sequence.** The overview between hero and input is a site-native inline SVG, not a copied paper or slide image. It must show exactly three fingers per monomer, F/R DNA labels, two 9-bp recognition regions, a 5–7 bp spacer, antiparallel N→C directions, and FokI ELD (−)/KKR (+) meeting at the spacer. It should separate the roles as “ZF recognizes” and “FokI cuts,” then lead directly into the designer. The selected-candidate diagram remains the detailed sequence-specific view.
 
 ### 2.1 Why CoDA was selected after the literature and availability review
 
@@ -204,6 +205,7 @@ Open regulatory question: determine how the relevant Japanese recombinant-DNA pa
 | Path | Role |
 |---|---|
 | `src/App.tsx` | Entire current UI and download actions |
+| `src/ZfnOverviewDiagram.tsx` | original static introductory SVG shown between the hero and sequence input |
 | `src/coda-design-engine.ts` | input parsing, reverse complement, geometry scan, ordering, CSV |
 | `src/coda-module-archive.ts` | archive validation, exact CoDA lookup, full 3F sequence construction |
 | `src/coda-construct-output.ts` | current ELD/F2A/KKR protein construct and Protein FASTA |
@@ -319,8 +321,9 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 7. **Value-first UI phase:** the landing page was reorganized around the practical outcome: target DNA in, CoDA-compatible paired ZFNs and complete amino-acid output out. Sander's 19/38 cohort result became the prominent evidence hook with an explicit non-probability qualification; sequence input now follows the hero directly, and finger-level detail is collapsed below protein output.
 8. **Interaction-clarity phase:** passive feature chips were replaced with check-marked text, actions received consistent fill/border, verbs, icons, hit areas, and focus states, candidate rows gained explicit selected/unselected wording with `aria-pressed`, and disclosure rows gained visible open/close cues. The rule is role clarity without relying on color alone.
 9. **Selected-pair explanation phase:** the compact half-site row was replaced with a sequence-linked diagram showing both 3ZF monomers, global ZF1–ZF6 correspondence, N/C direction, F/R duplex orientation, the spacer cleavage region, and FokI ELD (−)/KKR (+) obligate heterodimerization. The mapping is generated from the selected candidate and protected by an orientation test rather than being a static illustration.
+10. **Pre-input mechanism phase:** after the selected-result diagram proved too late to teach first-time visitors what they were designing, an original inline-SVG overview was placed between the hero and INPUT. It introduces the two 3ZF monomers around an F/R duplex, separates ZF recognition from FokI cleavage, and then hands the visitor into the sequence workflow. The supplied reference slide was used only to understand the requested information hierarchy and was not copied or committed.
 
-### 7.2 Complete main-branch commit/PR ledger through PR #25
+### 7.2 Complete main-branch commit/PR ledger through PR #28
 
 | Date | Commit / PR | Change and significance |
 |---|---|---|
@@ -359,8 +362,9 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 | 2026-08-17 | `9889df7` / #23 | Removed host-specific F2A evidence from the general tool, retained Lei 2011 as the paired-ZFN F2A precedent, and made the scientific plus IP/availability rationale for CoDA explicit. |
 | 2026-08-17 | `3de0489` / #24 | Rebuilt the public landing flow around the user's goal, fixed the hero label as `SANDER 2011 · CoDA-based ZFN Designer`, displayed the Sander 19/38 cohort result with its scientific limitation, moved input directly below the hero, and deferred finger-level technical details until after protein output. |
 | 2026-08-17 | `d07c48e` / #25 | Separated interactive controls from passive information through consistent action styling, explicit action/state text, keyboard focus, `aria-pressed`, and disclosure open/close cues. |
-| 2026-08-17 | PR #26 | Added a selected-sequence 3ZF–FokI diagram with tested ZF1–ZF6/F–R mapping, N/C orientation, and ELD (−)/KKR (+) nuclease heterodimer explanation. |
-| 2026-08-17 | PR #27 | Kept the central ELD (−) / KKR (+) heterodimer label on one line after visual inspection of the deployed diagram. |
+| 2026-08-17 | `69d3f88` / #26 | Added a selected-sequence 3ZF–FokI diagram with tested ZF1–ZF6/F–R mapping, N/C orientation, and ELD (−)/KKR (+) nuclease heterodimer explanation. |
+| 2026-08-17 | `3a9cc34` / #27 | Kept the central ELD (−) / KKR (+) heterodimer label on one line after visual inspection of the deployed diagram. |
+| 2026-08-17 | PR #28 | Added an original pre-input SVG overview of the two 3ZF monomers, F/R duplex, 5–7 bp spacer, and FokI heterodimer mechanism. |
 
 The abandoned T2A stage cited Katayama and Yamamoto (2025), DOI `10.3390/ijms26157602`, as a GSG-T2A ZFN precedent. It is historical only: current output uses an FMDV-derived F2A sequence without the old GSG-T2A implementation.
 

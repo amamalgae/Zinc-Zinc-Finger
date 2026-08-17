@@ -20,6 +20,7 @@ import {
   type CodaFinger,
 } from "./coda-module-archive.ts";
 import { buildZfnBindingMap, type ZfnFingerTarget } from "./zfn-binding-map.ts";
+import ZfnOverviewDiagram from "./ZfnOverviewDiagram.tsx";
 
 const EXAMPLE_LEFT_RECOGNITION = "GTGGGGGAG";
 const EXAMPLE_RIGHT_RECOGNITION = "GTGGGGGAG";
@@ -222,6 +223,8 @@ export default function Home() {
           <a href="https://doi.org/10.1038/nmeth.1542" target="_blank" rel="noreferrer">Sander et al. 2011 · DOI 10.1038/nmeth.1542 <span aria-hidden="true">↗</span></a>
         </aside>
       </section>
+
+      <ZfnOverviewDiagram />
 
       <section className="designer" id="designer">
         <div className="input-panel">
