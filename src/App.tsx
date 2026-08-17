@@ -195,8 +195,8 @@ export default function Home() {
           <span><strong>Zinc Zinc Finger</strong><small>3-finger ZFN designer</small></span>
         </a>
         <div className="header-status">
-          <a className="version-badge" href={APP_VERSION_PR_URL} target="_blank" rel="noreferrer" aria-label={`${APP_VERSION} — 対応するGitHub PRを開く`}>{APP_VERSION}<span aria-hidden="true">↗</span></a>
-          <span className="local-badge"><i />端末内で計算</span>
+          <a className="version-badge" href={APP_VERSION_PR_URL} target="_blank" rel="noreferrer" aria-label={`${APP_VERSION} — GitHub Codeページを開く`}>{APP_VERSION}<span aria-hidden="true">↗</span></a>
+          <span className="local-badge" aria-label="設計計算は端末内のブラウザで実行され、入力配列はサーバーへ送信されません"><i />端末内で計算（ローカル処理）</span>
         </div>
       </header>
 
@@ -219,6 +219,7 @@ export default function Home() {
           <span>CODA ORIGINAL STUDY</span>
           <div className="study-value"><strong>50</strong><small>%</small></div>
           <h2>38標的中19標的で<br />変異導入を検出</h2>
+          <h2>実証宿主：ゼブラフィッシュ／シロイヌナズナ／ダイズ</h2>
           <p>Sander 2011の実験条件で得られた集団成績です。本サイトが提示する各候補の成功確率ではありません。</p>
           <a href="https://doi.org/10.1038/nmeth.1542" target="_blank" rel="noreferrer">Sander et al. 2011 · DOI 10.1038/nmeth.1542 <span aria-hidden="true">↗</span></a>
         </aside>
