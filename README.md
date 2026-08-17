@@ -18,7 +18,7 @@ Sander 2011のContext-Dependent Assembly（CoDA）archiveを使い、左右3-fin
 
 入力配列はブラウザ内だけで処理され、外部へ送信されません。FASTA header、空白、位置番号は無視します。IUPAC曖昧塩基とgapは`N`として座標を保持し、それらをまたぐ標的窓は候補から除外します。未対応文字がある場合は設計を停止します。
 
-画面右上の`ver.N`は、その版を導入したGitHub Pull Request `#N`に対応し、表記自体から該当PRを開けます。
+画面右上の`ver.N (PR #N)`は、その版を導入したGitHub Pull Request `#N`に対応し、表記自体から該当PRを開けます。
 
 ## CoDAの組立て
 
