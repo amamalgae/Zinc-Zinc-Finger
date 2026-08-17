@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { APP_VERSION, APP_VERSION_PR_URL } from "./app-version.ts";
 import { DUENAS_F2A } from "./construct-output.ts";
 import {
   codaCandidatesToCsv,
@@ -112,7 +113,10 @@ export default function Home() {
           <span className="brand-mark">ZF</span>
           <span><strong>Zinc Zinc Finger</strong><small>3-finger ZFN designer</small></span>
         </a>
-        <span className="local-badge"><i />端末内で計算</span>
+        <div className="header-status">
+          <a className="version-badge" href={APP_VERSION_PR_URL} target="_blank" rel="noreferrer" aria-label={`${APP_VERSION} — 対応するGitHub PRを開く`}>{APP_VERSION}</a>
+          <span className="local-badge"><i />端末内で計算</span>
+        </div>
       </header>
 
       <section className="hero" id="top">

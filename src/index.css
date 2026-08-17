@@ -38,6 +38,9 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 .brand > span:last-child { display: grid; gap: 2px; }
 .brand strong { font-size: 14px; }
 .brand small { color: var(--muted); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+.header-status { display: flex; align-items: center; gap: 7px; }
+.version-badge { padding: 8px 10px; border-radius: 999px; background: var(--green); color: #fff; font-size: 9px; font-weight: 900; letter-spacing: .05em; text-decoration: none; }
+.version-badge:hover { background: #22664f; }
 .local-badge { padding: 8px 11px; display: flex; align-items: center; gap: 7px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 10px; }
 .local-badge i { width: 7px; height: 7px; border-radius: 50%; background: #66a953; }
 
@@ -210,6 +213,7 @@ footer p { margin: 0; }
   .site-header, .hero, .designer, .selected-design, .evidence, footer { width: calc(100% - 24px); }
   .site-header { padding: 15px 0; }
   .brand small { display: none; }
+  .local-badge { padding: 8px; font-size: 0; }
   .hero { padding: 42px 0; }
   .hero h1 { font-size: 42px; }
   .construct-overview { padding: 42px 12px; }
