@@ -17,6 +17,8 @@
 .overview-spacer-length,
 .overview-spacer-label {
   dominant-baseline: middle;
+  fill: #95461f;
+  font-size: 16px;
 }
 
 .overview-spacer-length {
@@ -24,7 +26,6 @@
 }
 
 .overview-spacer-label {
-  font-size: 12px;
   transform: translateY(-5px);
 }
 
@@ -33,6 +34,9 @@
 }
 
 .overview-mobile-spacer > span {
+  color: #95461f;
+  font-size: 8px;
+  font-weight: 900;
   transform: none;
   white-space: nowrap;
   line-height: 1;
@@ -40,7 +44,7 @@
 
 .overview-mobile-spacer .cut-label {
   margin-top: 2px;
-  color: #a45c39;
+  color: #95461f;
   font-size: 8px;
   line-height: 1;
   font-weight: 900;
