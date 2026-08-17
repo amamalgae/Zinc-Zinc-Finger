@@ -33,6 +33,77 @@ function Finger({ x, label, side }: { x: number; label: string; side: "left" | "
   );
 }
 
+function LightningIcon() {
+  return (
+    <svg className="overview-mobile-lightning" viewBox="0 0 24 30" aria-hidden="true">
+      <path d="M10 1 H21 L15 11 H22 L5 29 L10 16 H2 Z" />
+    </svg>
+  );
+}
+
+function MobileFinger({ label, side }: { label: string; side: "left" | "right" }) {
+  return (
+    <div className={`overview-mobile-finger ${side}`}>
+      <strong>{label}</strong>
+      <small>3 bp</small>
+    </div>
+  );
+}
+
+function MobileDnaCell({ side }: { side: "left" | "right" }) {
+  return <div className={`overview-mobile-dna-cell ${side}`}>NNN</div>;
+}
+
+function MobileOverviewDiagram() {
+  return (
+    <div
+      className="overview-mobile-diagram"
+      role="img"
+      aria-label="F鎖とR鎖の左右9塩基をZF1からZF6が認識し、中央の5から7塩基のspacerでFokI ELDマイナスとKKRプラスが両鎖を切断する構成図"
+    >
+      <div className="overview-mobile-array right">
+        <span className="overview-mobile-terminus">C</span>
+        <div className="overview-mobile-foki positive"><strong>FokI</strong><small>KKR（＋）</small></div>
+        <MobileFinger label="ZF6" side="right" />
+        <MobileFinger label="ZF5" side="right" />
+        <MobileFinger label="ZF4" side="right" />
+        <span className="overview-mobile-terminus">N</span>
+      </div>
+
+      <div className="overview-mobile-dna-row f">
+        <strong className="overview-mobile-strand">F</strong>
+        <MobileDnaCell side="left" />
+        <MobileDnaCell side="left" />
+        <MobileDnaCell side="left" />
+        <div className="overview-mobile-spacer"><span>5–7 bp</span><LightningIcon /></div>
+        <MobileDnaCell side="right" />
+        <MobileDnaCell side="right" />
+        <MobileDnaCell side="right" />
+      </div>
+
+      <div className="overview-mobile-dna-row r">
+        <strong className="overview-mobile-strand">R</strong>
+        <MobileDnaCell side="left" />
+        <MobileDnaCell side="left" />
+        <MobileDnaCell side="left" />
+        <div className="overview-mobile-spacer"><span>spacer</span><LightningIcon /></div>
+        <MobileDnaCell side="right" />
+        <MobileDnaCell side="right" />
+        <MobileDnaCell side="right" />
+      </div>
+
+      <div className="overview-mobile-array left">
+        <span className="overview-mobile-terminus">N</span>
+        <MobileFinger label="ZF1" side="left" />
+        <MobileFinger label="ZF2" side="left" />
+        <MobileFinger label="ZF3" side="left" />
+        <div className="overview-mobile-foki negative"><strong>FokI</strong><small>ELD（−）</small></div>
+        <span className="overview-mobile-terminus">C</span>
+      </div>
+    </div>
+  );
+}
+
 export default function ZfnOverviewDiagram() {
   return (
     <section className="mechanism-overview" id="how-zfn-works" aria-labelledby="mechanism-title">
@@ -45,7 +116,7 @@ export default function ZfnOverviewDiagram() {
       </div>
 
       <figure className="overview-figure">
-        <div className="overview-svg-scroll" tabIndex={0} aria-label="3-finger ZFNペアの構成図。小さい画面では横にスクロールできます。">
+        <div className="overview-svg-scroll" tabIndex={0} aria-label="3-finger ZFNペアの構成図">
           <svg className="overview-svg" viewBox="0 0 1040 430" role="img" aria-labelledby="zfn-overview-title zfn-overview-desc">
             <title id="zfn-overview-title">左右の3-finger ZFNがDNAを認識し、FokIヘテロ二量体がspacerを切断する構成</title>
             <desc id="zfn-overview-desc">F鎖とR鎖からなるDNAの左右9塩基を、左ZFNのZF1からZF3と右ZFNのZF4からZF6が認識する。中央の5から7塩基のspacerでFokI ELDマイナスとKKRプラスがヘテロ二量体を形成する。</desc>
@@ -79,19 +150,19 @@ export default function ZfnOverviewDiagram() {
             {LEFT_FINGERS.map((finger) => <Finger key={finger.label} {...finger} side="left" />)}
 
             <text className="overview-terminus right" x="944" y="97">N</text>
-            <text className="overview-terminus right" x="610" y="132">C</text>
             <text className="overview-terminus left" x="112" y="354">N</text>
-            <text className="overview-terminus left" x="441" y="354">C</text>
 
             <path className="overview-protein-link right" d="M635 91 C607 91 606 116 590 132" />
             <path className="overview-foki positive" filter="url(#overview-shadow)" d="M595 86 C628 103 632 145 610 172 C596 190 570 198 544 187 C521 178 505 156 509 132 C514 102 549 73 595 86 Z" />
             <text className="overview-foki-name positive" x="568" y="126">FokI</text>
             <text className="overview-foki-variant positive" x="568" y="148">KKR（＋）</text>
+            <text className="overview-terminus right" x="496" y="178">C</text>
 
             <path className="overview-protein-link left" d="M420 347 C447 347 451 326 467 309" />
             <path className="overview-foki negative" filter="url(#overview-shadow)" d="M462 286 C479 266 508 258 533 270 C557 281 570 306 564 331 C557 361 523 386 481 373 C448 363 435 318 462 286 Z" />
             <text className="overview-foki-name negative" x="505" y="315">FokI</text>
             <text className="overview-foki-variant negative" x="505" y="337">ELD（−）</text>
+            <text className="overview-terminus left" x="579" y="354">C</text>
 
             <text className="overview-strand-name f" x="56" y="215">F</text>
             <text className="overview-dna-end" x="93" y="215">5′</text>
@@ -105,14 +176,15 @@ export default function ZfnOverviewDiagram() {
             {LEFT_FINGERS.map(({ x, label }) => <DnaCell key={`R-${label}`} x={x} side="left" row="R" />)}
             {RIGHT_FINGERS.map(({ x, label }) => <DnaCell key={`R-${label}`} x={x} side="right" row="R" />)}
 
-            <rect className="overview-spacer" x="430" y="190" width="195" height="84" rx="6" />
-            <line className="overview-cut cut-one" x1="499" y1="197" x2="485" y2="221" />
-            <line className="overview-cut cut-two" x1="556" y1="243" x2="542" y2="267" />
-            <path className="overview-dimer-link" d="M534 176 C532 198 532 219 533 232 C534 248 532 263 527 276" />
-            <text className="overview-spacer-length" x="527" y="218">5–7 bp</text>
-            <text className="overview-spacer-label" x="527" y="250">spacer · 切断領域</text>
+            <rect className="overview-spacer" x="430" y="190" width="195" height="38" rx="4" />
+            <rect className="overview-spacer" x="430" y="236" width="195" height="38" rx="4" />
+            <path className="overview-lightning" d="M469 193 H488 L481 204 H495 L467 225 L475 211 H461 Z" />
+            <path className="overview-lightning" d="M565 239 H584 L577 250 H591 L563 271 L571 257 H557 Z" />
+            <text className="overview-spacer-length" x="532" y="215">5–7 bp</text>
+            <text className="overview-spacer-label" x="522" y="260">spacer</text>
           </svg>
         </div>
+        <MobileOverviewDiagram />
         <figcaption>1本のZFNだけではなく、左右一対で働く構成です。図のZF1〜ZF6は説明用の通し番号で、実際のCoDA設計では左右それぞれ3-finger arrayを構成します。</figcaption>
       </figure>
 
