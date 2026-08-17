@@ -32,8 +32,21 @@ test("design computation contains no runtime network API", async () => {
   }
 });
 
-test("header explicitly describes browser-local processing", async () => {
+test("header displays the concise local-processing label", async () => {
   const app = await readFile(new URL("../src/App.tsx", import.meta.url), "utf8");
-  assert.match(app, /端末内で計算（ローカル処理）/);
+  const patch = await readFile(new URL("../src/ui-patch.css", import.meta.url), "utf8");
   assert.match(app, /入力配列はサーバーへ送信されません/);
+  assert.match(patch, /\.local-badge::after/);
+  assert.match(patch, /content: "ローカル処理"/);
+});
+
+test("overview diagram marks both strand cut sites on the spacer", async () => {
+  const diagram = await readFile(new URL("../src/ZfnOverviewDiagram.tsx", import.meta.url), "utf8");
+  assert.match(diagram, /5–7 bp spacer/);
+  assert.match(diagram, /切断部位/);
+  assert.equal((diagram.match(/className="overview-lightning"/g) ?? []).length, 2);
+  assert.match(diagram, /M518\.5 174/);
+  assert.match(diagram, /M518\.5 258/);
+  assert.match(diagram, /LightningIcon position="top"/);
+  assert.match(diagram, /LightningIcon position="bottom"/);
 });
