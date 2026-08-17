@@ -1,6 +1,6 @@
 # Zinc Zinc Finger: AI handoff and decision record
 
-Last reconciled: 2026-08-17, for PR #23 based on `main` commit `a4d78f9`, plus the source files listed in section 10.
+Last reconciled: 2026-08-17, for PR #24 based on `main` commit `9889df7`, plus the source files listed in section 10.
 
 This document is the durable context for a new AI or developer who has no access to the prior ChatGPT conversations. Read it before modifying the scientific logic. The current README explains what the public site does; this file also explains what it used to do, why approaches were removed, what the evidence can and cannot support, and which questions remain open.
 
@@ -35,6 +35,7 @@ The intended use is practical ZFN site selection for knock-in and related genome
 7. **Several candidates should be tested.** Archive membership and geometric rank are not activity estimates. A practical experiment should compare multiple candidates in the relevant expression system, ideally with an SSA or another cleavage pre-screen before relying on KI.
 8. **No FTO conclusion in the software.** Public disclosure, an expired patent, or an independently written implementation does not by itself establish freedom to operate for a use and jurisdiction.
 9. **Future 6-finger work is a separate design decision.** Do not obtain "6F" merely by concatenating two current CoDA 3F arrays without a defined construction rule and supporting validation.
+10. **Lead the public page with the user outcome, not the molecular mechanism.** The hero must identify the tool as `SANDER 2011 · CoDA-based ZFN Designer`, explain that it finds a left/right ZFN pair from target DNA and emits complete protein sequences, and place the sequence input immediately after that value proposition. The original-study result may be displayed as **19 of 38 targets (50%) with detected mutations**, with Sander 2011 named and linked, but must be labeled as a cohort result rather than a candidate-specific probability. Finger composition and other technical detail belong after the selected target and protein output, preferably collapsed by default.
 
 ### 2.1 Why CoDA was selected after the literature and availability review
 
@@ -311,8 +312,9 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 4. **Experiment-output phase:** candidate portfolios, SSA/amplicon suggestions, ELD/KKR full constructs, 2A-linked single ORFs, codon presets, donor mapping, and GenBank were added.
 5. **Simplification phase:** the product goal was narrowed to a beginner-readable 3F tool. The site briefly used Zhu's 81 position-specific modules.
 6. **Current CoDA phase:** Zhu modules were replaced with the complete Sander 2011 CoDA archive; output was reduced to amino acids; input/archive/scanner validation was hardened after an ambiguity-coordinate bug was identified.
+7. **Value-first UI phase:** the landing page was reorganized around the practical outcome: target DNA in, CoDA-compatible paired ZFNs and complete amino-acid output out. Sander's 19/38 cohort result became the prominent evidence hook with an explicit non-probability qualification; sequence input now follows the hero directly, and finger-level detail is collapsed below protein output.
 
-### 7.2 Complete main-branch commit/PR ledger through PR #21
+### 7.2 Complete main-branch commit/PR ledger through PR #24
 
 | Date | Commit / PR | Change and significance |
 |---|---|---|
@@ -348,7 +350,8 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 | 2026-08-17 | `b36fa2b` / #20 | Preserved ambiguity coordinates, blocked unsupported characters, validated archive at startup, exhaustively tested lookup and scanner order, and added CI. |
 | 2026-08-17 | `56dd4a8` / #21 | Added the visible `ver.21 (PR #21)` badge, linked it to the implementation PR, and added a regression test. |
 | 2026-08-17 | `a4d78f9` / #22 | Added this durable AI handoff, repository agent instructions, literature ledger, source hashes, and full historical decision record. |
-| 2026-08-17 | PR #23 | Removed host-specific F2A evidence from the general tool, retained Lei 2011 as the paired-ZFN F2A precedent, and made the scientific plus IP/availability rationale for CoDA explicit. |
+| 2026-08-17 | `9889df7` / #23 | Removed host-specific F2A evidence from the general tool, retained Lei 2011 as the paired-ZFN F2A precedent, and made the scientific plus IP/availability rationale for CoDA explicit. |
+| 2026-08-17 | PR #24 | Rebuilt the public landing flow around the user's goal, fixed the hero label as `SANDER 2011 · CoDA-based ZFN Designer`, displayed the Sander 19/38 cohort result with its scientific limitation, moved input directly below the hero, and deferred finger-level technical details until after protein output. |
 
 The abandoned T2A stage cited Katayama and Yamamoto (2025), DOI `10.3390/ijms26157602`, as a GSG-T2A ZFN precedent. It is historical only: current output uses an FMDV-derived F2A sequence without the old GSG-T2A implementation.
 
