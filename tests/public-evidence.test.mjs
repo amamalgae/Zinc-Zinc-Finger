@@ -36,3 +36,17 @@ test("landing page leads with the CoDA-based value proposition and qualifies the
   assert.match(app, /各候補の成功確率ではありません/);
   assert.doesNotMatch(app, /3つのfingerで/i);
 });
+
+test("interactive controls remain distinguishable from informational labels", () => {
+  const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
+
+  assert.match(app, /aria-pressed=\{selected\}/);
+  assert.match(app, /✓ 選択中/);
+  assert.match(app, /CSVを保存/);
+  assert.match(app, /Protein FASTAを保存/);
+  assert.match(app, /<ul className="hero-benefits"/);
+  assert.match(css, /button:focus-visible, a:focus-visible, summary:focus-visible/);
+  assert.match(css, /\.technical-details > summary::after/);
+  assert.match(css, /\.candidate-action/);
+});
