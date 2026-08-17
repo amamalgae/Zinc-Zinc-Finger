@@ -66,6 +66,7 @@ test("an original 3ZF mechanism diagram explains the design before sequence inpu
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
   const diagram = readFileSync(new URL("../src/ZfnOverviewDiagram.tsx", import.meta.url), "utf8");
   const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
+  const patch = readFileSync(new URL("../src/ui-patch.css", import.meta.url), "utf8");
 
   assert.ok(app.indexOf("<ZfnOverviewDiagram />") < app.indexOf('<section className="designer"'));
   assert.match(diagram, /3本のfingerで9 bp/);
@@ -83,5 +84,9 @@ test("an original 3ZF mechanism diagram explains the design before sequence inpu
   assert.match(diagram, /overview-mobile-array left[\s\S]*>N<[\s\S]*ZF1[\s\S]*ZF2[\s\S]*ZF3[\s\S]*ELD（−）[\s\S]*>C</);
   assert.match(css, /@media \(max-width: 600px\)[\s\S]*\.overview-svg-scroll \{ display: none; \}/);
   assert.match(css, /@media \(max-width: 600px\)[\s\S]*\.overview-mobile-diagram \{ display: grid;/);
+  assert.match(patch, /\.overview-spacer-length,\s*\.overview-spacer-label \{\s*dominant-baseline: middle;/);
+  assert.match(patch, /\.overview-lightning \{\s*transform: scale\(\.65\)/);
+  assert.match(patch, /\.overview-mobile-lightning\.top \{\s*top: -6px;/);
+  assert.match(patch, /\.overview-mobile-lightning\.bottom \{\s*bottom: -6px;/);
   assert.doesNotMatch(diagram, /2ACB03D5|IN BRIEF|Zinc finger nucleases \(ZFNs\)/);
 });
