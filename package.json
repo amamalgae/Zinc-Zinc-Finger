@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "audit:coda": "node scripts/audit-coda-archive.mjs",
     "benchmark": "npm run benchmark:bhakta && npm run benchmark:zhu && npm run benchmark:sander && npm run benchmark:fine && npm run benchmark:paschon",
     "benchmark:bhakta": "node scripts/benchmark-bhakta-2013.mjs",
     "benchmark:zhu": "node scripts/benchmark-zhu-2011.mjs",

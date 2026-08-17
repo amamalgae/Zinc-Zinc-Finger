@@ -2,9 +2,9 @@ import { useMemo, useState } from "react";
 import { DUENAS_F2A } from "./construct-output.ts";
 import {
   codaCandidatesToCsv,
-  cleanDNA,
   formatCut,
   generateCodaCandidates,
+  parseDNAInput,
   reverseComplement,
   type CodaCandidate,
 } from "./coda-design-engine.ts";
@@ -85,7 +85,7 @@ function CandidateRow({ candidate, rank, selected, onSelect }: {
     <button className={`candidate ${selected ? "selected" : ""}`} type="button" onClick={onSelect}>
       <span className="candidate-rank">{String(rank).padStart(2, "0")}</span>
       <span className="candidate-sequence"><b>{candidate.leftTop}</b><i>{candidate.spacer}</i><b>{candidate.rightTop}</b></span>
-      <span className="candidate-summary"><strong>F2 {candidate.leftArray.f2Context} / {candidate.rightArray.f2Context}</strong><small>cut {formatCut(candidate.cut)} · spacer {candidate.spacerLength} bp</small></span>
+      <span className="candidate-summary"><strong>F2 {candidate.leftArray.f2Context} / {candidate.rightArray.f2Context}</strong><small>spacer中心 {formatCut(candidate.cut)} · {candidate.spacerLength} bp</small></span>
     </button>
   );
 }
@@ -96,9 +96,12 @@ export default function Home() {
   const [maxDistance, setMaxDistance] = useState(500);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const dna = useMemo(() => cleanDNA(rawSequence), [rawSequence]);
-  const invalidCount = rawSequence.replace(/[ACGTacgt\s\d>_-]/g, "").length;
-  const candidates = useMemo(() => generateCodaCandidates(dna, desiredCut, maxDistance), [dna, desiredCut, maxDistance]);
+  const parsedInput = useMemo(() => parseDNAInput(rawSequence), [rawSequence]);
+  const { dna, ambiguousBaseCount, invalidCharacterCount } = parsedInput;
+  const candidates = useMemo(
+    () => invalidCharacterCount ? [] : generateCodaCandidates(dna, desiredCut, maxDistance),
+    [dna, desiredCut, maxDistance, invalidCharacterCount],
+  );
   const selected = candidates.find(({ id }) => id === selectedId) ?? candidates[0] ?? null;
   const construct = useMemo(() => selected ? buildCodaBicistronicZfn(selected) : null, [selected]);
 
@@ -145,25 +148,25 @@ export default function Home() {
           <div className="panel-heading"><span>01</span><div><small>INPUT</small><h2>標的周辺配列</h2></div></div>
           <label htmlFor="target-sequence">上鎖 5′→3′（FASTA可）</label>
           <textarea id="target-sequence" value={rawSequence} onChange={(event) => { setRawSequence(event.target.value); setSelectedId(null); }} spellCheck={false} />
-          <div className="input-meta"><span>{dna.length} bp</span><span className={invalidCount ? "warning" : ""}>{invalidCount ? `${invalidCount}文字を除外` : "ACGTのみ"}</span></div>
+          <div className="input-meta"><span>{dna.length} bp</span><span className={ambiguousBaseCount ? "warning" : ""}>{ambiguousBaseCount ? `曖昧塩基 ${ambiguousBaseCount} bp（候補から除外）` : "曖昧塩基なし"}</span><span className={invalidCharacterCount ? "warning" : ""}>{invalidCharacterCount ? `未対応文字 ${invalidCharacterCount}件` : "入力形式OK"}</span></div>
           <div className="simple-controls">
-            <label><span>希望切断位置</span><input type="number" min={0} max={dna.length} value={desiredCut} onChange={(event) => { setDesiredCut(Number(event.target.value)); setSelectedId(null); }} /><small>5′端からの塩基間座標</small></label>
+            <label><span>希望スペーサー中心</span><input type="number" min={0} max={dna.length} value={desiredCut} onChange={(event) => { setDesiredCut(Number(event.target.value)); setSelectedId(null); }} /><small>5′端からの塩基間座標</small></label>
             <label><span>探索範囲（±bp）</span><input type="number" min={0} max={100000} step={50} value={maxDistance} onChange={(event) => { setMaxDistance(Math.max(0, Number(event.target.value))); setSelectedId(null); }} /><small>希望位置から。初期値500 bp</small></label>
           </div>
           <button className="example-button" type="button" onClick={() => { setRawSequence(EXAMPLE_SEQUENCE); setDesiredCut(18); setMaxDistance(500); setSelectedId(null); }}>例を復元</button>
-          <p className="input-note">候補順位は希望切断位置への近さ、次に6 bp spacerへの近さです。archive内の候補間に、未測定の活性差は付けていません。</p>
+          <p className="input-note">候補順位は希望スペーサー中心への近さ、次に6 bp spacerへの近さです。IUPAC曖昧塩基はNとして座標を保持し、その塩基をまたぐ候補を除外します。archive内の候補間に、未測定の活性差は付けていません。</p>
         </div>
 
         <div className="results-panel">
           <div className="panel-heading"><span>02</span><div><small>RESULTS</small><h2>組めるCoDA ZFNペア</h2></div><button type="button" disabled={!candidates.length} onClick={() => downloadText(codaCandidatesToCsv(candidates), "coda-3finger-zfn-candidates.csv", "text/csv;charset=utf-8")}>CSV</button></div>
-          <div className="result-count"><strong>{candidates.length}</strong><span>候補</span><small>spacer 5 / 6 / 7 bpを探索</small></div>
-          {candidates.length ? <div className="candidate-list">{candidates.slice(0, 12).map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} />)}</div> : <div className="empty-state"><strong>候補がありません</strong><p>CoDA archiveで左右9 bpを構成できる部位がありません。探索範囲または入力配列を変更してください。</p></div>}
+          <div className="result-count"><strong>{candidates.length}</strong><span>上位候補</span><small>{candidates.length > 12 ? "このうち12件を表示 · " : ""}spacer 5 / 6 / 7 bpを探索（最大30件）</small></div>
+          {candidates.length ? <div className="candidate-list">{candidates.slice(0, 12).map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} />)}</div> : <div className="empty-state"><strong>{invalidCharacterCount ? "未対応文字があります" : "候補がありません"}</strong><p>{invalidCharacterCount ? "赤字の未対応文字を修正してから設計してください。IUPAC曖昧塩基は入力できます。" : "CoDA archiveで左右9 bpを構成できる部位がありません。探索範囲または入力配列を変更してください。"}</p></div>}
         </div>
       </section>
 
       {selected && construct && (
         <section className="selected-design">
-          <div className="selected-heading"><div><span>03 · SELECTED DESIGN</span><h2>cut {formatCut(selected.cut)} · spacer {selected.spacerLength} bp</h2></div><div className="gnn-badge"><strong>2/2</strong><small>CoDA arrays</small></div></div>
+          <div className="selected-heading"><div><span>03 · SELECTED DESIGN</span><h2>spacer中心 {formatCut(selected.cut)} · {selected.spacerLength} bp</h2></div><div className="gnn-badge"><strong>2/2</strong><small>CoDA arrays</small></div></div>
           <div className="target-layout"><span>5′</span><b>{selected.leftTop}</b><i>{selected.spacer}</i><b>{selected.rightTop}</b><span>3′</span><small>ZF-L half-site</small><small>切断領域</small><small>ZF-R half-site</small></div>
           <div className="strand-row"><span><small>Left recognition strand 5′→3′</small><code>{selected.leftRecognition}</code></span><span><small>Right recognition strand 5′→3′</small><code>{selected.rightRecognition}</code></span></div>
           <div className="finger-pair"><FingerGroup title={`Left ZF · CoDA F2=${selected.leftArray.f2Context}`} fingers={selected.leftArray.fingers} /><FingerGroup title={`Right ZF · CoDA F2=${selected.rightArray.f2Context}`} fingers={selected.rightArray.fingers} /></div>

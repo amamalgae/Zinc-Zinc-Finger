@@ -12,6 +12,8 @@ type CodaUnitRow = {
   helix: string;
 };
 
+type F2ContextRow = { target: string; helix: string };
+
 export type CodaFinger = {
   position: FingerPosition;
   triplet: string;
@@ -28,11 +30,51 @@ export type CodaArray = {
 };
 
 const units = archiveData.units as CodaUnitRow[];
-const f2Contexts = new Map(archiveData.f2Contexts.map(({ target, helix }) => [target, helix]));
-const unitIndex = new Map(units.map((unit) => [
-  `${unit.unit}:${unit.f2Target}:${unit.target}`,
-  unit,
-]));
+const f2Rows = archiveData.f2Contexts as F2ContextRow[];
+
+function assertTriplet(value: string, label: string): void {
+  if (!/^[ACGT]{3}$/.test(value)) throw new Error(`Invalid CoDA ${label}: ${value}`);
+}
+
+function assertHelix(value: string, label: string): void {
+  if (!/^[ACDEFGHIKLMNPQRSTVWY]{7}$/.test(value)) throw new Error(`Invalid CoDA ${label}: ${value}`);
+}
+
+function validateArchive(): void {
+  if (f2Rows.length !== 18) throw new Error(`CoDA archive must contain 18 F2 contexts; found ${f2Rows.length}`);
+  if (units.filter(({ unit }) => unit === "f1").length !== 319) throw new Error("CoDA archive must contain 319 F1 units");
+  if (units.filter(({ unit }) => unit === "f3").length !== 344) throw new Error("CoDA archive must contain 344 F3 units");
+
+  const seenF2 = new Set<string>();
+  const f2Helices = new Map<string, string>();
+  for (const row of f2Rows) {
+    assertTriplet(row.target, "F2 target");
+    assertHelix(row.helix, "F2 helix");
+    if (seenF2.has(row.target)) throw new Error(`Duplicate CoDA F2 context: ${row.target}`);
+    seenF2.add(row.target);
+    f2Helices.set(row.target, row.helix);
+  }
+
+  const seenUnits = new Set<string>();
+  for (const row of units) {
+    if (row.unit !== "f1" && row.unit !== "f3") throw new Error(`Invalid CoDA unit kind: ${String(row.unit)}`);
+    assertTriplet(row.f2Target, "unit F2 target");
+    assertTriplet(row.target, `${row.unit.toUpperCase()} target`);
+    assertHelix(row.f2Helix, "unit F2 helix");
+    assertHelix(row.helix, `${row.unit.toUpperCase()} helix`);
+    if (f2Helices.get(row.f2Target) !== row.f2Helix) {
+      throw new Error(`CoDA ${row.unit} unit has inconsistent F2 helix for ${row.f2Target}`);
+    }
+    const key = `${row.unit}:${row.f2Target}:${row.target}`;
+    if (seenUnits.has(key)) throw new Error(`Duplicate CoDA unit: ${key}`);
+    seenUnits.add(key);
+  }
+}
+
+validateArchive();
+
+const f2Contexts = new Map(f2Rows.map(({ target, helix }) => [target, helix]));
+const unitIndex = new Map(units.map((unit) => [`${unit.unit}:${unit.f2Target}:${unit.target}`, unit]));
 
 export const CODA_F2_CONTEXT_COUNT = f2Contexts.size;
 export const CODA_F1_UNIT_COUNT = units.filter(({ unit }) => unit === "f1").length;

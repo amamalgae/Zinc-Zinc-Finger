@@ -22,13 +22,48 @@ const FOKI_LINKERS: Readonly<Record<number, string>> = {
   7: "TGPGAAAR",
 };
 
-export function cleanDNA(value: string): string {
-  return value
+export type ParsedDNAInput = {
+  dna: string;
+  ambiguousBaseCount: number;
+  invalidCharacterCount: number;
+};
+
+const IUPAC_AMBIGUOUS_DNA = new Set("RYSWKMBDHVN");
+
+/**
+ * Parses FASTA/plain DNA without collapsing coordinates across unknown bases.
+ * Whitespace and position digits are formatting; IUPAC ambiguity/gaps become N.
+ * Unsupported characters also become N, and are reported so the UI can block design.
+ */
+export function parseDNAInput(value: string): ParsedDNAInput {
+  let dna = "";
+  let ambiguousBaseCount = 0;
+  let invalidCharacterCount = 0;
+
+  const sequenceLines = value
     .split(/\r?\n/)
-    .filter((line) => !line.trimStart().startsWith(">"))
-    .join("")
-    .toUpperCase()
-    .replace(/[^ACGT]/g, "");
+    .filter((line) => !line.trimStart().startsWith(">"));
+
+  for (const character of sequenceLines.join("")) {
+    const base = character.toUpperCase();
+    if (/[ACGT]/.test(base)) {
+      dna += base;
+    } else if (/\s|\d/.test(character)) {
+      continue;
+    } else if (IUPAC_AMBIGUOUS_DNA.has(base) || character === "-" || character === ".") {
+      dna += "N";
+      ambiguousBaseCount += 1;
+    } else {
+      dna += "N";
+      invalidCharacterCount += 1;
+    }
+  }
+
+  return { dna, ambiguousBaseCount, invalidCharacterCount };
+}
+
+export function cleanDNA(value: string): string {
+  return parseDNAInput(value).dna;
 }
 export function reverseComplement(value: string): string {
   const complement: Record<string, string> = { A: "T", C: "G", G: "C", T: "A" };
@@ -49,10 +84,18 @@ export function generateCodaCandidates(
   maxDistance = 500,
   limit = 30,
 ): CodaCandidate[] {
+  if (!Number.isFinite(desiredCut) || !Number.isFinite(maxDistance) || !Number.isFinite(limit)) return [];
+  const searchDistance = Math.max(0, maxDistance);
+  const resultLimit = Math.max(0, Math.floor(limit));
+  if (resultLimit === 0) return [];
+
   const candidates: CodaCandidate[] = [];
   for (const spacerLength of [5, 6, 7]) {
     const footprint = 18 + spacerLength;
-    for (let start = 0; start + footprint <= dna.length; start += 1) {
+    const cutOffset = 9 + spacerLength / 2;
+    const firstStart = Math.max(0, Math.ceil(desiredCut - searchDistance - cutOffset));
+    const finalStart = Math.min(dna.length - footprint, Math.floor(desiredCut + searchDistance - cutOffset));
+    for (let start = firstStart; start <= finalStart; start += 1) {
       const leftTop = dna.slice(start, start + 9);
       const spacer = dna.slice(start + 9, start + 9 + spacerLength);
       const rightTop = dna.slice(start + 9 + spacerLength, start + footprint);
@@ -62,9 +105,9 @@ export function generateCodaCandidates(
       const rightArray = buildCodaArray(rightRecognition);
       if (!leftArray || !rightArray) continue;
 
-      const cut = start + 9 + spacerLength / 2;
+      const cut = start + cutOffset;
       const distance = Math.abs(cut - desiredCut);
-      if (distance > maxDistance) continue;
+      if (distance > searchDistance) continue;
       candidates.push({
         id: `${start}-${spacerLength}`,
         start,
@@ -82,7 +125,7 @@ export function generateCodaCandidates(
       });
     }
   }
-  return candidates.sort(compareCandidates).slice(0, limit);
+  return candidates.sort(compareCandidates).slice(0, resultLimit);
 }
 
 export function formatCut(value: number): string {
@@ -91,7 +134,7 @@ export function formatCut(value: number): string {
 
 export function codaCandidatesToCsv(candidates: readonly CodaCandidate[]): string {
   const header = [
-    "rank", "cut_between_bases", "distance", "spacer_bp", "left_half_site_top_5to3",
+    "rank", "spacer_center_between_bases", "distance", "spacer_bp", "left_half_site_top_5to3",
     "spacer", "right_half_site_top_5to3", "left_f2_context", "right_f2_context",
     "left_fingers_NtoC", "right_fingers_NtoC", "left_coda_array_NtoC", "right_coda_array_NtoC",
   ];
