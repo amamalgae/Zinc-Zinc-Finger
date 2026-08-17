@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { APP_VERSION, APP_VERSION_PR_URL } from "./app-version.ts";
-import { DUENAS_F2A } from "./construct-output.ts";
+import { FMDV_F2A } from "./construct-output.ts";
 import {
   codaCandidatesToCsv,
   formatCut,
@@ -179,7 +179,7 @@ export default function Home() {
           <div className="output-card">
             <div className="output-heading"><div><span>04 · AMINO-ACID OUTPUT</span><h2>ELD–F2A–KKR precursor polyprotein</h2></div><span className="protein-only-badge">PROTEIN ONLY</span></div>
             <ArchitectureDiagram />
-            <div className="output-stats"><span><strong>{construct.protein.length}</strong>aa precursor</span><span><strong>{construct.processedLeftProtein.length}</strong>aa left product</span><span><strong>{construct.processedRightProtein.length}</strong>aa right product</span><span><strong>{DUENAS_F2A.length}</strong>aa F2A</span></div>
+            <div className="output-stats"><span><strong>{construct.protein.length}</strong>aa precursor</span><span><strong>{construct.processedLeftProtein.length}</strong>aa left product</span><span><strong>{construct.processedRightProtein.length}</strong>aa right product</span><span><strong>{FMDV_F2A.length}</strong>aa F2A</span></div>
             <div className="download-row">
               <button type="button" onClick={() => downloadText(codaConstructToProteinFasta(construct), `${construct.name}-protein.fasta`)}>Protein FASTA（3配列）</button>
             </div>
@@ -196,7 +196,6 @@ export default function Home() {
         <div className="reference-grid">
           <article><span>3-FINGER CoDA</span><h3>Sander et al. 2011</h3><p>319 F1 units、18 fixed F2、344 F3 unitsを文脈依存で接続。標的別selectionを不要にした設計法。</p><a href="https://doi.org/10.1038/nmeth.1542" target="_blank" rel="noreferrer">DOI 10.1038/nmeth.1542</a></article>
           <article><span>FOKI HETERODIMER</span><h3>Doyon et al. 2011</h3><p>ELD/KKR obligate heterodimerを比較し、高活性とhomodimer抑制を示した研究。</p><a href="https://doi.org/10.1038/nmeth.1539" target="_blank" rel="noreferrer">DOI 10.1038/nmeth.1539</a></article>
-          <article><span>AUXENOCHLORELLA F2A</span><h3>Dueñas et al. 2025</h3><p>EK–GFP–F2A–LUCで上下流双方の発現を確認。本出力は同論文のF2A配列を使用。</p><a href="https://doi.org/10.1073/pnas.2417695122" target="_blank" rel="noreferrer">DOI 10.1073/pnas.2417695122</a></article>
           <article><span>MAMMALIAN F2A–ZFN</span><h3>Lei et al. 2011</h3><p>F2Aで左右ZFNを連結し、ヒト細胞でCCR5編集を実施した先例。</p><a href="https://doi.org/10.1038/mt.2011.12" target="_blank" rel="noreferrer">DOI 10.1038/mt.2011.12</a></article>
         </div>
         <p className="evidence-note">CoDAは設計時の標的別selectionを省けますが、実装後の発現、標的結合、切断効率、毒性、off-targetの検証は省けません。archiveに存在することを個別候補の成功保証として扱わないでください。</p>

@@ -6,7 +6,7 @@ import {
   FOKI_CLEAVAGE_DOMAIN_WT,
   FOKI_ELD,
   FOKI_KKR,
-  DUENAS_F2A,
+  FMDV_F2A,
   ZFN_NUCLEIC_ACID_DONORS,
   bicistronicConstructsToGenBank,
   buildBicistronicZfn,
@@ -63,12 +63,12 @@ test("complete ZFN CDS translates back to the designed protein and stop", () => 
 test("single-ORF F2A construct preserves both NLS-bearing monomers and product boundaries", () => {
   const candidate = generateCandidates(target, 21, 6, 20).find(({ id }) => id === "0-6");
   assert.ok(candidate);
-  assert.equal(DUENAS_F2A, "VKQLLNFDLLKLAGDVESNPGP");
+  assert.equal(FMDV_F2A, "VKQLLNFDLLKLAGDVESNPGP");
   for (const preset of ["auxenochlorella", "human"]) {
     const construct = buildBicistronicZfn(candidate, preset);
     assert.equal(translateDna(construct.cds), `${construct.protein}*`);
-    assert.equal(construct.protein, `${construct.left.protein}${DUENAS_F2A}${construct.right.protein}`);
-    assert.equal(construct.processedLeftProtein, `${construct.left.protein}${DUENAS_F2A.slice(0, -1)}`);
+    assert.equal(construct.protein, `${construct.left.protein}${FMDV_F2A}${construct.right.protein}`);
+    assert.equal(construct.processedLeftProtein, `${construct.left.protein}${FMDV_F2A.slice(0, -1)}`);
     assert.equal(construct.processedRightProtein, `P${construct.right.protein}`);
     assert.match(construct.processedRightProtein, /^PMAPKKKRKVYKCPECGKSFS/);
     assert.equal(construct.cds.length % 3, 0);
@@ -95,7 +95,7 @@ test("bicistronic GenBank output contains one annotated ORF and overlapping F2A 
   assert.equal(genbank.match(/^LOCUS/gm)?.length, 1);
   assert.equal(genbank.match(/^\/\//gm)?.length, 1);
   assert.equal(genbank.match(/^     mat_peptide/gm)?.length, 2);
-  assert.match(genbank, /left FokI-ELD; Dueñas-F2A; right FokI-KKR/);
+  assert.match(genbank, /left FokI-ELD; FMDV-F2A; right FokI-KKR/);
   assert.match(genbank, /nucleic-acid donors \(4 taxa\)/);
   for (const { scientificName } of ZFN_NUCLEIC_ACID_DONORS) assert.match(genbank, new RegExp(scientificName));
   assert.match(genbank, /initiating Met retained after F2A Pro/);
