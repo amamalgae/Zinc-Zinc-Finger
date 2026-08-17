@@ -65,6 +65,7 @@ test("selected-pair diagram maps six fingers and reserves plus/minus for the Fok
 test("an original 3ZF mechanism diagram explains the design before sequence input", () => {
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
   const diagram = readFileSync(new URL("../src/ZfnOverviewDiagram.tsx", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
 
   assert.ok(app.indexOf("<ZfnOverviewDiagram />") < app.indexOf('<section className="designer"'));
   assert.match(diagram, /3本のfingerで9 bp/);
@@ -75,5 +76,12 @@ test("an original 3ZF mechanism diagram explains the design before sequence inpu
   assert.match(diagram, /5–7 bp/);
   assert.match(diagram, /overview-strand-name f"[^>]*>F/);
   assert.match(diagram, /overview-strand-name r"[^>]*>R/);
+  assert.match(diagram, /overview-lightning/);
+  assert.doesNotMatch(diagram, /overview-cut|overview-dimer-link/);
+  assert.match(diagram, /overview-mobile-diagram/);
+  assert.match(diagram, /overview-mobile-array right[\s\S]*>C<[\s\S]*KKR（＋）[\s\S]*ZF6[\s\S]*ZF5[\s\S]*ZF4[\s\S]*>N</);
+  assert.match(diagram, /overview-mobile-array left[\s\S]*>N<[\s\S]*ZF1[\s\S]*ZF2[\s\S]*ZF3[\s\S]*ELD（−）[\s\S]*>C</);
+  assert.match(css, /@media \(max-width: 600px\)[\s\S]*\.overview-svg-scroll \{ display: none; \}/);
+  assert.match(css, /@media \(max-width: 600px\)[\s\S]*\.overview-mobile-diagram \{ display: grid;/);
   assert.doesNotMatch(diagram, /2ACB03D5|IN BRIEF|Zinc finger nucleases \(ZFNs\)/);
 });
