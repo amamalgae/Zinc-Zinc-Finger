@@ -1,0 +1,3 @@
+export const APP_VERSION_NUMBER = 21;
+export const APP_VERSION = `ver.${APP_VERSION_NUMBER}`;
+export const APP_VERSION_PR_URL = `https://github.com/amamalgae/Zinc-Zinc-Finger/pull/${APP_VERSION_NUMBER}`;

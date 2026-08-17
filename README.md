@@ -18,6 +18,8 @@ Sander 2011のContext-Dependent Assembly（CoDA）archiveを使い、左右3-fin
 
 入力配列はブラウザ内だけで処理され、外部へ送信されません。FASTA header、空白、位置番号は無視します。IUPAC曖昧塩基とgapは`N`として座標を保持し、それらをまたぐ標的窓は候補から除外します。未対応文字がある場合は設計を停止します。
 
+画面右上の`ver.N`は、その版を導入したGitHub Pull Request `#N`に対応し、表記自体から該当PRを開けます。
+
 ## CoDAの組立て
 
 CoDAは、実験的に選択されたF1/F2 unitとF2/F3 unitを、共通する固定F2で接続します。標的ごとに新たなライブラリを作ってselectionする工程は設計時に不要ですが、完成ZFNの発現・結合・切断・毒性・off-target検証は必要です。
