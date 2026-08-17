@@ -1,6 +1,6 @@
 # Zinc Zinc Finger: AI handoff and decision record
 
-Last reconciled: 2026-08-17, for PR #29 based on `main` commit `aa54fbc`, plus the source files listed in section 10.
+Last reconciled: 2026-08-17, for PR #42 based on `main` commit `9695a8a`, plus the source files listed in section 10.
 
 This document is the durable context for a new AI or developer who has no access to the prior ChatGPT conversations. Read it before modifying the scientific logic. The current README explains what the public site does; this file also explains what it used to do, why approaches were removed, what the evidence can and cannot support, and which questions remain open.
 
@@ -130,8 +130,12 @@ The array framework comes from WO2011017293A2, SEQ ID NOs 841-844:
 Candidates are sorted by:
 
 1. absolute distance from the requested spacer center;
-2. absolute difference of spacer length from 6 bp;
+2. an explicit spacer preference of 6 bp, then 5 bp, then 7 bp;
 3. lower genomic start coordinate.
+
+Distance remains the primary criterion because the tool is intended to place a cleavage region near a requested KI position. The spacer preference is applied only when candidates have equal distance. It is a low-resolution, cohort-informed tie-break rather than a candidate-specific activity prediction: Shimizu 2009 found a strong 6-bp optimum for the 6-aa `TGAAAR` ZF-FokI linker, while the independent CoDA cohort in Chen 2013 found 7-bp targets substantially less likely to be active than 5- or 6-bp targets. The current complete CoDA-3F/ELD/F2A/KKR construct was not tested in those experiments, so the ranking must not be reported as an expected indel percentage.
+
+Sources: Shimizu et al. (2009), DOI `10.1016/j.bmcl.2009.02.109`; Chen et al. (2013), DOI `10.1093/nar/gks1356`.
 
 The scanner returns at most 30 candidates; the UI shows the first 12 and CSV can contain the returned set. No B-score, PWM, SVM, predicted affinity, predicted indel percentage, or off-target score is used in current ranking.
 
@@ -146,6 +150,8 @@ The current spacer-dependent linker map is:
 | 7 bp | `TGPGAAAR` |
 
 These were inherited from the extended-MA implementation. Treat them as a design choice, not as a measurement that uniquely determines the exact cleavage position.
+
+Händel et al. (2009), DOI `10.1038/mt.2008.233`, systematically compared ZF-FokI inter-domain linkers across spacer lengths. Bhakta et al. (2013), DOI `10.1101/gr.143693.112`, used the exact `TGGS`/`TGAAAR`/`TGPGAAAR` mapping for 5/6/7-bp targets. These studies support retaining the three constructs, but they do not establish equal performance or a candidate-specific success probability; 7-bp output remains the least-supported rank class.
 
 ## 4. Exact current protein construct
 
@@ -246,7 +252,7 @@ The current archive/selection tests establish implementation consistency, not bi
 - every unit's F2 helix equals its fixed F2 declaration;
 - F1/F3 target-count distributions match independently encoded patent totals;
 - all `4^9 = 262,144` 9-mers are enumerated, and exactly the F1-by-F3 combinations sharing a fixed F2 assemble;
-- scanner order equals an independent exhaustive oracle for both strands, all 5-7 bp spacers, distance bounds, and tie-breaks;
+- scanner order equals an independent exhaustive oracle for both strands, all 5-7 bp spacers, distance bounds, and the 6-bp then 5-bp then 7-bp equal-distance tie-break;
 - ambiguity does not join separated sequence fragments;
 - unsupported characters block design;
 - current output contains full arrays, ELD, F2A, and KKR but no generated CDS.
@@ -325,8 +331,9 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 11. **Mechanism-diagram legibility phase:** the ambiguous dotted center guide and slash-like cut marks were replaced with lightning-shaped cuts on both F and R rows. The KKR- and ELD-side C termini were moved after their FokI domains and rendered above the domain shapes. A separate compact phone layout preserves F/R, ZF1–ZF6, N/C, ELD/KKR, spacer length, and both cut marks in one viewport without horizontal scrolling.
 12. **Selected-target focus phase:** the numbered selected-pair explanation was changed into an unnumbered design-confirmation panel. Candidate-specific target bases now appear first as left 9 bp, spacer, and right 9 bp, with the F/R duplex and ZF1–ZF6 mapping visible without horizontal scrolling. Repeated fixed-architecture explanations and the duplicate FokI citation were removed from this panel because the pre-input mechanism figure and evidence section already cover them.
 13. **Display-versus-control phase:** the selected-design region stopped using the same bordered white card as the input and candidate controls. It now uses a borderless tinted background, states that it is display-only, and directs changes back to step 02. The target diagram also lost its nested outline, while the protein-output card retains a boundary because it contains the download action.
+14. **Spacer-priority phase:** requested spacer-center distance remained the primary rank criterion, but the equal-distance tie-break changed from symmetric closeness to 6 bp to the evidence-informed order 6 bp, 5 bp, then 7 bp. The UI states this order and explicitly says it is not a candidate-specific activity prediction.
 
-### 7.2 Complete main-branch commit/PR ledger through PR #29
+### 7.2 Complete main-branch commit/PR ledger through PR #42
 
 | Date | Commit / PR | Change and significance |
 |---|---|---|
@@ -369,6 +376,19 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 | 2026-08-17 | `3a9cc34` / #27 | Kept the central ELD (−) / KKR (+) heterodimer label on one line after visual inspection of the deployed diagram. |
 | 2026-08-17 | `aa54fbc` / #28 | Added an original pre-input SVG overview of the two 3ZF monomers, F/R duplex, 5–7 bp spacer, and FokI heterodimer mechanism. |
 | 2026-08-17 | PR #29 | Replaced ambiguous center marks with separate F/R lightning cuts, corrected both post-FokI C termini, and added a no-horizontal-scroll phone layout. |
+| 2026-08-17 | PR #30 | Pointed the public GitHub link to the repository Code page. |
+| 2026-08-17 | PR #31 | Clarified browser-local processing and the host evidence for the CoDA study. |
+| 2026-08-17 | PR #32 | Clarified the local-processing label and spacer cut-site marks. |
+| 2026-08-17 | PR #33 | Corrected spacer cut-mark and label alignment. |
+| 2026-08-17 | PR #34 | Increased the spacer cut-site label size. |
+| 2026-08-17 | PR #35 | Removed a redundant hero benefit. |
+| 2026-08-17 | PR #36 | Unified spacer annotation styling. |
+| 2026-08-17 | PR #37 | Clarified the beginner-facing ZFN mechanism heading. |
+| 2026-08-17 | PR #38 | Simplified the hero title. |
+| 2026-08-17 | PR #39 | Simplified the hero description. |
+| 2026-08-17 | PR #40 | Refocused the selected-design panel on the candidate-specific target DNA. |
+| 2026-08-17 | `9695a8a` / #41 | Separated the selected-design display from interactive controls. |
+| 2026-08-17 | PR #42 | Applied the equal-distance spacer preference 6 bp, 5 bp, then 7 bp; added disclosure, regression coverage, and scientific rationale. |
 
 The abandoned T2A stage cited Katayama and Yamamoto (2025), DOI `10.3390/ijms26157602`, as a GSG-T2A ZFN precedent. It is historical only: current output uses an FMDV-derived F2A sequence without the old GSG-T2A implementation.
 
@@ -383,9 +403,11 @@ Every paper DOI needed to understand the current implementation, retained valida
 | Current | Lei, 2011, `10.1038/mt.2011.12` | Prior ZFN pair expressed from an F2A-linked ORF in mammalian cells. |
 | Context | Zhang, 2024, `10.1016/j.sbi.2024.102836` | Review of the updated C2H2 ZF-DNA recognition code; guided caution about simple triplet independence. |
 | Legacy | Bhakta, 2010, `10.1007/978-1-60761-753-2_1` | Barbas one-finger modular-assembly sequences/framework summary. |
-| Legacy | Bhakta, 2013, `10.1101/gr.143693.112` | Extended MA, B-score, linkers, and activity benchmarks. |
+| Current/legacy | Händel, 2009, `10.1038/mt.2008.233` | Systematic ZF-FokI inter-domain linker and spacer-length comparison. |
+| Current | Shimizu, 2009, `10.1016/j.bmcl.2009.02.109` | Restricted 6-bp spacer tolerance of the `TGAAAR` linker; supports the first spacer tie-break. |
+| Current/legacy | Bhakta, 2013, `10.1101/gr.143693.112` | Exact 5/6/7-bp linker mapping, extended MA, B-score, and activity benchmarks. |
 | Legacy | Zhu, 2011, `10.1242/dev.066779` | Position-specific 3F modules and zebrafish lesion data; temporary public design basis. |
-| Legacy | Chen, 2013, `10.1093/nar/gks1356` | Independent CoDA ZFN activity cohort used to reject DeepZF as an activity ranker. |
+| Current/legacy | Chen, 2013, `10.1093/nar/gks1356` | Independent CoDA ZFN cohort; supports demoting 7-bp ties and was also used to reject DeepZF as an activity ranker. |
 | Legacy | Sander, 2013, `10.1093/nar/gkt716` | Prospective and screened off-target cohorts; asymmetric anchor validation. |
 | Legacy | Fine, 2014, `10.1093/nar/gkt1326` | PROGNOS ZFN v2.0 equations, parameters, and HBB 3F/4F validation. |
 | Legacy | Persikov, 2014, `10.1093/nar/gkt890` | Expanded linear SVM and overlapping four-base recognition model. |
@@ -406,7 +428,7 @@ Patent/data references without a DOI:
 
 ### Highest priority scientific gaps
 
-1. **No individual CoDA activity model.** Current candidates are archive-compatible, not activity-ranked. If the full 181-array B2H sequence/measurement table can be obtained, first audit whether it truly maps each complete protein to a quantitative measurement before adding any ranker.
+1. **No individual CoDA activity model.** Current candidates are archive-compatible and use only a coarse spacer-length tie-break, not a candidate-specific activity model. If the full 181-array B2H sequence/measurement table can be obtained, first audit whether it truly maps each complete protein to a quantitative measurement before adding any ranker.
 2. **No current off-target workflow.** The old scanner and benchmark evidence remain, but the current 3F UI does not expose genome-wide search. Reintroducing it is nontrivial because 3F anchors generate many hits and mobile performance can be poor. A lightweight exact/near-match report should be specified and benchmarked separately.
 3. **Regulatory provenance of the CoDA framework.** Resolve the synthetic framework's reporting category before claiming four biological donor species.
 4. **Complete-construct validation.** Test expression, F2A processing, nuclear localization, and paired nuclease activity of the exact CoDA-3F/ELD/F2A/KKR architecture in the target organism.
@@ -444,7 +466,7 @@ The following files were inspected directly on 2026-08-17. They are not committe
 
 The three Zhu workbook hashes exactly match the hashes already recorded in `data/zhu-2011-ma-zfn-benchmark.json`. The Fine inner-PDF hash exactly matches `data/fine-2014-zfn-off-targets.json`. This is a source-identity check, not an independent verification of every transformed JSON field.
 
-Full-text availability note: the Doyon paper and Fine supplement above were available and read locally. The three Zhu supplementary workbooks were read directly. This reconciliation did not have a separate local full-text PDF for every paper in section 8; conclusions about those works rely on the repository's prior full-text/supplement analyses and retained provenance. Obtain the paper/supplement before changing a claim that depends on an unreviewed table or sequence.
+Full-text availability note: the Doyon paper and Fine supplement above were available and read locally. The three Zhu supplementary workbooks were read directly. The freely accessible full texts of Händel 2009, Shimizu 2009, Bhakta 2013, and Chen 2013 were inspected for the PR #42 spacer-ranking decision. This reconciliation did not have a separate local full-text PDF for every other paper in section 8; conclusions about those works rely on the repository's prior full-text/supplement analyses and retained provenance. Obtain the paper/supplement before changing a claim that depends on an unreviewed table or sequence.
 
 ## 11. Commands and acceptance checklist
 

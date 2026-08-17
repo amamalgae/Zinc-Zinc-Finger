@@ -9,6 +9,7 @@ import {
 } from "../src/coda-construct-output.ts";
 import {
   cleanDNA,
+  compareCodaCandidates,
   generateCodaCandidates,
   parseDNAInput,
   reverseComplement,
@@ -138,6 +139,17 @@ test("ZFN scanning preserves strand orientation and 5-7 bp spacer geometry", () 
   assert.deepEqual(candidate.rightArray.fingers.map(({ triplet }) => triplet), ["GAG", "GGG", "GTG"]);
 });
 
+test("equal-distance candidates prefer 6 bp, then 5 bp, then 7 bp spacers", () => {
+  const candidates = [7, 5, 6].map((spacerLength) => ({
+    distance: 2,
+    spacerLength,
+    start: 10,
+  }));
+
+  candidates.sort(compareCodaCandidates);
+  assert.deepEqual(candidates.map(({ spacerLength }) => spacerLength), [6, 5, 7]);
+});
+
 test("bounded scanner has the same ordering as an independent exhaustive oracle", () => {
   const dna = `${target}ACGT${target}GGGG${target}`;
   const desiredCut = 38.5;
@@ -155,7 +167,8 @@ test("bounded scanner has the same ordering as an independent exhaustive oracle"
       }
     }
   }
-  oracle.sort((left, right) => left.distance - right.distance || Math.abs(left.spacerLength - 6) - Math.abs(right.spacerLength - 6) || left.start - right.start);
+  const spacerPriority = { 6: 0, 5: 1, 7: 2 };
+  oracle.sort((left, right) => left.distance - right.distance || spacerPriority[left.spacerLength] - spacerPriority[right.spacerLength] || left.start - right.start);
   const actual = generateCodaCandidates(dna, desiredCut, maxDistance, 30)
     .map(({ id, distance, spacerLength, start }) => ({ id, distance, spacerLength, start }));
   assert.deepEqual(actual, oracle.slice(0, 30));

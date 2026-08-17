@@ -40,6 +40,14 @@ test("landing page leads with the CoDA-based value proposition and qualifies the
   assert.doesNotMatch(app, /3つのfingerで/i);
 });
 
+test("candidate ranking discloses the evidence-informed spacer tie-break", () => {
+  const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
+
+  assert.match(app, /同距離では6 bp、5 bp、7 bpの順/);
+  assert.match(app, /希望位置優先 · 同距離6→5→7 bp/);
+  assert.match(app, /候補ごとの活性予測ではありません/);
+});
+
 test("interactive controls remain distinguishable from informational labels", () => {
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
   const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
