@@ -19,7 +19,7 @@ import {
   CODA_F3_UNIT_COUNT,
   type CodaFinger,
 } from "./coda-module-archive.ts";
-import { buildZfnBindingMap, type ZfnFingerTarget } from "./zfn-binding-map.ts";
+import { buildZfnBindingMap } from "./zfn-binding-map.ts";
 import ZfnOverviewDiagram from "./ZfnOverviewDiagram.tsx";
 
 const EXAMPLE_LEFT_RECOGNITION = "GTGGGGGAG";
@@ -90,54 +90,32 @@ function CandidateRow({ candidate, rank, selected, onSelect }: {
   );
 }
 
-function ProteinFinger({ target }: { target: ZfnFingerTarget }) {
-  return (
-    <span className={`protein-finger ${target.monomer}`}>
-      <strong>ZF{target.globalFinger}</strong>
-      <small>{target.recognitionTriplet}</small>
-    </span>
-  );
-}
-
 function ZfnBindingDiagram({ candidate }: { candidate: CodaCandidate }) {
   const map = buildZfnBindingMap(candidate);
 
   return (
     <figure className="binding-figure">
       <figcaption>
-        <span>HOW THE SELECTED PAIR BINDS</span>
-        <h3>左右それぞれ3本のfingerが、計18 bpを認識</h3>
-        <p>候補を選ぶと、ZF1〜ZF6と実際の3塩基配列の対応がここに表示されます。</p>
+        <span>TARGET DNA</span>
+        <h3>選択した標的塩基配列</h3>
+        <p>各ZFの下に、そのfingerが対応する3 bpを表示しています。</p>
       </figcaption>
 
-      <div className="monomer-map" aria-label="左右の3ZFとFokI切断ドメインの向き">
-        <div className="protein-lane left">
-          <span className="terminus">N</span>
-          {map.leftProteinOrder.map((finger) => <ProteinFinger key={finger.globalFinger} target={finger} />)}
-          <span className="nuclease-domain negative"><small>ヌクレアーゼ</small><strong>FokI · ELD（−）</strong></span>
-          <span className="terminus">C</span>
-        </div>
-
-        <div className="heterodimer-callout">
-          <strong>ELD（−） <b>×</b> KKR（＋）</strong>
-          <span>ヘテロ二量体を形成</span>
-          <small>逆の電荷をもつ2種類のFokI切断ドメインがspacer上で対になってDNAを切断</small>
-        </div>
-
-        <div className="protein-lane right">
-          <span className="terminus">C</span>
-          <span className="nuclease-domain positive"><small>ヌクレアーゼ</small><strong>FokI · KKR（＋）</strong></span>
-          {[...map.rightProteinOrder].reverse().map((finger) => <ProteinFinger key={finger.globalFinger} target={finger} />)}
-          <span className="terminus">N</span>
-        </div>
-        <div className="protein-direction left-direction">protein N → C</div>
-        <div className="protein-direction right-direction">protein C ← N</div>
+      <div className="target-summary" aria-label="選択した標的配列の概要">
+        <div><span>左ZFN標的</span><strong>{candidate.leftTop}</strong><small>9 bp</small></div>
+        <div className="spacer"><span>spacer</span><strong>{candidate.spacer}</strong><small>{candidate.spacerLength} bp</small></div>
+        <div className="right"><span>右ZFN標的</span><strong>{candidate.rightTop}</strong><small>9 bp</small></div>
       </div>
 
-      <div className="dna-scroll" tabIndex={0} aria-label="選択配列とZF1からZF6の対応。横にスクロールできます。">
+      <div className="dna-scroll" aria-label="選択した標的塩基配列とZF1からZF6の対応">
         <div className="dna-map">
+          <div className="dna-group-labels" aria-hidden="true">
+            <strong className="left">左ZFN標的 · 9 bp</strong>
+            <strong className="spacer">spacer · {candidate.spacerLength} bp</strong>
+            <strong className="right">右ZFN標的 · 9 bp</strong>
+          </div>
           <div className="dna-row dna-labels" aria-hidden="true">
-            <span className="strand-name">finger</span><span />
+            <span className="strand-name">ZF</span><span />
             {map.topStrandOrder.slice(0, 3).map((finger) => <strong className="left" key={finger.globalFinger}>ZF{finger.globalFinger}</strong>)}
             <strong className="spacer-label">spacer</strong>
             {map.topStrandOrder.slice(3).map((finger) => <strong className="right" key={finger.globalFinger}>ZF{finger.globalFinger}</strong>)}
@@ -150,7 +128,6 @@ function ZfnBindingDiagram({ candidate }: { candidate: CodaCandidate }) {
             {map.topStrandOrder.slice(3).map((finger) => <code className="right" key={finger.globalFinger}>{finger.topTriplet}</code>)}
             <span className="dna-end">3′</span>
           </div>
-          <div className="cut-track" aria-hidden="true"><span>FokI切断領域</span></div>
           <div className="dna-row reverse-strand">
             <strong className="strand-name">R</strong><span className="dna-end">3′</span>
             {map.topStrandOrder.slice(0, 3).map((finger) => <code className="left" key={finger.globalFinger}>{finger.bottomTriplet}</code>)}
@@ -161,13 +138,12 @@ function ZfnBindingDiagram({ candidate }: { candidate: CodaCandidate }) {
         </div>
       </div>
 
-      <div className="binding-explainer">
-        <div><strong>1 finger ≈ 3 bp</strong><p>左3ZFはZF1〜3、右3ZFはZF4〜6です。2本で計6 finger、18 bpを認識します。</p></div>
-        <div><strong>右側がZF6 → ZF4に見える理由</strong><p>fingerはDNAと逆平行に結合します。右arrayのprotein順はN→CでZF4→5→6ですが、Fを左から読むとZF6→5→4です。</p></div>
-        <div><strong>FokIはDNAを切るヌクレアーゼ</strong><p>ELD（−）とKKR（＋）は界面の電荷が異なるFokI変異型です。異種同士で組む「obligate heterodimer」として、spacerを挟んで切断します。</p></div>
+      <div className="target-legend" aria-label="配列図の凡例">
+        <span className="left"><i />左ZFNが認識</span>
+        <span className="spacer"><i />FokI切断領域</span>
+        <span className="right"><i />右ZFNが認識</span>
       </div>
-      <p className="binding-note">各protein block内の3塩基は、そのfingerが読むrecognition tripletです。ZF1〜ZF6は図の通し番号で、CoDA archive内部では左右ともF1〜F3として扱います。</p>
-      <a className="binding-source" href="https://doi.org/10.1038/nmeth.1539" target="_blank" rel="noreferrer">FokI ELD/KKR: Doyon et al. 2011 · DOI 10.1038/nmeth.1539 <span aria-hidden="true">↗</span></a>
+      <p className="binding-note">F鎖を5′→3′で表示しています。右ZFNはDNAと逆平行に結合するため、配列上ではZF6 → ZF5 → ZF4の順です。</p>
     </figure>
   );
 }
@@ -250,11 +226,21 @@ export default function Home() {
 
       {selected && construct && (
         <section className="selected-design">
-          <div className="selected-heading"><div><span>03 · SELECTED ZFN PAIR</span><h2>選択したZFNペア · spacer中心 {formatCut(selected.cut)}</h2></div><div className="gnn-badge"><strong>{selected.spacerLength} bp</strong><small>spacer</small></div></div>
+          <div className="selected-heading">
+            <div>
+              <span>SELECTED DESIGN</span>
+              <h2>標的塩基配列とfingerの対応</h2>
+              <p>02で選択したZFNペアの設計内容です。候補を変更すると、この配列図も切り替わります。</p>
+            </div>
+            <div className="selected-metrics">
+              <div><small>spacer中心</small><strong>{formatCut(selected.cut)}</strong></div>
+              <div><small>spacer</small><strong>{selected.spacerLength} bp</strong></div>
+            </div>
+          </div>
           <ZfnBindingDiagram candidate={selected} />
 
           <div className="output-card">
-            <div className="output-heading"><div><span>04 · PROTEIN OUTPUT</span><h2>1本のORFで、左右2本のZFNを発現</h2></div><span className="protein-only-badge">出力形式：Protein FASTA</span></div>
+            <div className="output-heading"><div><span>PROTEIN OUTPUT</span><h2>1本のORFで、左右2本のZFNを発現</h2></div><span className="protein-only-badge">出力形式：Protein FASTA</span></div>
             <p className="output-intro">選択した左右CoDA arrayをFokI ELD/KKRと組み合わせ、F2Aで連結した完全アミノ酸配列を出力します。</p>
             <ArchitectureDiagram />
             <div className="output-stats"><span><strong>{construct.protein.length}</strong>aa precursor</span><span><strong>{construct.processedLeftProtein.length}</strong>aa left product</span><span><strong>{construct.processedRightProtein.length}</strong>aa right product</span><span><strong>{FMDV_F2A.length}</strong>aa F2A</span></div>
