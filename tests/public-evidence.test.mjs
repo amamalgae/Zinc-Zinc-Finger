@@ -86,10 +86,10 @@ test("an original 3ZF mechanism diagram explains the design before sequence inpu
   assert.match(diagram, /overview-mobile-array left[\s\S]*>N<[\s\S]*ZF1[\s\S]*ZF2[\s\S]*ZF3[\s\S]*ELD（−）[\s\S]*>C</);
   assert.match(css, /@media \(max-width: 600px\)[\s\S]*\.overview-svg-scroll \{ display: none; \}/);
   assert.match(css, /@media \(max-width: 600px\)[\s\S]*\.overview-mobile-diagram \{ display: grid;/);
-  assert.match(patch, /\.overview-spacer-length,\s*\.overview-spacer-label \{\s*dominant-baseline: middle;/);
+  assert.match(patch, /\.overview-spacer-length,\s*\.overview-spacer-label \{\s*dominant-baseline: middle;\s*fill: #95461f;\s*font-size: 16px;/);
   assert.match(patch, /\.overview-lightning \{\s*transform: scale\(\.65\)/);
-  assert.match(patch, /\.overview-spacer-label \{\s*font-size: 12px;/);
-  assert.match(patch, /\.overview-mobile-spacer \.cut-label \{[\s\S]*font-size: 8px;/);
+  assert.match(patch, /\.overview-mobile-spacer > span \{[\s\S]*color: #95461f;[\s\S]*font-size: 8px;/);
+  assert.match(patch, /\.overview-mobile-spacer \.cut-label \{[\s\S]*color: #95461f;[\s\S]*font-size: 8px;/);
   assert.match(patch, /\.overview-mobile-lightning\.top \{\s*top: -6px;/);
   assert.match(patch, /\.overview-mobile-lightning\.bottom \{\s*bottom: -6px;/);
   assert.doesNotMatch(diagram, /2ACB03D5|IN BRIEF|Zinc finger nucleases \(ZFNs\)/);
