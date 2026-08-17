@@ -47,6 +47,12 @@ These legacy modules and their associated analysis remain in the repository for 
 
 `data/zhu-2011-ma-zfn-benchmark.json` and its benchmark script remain only as legacy comparative evidence and are not used by the current public designer or sequence exporter.
 
+### Why CoDA is the public implementation
+
+CoDA is included because its finite unit archive and exact shared-F2 assembly rule can be independently transcribed, audited, and implemented without bundling a target-specific selection service or a third-party trained model. This is a reproducibility and distributability decision, not a statement that CoDA is biologically superior at every target or free of intellectual-property restrictions.
+
+The project deliberately does not bundle ZFDesign code/data, DeepZF weights, or the official Persikov model. ZFDesign's article requires an academic material transfer agreement for the selection data and code; the other external model files did not carry redistribution terms sufficiently explicit for this project when reviewed. Their omission avoids representing third-party weights or restricted data as MIT-licensed project assets. CoDA's own patent family, sequence disclosures, and any claims applicable to a country, date, product, or commercial use still require a separate freedom-to-operate review. A public patent document or a ceased PCT application is not, by itself, a worldwide FTO conclusion.
+
 ## Persikov–Singh expanded linear SVM
 
 `src/persikov-svm.ts` is an independent TypeScript implementation of the published seven-contact expanded linear SVM and overlapping four-base recognition model described in:
@@ -78,12 +84,11 @@ The generated DNA is a computed synthetic coding sequence, not a plasmid or expr
 
 ## F2A bicistronic ZFN output
 
-`src/construct-output.ts` and `src/coda-construct-output.ts` join the left FokI-ELD ZFN and right FokI-KKR ZFN in one ORF using the 22-aa F2A sequence `VKQLLNFDLLKLAGDVESNPGP` reported in:
+`src/construct-output.ts` and `src/coda-construct-output.ts` join the left FokI-ELD ZFN and right FokI-KKR ZFN in one ORF using the 22-aa FMDV-derived F2A sequence `VKQLLNFDLLKLAGDVESNPGP`. The paired-ZFN architecture is supported by:
 
-- Dueñas ME et al. (2025), *A versatile green algal platform for light-driven protein production*, DOI: 10.1073/pnas.2417695122.
 - Lei Y et al. (2011), *Gene editing of human embryonic stem cells via an engineered baculoviral vector carrying zinc-finger nucleases*, DOI: 10.1038/mt.2011.12.
 
-Dueñas directly compared GFP–2A–luciferase constructs in *Auxenochlorella protothecoides*; the F2A construct supported both reporter outputs. The sequence derives from foot-and-mouth disease virus. Ribosomal skipping occurs between its terminal glycine and proline, leaving the first 21 residues on the upstream ZFN and proline on the downstream ZFN. The complete CoDA-3F/ELD/F2A/KKR combination generated here is a design proposal and has not itself been experimentally validated.
+Lei expressed the right and left ZFNs from a baculoviral construct with an intervening F2A sequence and demonstrated CCR5 editing in human embryonic stem cells. That paper supports the single-ORF paired-ZFN strategy; this repository does not claim that Lei is the source of the exact 22-aa project constant. Ribosomal skipping is modeled between the terminal glycine and proline, leaving the first 21 residues on the upstream ZFN and proline on the downstream ZFN. The complete CoDA-3F/ELD/F2A/KKR combination generated here is a design proposal and has not itself been experimentally validated.
 
 ## Fauser 2024 four-base context data
 

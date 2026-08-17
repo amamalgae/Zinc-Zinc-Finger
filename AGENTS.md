@@ -16,6 +16,7 @@ Before changing this repository, read [docs/AI_HANDOFF.md](docs/AI_HANDOFF.md) i
 - Archive membership does not guarantee binding, cleavage, specificity, or editing. Avoid reporting an unmeasured candidate-specific success probability.
 - The current donor display has four component categories but only three named biological source taxa plus a synthetic CoDA C2H2 array. The legacy Sp1C code's `Homo sapiens` donor must not be copied into current CoDA output without evidence.
 - The complete CoDA-3F/ELD/F2A/KKR construct is a design proposal assembled from separately supported parts; it has not been tested as a complete construct.
+- The public F2A rationale is the mammalian paired-ZFN single-ORF precedent in Lei 2011. Describe the 22-aa project sequence generically as FMDV-derived unless an exact primary sequence source is separately established.
 - Public-data implementation is not freedom-to-operate clearance. Do not state or imply otherwise.
 - When citing a paper in project documentation, give the year, first author, and DOI.
 

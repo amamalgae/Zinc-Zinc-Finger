@@ -28,7 +28,7 @@ export const ZFN_NUCLEIC_ACID_DONORS: readonly NucleicAcidDonor[] = [
   {
     component: "F2A",
     scientificName: "Foot-and-mouth disease virus",
-    detail: "Dueñas 2025でAuxenochlorella中の二遺伝子発現が確認された配列",
+    detail: "FMDV由来2A peptide。左右ZFN単一ORFの先例はLei 2011",
   },
 ];
 
@@ -60,10 +60,10 @@ export const FOKI_CLEAVAGE_DOMAIN_WT =
 
 export const SV40_NLS_PREFIX = "MAPKKKRKV";
 
-// Foot-and-mouth disease virus 2A sequence used by Dueñas et al. in
-// Auxenochlorella protothecoides. Ribosomal skipping occurs between the
-// terminal glycine and proline. DOI: 10.1073/pnas.2417695122.
-export const DUENAS_F2A = "VKQLLNFDLLKLAGDVESNPGP";
+// Foot-and-mouth disease virus 2A sequence. Ribosomal skipping is modeled
+// between the terminal glycine and proline. Lei et al. (2011) supports the
+// paired-ZFN F2A-linked ORF architecture; DOI: 10.1038/mt.2011.12.
+export const FMDV_F2A = "VKQLLNFDLLKLAGDVESNPGP";
 
 function mutateFokI(mutations: Array<[number, string, string]>): string {
   const sequence = FOKI_CLEAVAGE_DOMAIN_WT.split("");
@@ -180,7 +180,7 @@ export function buildZfnPair(candidate: Candidate, preset: CodonPreset): ZfnCons
 
 export function buildBicistronicZfn(candidate: Candidate, preset: CodonPreset): BicistronicZfnConstruct {
   const [left, right] = buildZfnPair(candidate, preset);
-  const protein = `${left.protein}${DUENAS_F2A}${right.protein}`;
+  const protein = `${left.protein}${FMDV_F2A}${right.protein}`;
   const cds = `${optimizeCodingSequence(protein, preset)}${optimizeCodingSequence("*", preset)}`;
   return {
     name: `zfn_${candidate.id}_left_ELD_F2A_right_KKR`,
@@ -189,8 +189,8 @@ export function buildBicistronicZfn(candidate: Candidate, preset: CodonPreset): 
     gcPercent: gcPercent(cds),
     left,
     right,
-    processedLeftProtein: `${left.protein}${DUENAS_F2A.slice(0, -1)}`,
-    processedRightProtein: `${DUENAS_F2A.slice(-1)}${right.protein}`,
+    processedLeftProtein: `${left.protein}${FMDV_F2A.slice(0, -1)}`,
+    processedRightProtein: `${FMDV_F2A.slice(-1)}${right.protein}`,
   };
 }
 
@@ -212,7 +212,7 @@ export function bicistronicConstructsToFasta(
   kind: "protein" | "cds",
 ): string {
   return constructs.flatMap((construct) => [
-    `>${construct.name} ${kind}; left FokI-ELD; Dueñas-F2A; right FokI-KKR; SV40_NLS_each_monomer`,
+    `>${construct.name} ${kind}; left FokI-ELD; FMDV-F2A; right FokI-KKR; SV40_NLS_each_monomer`,
     ...wrap(construct[kind], 70),
   ]).join("\n");
 }
@@ -252,7 +252,7 @@ export function bicistronicConstructsToGenBank(
     const codingEnd = construct.cds.length - 3;
     const leftEnd = construct.left.protein.length * 3;
     const f2aStart = leftEnd + 1;
-    const f2aEnd = (construct.left.protein.length + DUENAS_F2A.length) * 3;
+    const f2aEnd = (construct.left.protein.length + FMDV_F2A.length) * 3;
     const rightStart = f2aEnd + 1;
     const downstreamProductStart = f2aEnd - 2;
     const rightNlsEnd = rightStart + SV40_NLS_PREFIX.length * 3 - 1;
@@ -262,7 +262,7 @@ export function bicistronicConstructsToGenBank(
     });
     return [
       `LOCUS       ${construct.name.slice(0, 16).padEnd(16)} ${String(construct.cds.length).padStart(7)} bp    DNA     linear   SYN 01-JAN-2000`,
-      "DEFINITION  Synthetic bicistronic left-ELD/Dueñas-F2A/right-KKR ZFN coding sequence.",
+      "DEFINITION  Synthetic bicistronic left-ELD/FMDV-F2A/right-KKR ZFN coding sequence.",
       "ACCESSION   .",
       "VERSION     .",
       "KEYWORDS    synthetic construct; zinc finger nuclease; F2A.",
@@ -271,12 +271,12 @@ export function bicistronicConstructsToGenBank(
       "FEATURES             Location/Qualifiers",
       `     CDS             1..${codingEnd}`,
       `                     /gene="${construct.name}"`,
-      `                     /note="single ORF; SV40 NLS on each monomer; Sp1C ZFA; left FokI-ELD; Dueñas-F2A; right FokI-KKR; codon preset ${preset}; nucleic-acid donors (4 taxa): Betapolyomavirus macacae, Homo sapiens, Flavobacterium okeanokoites, Foot-and-mouth disease virus"`,
+      `                     /note="single ORF; SV40 NLS on each monomer; Sp1C ZFA; left FokI-ELD; FMDV-F2A; right FokI-KKR; codon preset ${preset}; nucleic-acid donors (4 taxa): Betapolyomavirus macacae, Homo sapiens, Flavobacterium okeanokoites, Foot-and-mouth disease virus"`,
       `                     /translation="${construct.protein}"`,
       `     misc_feature    1..${leftEnd}`,
       "                     /note=\"left ZFN: SV40 NLS (Betapolyomavirus macacae)-Sp1C ZFA (Homo sapiens)-linker-FokI ELD (Flavobacterium okeanokoites; engineered ELD mutations)\"",
       `     misc_feature    ${f2aStart}..${f2aEnd}`,
-      "                     /note=\"Dueñas 2025 F2A from foot-and-mouth disease virus; ribosomal skip between terminal Gly and Pro\"",
+      "                     /note=\"F2A from foot-and-mouth disease virus; ribosomal skip between terminal Gly and Pro\"",
       `     misc_feature    ${rightStart}..${codingEnd}`,
       "                     /note=\"right ZFN: SV40 NLS (Betapolyomavirus macacae)-Sp1C ZFA (Homo sapiens)-linker-FokI KKR (Flavobacterium okeanokoites; engineered KKR mutations)\"",
       `     mat_peptide     1..${f2aEnd - 3}`,

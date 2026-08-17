@@ -28,13 +28,15 @@ CoDAは、実験的に選択されたF1/F2 unitとF2/F3 unitを、共通する�
 
 C2H2 fingerはDNAと逆平行に結合します。認識鎖が`5′-GTG-GGG-GAG-3′`なら、タンパク質のN→C末端は`F1=GAG、F2=GGG、F3=GTG`です。各fingerはWO2011017293A2の共通framework（SEQ ID NOs: 841–844）にrecognition helixを入れ、finger間をcanonical `TGEKP` linkerで連結します。
 
+CoDAを採用したのは、文脈依存で実験選択された有限のunit archiveを、欠損補間なしで再現・全探索できるためです。過去にBarbas extended MA、Zhu 3F、DeepZF、Persikov、ZFDesign、Fauserの各経路を比較しましたが、検証性能、framework互換性、モデル再配布条件、ZFDesignのacademic MTA等を考慮し、一般公開ツールにはCoDAが最も監査可能と判断しました。これはCoDAの特許クリアランスを意味しません。判断表と検証値は[AI handoffの2.1節](docs/AI_HANDOFF.md#21-why-coda-was-selected-after-the-literature-and-availability-review)に記録しています。
+
 ## 構成
 
 ```text
 Promoter → NLS–ZF-L(3F)–FokI ELD → F2A → NLS–ZF-R(3F)–FokI KKR → Terminator
 ```
 
-F2Aのribosomal skippingにより、ELD側とKKR側を1本の転写産物から発現させる設計です。F2AはDueñas 2025でAuxenochlorellaにおけるGFP/F2A/LUCの両側発現が確認された22 aa配列を使います。
+F2Aのribosomal skippingにより、ELD側とKKR側を1本の転写産物から発現させる設計です。現在の22 aa配列はfoot-and-mouth disease virus由来のF2Aです。左右ZFNをF2Aで連結した単一ORFの実施先例として、Lei 2011の哺乳類細胞でのCCR5編集を根拠にしています。
 
 本ツールが固定するのはアミノ酸配列です。CoDA array、finger間linker、ZF–FokI linker、SV40 NLS、FokI ELD/KKR、F2Aはいずれもペプチドとして定義し、特定の同義コドン列には固定しません。DNA合成時に、実際の宿主・オルガネラ・発現ベクターに合わせて別途コドン最適化と配列QCを行います。
 
@@ -47,7 +49,6 @@ CoDA unit tableはSander 2011のSupplementary Tables 1–2を転記し、件数�
 | 3-finger CoDA | Sander et al. (2011), DOI: [10.1038/nmeth.1542](https://doi.org/10.1038/nmeth.1542) |
 | CoDA unit framework | [WO2011017293A2](https://patents.google.com/patent/WO2011017293A2/en) |
 | obligate heterodimer FokI ELD/KKR | Doyon et al. (2011), DOI: [10.1038/nmeth.1539](https://doi.org/10.1038/nmeth.1539) |
-| AuxenochlorellaでのF2A | Dueñas et al. (2025), DOI: [10.1073/pnas.2417695122](https://doi.org/10.1073/pnas.2417695122) |
 | 哺乳類ZFNのF2A単一ORF先例 | Lei et al. (2011), DOI: [10.1038/mt.2011.12](https://doi.org/10.1038/mt.2011.12) |
 
 ## 実装検証の範囲

@@ -1,6 +1,6 @@
 # Zinc Zinc Finger: AI handoff and decision record
 
-Last reconciled: 2026-08-17, against `main` commit `56dd4a8` (PR #21) plus the source files listed in section 10.
+Last reconciled: 2026-08-17, for PR #23 based on `main` commit `a4d78f9`, plus the source files listed in section 10.
 
 This document is the durable context for a new AI or developer who has no access to the prior ChatGPT conversations. Read it before modifying the scientific logic. The current README explains what the public site does; this file also explains what it used to do, why approaches were removed, what the evidence can and cannot support, and which questions remain open.
 
@@ -35,6 +35,27 @@ The intended use is practical ZFN site selection for knock-in and related genome
 7. **Several candidates should be tested.** Archive membership and geometric rank are not activity estimates. A practical experiment should compare multiple candidates in the relevant expression system, ideally with an SSA or another cleavage pre-screen before relying on KI.
 8. **No FTO conclusion in the software.** Public disclosure, an expired patent, or an independently written implementation does not by itself establish freedom to operate for a use and jurisdiction.
 9. **Future 6-finger work is a separate design decision.** Do not obtain "6F" merely by concatenating two current CoDA 3F arrays without a defined construction rule and supporting validation.
+
+### 2.1 Why CoDA was selected after the literature and availability review
+
+The current CoDA choice was not made from one paper in isolation. It followed implementation and quantitative comparison of the approaches below. The decisive question was: **which method can a general browser tool implement reproducibly from inspectable source material, without inventing missing ZFs or redistributing a restricted/unclearly licensed model?**
+
+| Route reviewed | Scientific result in this repository | Availability / IP constraint | Product decision |
+|---|---|---|---|
+| Barbas one-finger and extended modular assembly (Bhakta 2010/2013) | Transparent modules and useful B-score signal, but context transfer is imperfect; reconstructed AUC varied from 0.656 to 0.875 by cohort. | Published sequences can be audited, but simple independent-triplet assembly does not solve adjacent-finger context. | Retained as benchmark/legacy code, not the public designer. |
+| Zhu position-specific 3F modules (Zhu 2011) | Directly tabulated position-specific modules, but only 81 modules; the paper's tested pairs did not map cleanly onto the old Barbas archive. | Inspectable supplement, but narrower target coverage and weaker general basis than the selected CoDA pairs. | Used briefly, then replaced by complete CoDA archive. |
+| DeepZF (Aizenshtein-Gazit 2022) | Near-random activity discrimination on the independent Chen cohort: ROC-AUC 0.491; therefore unsuitable as an activity ranker here. | Upstream weights had no explicit redistribution terms when reviewed, so bundling them under this repository's MIT presentation was not justified. | Evaluated, removed, and not redistributed. |
+| Persikov expanded linear SVM (Persikov 2014) | Useful as a separate recognition-model comparison, not a validated current ZFN activity score. | Official model is accepted only as a user-supplied local file because explicit redistribution permission was not established. | Legacy optional local comparator only. |
+| ZFDesign (Ichikawa 2023) | Stronger modern context-aware design route and scientifically relevant comparison. | The article states that selection data and underlying code require an academic MTA. That is incompatible with silently bundling them in a public general-use MIT repository. | Cited for comparison; code/data excluded. |
+| Fauser four-base-context data (Fauser 2024) | Adds context information, but compatibility with the present framework and direct ZFN activity were not established. | Workbook can be user-loaded locally; no basis to merge it into a complete public ORF as if validated. | Legacy experimental comparator only. |
+| CoDA (Sander 2011) | 319 F1 units, 18 fixed F2 contexts, and 344 F3 units were selected experimentally; exact shared-F2 joins yield 6,680 auditable 9-mers. No new target-specific selection is required during in-silico design. | The article, supplements, and WO2011017293A2 expose a finite archive and framework that can be independently transcribed and structurally audited. This improves reproducibility, but does **not** establish patent clearance. | Selected for the public 3F designer; missing entries remain unavailable and every completed ZFN still requires experiments. |
+
+This choice therefore has two linked reasons:
+
+1. **Scientific/engineering reason:** CoDA represents experimentally selected adjacent-finger contexts and has an exact finite lookup rule. It is more defensible than independent one-finger concatenation, and unlike a predictive model its available/unavailable boundary can be exhaustively tested over all `4^9` targets.
+2. **Availability/IP reason:** the public tool can describe exactly which published rows and patent-disclosed framework sequences it uses, while avoiding redistribution of MTA-controlled code/data or model files without clear redistribution terms. This is a provenance and distribution-risk decision, not a legal opinion that CoDA is unencumbered.
+
+Do not collapse the second reason into “CoDA is patent-free.” WO2011017293A2 and its national family must be analyzed by jurisdiction, legal status, claim scope, date, and intended use. A ceased PCT record, publication of sequences, independently written TypeScript, or the repository's MIT license cannot alone answer FTO. The software should preserve this distinction and direct commercial or regulated users to a current claim-level review.
 
 ## 3. Exact current design logic
 
@@ -138,7 +159,7 @@ MAPKKKRKV-CoDA-right3F-linker-FokI_KKR
 - FokI is UniProt P14870 residues 384-579, 196 aa.
 - ELD mutations: Q486E, N496D, I499L.
 - KKR mutations: E490K, H537R, I538K.
-- F2A is the 22-aa sequence `VKQLLNFDLLKLAGDVESNPGP` used by Dueñas 2025.
+- F2A is the current 22-aa FMDV-derived project sequence `VKQLLNFDLLKLAGDVESNPGP`.
 - Ribosomal skipping is modeled between the terminal Gly and Pro. The upstream product retains the first 21 F2A residues; the downstream product begins with Pro, followed by the right monomer's `MAPKKKRKV`.
 
 For spacer lengths 5/6/7 bp, respectively, the expected lengths are:
@@ -154,10 +175,9 @@ The FASTA exporter emits three sequences: precursor, predicted processed-left, a
 ### 4.2 Evidence and limits of the combined construct
 
 - Doyon et al. (2011), DOI `10.1038/nmeth.1539`, directly supports ELD/KKR as an improved obligate-heterodimer FokI architecture. The supplied full paper confirms the substitutions above and reports activity improvement while retaining homodimer suppression.
-- Dueñas et al. (2025), DOI `10.1073/pnas.2417695122`, supports expression of both sides of a GFP-F2A-LUC reporter in *Auxenochlorella protothecoides* and provides the F2A sequence used here.
 - Lei et al. (2011), DOI `10.1038/mt.2011.12`, is a mammalian precedent for expressing a ZFN pair from one F2A-linked ORF.
 
-These papers support separate components or strategies. **No cited experiment tests this exact CoDA-3F/ELD/F2A/KKR construct in the intended microalgal system.** Expression, F2A processing, localization, cleavage, toxicity, on-target editing, and off-target activity all remain experimental questions.
+These papers support separate components or strategies. Lei 2011 supports the paired-ZFN F2A architecture; it is not claimed here as the primary source of the exact 22-aa project constant. **No cited experiment tests this exact CoDA-3F/ELD/F2A/KKR construct.** Expression, F2A processing, localization, cleavage, toxicity, on-target editing, and off-target activity all remain experimental questions.
 
 ### 4.3 Nucleic-acid donor/provenance nuance
 
@@ -319,7 +339,7 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 | 2026-08-07 | `68041d3` / #11 | Candidate portfolio, full ELD/KKR constructs, Fauser comparison, SSA/amplicon outputs. |
 | 2026-08-07 | `15efb97` / #12 | Single-ORF 2A-linked left/right ZFN output; initially GSG-T2A. |
 | 2026-08-13 | `4308f91` / #13 | Displayed four donor taxa for the then-current Sp1C/T2A construct. |
-| 2026-08-13 | `ba6ba30` / #14 | Replaced the complex public UI with a simple Zhu 3F designer; switched to Dueñas F2A. |
+| 2026-08-13 | `ba6ba30` / #14 | Replaced the complex public UI with a simple Zhu 3F designer; switched to the current 22-aa FMDV-derived F2A. |
 | 2026-08-13 | `f25f045` / #15 | Updated 3F page metadata. |
 | 2026-08-13 | `6688248` / #16 | Updated rendered-title regression test. |
 | 2026-08-13 | `b4c2ae0` / #17 | Replaced search-range toggle with numeric +/-bp input, default 500 bp. |
@@ -327,19 +347,20 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 | 2026-08-14 | `cde821f` / #19 | Removed CoDA codon presets, CDS FASTA, and GenBank; standardized on protein output. |
 | 2026-08-17 | `b36fa2b` / #20 | Preserved ambiguity coordinates, blocked unsupported characters, validated archive at startup, exhaustively tested lookup and scanner order, and added CI. |
 | 2026-08-17 | `56dd4a8` / #21 | Added the visible `ver.21 (PR #21)` badge, linked it to the implementation PR, and added a regression test. |
+| 2026-08-17 | `a4d78f9` / #22 | Added this durable AI handoff, repository agent instructions, literature ledger, source hashes, and full historical decision record. |
+| 2026-08-17 | PR #23 | Removed host-specific F2A evidence from the general tool, retained Lei 2011 as the paired-ZFN F2A precedent, and made the scientific plus IP/availability rationale for CoDA explicit. |
 
-The abandoned T2A stage cited Katayama and Yamamoto (2025), DOI `10.3390/ijms26157602`, as a GSG-T2A ZFN precedent. It is historical only: current output uses the Dueñas F2A sequence without the old GSG-T2A implementation.
+The abandoned T2A stage cited Katayama and Yamamoto (2025), DOI `10.3390/ijms26157602`, as a GSG-T2A ZFN precedent. It is historical only: current output uses an FMDV-derived F2A sequence without the old GSG-T2A implementation.
 
 ## 8. Reference ledger
 
-Every paper DOI used in repository history through 2026-08-17 is listed here. “Current” means it directly informs the present UI/output; “legacy” means it explains retained code, validation, or a rejected route.
+Every paper DOI needed to understand the current implementation, retained validation, and rejected routes through 2026-08-17 is listed here. “Current” means it directly informs the present UI/output; “legacy” means it explains retained code, validation, or a rejected route.
 
 | Status | First author, year, DOI | Role in this project |
 |---|---|---|
 | Current | Sander, 2011, `10.1038/nmeth.1542` | CoDA method and F1/F2/F3 unit archive. |
 | Current | Doyon, 2011, `10.1038/nmeth.1539` | FokI ELD/KKR mutations and obligate-heterodimer evidence. |
 | Current | Lei, 2011, `10.1038/mt.2011.12` | Prior ZFN pair expressed from an F2A-linked ORF in mammalian cells. |
-| Current | Dueñas, 2025, `10.1073/pnas.2417695122` | 22-aa F2A sequence and green-algal reporter evidence. |
 | Context | Zhang, 2024, `10.1016/j.sbi.2024.102836` | Review of the updated C2H2 ZF-DNA recognition code; guided caution about simple triplet independence. |
 | Legacy | Bhakta, 2010, `10.1007/978-1-60761-753-2_1` | Barbas one-finger modular-assembly sequences/framework summary. |
 | Legacy | Bhakta, 2013, `10.1101/gr.143693.112` | Extended MA, B-score, linkers, and activity benchmarks. |
