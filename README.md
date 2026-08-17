@@ -19,6 +19,8 @@ Sander 2011のContext-Dependent Assembly（CoDA）archiveを使い、左右3-fin
 - 前駆体polyproteinとF2A処理後の左右産物をProtein FASTAで保存
 - 塩基配列、codon-optimized CDS、GenBankは生成しない
 
+公開ページは、価値提案とSander 2011の集団成績、ZFNの基本構成を示すオリジナル概念図、配列入力、候補選択、選択配列に対応する詳細図、Protein FASTA出力の順に進みます。概念図では左右各3-finger、F/R DNA、5–7 bp spacer、FokI ELD（−）/KKR（＋）の役割を入力前に説明します。
+
 入力配列はブラウザ内だけで処理され、外部へ送信されません。FASTA header、空白、位置番号は無視します。IUPAC曖昧塩基とgapは`N`として座標を保持し、それらをまたぐ標的窓は候補から除外します。未対応文字がある場合は設計を停止します。
 
 画面右上の`ver.N (PR #N)`は、その版を導入したGitHub Pull Request `#N`に対応し、表記自体から該当PRを開けます。
