@@ -332,8 +332,9 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 12. **Selected-target focus phase:** the numbered selected-pair explanation was changed into an unnumbered design-confirmation panel. Candidate-specific target bases now appear first as left 9 bp, spacer, and right 9 bp, with the F/R duplex and ZF1–ZF6 mapping visible without horizontal scrolling. Repeated fixed-architecture explanations and the duplicate FokI citation were removed from this panel because the pre-input mechanism figure and evidence section already cover them.
 13. **Display-versus-control phase:** the selected-design region stopped using the same bordered white card as the input and candidate controls. It now uses a borderless tinted background, states that it is display-only, and directs changes back to step 02. The target diagram also lost its nested outline, while the protein-output card retains a boundary because it contains the download action.
 14. **Spacer-priority phase:** requested spacer-center distance remained the primary rank criterion, but the equal-distance tie-break changed from symmetric closeness to 6 bp to the evidence-informed order 6 bp, 5 bp, then 7 bp. The UI states this order and explicitly says it is not a candidate-specific activity prediction.
+15. **Selected-display legibility phase (P0 of a three-step redesign):** the selected-design panel said the same thing four times — a figure caption, three summary cards, the in-diagram band labels, and the legend all restated the left 9 bp / spacer / right 9 bp split — so the panel read as four unrelated blocks. The summary cards and the second heading were removed, leaving the diagram as the single statement of that split; the caption survives as a screen-reader-only figure caption. The ranking key `distance` (bp from the requested spacer center) had never been rendered even though it is the primary sort criterion, so it is now the first metric and opens the panel's lead sentence. Type in the region was rebuilt on a 26 / 13 / 12 / 11 px scale with target bases at 17 px, and the 5-8 px labels — 5 px on phones — were raised to a hard 11 px floor that `tests/public-evidence.test.mjs` enforces for every rule in the region. Remaining steps: P1 covers in-diagram legend, binding direction, and candidate/display color continuity; P2 covers a coordinate ruler, real horizontal scrolling on phones, and moving candidate-independent blocks out of the panel.
 
-### 7.2 Complete main-branch commit/PR ledger through PR #42
+### 7.2 Complete main-branch commit/PR ledger through PR #43
 
 | Date | Commit / PR | Change and significance |
 |---|---|---|
@@ -389,6 +390,7 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 | 2026-08-17 | PR #40 | Refocused the selected-design panel on the candidate-specific target DNA. |
 | 2026-08-17 | `9695a8a` / #41 | Separated the selected-design display from interactive controls. |
 | 2026-08-17 | PR #42 | Applied the equal-distance spacer preference 6 bp, 5 bp, then 7 bp; added disclosure, regression coverage, and scientific rationale. |
+| 2026-08-17 | PR #43 | Removed the duplicated target-layout summary and second heading from the selected-design panel, surfaced the requested-center distance as the leading metric, and set an enforced 11 px minimum type size for the region. |
 
 The abandoned T2A stage cited Katayama and Yamamoto (2025), DOI `10.3390/ijms26157602`, as a GSG-T2A ZFN precedent. It is historical only: current output uses an FMDV-derived F2A sequence without the old GSG-T2A implementation.
 

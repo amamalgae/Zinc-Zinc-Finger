@@ -76,7 +76,7 @@ test("selected-design diagram foregrounds the variable target sequence and six-f
   assert.match(app, /buildZfnBindingMap/);
   assert.match(app, /選択内容の表示/);
   assert.match(app, /標的塩基配列とfingerの対応/);
-  assert.match(app, /選択した標的塩基配列/);
+  assert.match(app, /選択した標的塩基配列とZF1–ZF6の対応/);
   assert.match(app, /左ZFN標的 · 9 bp/);
   assert.match(app, /右ZFN標的 · 9 bp/);
   assert.match(app, /strand-name">F</);
@@ -84,6 +84,35 @@ test("selected-design diagram foregrounds the variable target sequence and six-f
   assert.doesNotMatch(app, /03 · SELECTED ZFN PAIR|04 · PROTEIN OUTPUT|binding-explainer/);
   assert.match(css, /\.dna-scroll \{[^}]*overflow: hidden/);
   assert.doesNotMatch(css, /\.dna-map \{[^}]*min-width: 810px/);
+});
+
+test("the selected-design panel states the ranking distance once instead of repeating the target layout", () => {
+  const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
+
+  // The ranking key is distance to the requested spacer centre, so it must be visible.
+  assert.match(app, /希望位置との差/);
+  assert.match(app, /±\{formatCut\(selected\.distance\)\} bp/);
+  assert.match(app, /希望スペーサー中心から±\{formatCut\(selected\.distance\)\} bpの候補です。/);
+
+  // The left/spacer/right split is stated inside the diagram only.
+  assert.doesNotMatch(app, /target-summary/);
+  assert.doesNotMatch(css, /\.target-summary/);
+  assert.doesNotMatch(app, /<h3>選択した標的塩基配列<\/h3>/);
+  assert.match(app, /className="visually-hidden">選択した標的塩基配列/);
+
+  // Nothing in the selected-design region may drop below 11px, on any viewport.
+  const region = css.slice(css.indexOf(".selected-design {"));
+  const selectors = /\.(selected-heading|selected-lead|selected-metrics|display-kicker|dna-[a-z-]+|strand-name|reverse-strand|forward-strand|target-legend|binding-note)/;
+  for (const rule of region.split("\n")) {
+    if (!selectors.test(rule)) continue;
+    for (const [, size] of rule.matchAll(/font-size: (\d+(?:\.\d+)?)px/g)) {
+      assert.ok(Number(size) >= 11, `${rule.trim()} uses ${size}px`);
+    }
+    for (const [, size] of rule.matchAll(/font: [^;]*?(\d+(?:\.\d+)?)px/g)) {
+      assert.ok(Number(size) >= 11, `${rule.trim()} uses ${size}px`);
+    }
+  }
 });
 
 test("an original 3ZF mechanism diagram explains the design before sequence input", () => {

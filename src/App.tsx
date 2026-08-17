@@ -95,17 +95,7 @@ function ZfnBindingDiagram({ candidate }: { candidate: CodaCandidate }) {
 
   return (
     <figure className="binding-figure">
-      <figcaption>
-        <span>TARGET DNA</span>
-        <h3>選択した標的塩基配列</h3>
-        <p>各ZFの下に、そのfingerが対応する3 bpを表示しています。</p>
-      </figcaption>
-
-      <div className="target-summary" aria-label="選択した標的配列の概要">
-        <div><span>左ZFN標的</span><strong>{candidate.leftTop}</strong><small>9 bp</small></div>
-        <div className="spacer"><span>spacer</span><strong>{candidate.spacer}</strong><small>{candidate.spacerLength} bp</small></div>
-        <div className="right"><span>右ZFN標的</span><strong>{candidate.rightTop}</strong><small>9 bp</small></div>
-      </div>
+      <figcaption className="visually-hidden">選択した標的塩基配列とZF1–ZF6の対応</figcaption>
 
       <div className="dna-scroll" aria-label="選択した標的塩基配列とZF1からZF6の対応">
         <div className="dna-map">
@@ -230,11 +220,13 @@ export default function Home() {
             <div>
               <span className="display-kicker"><i aria-hidden="true" />選択内容の表示</span>
               <h2>標的塩基配列とfingerの対応</h2>
+              <p className="selected-lead">希望スペーサー中心から±{formatCut(selected.distance)} bpの候補です。{selected.spacerLength} bpのspacerを挟む左右9 bpを、ZF1–ZF6が下図のとおり認識します。</p>
               <p>この欄は表示専用です。設計を変更する場合は、02で別の候補を選択してください。</p>
             </div>
             <div className="selected-metrics">
-              <div><small>spacer中心</small><strong>{formatCut(selected.cut)}</strong></div>
+              <div><small>希望位置との差</small><strong>±{formatCut(selected.distance)} bp</strong></div>
               <div><small>spacer</small><strong>{selected.spacerLength} bp</strong></div>
+              <div><small>spacer中心</small><strong>{formatCut(selected.cut)}</strong></div>
             </div>
           </div>
           <ZfnBindingDiagram candidate={selected} />
