@@ -1,3 +1,3 @@
-export const APP_VERSION_NUMBER = 32;
+export const APP_VERSION_NUMBER = 33;
 export const APP_VERSION = `ver.${APP_VERSION_NUMBER} (PR #${APP_VERSION_NUMBER})`;
 export const APP_VERSION_PR_URL = "https://github.com/amamalgae/Zinc-Zinc-Finger";
