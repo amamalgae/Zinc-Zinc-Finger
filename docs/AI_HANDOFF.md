@@ -1,6 +1,6 @@
 # Zinc Zinc Finger: AI handoff and decision record
 
-Last reconciled: 2026-08-18, for PR #51 based on `main` commit `a501de6`, plus the source files listed in section 10.
+Last reconciled: 2026-08-18, for PR #52 based on `main` commit `dc46ba9`, plus the source files listed in section 10.
 
 This document is the durable context for a new AI or developer who has no access to the prior ChatGPT conversations. Read it before modifying the scientific logic. The current README explains what the public site does; this file also explains what it used to do, why approaches were removed, what the evidence can and cannot support, and which questions remain open.
 
@@ -347,8 +347,10 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 20. **Single-precursor output phase:** GenPept and Protein FASTA now both contain only the selected precursor polyprotein; the predicted left/right F2A products were removed from the public model and files. Both filenames use the displayed result rank (`ZFN_ResultNN.gp` / `.fasta`) so parallel candidate downloads remain identifiable.
 21. **Manual coordinate-input phase:** desired spacer center and search range defaults became 1000 bp, and native number inputs were replaced with digit-only manual fields so browsers do not show increment/decrement steppers. Only the desired center is range-validated against input length; invalid values display a red `role=alert` correction and suppress candidate generation.
 22. **Selectable-result-sequence phase:** candidate rows retain whole-row mouse and keyboard selection through an accessible `role=button`, but are no longer native buttons. Their colored DNA text explicitly permits text selection; a completed drag selection suppresses the row click handler, so users can copy bases without changing or losing the selected green candidate. No separate copy or download control was added.
+23. **Workflow-numbering phase:** the public action sequence is now explicitly `01 INPUT`, `02 SELECT`, and `03 PROTEIN OUTPUT`. The candidate-specific DNA/finger diagram remains an unnumbered confirmation display between SELECT and output because it does not introduce another user action.
+24. **Direct-protein-output phase:** the precursor amino-acid sequence is always visible in step 03 instead of hiding behind a disclosure. Both file controls use the explicit action labels `DOWNLOAD (GenPept)` and `DOWNLOAD (Protein FASTA)`.
 
-### 7.2 Complete main-branch commit/PR ledger through PR #51
+### 7.2 Complete main-branch commit/PR ledger through PR #52
 
 | Date | Commit / PR | Change and significance |
 |---|---|---|
@@ -413,6 +415,7 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 | 2026-08-18 | PR #49 | Reduced both GenPept and Protein FASTA to the selected precursor polyprotein only, removed predicted post-F2A products from the public model, and tied both filenames to the displayed candidate number (`ZFN_ResultNN`). |
 | 2026-08-18 | PR #50 | Set both coordinate controls to 1000 by default, removed native number steppers in favour of manual digit entry, and added an accessible red correction state when the desired spacer center lies outside the input sequence. |
 | 2026-08-18 | PR #51 | Removed the exploration-range default hint and made candidate DNA manually selectable while preserving whole-row candidate selection, green selected state, and keyboard operation. |
+| 2026-08-18 | PR #52 | Renamed step 02 from RESULTS to SELECT, numbered the output card as 03 PROTEIN OUTPUT, made its precursor amino-acid sequence always visible, and relabelled both file controls as explicit DOWNLOAD actions. |
 
 The abandoned T2A stage cited Katayama and Yamamoto (2025), DOI `10.3390/ijms26157602`, as a GSG-T2A ZFN precedent. It is historical only: current output uses an FMDV-derived F2A sequence without the old GSG-T2A implementation.
 

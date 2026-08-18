@@ -248,7 +248,7 @@ export default function Home() {
         </div>
 
         <div className="results-panel">
-          <div className="panel-heading"><span>02</span><div><small>RESULTS</small><h2>ZFNペア候補を選択</h2></div><button className="secondary-action" type="button" disabled={!candidates.length} onClick={() => downloadText(codaCandidatesToCsv(candidates), "coda-3finger-zfn-candidates.csv", "text/csv;charset=utf-8")}><span aria-hidden="true">↓</span> CSVを保存</button></div>
+          <div className="panel-heading"><span>02</span><div><small>SELECT</small><h2>ZFNペア候補を選択</h2></div><button className="secondary-action" type="button" disabled={!candidates.length} onClick={() => downloadText(codaCandidatesToCsv(candidates), "coda-3finger-zfn-candidates.csv", "text/csv;charset=utf-8")}><span aria-hidden="true">↓</span> CSVを保存</button></div>
           <div className="result-count"><strong>{candidates.length}</strong><span>設計候補</span><small>{candidates.length > LISTED_CANDIDATE_LIMIT ? `${LISTED_CANDIDATE_LIMIT}件を表示 · ` : ""}希望位置優先 · 同距離6 &gt; 5 &gt;&gt; 7 bp</small></div>
           {candidates.length ? <p className="selection-help">候補を押すと設計内容が切り替わります。塩基配列はドラッグして選択・コピーできます。</p> : null}
           {candidates.length ? <div className="candidate-list">{listedCandidates.map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} />)}</div> : <div className="empty-state"><strong>{desiredCutError ? "希望スペーサー中心を訂正してください" : invalidCharacterCount ? "未対応文字があります" : "候補がありません"}</strong><p>{desiredCutError ? "入力欄の赤いメッセージに従い、入力配列内の座標を指定してください。" : invalidCharacterCount ? "赤字の未対応文字を修正してから設計してください。IUPAC曖昧塩基は入力できます。" : "CoDA archiveで左右9 bpを構成できる部位がありません。探索範囲または入力配列を変更してください。"}</p></div>}
@@ -276,14 +276,14 @@ export default function Home() {
           <ZfnBindingDiagram candidate={selected} />
 
           <div className="output-card">
-            <div className="output-heading"><div><span>PROTEIN OUTPUT</span><h2>1本のORFで、左右2本のZFNを発現</h2></div><span className="protein-only-badge">出力形式：GenPept / Protein FASTA</span></div>
+            <div className="output-heading"><div className="panel-heading"><span>03</span><div><small>PROTEIN OUTPUT</small><h2>1本のORFで、左右2本のZFNを発現</h2></div></div><span className="protein-only-badge">出力形式：GenPept / Protein FASTA</span></div>
             <p className="output-intro">選択した左右CoDA arrayをFokI ELD/KKRと組み合わせ、F2Aで連結した前駆体polyprotein 1配列を出力します。GenPeptではZF1–ZF6、FokI ELD/KKR、F2Aをfeatureとして表示できます。</p>
             <div className="output-stats"><span><strong>{construct.protein.length}</strong>aa precursor</span><span><strong>{FMDV_F2A.length}</strong>aa F2A</span></div>
             <div className="download-row">
-              <button className="primary-action" type="button" onClick={() => downloadText(codaConstructToProteinGenPept(construct), codaResultFilename(selectedRank, "gp"))}><span aria-hidden="true">↓</span> 注釈付きProteinを保存（GenPept）</button>
-              <button className="secondary-action" type="button" onClick={() => downloadText(codaConstructToProteinFasta(construct), codaResultFilename(selectedRank, "fasta"))}><span aria-hidden="true">↓</span> Protein FASTAを保存（前駆体1配列）</button>
+              <button className="primary-action" type="button" onClick={() => downloadText(codaConstructToProteinGenPept(construct), codaResultFilename(selectedRank, "gp"))}><span aria-hidden="true">↓</span> DOWNLOAD (GenPept)</button>
+              <button className="secondary-action" type="button" onClick={() => downloadText(codaConstructToProteinFasta(construct), codaResultFilename(selectedRank, "fasta"))}><span aria-hidden="true">↓</span> DOWNLOAD (Protein FASTA)</button>
             </div>
-            <details className="sequence-details compact"><summary>前駆体polyproteinの配列を見る</summary><div><span>Precursor polyprotein</span><code>{construct.protein}</code></div></details>
+            <div className="protein-sequence" aria-label="Precursor polyprotein amino acid sequence"><div><span>AMINO ACID SEQUENCE</span><strong>Precursor polyprotein</strong></div><code>{construct.protein}</code></div>
             <p className="output-note">塩基配列は生成しません。DNA合成時に、実際の宿主・オルガネラ・発現ベクターに合わせてコドン最適化と配列QCを行ってください。</p>
           </div>
 

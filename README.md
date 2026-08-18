@@ -14,15 +14,15 @@ Sander 2011のContext-Dependent Assembly（CoDA）archiveを使い、左右3-fin
 - archiveにない組合せを予測や補間で埋めない
 - 希望スペーサー中心と探索範囲はスピナーのない手入力欄で、初期値はいずれも1000 bp。希望中心が入力配列外なら赤色で訂正を求め、候補計算を停止
 - 希望スペーサー中心への近さを最優先し、同距離では`6 > 5 >> 7`の順で候補を順位付け
-- 02 RESULTSの候補行は全体を押して選択でき、表示塩基配列は選択状態を保ったままマウスドラッグで範囲選択・コピー可能
+- 02 SELECTの候補行は全体を押して選択でき、表示塩基配列は選択状態を保ったままマウスドラッグで範囲選択・コピー可能
 - 選択候補について、F/R配列とZF1–ZF6の対応、左右3ZFのN→C方向、FokI ELD（−）/KKR（＋）のヘテロ二量体を動的な構成図で表示
 - 各fingerの標的triplet、7 aa recognition helix、F2 context、完全array配列を表示
 - `NLS–CoDA 3F–FokI ELD–F2A–NLS–CoDA 3F–FokI KKR`の単一ORFを生成
-- 選択候補の前駆体polyprotein 1配列を、ZF1–ZF6、FokI ELD/KKR、F2Aのfeature付きGenPeptで保存
-- 同じ前駆体1配列をProtein FASTAでも保存し、ファイル名は候補番号に対応する`ZFN_ResultNN.gp` / `ZFN_ResultNN.fasta`
+- 選択候補の前駆体polyprotein 1配列を常時画面に表示し、`DOWNLOAD (GenPept)`からZF1–ZF6、FokI ELD/KKR、F2Aのfeature付きGenPeptで保存
+- `DOWNLOAD (Protein FASTA)`から同じ前駆体1配列を保存し、ファイル名は候補番号に対応する`ZFN_ResultNN.gp` / `ZFN_ResultNN.fasta`
 - 塩基配列、codon-optimized CDS、nucleotide GenBankは生成しない
 
-公開ページは、価値提案とSander 2011の集団成績、ZFNの基本構成を示すオリジナル概念図、配列入力、候補選択、選択配列に対応する詳細図、protein出力の順に進みます。概念図では左右各3-finger、F/R DNA、5–7 bp spacer、FokI ELD（−）/KKR（＋）の役割を入力前に説明します。
+公開ページは、価値提案とSander 2011の集団成績、ZFNの基本構成を示すオリジナル概念図、01 INPUT、02 SELECT、番号なしの選択内容表示、03 PROTEIN OUTPUTの順に進みます。概念図では左右各3-finger、F/R DNA、5–7 bp spacer、FokI ELD（−）/KKR（＋）の役割を入力前に説明します。
 
 入力配列はブラウザ内だけで処理され、外部へ送信されません。FASTA header、空白、位置番号は無視します。IUPAC曖昧塩基とgapは`N`として座標を保持し、それらをまたぐ標的窓は候補から除外します。未対応文字がある場合は設計を停止します。
 
