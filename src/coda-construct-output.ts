@@ -36,8 +36,6 @@ export type CodaBicistronicConstruct = {
   protein: string;
   left: CodaZfnMonomer;
   right: CodaZfnMonomer;
-  processedLeftProtein: string;
-  processedRightProtein: string;
   features: readonly CodaProteinFeature[];
 };
 
@@ -94,10 +92,13 @@ export function buildCodaBicistronicZfn(
     protein,
     left,
     right,
-    processedLeftProtein: `${left.protein}${FMDV_F2A.slice(0, -1)}`,
-    processedRightProtein: `${FMDV_F2A.slice(-1)}${right.protein}`,
     features,
   };
+}
+
+export function codaResultFilename(rank: number, extension: "gp" | "fasta"): string {
+  if (!Number.isInteger(rank) || rank < 1) throw new Error("Result rank must be a positive integer");
+  return `ZFN_Result${String(rank).padStart(2, "0")}.${extension}`;
 }
 
 function wrap(value: string, width: number): string[] {
@@ -112,10 +113,6 @@ export function codaConstructToProteinFasta(
   return [
     `>${construct.name} precursor_polyprotein; CoDA-2011 3-finger; left FokI-ELD; FMDV F2A; right FokI-KKR`,
     ...wrap(construct.protein, 70),
-    `>${construct.name}_processed_left predicted_product; F2A upstream product`,
-    ...wrap(construct.processedLeftProtein, 70),
-    `>${construct.name}_processed_right predicted_product; F2A downstream product`,
-    ...wrap(construct.processedRightProtein, 70),
   ].join("\n");
 }
 
