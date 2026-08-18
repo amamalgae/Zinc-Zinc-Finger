@@ -5,6 +5,7 @@ import archiveData from "../data/coda-2011-units.json" with { type: "json" };
 import {
   buildCodaBicistronicZfn,
   CODA_ZFN_DONORS,
+  codaConstructToProteinGenPept,
   codaConstructToProteinFasta,
 } from "../src/coda-construct-output.ts";
 import {
@@ -20,7 +21,9 @@ import {
   CODA_F2_CONTEXT_COUNT,
   CODA_F3_UNIT_COUNT,
   CODA_UNIT_COUNT,
+  codaFingerSequence,
 } from "../src/coda-module-archive.ts";
+import { FMDV_F2A, FOKI_ELD, FOKI_KKR } from "../src/construct-output.ts";
 
 const recognition = "GTGGGGGAG";
 const target = `${reverseComplement(recognition)}GATTAC${recognition}`;
@@ -195,4 +198,41 @@ test("CoDA output contains complete protein arrays, ELD/F2A/KKR, and no generate
   assert.match(fasta, /processed_left/);
   assert.match(fasta, /processed_right/);
   assert.doesNotMatch(fasta, /\bCDS\b|codon|GenBank/i);
+});
+
+test("annotated protein features map exactly onto ZF1-ZF6, FokI ELD/KKR, and F2A", () => {
+  const candidate = generateCodaCandidates(target, 12, 20).find(({ id }) => id === "0-6");
+  assert.ok(candidate);
+  const construct = buildCodaBicistronicZfn(candidate);
+  assert.deepEqual(construct.features.map(({ name }) => name), [
+    "ZF1", "ZF2", "ZF3", "FokI (ELD)", "F2A", "ZF4", "ZF5", "ZF6", "FokI (KKR)",
+  ]);
+
+  const expectedSequences = [
+    ...candidate.leftArray.fingers.map(({ position, helix }) => codaFingerSequence(position, helix)),
+    FOKI_ELD,
+    FMDV_F2A,
+    ...candidate.rightArray.fingers.map(({ position, helix }) => codaFingerSequence(position, helix)),
+    FOKI_KKR,
+  ];
+  construct.features.forEach(({ start, end }, index) => {
+    assert.equal(construct.protein.slice(start - 1, end), expectedSequences[index]);
+  });
+  assert.equal(construct.features.at(-1).end, construct.protein.length);
+});
+
+test("GenPept output preserves the precursor protein and standard Region coordinates", () => {
+  const candidate = generateCodaCandidates(target, 12, 20).find(({ id }) => id === "0-6");
+  assert.ok(candidate);
+  const construct = buildCodaBicistronicZfn(candidate);
+  const genPept = codaConstructToProteinGenPept(construct);
+
+  assert.match(genPept, new RegExp(`^LOCUS\\s+\\S+\\s+${construct.protein.length} aa`, "m"));
+  assert.equal((genPept.match(/^     Region\s+/gm) ?? []).length, 9);
+  for (const { name, start, end } of construct.features) {
+    assert.match(genPept, new RegExp(`Region\\s+${start}\\.\\.${end}\\n\\s+/region_name="${name.replace(/[()]/g, "\\$&")}"`));
+  }
+  const origin = genPept.split("\nORIGIN\n")[1].split("\n//")[0].replace(/[\d\s]/g, "").toUpperCase();
+  assert.equal(origin, construct.protein);
+  assert.doesNotMatch(genPept, /^     CDS\s|\bbp\b|\/translation=/m);
 });
