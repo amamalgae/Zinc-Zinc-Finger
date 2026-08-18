@@ -230,9 +230,15 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .selected-metrics small { color: var(--muted); font-size: 11px; }
 .selected-metrics strong { color: var(--green); font-size: 20px; }
 .binding-figure { margin: 26px 0 0; padding: 0; border: 0; background: transparent; }
-.dna-scroll { margin-top: 0; overflow: hidden; border: 0; border-radius: 14px; background: #18231f; }
-.dna-map { min-width: 0; padding: 18px 14px; color: #fff; }
-.dna-group-labels, .dna-direction, .dna-row { display: grid; grid-template-columns: 44px 25px repeat(3, minmax(0, 1fr)) minmax(88px, .9fr) repeat(3, minmax(0, 1fr)) 25px; align-items: stretch; gap: 3px; }
+.dna-scroll { margin-top: 0; overflow-x: auto; border: 0; border-radius: 14px; background: #18231f; scrollbar-color: #6d8a7b #18231f; }
+.dna-map { min-width: 268px; padding: 18px 14px; color: #fff; }
+.dna-ruler, .dna-group-labels, .dna-direction, .dna-row { display: grid; grid-template-columns: 44px 25px repeat(3, minmax(0, 1fr)) minmax(88px, .9fr) repeat(3, minmax(0, 1fr)) 25px; align-items: stretch; gap: 3px; }
+.dna-ruler { margin-bottom: 7px; color: #93a89c; font-size: 11px; font-weight: 700; }
+.dna-ruler > * { min-width: 0; }
+.ruler-name { grid-column: 1 / 3; display: grid; place-items: center; font-weight: 900; }
+.dna-ruler .left { grid-column: 3 / 6; padding-left: 2px; border-left: 2px solid #4b6b5b; }
+.dna-ruler .spacer { grid-column: 6; color: #d79a76; text-align: center; }
+.dna-ruler .right { grid-column: 7 / 10; padding-right: 2px; border-right: 2px solid #4b6b5b; text-align: right; }
 .dna-group-labels { margin-bottom: 10px; }
 .dna-group-labels strong { padding: 7px 6px; display: grid; place-items: center; border-radius: 5px; font-size: 11px; letter-spacing: .04em; }
 .dna-group-labels .left { grid-column: 3 / 6; background: #2b4a3c; color: #ccecae; }
@@ -294,7 +300,7 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .output-card { margin-top: 28px; padding: 24px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
 .protein-only-badge { color: var(--green); font-size: 8px; font-weight: 900; letter-spacing: .06em; }
 .protein-only-badge::before { content: "●"; margin-right: 7px; color: #66a953; }
-.output-card .architecture { margin-top: 20px; }
+.technical-details .architecture { margin-top: 13px; }
 .output-stats { margin-top: 11px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
 .output-stats span { padding: 10px; border-radius: 9px; background: #fff; color: var(--muted); font-size: 8px; text-align: center; }
 .output-stats strong { display: block; margin-bottom: 3px; color: var(--ink); font-size: 14px; }
@@ -316,7 +322,7 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .technical-details .finger-pair { margin-top: 13px; }
 .sequence-details.embedded { margin-top: 0; background: #f8faf7; }
 .sequence-details.embedded > div:first-child { padding-top: 12px; }
-.donor-card { margin-top: 14px; padding: 18px; border: 1px solid var(--line); border-radius: 15px; }
+.donor-card { margin-top: 18px; padding: 18px; border: 1px solid var(--line); border-radius: 15px; background: #fff; }
 .donor-card > div { display: flex; align-items: center; justify-content: space-between; }
 .donor-card > div span { color: var(--green); font-size: 10px; font-weight: 900; }
 .donor-card > div strong { color: var(--muted); font-size: 8px; font-weight: 700; }
@@ -402,7 +408,8 @@ footer p { margin: 0; }
   .selected-lead { font-size: 12px; }
   .binding-figure { margin-top: 18px; padding: 0; }
   .dna-map { padding: 13px 6px; }
-  .dna-group-labels, .dna-direction, .dna-row { grid-template-columns: 24px 16px repeat(3, minmax(0, 1fr)) minmax(0, 1.6fr) repeat(3, minmax(0, 1fr)) 16px; gap: 2px; }
+  .dna-ruler, .dna-group-labels, .dna-direction, .dna-row { grid-template-columns: 24px 16px repeat(3, minmax(0, 1fr)) minmax(0, 2.2fr) repeat(3, minmax(0, 1fr)) 16px; gap: 2px; }
+  .dna-ruler { margin-bottom: 6px; }
   .dna-direction { margin-bottom: 7px; }
   .dna-direction .left, .dna-direction .right { gap: 5px; }
   .dna-group-labels strong { padding: 5px 2px; font-size: 11px; line-height: 1.3; text-align: center; }

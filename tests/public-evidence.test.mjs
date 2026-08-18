@@ -91,7 +91,7 @@ test("selected-design diagram foregrounds the variable target sequence and six-f
   assert.match(app, /strand-name">F</);
   assert.match(app, /strand-name">R</);
   assert.doesNotMatch(app, /03 · SELECTED ZFN PAIR|04 · PROTEIN OUTPUT|binding-explainer/);
-  assert.match(css, /\.dna-scroll \{[^}]*overflow: hidden/);
+  assert.match(css, /\.dna-scroll \{[^}]*overflow-x: auto/);
   assert.doesNotMatch(css, /\.dna-map \{[^}]*min-width: 810px/);
 });
 
@@ -152,6 +152,31 @@ test("the diagram carries its own legend, binding direction, and colour language
   assert.match(app, /className="selected-rank">候補 <strong>\{String\(selectedRank\)\.padStart\(2, "0"\)\}<\/strong>/);
   assert.match(app, /const LISTED_CANDIDATE_LIMIT = 12;/);
   assert.doesNotMatch(app, /candidates\.slice\(0, 12\)/);
+});
+
+test("the panel locates the target in the pasted sequence and holds only candidate-specific content", () => {
+  const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
+
+  // A ruler ties the diagram back to coordinates in the input sequence.
+  const map = app.slice(app.indexOf('<div className="dna-map">'), app.indexOf("</figure>"));
+  assert.match(map, /className="dna-ruler"/);
+  assert.ok(map.indexOf('className="dna-ruler"') < map.indexOf('className="dna-group-labels"'));
+  assert.match(map, /\{candidate\.start \+ 1\}/);
+  assert.match(map, /\{candidate\.start \+ 18 \+ candidate\.spacerLength\}/);
+  assert.match(app, /上端の座標は、入力配列の5′端を1とする位置です/);
+
+  // The diagram scrolls rather than clipping, and stays narrow enough not to scroll on a phone.
+  const mapWidth = Number(/\.dna-map \{[^}]*min-width: (\d+)px/.exec(css)[1]);
+  assert.ok(mapWidth <= 298, `dna-map min-width ${mapWidth}px would scroll on a 360px viewport`);
+
+  // Candidate-independent blocks left the display panel.
+  const panel = app.slice(app.indexOf('<section className="selected-design">'), app.indexOf('<section className="evidence">'));
+  const evidence = app.slice(app.indexOf('<section className="evidence">'));
+  assert.doesNotMatch(panel, /CODA_ZFN_DONORS/);
+  assert.match(evidence, /CODA_ZFN_DONORS/);
+  assert.ok(panel.indexOf("<ArchitectureDiagram />") > panel.indexOf('<details className="technical-details">'));
+  assert.match(app, /<summary>finger構成と単一ORFの構成を見る<\/summary>/);
 });
 
 test("an original 3ZF mechanism diagram explains the design before sequence input", () => {
