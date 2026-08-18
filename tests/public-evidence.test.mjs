@@ -62,8 +62,13 @@ test("protein output offers annotated GenPept without inventing a DNA sequence",
   const exporter = readFileSync(new URL("../src/coda-construct-output.ts", import.meta.url), "utf8");
 
   assert.match(app, /注釈付きProteinを保存（GenPept）/);
+  assert.match(app, /Protein FASTAを保存（前駆体1配列）/);
+  assert.match(app, /codaResultFilename\(selectedRank, "gp"\)/);
+  assert.match(app, /codaResultFilename\(selectedRank, "fasta"\)/);
   assert.match(app, /ZF1–ZF6、FokI ELD\/KKR、F2Aをfeature/);
+  assert.doesNotMatch(app, /processedLeftProtein|processedRightProtein|Processed left|Processed right/);
   assert.match(exporter, /\/region_name=/);
+  assert.doesNotMatch(exporter, /processed_left|processed_right|predicted_product/);
   assert.match(exporter, /Protein-only design; no nucleotide sequence or codon choice is implied/);
   assert.doesNotMatch(exporter, /optimizeCodingSequence|construct\.cds/);
 });
@@ -78,7 +83,7 @@ test("interactive controls remain distinguishable from informational labels", ()
   assert.match(app, /Protein FASTAを保存/);
   assert.match(app, /<ul className="hero-benefits"/);
   assert.doesNotMatch(app, /構成可能なペアだけを提示/);
-  assert.match(app, /<ul className="hero-benefits"[\s\S]*?<li>ブラウザ内で処理<\/li>[\s\S]*?<li>Protein FASTA出力<\/li>[\s\S]*?<\/ul>/);
+  assert.match(app, /<ul className="hero-benefits"[\s\S]*?<li>ブラウザ内で処理<\/li>[\s\S]*?<li>GenPept \/ Protein FASTA出力<\/li>[\s\S]*?<\/ul>/);
   assert.match(css, /button:focus-visible, a:focus-visible, summary:focus-visible/);
   assert.match(css, /\.technical-details > summary::after/);
   assert.match(css, /\.candidate-action/);
