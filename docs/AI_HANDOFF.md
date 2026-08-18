@@ -1,6 +1,6 @@
 # Zinc Zinc Finger: AI handoff and decision record
 
-Last reconciled: 2026-08-18, for PR #48 based on `main` commit `b62b67e`, plus the source files listed in section 10.
+Last reconciled: 2026-08-18, for PR #49 based on `main` commit `c52df7b`, plus the source files listed in section 10.
 
 This document is the durable context for a new AI or developer who has no access to the prior ChatGPT conversations. Read it before modifying the scientific logic. The current README explains what the public site does; this file also explains what it used to do, why approaches were removed, what the evidence can and cannot support, and which questions remain open.
 
@@ -178,15 +178,15 @@ MAPKKKRKV-CoDA-right3F-linker-FokI_KKR
 
 For spacer lengths 5/6/7 bp, respectively, the expected lengths are:
 
-| Spacer | Each unprocessed monomer | Precursor | Predicted left product | Predicted right product |
-|---:|---:|---:|---:|---:|
-| 5 bp | 288 aa | 598 aa | 309 aa | 289 aa |
-| 6 bp | 290 aa | 602 aa | 311 aa | 291 aa |
-| 7 bp | 292 aa | 606 aa | 313 aa | 293 aa |
+| Spacer | Each monomer within precursor | Precursor |
+|---:|---:|---:|
+| 5 bp | 288 aa | 598 aa |
+| 6 bp | 290 aa | 602 aa |
+| 7 bp | 292 aa | 606 aa |
 
 The primary exporter emits one annotated precursor in standard protein GenPept (`.gp`). Its nine 1-based inclusive `Region` features are ZF1–ZF3, FokI (ELD), F2A, ZF4–ZF6, and FokI (KKR). Each ZF note records the local CoDA finger number, target triplet, and recognition helix; FokI notes record the engineered substitutions. This open text format is directly supported for annotated amino-acid sequences by SnapGene and Benchling, and by Geneious as GenBank-flat protein data. ApE is intentionally not a target because it is a DNA/plasmid editor. Feature names and coordinates are portable; display colors are application-specific.
 
-The secondary FASTA exporter continues to emit three sequences: precursor, predicted processed-left, and predicted processed-right. Neither exporter emits a CDS, stop codon, promoter, terminator, UTR, marker, vector backbone, or implied codon choice.
+The Protein FASTA exporter emits the same single precursor sequence. Neither format emits predicted F2A-processed products, a CDS, stop codon, promoter, terminator, UTR, marker, vector backbone, or implied codon choice. Download names follow the displayed candidate rank: for example, candidate 01 produces `ZFN_Result01.gp` or `ZFN_Result01.fasta`.
 
 ### 4.2 Evidence and limits of the combined construct
 
@@ -344,8 +344,9 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 17. **Spacer-priority notation phase:** the public result summary now uses `6 > 5 >> 7` instead of an equal-looking arrow chain. The public input panel no longer carries the literature rationale; README is the durable explanation of the notation, evidence, and limitations. `>>` is explicitly qualitative and does not alter the ordinal implementation or imply an activity ratio.
 18. **Panel-scope phase (P2, final step of the redesign):** the diagram gained a coordinate ruler above the band labels, so the figure states where in the pasted sequence the target sits (1-based, `start + 1` to `start + 18 + spacer`), which nothing on the page had shown before. `.dna-scroll` had `overflow: hidden` despite its name, so anything that could not shrink was clipped rather than scrolled: at 320 px the 7 bp spacer cell needed 46 px and got 36 px, silently cutting bases. It is now `overflow-x: auto` with `.dna-map { min-width: 268px }` and a wider mobile spacer column (2.2fr), measured so that nothing clips at any width and no horizontal scrolling appears at 360 px or above — decision 12's no-scroll requirement holds for phones, and below 360 px the panel scrolls instead of lying about the sequence. Two candidate-independent blocks left the panel: the fixed ORF architecture strip moved into the `finger構成と単一ORFの構成` disclosure, and the donor list moved to the evidence section, which is where fixed provenance belongs. The panel now contains only what changes when the selected candidate changes.
 19. **Annotated-protein export phase:** standard GenPept replaced FASTA as the primary download without reintroducing DNA generation. The precursor carries nine protein `Region` features for ZF1–ZF6, FokI ELD/KKR, and F2A so SnapGene, Benchling, Geneious, and other protein-aware editors can render the architecture. The three-sequence FASTA remains available as a secondary interoperability export.
+20. **Single-precursor output phase:** GenPept and Protein FASTA now both contain only the selected precursor polyprotein; the predicted left/right F2A products were removed from the public model and files. Both filenames use the displayed result rank (`ZFN_ResultNN.gp` / `.fasta`) so parallel candidate downloads remain identifiable.
 
-### 7.2 Complete main-branch commit/PR ledger through PR #48
+### 7.2 Complete main-branch commit/PR ledger through PR #49
 
 | Date | Commit / PR | Change and significance |
 |---|---|---|
@@ -407,6 +408,7 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 | 2026-08-18 | PR #46 | Quantified the linker and spacer evidence behind `6 > 5 >> 7` (Händel 2009 linker comparison, Chen 2013 84-pair strata recalculated at the paper's >0.27% threshold) while keeping the tie-break qualitative. |
 | 2026-08-18 | PR #47 | Added the input-sequence coordinate ruler to the target diagram, replaced the clipping `overflow: hidden` with measured scroll behaviour that still avoids horizontal scrolling at 360 px and above, and moved the fixed ORF strip and donor list out of the candidate-specific panel. |
 | 2026-08-18 | PR #48 | Added standard GenPept protein output with exact ZF1–ZF6, FokI ELD/KKR, and F2A Region features while retaining the three-sequence FASTA and avoiding any implied DNA/codon sequence. |
+| 2026-08-18 | PR #49 | Reduced both GenPept and Protein FASTA to the selected precursor polyprotein only, removed predicted post-F2A products from the public model, and tied both filenames to the displayed candidate number (`ZFN_ResultNN`). |
 
 The abandoned T2A stage cited Katayama and Yamamoto (2025), DOI `10.3390/ijms26157602`, as a GSG-T2A ZFN precedent. It is historical only: current output uses an FMDV-derived F2A sequence without the old GSG-T2A implementation.
 
