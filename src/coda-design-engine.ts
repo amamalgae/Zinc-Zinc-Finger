@@ -88,7 +88,7 @@ export function compareCodaCandidates(left: CodaCandidate, right: CodaCandidate)
 export function generateCodaCandidates(
   dna: string,
   desiredCut: number,
-  maxDistance = 500,
+  maxDistance = 1000,
   limit = 30,
 ): CodaCandidate[] {
   if (!Number.isFinite(desiredCut) || !Number.isFinite(maxDistance) || !Number.isFinite(limit)) return [];
