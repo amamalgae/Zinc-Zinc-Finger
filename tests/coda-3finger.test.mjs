@@ -7,6 +7,7 @@ import {
   CODA_ZFN_DONORS,
   codaConstructToProteinGenPept,
   codaConstructToProteinFasta,
+  codaResultFilename,
 } from "../src/coda-construct-output.ts";
 import {
   cleanDNA,
@@ -190,14 +191,22 @@ test("CoDA output contains complete protein arrays, ELD/F2A/KKR, and no generate
   const construct = buildCodaBicistronicZfn(candidate);
   assert.equal("cds" in construct, false);
   assert.equal("gcPercent" in construct, false);
-  assert.match(construct.processedLeftProtein, /^MAPKKKRKVFQCRICMRNFS/);
-  assert.match(construct.processedRightProtein, /^PMAPKKKRKVFQCRICMRNFS/);
+  assert.equal("processedLeftProtein" in construct, false);
+  assert.equal("processedRightProtein" in construct, false);
   assert.equal(CODA_ZFN_DONORS.length, 4);
   const fasta = codaConstructToProteinFasta(construct);
   assert.match(fasta, /precursor_polyprotein/);
-  assert.match(fasta, /processed_left/);
-  assert.match(fasta, /processed_right/);
+  assert.equal((fasta.match(/^>/gm) ?? []).length, 1);
+  assert.equal(fasta.split("\n").slice(1).join(""), construct.protein);
+  assert.doesNotMatch(fasta, /processed_|predicted_product/);
   assert.doesNotMatch(fasta, /\bCDS\b|codon|GenBank/i);
+});
+
+test("protein filenames follow the selected result rank in both formats", () => {
+  assert.equal(codaResultFilename(1, "gp"), "ZFN_Result01.gp");
+  assert.equal(codaResultFilename(1, "fasta"), "ZFN_Result01.fasta");
+  assert.equal(codaResultFilename(12, "gp"), "ZFN_Result12.gp");
+  assert.throws(() => codaResultFilename(0, "fasta"), /positive integer/);
 });
 
 test("annotated protein features map exactly onto ZF1-ZF6, FokI ELD/KKR, and F2A", () => {
