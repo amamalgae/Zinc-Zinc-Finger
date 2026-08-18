@@ -61,8 +61,8 @@ test("protein output offers annotated GenPept without inventing a DNA sequence",
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
   const exporter = readFileSync(new URL("../src/coda-construct-output.ts", import.meta.url), "utf8");
 
-  assert.match(app, /DOWNLOAD \(GenPept\)/);
-  assert.match(app, /DOWNLOAD \(Protein FASTA\)/);
+  assert.match(app, /Download \(GenPept: featureあり\)/);
+  assert.match(app, /Download \(fasta\)/);
   assert.match(app, /codaResultFilename\(selectedRank, "gp"\)/);
   assert.match(app, /codaResultFilename\(selectedRank, "fasta"\)/);
   assert.match(app, /ZF1–ZF6、FokI ELD\/KKR、F2Aをfeature/);
@@ -96,7 +96,7 @@ test("interactive controls remain distinguishable from informational labels", ()
   assert.match(app, /aria-pressed=\{selected\}/);
   assert.match(app, /✓ 選択中/);
   assert.match(app, /CSVを保存/);
-  assert.match(app, /DOWNLOAD \(Protein FASTA\)/);
+  assert.match(app, /Download \(fasta\)/);
   assert.match(app, /<ul className="hero-benefits"/);
   assert.doesNotMatch(app, /構成可能なペアだけを提示/);
   assert.match(app, /<ul className="hero-benefits"[\s\S]*?<li>ブラウザ内で処理<\/li>[\s\S]*?<li>GenPept \/ Protein FASTA出力<\/li>[\s\S]*?<\/ul>/);
@@ -109,113 +109,48 @@ test("interactive controls remain distinguishable from informational labels", ()
   assert.match(css, /\.candidate-sequence \{[^}]*cursor: text;[^}]*user-select: text;/);
   assert.match(app, /塩基配列はドラッグして選択・コピーできます/);
   assert.doesNotMatch(app, /希望位置から。初期値1000 bp/);
-  assert.match(app, /この欄は表示専用です。設計を変更する場合は、02で別の候補を選択してください。/);
   assert.match(css, /\.input-panel, \.results-panel, \.evidence \{ border: 1px solid/);
-  assert.match(css, /\.selected-design \{[^}]*border: 0;[^}]*background: #edf3ed/);
-  assert.match(css, /\.binding-figure \{[^}]*border: 0;[^}]*background: transparent/);
-  assert.doesNotMatch(css, /\.input-panel, \.results-panel, \.selected-design/);
 });
 
-test("selected-design diagram foregrounds the variable target sequence and six-finger mapping", () => {
+test("selection flows directly into protein output while retaining technical details", () => {
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
   const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
 
-  assert.match(app, /buildZfnBindingMap/);
-  assert.match(app, /選択内容の表示/);
-  assert.match(app, /標的塩基配列とfingerの対応/);
-  assert.match(app, /選択した標的塩基配列とZF1–ZF6の対応/);
+  assert.doesNotMatch(app, /buildZfnBindingMap|ZfnBindingDiagram|選択内容の表示|標的塩基配列とfingerの対応/);
   assert.match(app, /<div className="panel-heading"><span>02<\/span><div><small>SELECT<\/small>/);
   assert.match(app, /<div className="output-heading"><div className="panel-heading"><span>03<\/span><div><small>PROTEIN OUTPUT<\/small>/);
   assert.doesNotMatch(app, /<small>RESULTS<\/small>/);
-  assert.match(app, /左ZFN標的 · 9 bp/);
-  assert.match(app, /右ZFN標的 · 9 bp/);
-  assert.match(app, /strand-name">F</);
-  assert.match(app, /strand-name">R</);
-  assert.doesNotMatch(app, /03 · SELECTED ZFN PAIR|04 · PROTEIN OUTPUT|binding-explainer/);
-  assert.match(css, /\.dna-scroll \{[^}]*overflow-x: auto/);
-  assert.doesNotMatch(css, /\.dna-map \{[^}]*min-width: 810px/);
+  assert.doesNotMatch(app, /className="selected-design"/);
+  assert.match(app, /<summary>finger構成と単一ORFの構成を見る<\/summary>/);
+  assert.doesNotMatch(css, /\.selected-design|\.selected-heading|\.binding-figure|\.dna-map/);
 });
 
-test("the selected-design panel states the ranking distance once instead of repeating the target layout", () => {
+test("candidate rows retain the selected target sequence and ranking distance", () => {
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
   const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
 
-  // The ranking key is distance to the requested spacer centre, so it must be visible.
-  assert.match(app, /希望位置との差/);
-  assert.match(app, /±\{formatCut\(selected\.distance\)\} bp/);
-  assert.match(app, /希望スペーサー中心から±\{formatCut\(selected\.distance\)\} bpの候補です。/);
-
-  // The left/spacer/right split is stated inside the diagram only.
-  assert.doesNotMatch(app, /target-summary/);
-  assert.doesNotMatch(css, /\.target-summary/);
-  assert.doesNotMatch(app, /<h3>選択した標的塩基配列<\/h3>/);
-  assert.match(app, /className="visually-hidden">選択した標的塩基配列/);
-
-  // Nothing in the selected-design region may drop below 11px, on any viewport.
-  const region = css.slice(css.indexOf(".selected-design {"));
-  const selectors = /\.(selected-heading|selected-lead|selected-metrics|display-kicker|selected-rank|dna-[a-z-]+|direction-name|strand-name|reverse-strand|forward-strand|binding-note)/;
-  for (const rule of region.split("\n")) {
-    if (!selectors.test(rule)) continue;
-    for (const [, size] of rule.matchAll(/font-size: (\d+(?:\.\d+)?)px/g)) {
-      assert.ok(Number(size) >= 11, `${rule.trim()} uses ${size}px`);
-    }
-    for (const [, size] of rule.matchAll(/font: [^;]*?(\d+(?:\.\d+)?)px/g)) {
-      assert.ok(Number(size) >= 11, `${rule.trim()} uses ${size}px`);
-    }
-  }
-});
-
-test("the diagram carries its own legend, binding direction, and colour language", () => {
-  const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
-  const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
-
-  // Legend and direction belong inside the dark panel, next to the colours they name.
-  const map = app.slice(app.indexOf('<div className="dna-map">'), app.indexOf("</figure>"));
-  assert.match(map, /className="dna-legend"/);
-  assert.match(map, /左ZFNが認識 · ZF1–ZF3/);
-  assert.match(map, /右ZFNが認識 · ZF4–ZF6/);
-  assert.doesNotMatch(app, /target-legend/);
-
-  // The antiparallel right monomer is shown, not only footnoted.
-  assert.match(map, /className="dna-direction"/);
-  assert.ok(map.indexOf('className="dna-direction"') < map.indexOf('className="dna-row dna-labels"'));
-  assert.match(css, /\.dna-direction \.left i::after/);
-  assert.match(css, /\.dna-direction \.right i::before/);
-
-  // Candidate rows use the diagram's left/spacer/right colours and show the ranking distance.
   assert.match(app, /<b className="left">\{candidate\.leftTop\}<\/b>/);
   assert.match(app, /<b className="right">\{candidate\.rightTop\}<\/b>/);
+  assert.match(app, /希望位置 ±\{formatCut\(candidate\.distance\)\} bp/);
   assert.match(css, /\.candidate-sequence b\.left \{ color: var\(--green\); \}/);
   assert.match(css, /\.candidate-sequence b\.right \{ color: var\(--blue\); \}/);
-  assert.match(app, /希望位置 ±\{formatCut\(candidate\.distance\)\} bp/);
 
-  // The display panel names which candidate it is showing.
-  assert.match(app, /className="selected-rank">候補 <strong>\{String\(selectedRank\)\.padStart\(2, "0"\)\}<\/strong>/);
-  assert.match(app, /const LISTED_CANDIDATE_LIMIT = 12;/);
-  assert.doesNotMatch(app, /candidates\.slice\(0, 12\)/);
 });
 
-test("the panel locates the target in the pasted sequence and holds only candidate-specific content", () => {
+test("the public UI keeps candidate selection limits without a duplicate display panel", () => {
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
-  const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
+  assert.match(app, /const LISTED_CANDIDATE_LIMIT = 12;/);
+  assert.doesNotMatch(app, /candidates\.slice\(0, 12\)/);
+  assert.doesNotMatch(app, /dna-ruler|dna-legend|dna-direction|selected-rank/);
+});
 
-  // A ruler ties the diagram back to coordinates in the input sequence.
-  const map = app.slice(app.indexOf('<div className="dna-map">'), app.indexOf("</figure>"));
-  assert.match(map, /className="dna-ruler"/);
-  assert.ok(map.indexOf('className="dna-ruler"') < map.indexOf('className="dna-group-labels"'));
-  assert.match(map, /\{candidate\.start \+ 1\}/);
-  assert.match(map, /\{candidate\.start \+ 18 \+ candidate\.spacerLength\}/);
-  assert.match(app, /上端の座標は、入力配列の5′端を1とする位置です/);
-
-  // The diagram scrolls rather than clipping, and stays narrow enough not to scroll on a phone.
-  const mapWidth = Number(/\.dna-map \{[^}]*min-width: (\d+)px/.exec(css)[1]);
-  assert.ok(mapWidth <= 298, `dna-map min-width ${mapWidth}px would scroll on a 360px viewport`);
-
-  // Candidate-independent blocks left the display panel.
-  const panel = app.slice(app.indexOf('<section className="selected-design">'), app.indexOf('<section className="evidence">'));
+test("protein output retains its technical disclosure and keeps evidence separate", () => {
+  const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
+  const panel = app.slice(app.indexOf('<section className="protein-output-section">'), app.indexOf('<section className="evidence">'));
   const evidence = app.slice(app.indexOf('<section className="evidence">'));
   assert.doesNotMatch(panel, /CODA_ZFN_DONORS/);
   assert.match(evidence, /CODA_ZFN_DONORS/);
+  assert.ok(panel.indexOf("PROTEIN OUTPUT") < panel.indexOf('<details className="technical-details">'));
   assert.ok(panel.indexOf("<ArchitectureDiagram />") > panel.indexOf('<details className="technical-details">'));
   assert.match(app, /<summary>finger構成と単一ORFの構成を見る<\/summary>/);
 });
