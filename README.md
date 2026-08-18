@@ -16,8 +16,8 @@ Sander 2011のContext-Dependent Assembly（CoDA）archiveを使い、左右3-fin
 - 選択候補について、F/R配列とZF1–ZF6の対応、左右3ZFのN→C方向、FokI ELD（−）/KKR（＋）のヘテロ二量体を動的な構成図で表示
 - 各fingerの標的triplet、7 aa recognition helix、F2 context、完全array配列を表示
 - `NLS–CoDA 3F–FokI ELD–F2A–NLS–CoDA 3F–FokI KKR`の単一ORFを生成
-- 前駆体polyproteinをZF1–ZF6、FokI ELD/KKR、F2Aのfeature付きGenPeptで保存
-- 前駆体polyproteinとF2A処理後の左右産物を従来のProtein FASTAでも保存
+- 選択候補の前駆体polyprotein 1配列を、ZF1–ZF6、FokI ELD/KKR、F2Aのfeature付きGenPeptで保存
+- 同じ前駆体1配列をProtein FASTAでも保存し、ファイル名は候補番号に対応する`ZFN_ResultNN.gp` / `ZFN_ResultNN.fasta`
 - 塩基配列、codon-optimized CDS、nucleotide GenBankは生成しない
 
 公開ページは、価値提案とSander 2011の集団成績、ZFNの基本構成を示すオリジナル概念図、配列入力、候補選択、選択配列に対応する詳細図、protein出力の順に進みます。概念図では左右各3-finger、F/R DNA、5–7 bp spacer、FokI ELD（−）/KKR（＋）の役割を入力前に説明します。
@@ -69,7 +69,7 @@ FokIはDNAを切断するヌクレアーゼドメインです。左右には二�
 
 本ツールが固定するのはアミノ酸配列です。CoDA array、finger間linker、ZF–FokI linker、SV40 NLS、FokI ELD/KKR、F2Aはいずれもペプチドとして定義し、特定の同義コドン列には固定しません。DNA合成時に、実際の宿主・オルガネラ・発現ベクターに合わせて別途コドン最適化と配列QCを行います。
 
-主出力のGenPept（`.gp`）は、前駆体polyprotein 1配列へ1-based amino-acid座標の`Region` featureを付ける標準テキスト形式です。ZF1–ZF6、FokI (ELD)、F2A、FokI (KKR)の9領域を、標的triplet、recognition helix、FokI変異の説明とともに格納します。[SnapGene](https://support.snapgene.com/hc/en-us/articles/10384012120596-Import-a-Protein-Sequence)、[Benchling](https://help.benchling.com/hc/en-us/articles/38759866105229-AA-sequence-overview)、[Geneious Prime](https://www.geneious.com/features/import-export-sequence-data)は注釈付きprotein sequenceとして読み込めます。ApEはDNA/plasmid中心のため、このprotein-onlyファイルの表示先には想定していません。色は各エディター側のfeature設定に依存します。
+主出力のGenPept（`.gp`）は、前駆体polyprotein 1配列へ1-based amino-acid座標の`Region` featureを付ける標準テキスト形式です。ZF1–ZF6、FokI (ELD)、F2A、FokI (KKR)の9領域を、標的triplet、recognition helix、FokI変異の説明とともに格納します。Protein FASTAも同じ前駆体1配列だけを格納し、F2A処理後の予測産物はどちらにも出力しません。候補01を選択した場合のファイル名は`ZFN_Result01.gp`と`ZFN_Result01.fasta`です。[SnapGene](https://support.snapgene.com/hc/en-us/articles/10384012120596-Import-a-Protein-Sequence)、[Benchling](https://help.benchling.com/hc/en-us/articles/38759866105229-AA-sequence-overview)、[Geneious Prime](https://www.geneious.com/features/import-export-sequence-data)は注釈付きprotein sequenceとして読み込めます。ApEはDNA/plasmid中心のため、このprotein-onlyファイルの表示先には想定していません。色は各エディター側のfeature設定に依存します。
 
 ## データ源
 
