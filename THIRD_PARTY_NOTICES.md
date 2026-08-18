@@ -43,6 +43,8 @@ These legacy modules and their associated analysis remain in the repository for 
 
 - Sander JD et al. (2011), *Selection-free zinc-finger-nuclease engineering by context-dependent assembly (CoDA)*, DOI: 10.1038/nmeth.1542.
 
+`docs/reference/coda-2011-units-sander-2011-crosscheck.xlsx` is a review aid generated from that same JSON, re-laid out into the row and column order of the published supplementary tables so the transcription can be compared with the PDF by eye. It carries the same terms as the JSON; the repository MIT license covers its layout and notes, not the published data it displays. No code, build step, or test reads it. `docs/reference/README.md` records what the comparison confirmed and what remains unverified.
+
 `src/coda-module-archive.ts` independently implements the exact-F2-context lookup and constructs complete fingers using framework sequences and the canonical TGEKP inter-finger linker described in WO2011017293A2 (SEQ ID NOs: 841–844). Empty table cells remain unavailable and are not predicted or imputed. The repository MIT license does not relicense the article, supplementary material, patent disclosure, extracted scientific data, or sequences.
 
 `data/zhu-2011-ma-zfn-benchmark.json` and its benchmark script remain only as legacy comparative evidence and are not used by the current public designer or sequence exporter.

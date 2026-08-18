@@ -109,6 +109,25 @@ Current source: Sander et al. (2011), DOI `10.1038/nmeth.1542`, Supplementary Ta
 | F3 units | 344 |
 | F1 + F3 units | 663 |
 
+The published tables are PDF images in the copy available here, so the JSON cannot be
+diffed against the paper directly. `docs/reference/coda-2011-units-sander-2011-crosscheck.xlsx`
+re-lays the committed JSON into the paper's row and column order for side-by-side visual
+review; `docs/reference/README.md` records what that review confirmed. The workbook is
+derived from the JSON, so it is a review aid, not a second source, and no code or test
+reads it.
+
+Two results from that review matter for future edits:
+
+- The Supplementary Discussion of Sander 2011 states that the `GGG` F2 context has
+  23 F1 units and 20 F3 units. The published tables give F1 = 20 and F3 = 23; the prose
+  swaps them. The product 460 and the 6,680 total are unchanged, so no count-level check
+  detects it. The JSON follows the tables and is correct. Do not "correct" it to the
+  prose: that would exchange F1 and F3 helices across all 460 `GGG` arrays.
+- Per-character accuracy of the 663 helices is **not** established. Some image cells are
+  ambiguous between `R`/`H`, `D`/`Q`, and `S`/`G`. The archive is structurally audited
+  (counts, row/column positions, F2-helix consistency), not character-verified. A
+  text-layer original is required to close this.
+
 For a 9-mer, `buildCodaArray()` reverses the three DNA triplets into protein order. It then requires all of the following:
 
 1. the middle triplet is one of the 18 fixed F2 contexts;
@@ -484,6 +503,8 @@ Patent/data references without a DOI:
 ## 10. Source files supplied during development
 
 The following files were inspected directly on 2026-08-17. They are not committed because they are third-party papers/supplements; only transformed data and provenance notes belong in this repository. A future AI will need the user to reattach them if it must re-audit raw rows.
+
+The one exception is `docs/reference/coda-2011-units-sander-2011-crosscheck.xlsx`, which is committed: it is generated from `data/coda-2011-units.json` rather than supplied by a publisher, and it is the artifact the CoDA archive review was actually performed against. See `docs/reference/README.md`.
 
 | Supplied file | SHA-256 | Identification and use |
 |---|---|---|
