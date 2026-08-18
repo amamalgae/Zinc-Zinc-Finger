@@ -14,6 +14,7 @@ Sander 2011のContext-Dependent Assembly（CoDA）archiveを使い、左右3-fin
 - archiveにない組合せを予測や補間で埋めない
 - 希望スペーサー中心と探索範囲はスピナーのない手入力欄で、初期値はいずれも1000 bp。希望中心が入力配列外なら赤色で訂正を求め、候補計算を停止
 - 希望スペーサー中心への近さを最優先し、同距離では`6 > 5 >> 7`の順で候補を順位付け
+- 02 RESULTSの候補行は全体を押して選択でき、表示塩基配列は選択状態を保ったままマウスドラッグで範囲選択・コピー可能
 - 選択候補について、F/R配列とZF1–ZF6の対応、左右3ZFのN→C方向、FokI ELD（−）/KKR（＋）のヘテロ二量体を動的な構成図で表示
 - 各fingerの標的triplet、7 aa recognition helix、F2 context、完全array配列を表示
 - `NLS–CoDA 3F–FokI ELD–F2A–NLS–CoDA 3F–FokI KKR`の単一ORFを生成
