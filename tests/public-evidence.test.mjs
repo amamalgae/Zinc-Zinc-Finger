@@ -101,6 +101,12 @@ test("interactive controls remain distinguishable from informational labels", ()
   assert.match(css, /button:focus-visible, a:focus-visible, summary:focus-visible/);
   assert.match(css, /\.technical-details > summary::after/);
   assert.match(css, /\.candidate-action/);
+  assert.match(app, /className=\{`candidate \$\{selected \? "selected" : ""\}`\} role="button" tabIndex=\{0\}/);
+  assert.match(app, /hasTextSelectionWithin\(event\.currentTarget\)/);
+  assert.doesNotMatch(app, /<button className=\{`candidate/);
+  assert.match(css, /\.candidate-sequence \{[^}]*cursor: text;[^}]*user-select: text;/);
+  assert.match(app, /塩基配列はドラッグして選択・コピーできます/);
+  assert.doesNotMatch(app, /希望位置から。初期値1000 bp/);
   assert.match(app, /この欄は表示専用です。設計を変更する場合は、02で別の候補を選択してください。/);
   assert.match(css, /\.input-panel, \.results-panel, \.evidence \{ border: 1px solid/);
   assert.match(css, /\.selected-design \{[^}]*border: 0;[^}]*background: #edf3ed/);

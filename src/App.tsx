@@ -83,6 +83,19 @@ function FingerGroup({ title, fingers }: { title: string; fingers: readonly Coda
   );
 }
 
+function hasTextSelectionWithin(element: HTMLElement): boolean {
+  const selection = window.getSelection();
+  return Boolean(
+    selection
+    && !selection.isCollapsed
+    && selection.toString()
+    && selection.anchorNode
+    && selection.focusNode
+    && element.contains(selection.anchorNode)
+    && element.contains(selection.focusNode),
+  );
+}
+
 function CandidateRow({ candidate, rank, selected, onSelect }: {
   candidate: CodaCandidate;
   rank: number;
@@ -90,12 +103,12 @@ function CandidateRow({ candidate, rank, selected, onSelect }: {
   onSelect: () => void;
 }) {
   return (
-    <button className={`candidate ${selected ? "selected" : ""}`} type="button" aria-pressed={selected} onClick={onSelect}>
+    <div className={`candidate ${selected ? "selected" : ""}`} role="button" tabIndex={0} aria-pressed={selected} onClick={(event) => { if (!hasTextSelectionWithin(event.currentTarget)) onSelect(); }} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect(); } }}>
       <span className="candidate-rank">{String(rank).padStart(2, "0")}</span>
       <span className="candidate-sequence"><b className="left">{candidate.leftTop}</b><i>{candidate.spacer}</i><b className="right">{candidate.rightTop}</b></span>
       <span className="candidate-summary"><strong>F2 {candidate.leftArray.f2Context} / {candidate.rightArray.f2Context}</strong><small>希望位置 ±{formatCut(candidate.distance)} bp · spacer {candidate.spacerLength} bp</small></span>
       <span className="candidate-action" aria-hidden="true">{selected ? "✓ 選択中" : "選択 →"}</span>
-    </button>
+    </div>
   );
 }
 
@@ -228,7 +241,7 @@ export default function Home() {
           <div className="input-meta"><span>{dna.length} bp</span><span className={ambiguousBaseCount ? "warning" : ""}>{ambiguousBaseCount ? `曖昧塩基 ${ambiguousBaseCount} bp（候補から除外）` : "曖昧塩基なし"}</span><span className={invalidCharacterCount ? "warning" : ""}>{invalidCharacterCount ? `未対応文字 ${invalidCharacterCount}件` : "入力形式OK"}</span></div>
           <div className="simple-controls">
             <label className={desiredCutError ? "has-error" : undefined}><span>希望スペーサー中心</span><input type="text" inputMode="numeric" pattern="[0-9]*" value={desiredCutInput} aria-invalid={Boolean(desiredCutError)} aria-describedby={desiredCutError ? "desired-cut-error" : "desired-cut-help"} onChange={(event) => { if (/^\d*$/.test(event.target.value)) setDesiredCutInput(event.target.value); setSelectedId(null); }} />{desiredCutError ? <small id="desired-cut-error" className="field-error" role="alert"><i aria-hidden="true">!</i>{desiredCutError}</small> : <small id="desired-cut-help">5′端からの塩基間座標</small>}</label>
-            <label><span>探索範囲（±bp）</span><input type="text" inputMode="numeric" pattern="[0-9]*" value={maxDistanceInput} onChange={(event) => { if (/^\d*$/.test(event.target.value)) setMaxDistanceInput(event.target.value); setSelectedId(null); }} /><small>希望位置から。初期値1000 bp</small></label>
+            <label><span>探索範囲（±bp）</span><input type="text" inputMode="numeric" pattern="[0-9]*" value={maxDistanceInput} onChange={(event) => { if (/^\d*$/.test(event.target.value)) setMaxDistanceInput(event.target.value); setSelectedId(null); }} /><small>希望位置から</small></label>
           </div>
           <button className="example-button" type="button" onClick={() => { setRawSequence(EXAMPLE_SEQUENCE); setDesiredCutInput("18"); setMaxDistanceInput(DEFAULT_MAX_DISTANCE_INPUT); setSelectedId(null); }}><span aria-hidden="true">↻</span> 例の配列に戻す</button>
           <p className="input-note">IUPAC曖昧塩基は座標を保持したまま候補から除外します。</p>
@@ -237,7 +250,7 @@ export default function Home() {
         <div className="results-panel">
           <div className="panel-heading"><span>02</span><div><small>RESULTS</small><h2>ZFNペア候補を選択</h2></div><button className="secondary-action" type="button" disabled={!candidates.length} onClick={() => downloadText(codaCandidatesToCsv(candidates), "coda-3finger-zfn-candidates.csv", "text/csv;charset=utf-8")}><span aria-hidden="true">↓</span> CSVを保存</button></div>
           <div className="result-count"><strong>{candidates.length}</strong><span>設計候補</span><small>{candidates.length > LISTED_CANDIDATE_LIMIT ? `${LISTED_CANDIDATE_LIMIT}件を表示 · ` : ""}希望位置優先 · 同距離6 &gt; 5 &gt;&gt; 7 bp</small></div>
-          {candidates.length ? <p className="selection-help">候補を押すと、下の設計内容と出力ファイルが切り替わります。</p> : null}
+          {candidates.length ? <p className="selection-help">候補を押すと設計内容が切り替わります。塩基配列はドラッグして選択・コピーできます。</p> : null}
           {candidates.length ? <div className="candidate-list">{listedCandidates.map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} />)}</div> : <div className="empty-state"><strong>{desiredCutError ? "希望スペーサー中心を訂正してください" : invalidCharacterCount ? "未対応文字があります" : "候補がありません"}</strong><p>{desiredCutError ? "入力欄の赤いメッセージに従い、入力配列内の座標を指定してください。" : invalidCharacterCount ? "赤字の未対応文字を修正してから設計してください。IUPAC曖昧塩基は入力できます。" : "CoDA archiveで左右9 bpを構成できる部位がありません。探索範囲または入力配列を変更してください。"}</p></div>}
         </div>
       </section>
