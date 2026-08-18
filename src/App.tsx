@@ -21,7 +21,6 @@ import {
   CODA_F3_UNIT_COUNT,
   type CodaFinger,
 } from "./coda-module-archive.ts";
-import { buildZfnBindingMap } from "./zfn-binding-map.ts";
 import {
   DEFAULT_DESIRED_CUT_INPUT,
   DEFAULT_MAX_DISTANCE_INPUT,
@@ -112,66 +111,6 @@ function CandidateRow({ candidate, rank, selected, onSelect }: {
   );
 }
 
-function ZfnBindingDiagram({ candidate }: { candidate: CodaCandidate }) {
-  const map = buildZfnBindingMap(candidate);
-
-  return (
-    <figure className="binding-figure">
-      <figcaption className="visually-hidden">選択した標的塩基配列とZF1–ZF6の対応</figcaption>
-
-      <div className="dna-scroll" aria-label="選択した標的塩基配列とZF1からZF6の対応">
-        <div className="dna-map">
-          <div className="dna-ruler" aria-hidden="true">
-            <span className="ruler-name">座標</span>
-            <span className="left">{candidate.start + 1}</span>
-            <span className="spacer">中心 {formatCut(candidate.cut)}</span>
-            <span className="right">{candidate.start + 18 + candidate.spacerLength}</span>
-          </div>
-          <div className="dna-group-labels" aria-hidden="true">
-            <strong className="left">左ZFN標的 · 9 bp</strong>
-            <strong className="spacer">spacer · {candidate.spacerLength} bp</strong>
-            <strong className="right">右ZFN標的 · 9 bp</strong>
-          </div>
-          <div className="dna-direction" aria-hidden="true">
-            <span className="direction-name">向き</span>
-            <span className="left">N<i />C</span>
-            <span className="right">C<i />N</span>
-          </div>
-          <div className="dna-row dna-labels" aria-hidden="true">
-            <span className="strand-name">ZF</span><span />
-            {map.topStrandOrder.slice(0, 3).map((finger) => <strong className="left" key={finger.globalFinger}>ZF{finger.globalFinger}</strong>)}
-            <strong className="spacer-label">spacer</strong>
-            {map.topStrandOrder.slice(3).map((finger) => <strong className="right" key={finger.globalFinger}>ZF{finger.globalFinger}</strong>)}
-            <span />
-          </div>
-          <div className="dna-row forward-strand">
-            <strong className="strand-name">F</strong><span className="dna-end">5′</span>
-            {map.topStrandOrder.slice(0, 3).map((finger) => <code className="left" key={finger.globalFinger}>{finger.topTriplet}</code>)}
-            <code className="spacer-sequence">{map.spacerTop}</code>
-            {map.topStrandOrder.slice(3).map((finger) => <code className="right" key={finger.globalFinger}>{finger.topTriplet}</code>)}
-            <span className="dna-end">3′</span>
-          </div>
-          <div className="dna-row reverse-strand">
-            <strong className="strand-name">R</strong><span className="dna-end">3′</span>
-            {map.topStrandOrder.slice(0, 3).map((finger) => <code className="left" key={finger.globalFinger}>{finger.bottomTriplet}</code>)}
-            <code className="spacer-sequence">{map.spacerBottom}</code>
-            {map.topStrandOrder.slice(3).map((finger) => <code className="right" key={finger.globalFinger}>{finger.bottomTriplet}</code>)}
-            <span className="dna-end">5′</span>
-          </div>
-
-          <div className="dna-legend" aria-label="配列図の凡例">
-            <span className="left"><i />左ZFNが認識 · ZF1–ZF3</span>
-            <span className="spacer"><i />FokI切断領域（spacer）</span>
-            <span className="right"><i />右ZFNが認識 · ZF4–ZF6</span>
-          </div>
-        </div>
-      </div>
-
-      <p className="binding-note">上端の座標は、入力配列の5′端を1とする位置です（この候補は{candidate.start + 1}–{candidate.start + 18 + candidate.spacerLength} bp）。F鎖を5′→3′で表示しています。図中の矢印はタンパク質のN→C方向です。右ZFNはDNAと逆平行に結合するため、配列上ではZF6 → ZF5 → ZF4の順に並びます。</p>
-    </figure>
-  );
-}
-
 export default function Home() {
   const [rawSequence, setRawSequence] = useState(EXAMPLE_SEQUENCE);
   const [desiredCutInput, setDesiredCutInput] = useState(DEFAULT_DESIRED_CUT_INPUT);
@@ -256,32 +195,14 @@ export default function Home() {
       </section>
 
       {selected && construct && (
-        <section className="selected-design">
-          <div className="selected-heading">
-            <div>
-              <div className="display-tags">
-                <span className="display-kicker"><i aria-hidden="true" />選択内容の表示</span>
-                <span className="selected-rank">候補 <strong>{String(selectedRank).padStart(2, "0")}</strong> / {listedCandidates.length}件</span>
-              </div>
-              <h2>標的塩基配列とfingerの対応</h2>
-              <p className="selected-lead">希望スペーサー中心から±{formatCut(selected.distance)} bpの候補です。{selected.spacerLength} bpのspacerを挟む左右9 bpを、ZF1–ZF6が下図のとおり認識します。</p>
-              <p>この欄は表示専用です。設計を変更する場合は、02で別の候補を選択してください。</p>
-            </div>
-            <div className="selected-metrics">
-              <div><small>希望位置との差</small><strong>±{formatCut(selected.distance)} bp</strong></div>
-              <div><small>spacer</small><strong>{selected.spacerLength} bp</strong></div>
-              <div><small>spacer中心</small><strong>{formatCut(selected.cut)}</strong></div>
-            </div>
-          </div>
-          <ZfnBindingDiagram candidate={selected} />
-
+        <section className="protein-output-section">
           <div className="output-card">
             <div className="output-heading"><div className="panel-heading"><span>03</span><div><small>PROTEIN OUTPUT</small><h2>1本のORFで、左右2本のZFNを発現</h2></div></div><span className="protein-only-badge">出力形式：GenPept / Protein FASTA</span></div>
             <p className="output-intro">選択した左右CoDA arrayをFokI ELD/KKRと組み合わせ、F2Aで連結した前駆体polyprotein 1配列を出力します。GenPeptではZF1–ZF6、FokI ELD/KKR、F2Aをfeatureとして表示できます。</p>
             <div className="output-stats"><span><strong>{construct.protein.length}</strong>aa precursor</span><span><strong>{FMDV_F2A.length}</strong>aa F2A</span></div>
             <div className="download-row">
-              <button className="primary-action" type="button" onClick={() => downloadText(codaConstructToProteinGenPept(construct), codaResultFilename(selectedRank, "gp"))}><span aria-hidden="true">↓</span> DOWNLOAD (GenPept)</button>
-              <button className="secondary-action" type="button" onClick={() => downloadText(codaConstructToProteinFasta(construct), codaResultFilename(selectedRank, "fasta"))}><span aria-hidden="true">↓</span> DOWNLOAD (Protein FASTA)</button>
+              <button className="primary-action" type="button" onClick={() => downloadText(codaConstructToProteinGenPept(construct), codaResultFilename(selectedRank, "gp"))}><span aria-hidden="true">↓</span> Download (GenPept: featureあり)</button>
+              <button className="secondary-action" type="button" onClick={() => downloadText(codaConstructToProteinFasta(construct), codaResultFilename(selectedRank, "fasta"))}><span aria-hidden="true">↓</span> Download (fasta)</button>
             </div>
             <div className="protein-sequence" aria-label="Precursor polyprotein amino acid sequence"><div><span>AMINO ACID SEQUENCE</span><strong>Precursor polyprotein</strong></div><code>{construct.protein}</code></div>
             <p className="output-note">塩基配列は生成しません。DNA合成時に、実際の宿主・オルガネラ・発現ベクターに合わせてコドン最適化と配列QCを行ってください。</p>
