@@ -1,6 +1,6 @@
 # Zinc Zinc Finger: AI handoff and decision record
 
-Last reconciled: 2026-08-18, for PR #49 based on `main` commit `c52df7b`, plus the source files listed in section 10.
+Last reconciled: 2026-08-18, for PR #50 based on `main` commit `a78d1ce`, plus the source files listed in section 10.
 
 This document is the durable context for a new AI or developer who has no access to the prior ChatGPT conversations. Read it before modifying the scientific logic. The current README explains what the public site does; this file also explains what it used to do, why approaches were removed, what the evidence can and cannot support, and which questions remain open.
 
@@ -30,7 +30,7 @@ The intended use is practical ZFN site selection for knock-in and related genome
 2. **Do not invent archive entries.** An empty CoDA table cell is unavailable, not a value to predict or interpolate.
 3. **Protein output only.** The site does not choose codons because the eventual host range is not fixed. Codon optimization and DNA-level QC belong at the synthesis stage for the actual host, organelle, vector, and cloning constraints.
 4. **Simple public workflow.** The current UI should remain understandable to a ZFN beginner. Historical research modules can remain in code/tests without being exposed in the main workflow.
-5. **KI-oriented search radius.** The search range is a numeric input with default +/-500 bp. It is not a toggle. The requested coordinate is the desired **spacer center**, not a guaranteed FokI phosphodiester-bond cleavage coordinate.
+5. **KI-oriented search radius.** The desired spacer center and search range are manual-entry integer fields with no browser stepper; both default to 1000 bp. The desired center must be within `0..input length`: an out-of-range value shows a red accessible correction message and blocks candidate generation. The search range does not use that sequence-length validation. The requested coordinate is the desired **spacer center**, not a guaranteed FokI phosphodiester-bond cleavage coordinate.
 6. **Browser-local processing.** Target and genome sequences must not be uploaded. The site has no API, analytics, or external persistence for sequence input.
 7. **Several candidates should be tested.** Archive membership and geometric rank are not activity estimates. A practical experiment should compare multiple candidates in the relevant expression system, ideally with an SSA or another cleavage pre-screen before relying on KI.
 8. **No FTO conclusion in the software.** Public disclosure, an expired patent, or an independently written implementation does not by itself establish freedom to operate for a use and jurisdiction.
@@ -345,8 +345,9 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 18. **Panel-scope phase (P2, final step of the redesign):** the diagram gained a coordinate ruler above the band labels, so the figure states where in the pasted sequence the target sits (1-based, `start + 1` to `start + 18 + spacer`), which nothing on the page had shown before. `.dna-scroll` had `overflow: hidden` despite its name, so anything that could not shrink was clipped rather than scrolled: at 320 px the 7 bp spacer cell needed 46 px and got 36 px, silently cutting bases. It is now `overflow-x: auto` with `.dna-map { min-width: 268px }` and a wider mobile spacer column (2.2fr), measured so that nothing clips at any width and no horizontal scrolling appears at 360 px or above — decision 12's no-scroll requirement holds for phones, and below 360 px the panel scrolls instead of lying about the sequence. Two candidate-independent blocks left the panel: the fixed ORF architecture strip moved into the `finger構成と単一ORFの構成` disclosure, and the donor list moved to the evidence section, which is where fixed provenance belongs. The panel now contains only what changes when the selected candidate changes.
 19. **Annotated-protein export phase:** standard GenPept replaced FASTA as the primary download without reintroducing DNA generation. The precursor carries nine protein `Region` features for ZF1–ZF6, FokI ELD/KKR, and F2A so SnapGene, Benchling, Geneious, and other protein-aware editors can render the architecture. The three-sequence FASTA remains available as a secondary interoperability export.
 20. **Single-precursor output phase:** GenPept and Protein FASTA now both contain only the selected precursor polyprotein; the predicted left/right F2A products were removed from the public model and files. Both filenames use the displayed result rank (`ZFN_ResultNN.gp` / `.fasta`) so parallel candidate downloads remain identifiable.
+21. **Manual coordinate-input phase:** desired spacer center and search range defaults became 1000 bp, and native number inputs were replaced with digit-only manual fields so browsers do not show increment/decrement steppers. Only the desired center is range-validated against input length; invalid values display a red `role=alert` correction and suppress candidate generation.
 
-### 7.2 Complete main-branch commit/PR ledger through PR #49
+### 7.2 Complete main-branch commit/PR ledger through PR #50
 
 | Date | Commit / PR | Change and significance |
 |---|---|---|
@@ -409,6 +410,7 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 | 2026-08-18 | PR #47 | Added the input-sequence coordinate ruler to the target diagram, replaced the clipping `overflow: hidden` with measured scroll behaviour that still avoids horizontal scrolling at 360 px and above, and moved the fixed ORF strip and donor list out of the candidate-specific panel. |
 | 2026-08-18 | PR #48 | Added standard GenPept protein output with exact ZF1–ZF6, FokI ELD/KKR, and F2A Region features while retaining the three-sequence FASTA and avoiding any implied DNA/codon sequence. |
 | 2026-08-18 | PR #49 | Reduced both GenPept and Protein FASTA to the selected precursor polyprotein only, removed predicted post-F2A products from the public model, and tied both filenames to the displayed candidate number (`ZFN_ResultNN`). |
+| 2026-08-18 | PR #50 | Set both coordinate controls to 1000 by default, removed native number steppers in favour of manual digit entry, and added an accessible red correction state when the desired spacer center lies outside the input sequence. |
 
 The abandoned T2A stage cited Katayama and Yamamoto (2025), DOI `10.3390/ijms26157602`, as a GSG-T2A ZFN precedent. It is historical only: current output uses an FMDV-derived F2A sequence without the old GSG-T2A implementation.
 

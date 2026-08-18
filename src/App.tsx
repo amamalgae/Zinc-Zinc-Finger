@@ -22,6 +22,12 @@ import {
   type CodaFinger,
 } from "./coda-module-archive.ts";
 import { buildZfnBindingMap } from "./zfn-binding-map.ts";
+import {
+  DEFAULT_DESIRED_CUT_INPUT,
+  DEFAULT_MAX_DISTANCE_INPUT,
+  desiredCutInputError,
+  parseUnsignedIntegerInput,
+} from "./manual-numeric-input.ts";
 import ZfnOverviewDiagram from "./ZfnOverviewDiagram.tsx";
 
 const EXAMPLE_LEFT_RECOGNITION = "GTGGGGGAG";
@@ -155,15 +161,20 @@ function ZfnBindingDiagram({ candidate }: { candidate: CodaCandidate }) {
 
 export default function Home() {
   const [rawSequence, setRawSequence] = useState(EXAMPLE_SEQUENCE);
-  const [desiredCut, setDesiredCut] = useState(18);
-  const [maxDistance, setMaxDistance] = useState(500);
+  const [desiredCutInput, setDesiredCutInput] = useState(DEFAULT_DESIRED_CUT_INPUT);
+  const [maxDistanceInput, setMaxDistanceInput] = useState(DEFAULT_MAX_DISTANCE_INPUT);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const parsedInput = useMemo(() => parseDNAInput(rawSequence), [rawSequence]);
   const { dna, ambiguousBaseCount, invalidCharacterCount } = parsedInput;
+  const desiredCut = parseUnsignedIntegerInput(desiredCutInput);
+  const maxDistance = parseUnsignedIntegerInput(maxDistanceInput);
+  const desiredCutError = desiredCutInputError(desiredCutInput, dna.length);
   const candidates = useMemo(
-    () => invalidCharacterCount ? [] : generateCodaCandidates(dna, desiredCut, maxDistance),
-    [dna, desiredCut, maxDistance, invalidCharacterCount],
+    () => invalidCharacterCount || desiredCutError || desiredCut === null || maxDistance === null
+      ? []
+      : generateCodaCandidates(dna, desiredCut, maxDistance),
+    [dna, desiredCut, desiredCutError, maxDistance, invalidCharacterCount],
   );
   const listedCandidates = candidates.slice(0, LISTED_CANDIDATE_LIMIT);
   const selected = candidates.find(({ id }) => id === selectedId) ?? candidates[0] ?? null;
@@ -216,10 +227,10 @@ export default function Home() {
           <textarea id="target-sequence" value={rawSequence} onChange={(event) => { setRawSequence(event.target.value); setSelectedId(null); }} spellCheck={false} />
           <div className="input-meta"><span>{dna.length} bp</span><span className={ambiguousBaseCount ? "warning" : ""}>{ambiguousBaseCount ? `曖昧塩基 ${ambiguousBaseCount} bp（候補から除外）` : "曖昧塩基なし"}</span><span className={invalidCharacterCount ? "warning" : ""}>{invalidCharacterCount ? `未対応文字 ${invalidCharacterCount}件` : "入力形式OK"}</span></div>
           <div className="simple-controls">
-            <label><span>希望スペーサー中心</span><input type="number" min={0} max={dna.length} value={desiredCut} onChange={(event) => { setDesiredCut(Number(event.target.value)); setSelectedId(null); }} /><small>5′端からの塩基間座標</small></label>
-            <label><span>探索範囲（±bp）</span><input type="number" min={0} max={100000} step={50} value={maxDistance} onChange={(event) => { setMaxDistance(Math.max(0, Number(event.target.value))); setSelectedId(null); }} /><small>希望位置から。初期値500 bp</small></label>
+            <label className={desiredCutError ? "has-error" : undefined}><span>希望スペーサー中心</span><input type="text" inputMode="numeric" pattern="[0-9]*" value={desiredCutInput} aria-invalid={Boolean(desiredCutError)} aria-describedby={desiredCutError ? "desired-cut-error" : "desired-cut-help"} onChange={(event) => { if (/^\d*$/.test(event.target.value)) setDesiredCutInput(event.target.value); setSelectedId(null); }} />{desiredCutError ? <small id="desired-cut-error" className="field-error" role="alert"><i aria-hidden="true">!</i>{desiredCutError}</small> : <small id="desired-cut-help">5′端からの塩基間座標</small>}</label>
+            <label><span>探索範囲（±bp）</span><input type="text" inputMode="numeric" pattern="[0-9]*" value={maxDistanceInput} onChange={(event) => { if (/^\d*$/.test(event.target.value)) setMaxDistanceInput(event.target.value); setSelectedId(null); }} /><small>希望位置から。初期値1000 bp</small></label>
           </div>
-          <button className="example-button" type="button" onClick={() => { setRawSequence(EXAMPLE_SEQUENCE); setDesiredCut(18); setMaxDistance(500); setSelectedId(null); }}><span aria-hidden="true">↻</span> 例の配列に戻す</button>
+          <button className="example-button" type="button" onClick={() => { setRawSequence(EXAMPLE_SEQUENCE); setDesiredCutInput("18"); setMaxDistanceInput(DEFAULT_MAX_DISTANCE_INPUT); setSelectedId(null); }}><span aria-hidden="true">↻</span> 例の配列に戻す</button>
           <p className="input-note">IUPAC曖昧塩基は座標を保持したまま候補から除外します。</p>
         </div>
 
@@ -227,7 +238,7 @@ export default function Home() {
           <div className="panel-heading"><span>02</span><div><small>RESULTS</small><h2>ZFNペア候補を選択</h2></div><button className="secondary-action" type="button" disabled={!candidates.length} onClick={() => downloadText(codaCandidatesToCsv(candidates), "coda-3finger-zfn-candidates.csv", "text/csv;charset=utf-8")}><span aria-hidden="true">↓</span> CSVを保存</button></div>
           <div className="result-count"><strong>{candidates.length}</strong><span>設計候補</span><small>{candidates.length > LISTED_CANDIDATE_LIMIT ? `${LISTED_CANDIDATE_LIMIT}件を表示 · ` : ""}希望位置優先 · 同距離6 &gt; 5 &gt;&gt; 7 bp</small></div>
           {candidates.length ? <p className="selection-help">候補を押すと、下の設計内容と出力ファイルが切り替わります。</p> : null}
-          {candidates.length ? <div className="candidate-list">{listedCandidates.map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} />)}</div> : <div className="empty-state"><strong>{invalidCharacterCount ? "未対応文字があります" : "候補がありません"}</strong><p>{invalidCharacterCount ? "赤字の未対応文字を修正してから設計してください。IUPAC曖昧塩基は入力できます。" : "CoDA archiveで左右9 bpを構成できる部位がありません。探索範囲または入力配列を変更してください。"}</p></div>}
+          {candidates.length ? <div className="candidate-list">{listedCandidates.map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} />)}</div> : <div className="empty-state"><strong>{desiredCutError ? "希望スペーサー中心を訂正してください" : invalidCharacterCount ? "未対応文字があります" : "候補がありません"}</strong><p>{desiredCutError ? "入力欄の赤いメッセージに従い、入力配列内の座標を指定してください。" : invalidCharacterCount ? "赤字の未対応文字を修正してから設計してください。IUPAC曖昧塩基は入力できます。" : "CoDA archiveで左右9 bpを構成できる部位がありません。探索範囲または入力配列を変更してください。"}</p></div>}
         </div>
       </section>
 
