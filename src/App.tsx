@@ -25,6 +25,7 @@ import ZfnOverviewDiagram from "./ZfnOverviewDiagram.tsx";
 const EXAMPLE_LEFT_RECOGNITION = "GTGGGGGAG";
 const EXAMPLE_RIGHT_RECOGNITION = "GTGGGGGAG";
 const EXAMPLE_SEQUENCE = `CAGTCA${reverseComplement(EXAMPLE_LEFT_RECOGNITION)}GATTAC${EXAMPLE_RIGHT_RECOGNITION}TGACGT`;
+const LISTED_CANDIDATE_LIMIT = 12;
 
 function downloadText(contents: string, filename: string, type = "text/plain;charset=utf-8") {
   const url = URL.createObjectURL(new Blob([contents], { type }));
@@ -83,8 +84,8 @@ function CandidateRow({ candidate, rank, selected, onSelect }: {
   return (
     <button className={`candidate ${selected ? "selected" : ""}`} type="button" aria-pressed={selected} onClick={onSelect}>
       <span className="candidate-rank">{String(rank).padStart(2, "0")}</span>
-      <span className="candidate-sequence"><b>{candidate.leftTop}</b><i>{candidate.spacer}</i><b>{candidate.rightTop}</b></span>
-      <span className="candidate-summary"><strong>F2 {candidate.leftArray.f2Context} / {candidate.rightArray.f2Context}</strong><small>spacer中心 {formatCut(candidate.cut)} · {candidate.spacerLength} bp</small></span>
+      <span className="candidate-sequence"><b className="left">{candidate.leftTop}</b><i>{candidate.spacer}</i><b className="right">{candidate.rightTop}</b></span>
+      <span className="candidate-summary"><strong>F2 {candidate.leftArray.f2Context} / {candidate.rightArray.f2Context}</strong><small>希望位置 ±{formatCut(candidate.distance)} bp · spacer {candidate.spacerLength} bp</small></span>
       <span className="candidate-action" aria-hidden="true">{selected ? "✓ 選択中" : "選択 →"}</span>
     </button>
   );
@@ -103,6 +104,11 @@ function ZfnBindingDiagram({ candidate }: { candidate: CodaCandidate }) {
             <strong className="left">左ZFN標的 · 9 bp</strong>
             <strong className="spacer">spacer · {candidate.spacerLength} bp</strong>
             <strong className="right">右ZFN標的 · 9 bp</strong>
+          </div>
+          <div className="dna-direction" aria-hidden="true">
+            <span className="direction-name">向き</span>
+            <span className="left">N<i />C</span>
+            <span className="right">C<i />N</span>
           </div>
           <div className="dna-row dna-labels" aria-hidden="true">
             <span className="strand-name">ZF</span><span />
@@ -125,15 +131,16 @@ function ZfnBindingDiagram({ candidate }: { candidate: CodaCandidate }) {
             {map.topStrandOrder.slice(3).map((finger) => <code className="right" key={finger.globalFinger}>{finger.bottomTriplet}</code>)}
             <span className="dna-end">5′</span>
           </div>
+
+          <div className="dna-legend" aria-label="配列図の凡例">
+            <span className="left"><i />左ZFNが認識 · ZF1–ZF3</span>
+            <span className="spacer"><i />FokI切断領域（spacer）</span>
+            <span className="right"><i />右ZFNが認識 · ZF4–ZF6</span>
+          </div>
         </div>
       </div>
 
-      <div className="target-legend" aria-label="配列図の凡例">
-        <span className="left"><i />左ZFNが認識</span>
-        <span className="spacer"><i />FokI切断領域</span>
-        <span className="right"><i />右ZFNが認識</span>
-      </div>
-      <p className="binding-note">F鎖を5′→3′で表示しています。右ZFNはDNAと逆平行に結合するため、配列上ではZF6 → ZF5 → ZF4の順です。</p>
+      <p className="binding-note">F鎖を5′→3′で表示しています。図中の矢印はタンパク質のN→C方向です。右ZFNはDNAと逆平行に結合するため、配列上ではZF6 → ZF5 → ZF4の順に並びます。</p>
     </figure>
   );
 }
@@ -150,7 +157,9 @@ export default function Home() {
     () => invalidCharacterCount ? [] : generateCodaCandidates(dna, desiredCut, maxDistance),
     [dna, desiredCut, maxDistance, invalidCharacterCount],
   );
+  const listedCandidates = candidates.slice(0, LISTED_CANDIDATE_LIMIT);
   const selected = candidates.find(({ id }) => id === selectedId) ?? candidates[0] ?? null;
+  const selectedRank = selected ? candidates.findIndex(({ id }) => id === selected.id) + 1 : 0;
   const construct = useMemo(() => selected ? buildCodaBicistronicZfn(selected) : null, [selected]);
 
   return (
@@ -208,9 +217,9 @@ export default function Home() {
 
         <div className="results-panel">
           <div className="panel-heading"><span>02</span><div><small>RESULTS</small><h2>ZFNペア候補を選択</h2></div><button className="secondary-action" type="button" disabled={!candidates.length} onClick={() => downloadText(codaCandidatesToCsv(candidates), "coda-3finger-zfn-candidates.csv", "text/csv;charset=utf-8")}><span aria-hidden="true">↓</span> CSVを保存</button></div>
-          <div className="result-count"><strong>{candidates.length}</strong><span>設計候補</span><small>{candidates.length > 12 ? "12件を表示 · " : ""}希望位置優先 · 同距離6→5→7 bp</small></div>
+          <div className="result-count"><strong>{candidates.length}</strong><span>設計候補</span><small>{candidates.length > LISTED_CANDIDATE_LIMIT ? `${LISTED_CANDIDATE_LIMIT}件を表示 · ` : ""}希望位置優先 · 同距離6→5→7 bp</small></div>
           {candidates.length ? <p className="selection-help">候補を押すと、下の設計内容とProtein FASTAが切り替わります。</p> : null}
-          {candidates.length ? <div className="candidate-list">{candidates.slice(0, 12).map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} />)}</div> : <div className="empty-state"><strong>{invalidCharacterCount ? "未対応文字があります" : "候補がありません"}</strong><p>{invalidCharacterCount ? "赤字の未対応文字を修正してから設計してください。IUPAC曖昧塩基は入力できます。" : "CoDA archiveで左右9 bpを構成できる部位がありません。探索範囲または入力配列を変更してください。"}</p></div>}
+          {candidates.length ? <div className="candidate-list">{listedCandidates.map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} />)}</div> : <div className="empty-state"><strong>{invalidCharacterCount ? "未対応文字があります" : "候補がありません"}</strong><p>{invalidCharacterCount ? "赤字の未対応文字を修正してから設計してください。IUPAC曖昧塩基は入力できます。" : "CoDA archiveで左右9 bpを構成できる部位がありません。探索範囲または入力配列を変更してください。"}</p></div>}
         </div>
       </section>
 
@@ -218,7 +227,10 @@ export default function Home() {
         <section className="selected-design">
           <div className="selected-heading">
             <div>
-              <span className="display-kicker"><i aria-hidden="true" />選択内容の表示</span>
+              <div className="display-tags">
+                <span className="display-kicker"><i aria-hidden="true" />選択内容の表示</span>
+                <span className="selected-rank">候補 <strong>{String(selectedRank).padStart(2, "0")}</strong> / {listedCandidates.length}件</span>
+              </div>
               <h2>標的塩基配列とfingerの対応</h2>
               <p className="selected-lead">希望スペーサー中心から±{formatCut(selected.distance)} bpの候補です。{selected.spacerLength} bpのspacerを挟む左右9 bpを、ZF1–ZF6が下図のとおり認識します。</p>
               <p>この欄は表示専用です。設計を変更する場合は、02で別の候補を選択してください。</p>
