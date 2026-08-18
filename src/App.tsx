@@ -12,6 +12,7 @@ import {
 import {
   buildCodaBicistronicZfn,
   CODA_ZFN_DONORS,
+  codaConstructToProteinGenPept,
   codaConstructToProteinFasta,
 } from "./coda-construct-output.ts";
 import {
@@ -250,11 +251,12 @@ export default function Home() {
           <ZfnBindingDiagram candidate={selected} />
 
           <div className="output-card">
-            <div className="output-heading"><div><span>PROTEIN OUTPUT</span><h2>1本のORFで、左右2本のZFNを発現</h2></div><span className="protein-only-badge">出力形式：Protein FASTA</span></div>
-            <p className="output-intro">選択した左右CoDA arrayをFokI ELD/KKRと組み合わせ、F2Aで連結した完全アミノ酸配列を出力します。</p>
+            <div className="output-heading"><div><span>PROTEIN OUTPUT</span><h2>1本のORFで、左右2本のZFNを発現</h2></div><span className="protein-only-badge">出力形式：GenPept / Protein FASTA</span></div>
+            <p className="output-intro">選択した左右CoDA arrayをFokI ELD/KKRと組み合わせ、F2Aで連結した完全アミノ酸配列を出力します。GenPeptではZF1–ZF6、FokI ELD/KKR、F2Aをfeatureとして表示できます。</p>
             <div className="output-stats"><span><strong>{construct.protein.length}</strong>aa precursor</span><span><strong>{construct.processedLeftProtein.length}</strong>aa left product</span><span><strong>{construct.processedRightProtein.length}</strong>aa right product</span><span><strong>{FMDV_F2A.length}</strong>aa F2A</span></div>
             <div className="download-row">
-              <button className="primary-action" type="button" onClick={() => downloadText(codaConstructToProteinFasta(construct), `${construct.name}-protein.fasta`)}><span aria-hidden="true">↓</span> Protein FASTAを保存（3配列）</button>
+              <button className="primary-action" type="button" onClick={() => downloadText(codaConstructToProteinGenPept(construct), `${construct.name}-annotated-protein.gp`)}><span aria-hidden="true">↓</span> 注釈付きProteinを保存（GenPept）</button>
+              <button className="secondary-action" type="button" onClick={() => downloadText(codaConstructToProteinFasta(construct), `${construct.name}-protein.fasta`)}><span aria-hidden="true">↓</span> Protein FASTAを保存（3配列）</button>
             </div>
             <details className="sequence-details compact"><summary>前駆体とF2A処理後の予測産物を見る</summary><div><span>Precursor polyprotein</span><code>{construct.protein}</code></div><div><span>Processed left</span><code>{construct.processedLeftProtein}</code></div><div><span>Processed right</span><code>{construct.processedRightProtein}</code></div></details>
             <p className="output-note">塩基配列は生成しません。DNA合成時に、実際の宿主・オルガネラ・発現ベクターに合わせてコドン最適化と配列QCを行ってください。</p>
