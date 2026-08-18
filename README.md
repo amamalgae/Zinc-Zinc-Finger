@@ -76,6 +76,8 @@ FokIはDNAを切断するヌクレアーゼドメインです。左右には二�
 
 CoDA unit tableはSander 2011のSupplementary Tables 1–2を転記し、件数とframeworkを対応特許WO2011017293A2で照合しています。収録数は原著・特許記載どおりF1 319件、F3 344件、合計663件です。
 
+原著のSupplementary Tables 1–2は画像PDFで差分が取れないため、転記結果である`data/coda-2011-units.json`を原著と同じ行順・列順のExcelに並べ直し、PDFと並べて目視照合しました。その照合用ブックは`docs/reference/coda-2011-units-sander-2011-crosscheck.xlsx`として収録しています（JSONから生成した確認用資料であり、独立した第二の出典ではありません）。照合できた範囲、原著本文のGGG行に関する記載揺れ、および未検証の点は[docs/reference/README.md](docs/reference/README.md)に記載しています。
+
 | 用途 | 文献 |
 |---|---|
 | 3-finger CoDA | Sander et al. (2011), DOI: [10.1038/nmeth.1542](https://doi.org/10.1038/nmeth.1542) |
