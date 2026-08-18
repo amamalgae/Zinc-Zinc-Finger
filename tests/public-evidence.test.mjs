@@ -40,12 +40,16 @@ test("landing page leads with the CoDA-based value proposition and qualifies the
   assert.doesNotMatch(app, /3つのfingerで/i);
 });
 
-test("candidate ranking discloses the evidence-informed spacer tie-break", () => {
+test("candidate ranking shows the compact spacer order and keeps its rationale in the README", () => {
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
+  const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
 
-  assert.match(app, /同距離では6 bp、5 bp、7 bpの順/);
-  assert.match(app, /希望位置優先 · 同距離6→5→7 bp/);
-  assert.match(app, /候補ごとの活性予測ではありません/);
+  assert.match(app, /希望位置優先 · 同距離6 &gt; 5 &gt;&gt; 7 bp/);
+  assert.doesNotMatch(app, /spacer長の実験傾向を用いた優先順位/);
+  assert.match(readme, /`6 > 5 >> 7`/);
+  assert.match(readme, /Shimizu et al\. \(2009\).*10\.1016\/j\.bmcl\.2009\.02\.109/);
+  assert.match(readme, /Chen et al\. \(2013\).*10\.1093\/nar\/gks1356/);
+  assert.match(readme, /定量的な活性比を意味しません/);
 });
 
 test("interactive controls remain distinguishable from informational labels", () => {

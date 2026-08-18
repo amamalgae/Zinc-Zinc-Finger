@@ -1,6 +1,6 @@
 # Zinc Zinc Finger: AI handoff and decision record
 
-Last reconciled: 2026-08-17, for PR #42 based on `main` commit `9695a8a`, plus the source files listed in section 10.
+Last reconciled: 2026-08-18, for PR #45 based on `main` commit `855b065`, plus the source files listed in section 10.
 
 This document is the durable context for a new AI or developer who has no access to the prior ChatGPT conversations. Read it before modifying the scientific logic. The current README explains what the public site does; this file also explains what it used to do, why approaches were removed, what the evidence can and cannot support, and which questions remain open.
 
@@ -130,10 +130,10 @@ The array framework comes from WO2011017293A2, SEQ ID NOs 841-844:
 Candidates are sorted by:
 
 1. absolute distance from the requested spacer center;
-2. an explicit spacer preference of 6 bp, then 5 bp, then 7 bp;
+2. an explicit spacer preference displayed as `6 > 5 >> 7` (implemented as the ordinal order 6 bp, then 5 bp, then 7 bp);
 3. lower genomic start coordinate.
 
-Distance remains the primary criterion because the tool is intended to place a cleavage region near a requested KI position. The spacer preference is applied only when candidates have equal distance. It is a low-resolution, cohort-informed tie-break rather than a candidate-specific activity prediction: Shimizu 2009 found a strong 6-bp optimum for the 6-aa `TGAAAR` ZF-FokI linker, while the independent CoDA cohort in Chen 2013 found 7-bp targets substantially less likely to be active than 5- or 6-bp targets. The current complete CoDA-3F/ELD/F2A/KKR construct was not tested in those experiments, so the ranking must not be reported as an expected indel percentage.
+Distance remains the primary criterion because the tool is intended to place a cleavage region near a requested KI position. The spacer preference is applied only when candidates have equal distance. It is a low-resolution, cohort-informed tie-break rather than a candidate-specific activity prediction: Shimizu 2009 found a strong 6-bp optimum for the 6-aa `TGAAAR` ZF-FokI linker, while the independent CoDA cohort in Chen 2013 found 7-bp targets substantially less likely to be active than 5- or 6-bp targets. The double separator in `6 > 5 >> 7` communicates this deliberate demotion of 7 bp; it is not a numerical weight or activity ratio. The current complete CoDA-3F/ELD/F2A/KKR construct was not tested in those experiments, so the ranking must not be reported as an expected indel percentage.
 
 Sources: Shimizu et al. (2009), DOI `10.1016/j.bmcl.2009.02.109`; Chen et al. (2013), DOI `10.1093/nar/gks1356`.
 
@@ -334,8 +334,9 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 14. **Spacer-priority phase:** requested spacer-center distance remained the primary rank criterion, but the equal-distance tie-break changed from symmetric closeness to 6 bp to the evidence-informed order 6 bp, 5 bp, then 7 bp. The UI states this order and explicitly says it is not a candidate-specific activity prediction.
 15. **Selected-display legibility phase (P0 of a three-step redesign):** the selected-design panel said the same thing four times — a figure caption, three summary cards, the in-diagram band labels, and the legend all restated the left 9 bp / spacer / right 9 bp split — so the panel read as four unrelated blocks. The summary cards and the second heading were removed, leaving the diagram as the single statement of that split; the caption survives as a screen-reader-only figure caption. The ranking key `distance` (bp from the requested spacer center) had never been rendered even though it is the primary sort criterion, so it is now the first metric and opens the panel's lead sentence. Type in the region was rebuilt on a 26 / 13 / 12 / 11 px scale with target bases at 17 px, and the 5-8 px labels — 5 px on phones — were raised to a hard 11 px floor that `tests/public-evidence.test.mjs` enforces for every rule in the region. Remaining steps: P1 covers in-diagram legend, binding direction, and candidate/display color continuity; P2 covers a coordinate ruler, real horizontal scrolling on phones, and moving candidate-independent blocks out of the panel.
 16. **In-diagram explanation phase (P1):** the legend moved from a separate block below the figure onto the dark panel itself, beside the colours it names, and now ties each colour to its fingers (ZF1–ZF3 left, ZF4–ZF6 right). A direction row above the ZF labels draws the protein N→C run of each monomer, so the antiparallel right array is shown rather than only footnoted; the footnote remains as the text equivalent for assistive technology, since the row is `aria-hidden`. Candidate rows in step 02 adopted the diagram's left-green / spacer-orange / right-blue language and now state the ranking distance (`希望位置 ±N bp`) that the display panel leads with, and the panel names which candidate it is showing (`候補 NN / M件`). The 12-row list cap became the shared `LISTED_CANDIDATE_LIMIT` constant so the badge, the count line, and the list cannot drift apart. Remaining: P2 (coordinate ruler, real horizontal scrolling on phones, moving candidate-independent blocks out of the panel).
+17. **Spacer-priority notation phase:** the public result summary now uses `6 > 5 >> 7` instead of an equal-looking arrow chain. The public input panel no longer carries the literature rationale; README is the durable explanation of the notation, evidence, and limitations. `>>` is explicitly qualitative and does not alter the ordinal implementation or imply an activity ratio.
 
-### 7.2 Complete main-branch commit/PR ledger through PR #44
+### 7.2 Complete main-branch commit/PR ledger through PR #45
 
 | Date | Commit / PR | Change and significance |
 |---|---|---|
@@ -393,6 +394,7 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 | 2026-08-17 | PR #42 | Applied the equal-distance spacer preference 6 bp, 5 bp, then 7 bp; added disclosure, regression coverage, and scientific rationale. |
 | 2026-08-17 | PR #43 | Removed the duplicated target-layout summary and second heading from the selected-design panel, surfaced the requested-center distance as the leading metric, and set an enforced 11 px minimum type size for the region. |
 | 2026-08-18 | PR #44 | Moved the sequence legend onto the diagram, drew each monomer's N→C binding direction in the figure, unified candidate-row and diagram colours, and labelled which candidate the display panel is showing. |
+| 2026-08-18 | PR #45 | Replaced the equal-looking spacer arrow chain with `6 > 5 >> 7`, moved the scientific rationale and limitations from the public input panel into README, and defined `>>` as qualitative rather than a numerical activity ratio. |
 
 The abandoned T2A stage cited Katayama and Yamamoto (2025), DOI `10.3390/ijms26157602`, as a GSG-T2A ZFN precedent. It is historical only: current output uses an FMDV-derived F2A sequence without the old GSG-T2A implementation.
 
