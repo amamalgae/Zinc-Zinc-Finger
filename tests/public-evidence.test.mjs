@@ -50,6 +50,11 @@ test("candidate ranking shows the compact spacer order and keeps its rationale i
   assert.match(readme, /Shimizu et al\. \(2009\).*10\.1016\/j\.bmcl\.2009\.02\.109/);
   assert.match(readme, /Chen et al\. \(2013\).*10\.1093\/nar\/gks1356/);
   assert.match(readme, /定量的な活性比を意味しません/);
+  assert.match(readme, /5 bp \| 30 \| 17 \| 56\.7% \| 2\.73%/);
+  assert.match(readme, /6 bp \| 28 \| 13 \| 46\.4% \| 2\.64%/);
+  assert.match(readme, /7 bp \| 26 \| 3 \| 11\.5% \| 0\.121%/);
+  assert.match(readme, /5 bpと6 bpのindel率分布に有意差なし（P=0\.42）/);
+  assert.match(readme, /現在の.*CoDA 3F、ELD\/KKR、F2A.*いずれの研究でもそのまま比較されていません/);
 });
 
 test("interactive controls remain distinguishable from informational labels", () => {

@@ -29,9 +29,26 @@ Sander 2011のContext-Dependent Assembly（CoDA）archiveを使い、左右3-fin
 
 候補順位は、まず希望スペーサー中心からの絶対距離で決めます。距離が同じ候補だけ、spacer長を`6 > 5 >> 7`の順に扱います。ここで`>`は6 bpを5 bpより優先し、`>>`は7 bpを5–6 bpより明確に後順位へ置くことを表す定性的な表記です。実装上の順序は6、5、7という離散的なtie-breakであり、記号の数は定量的な活性比を意味しません。
 
-6 bpを最初に置く根拠は、6 aaのZF–FokI linker `TGAAAR`が6 bp spacerに強く制限された活性を示したShimizu et al. (2009), DOI: [10.1016/j.bmcl.2009.02.109](https://doi.org/10.1016/j.bmcl.2009.02.109)です。7 bpを明確に後順位へ置く根拠は、独立したCoDA ZFN cohortで7 bp標的が5–6 bp標的より大幅に低い活性傾向を示したChen et al. (2013), DOI: [10.1093/nar/gks1356](https://doi.org/10.1093/nar/gks1356)です。
+現在のZF–FokI linkerは5 bp=`TGGS`、6 bp=`TGAAAR`、7 bp=`TGPGAAAR`です。根拠となる実験は、同一ZFNでspacerだけを変えた直接比較と、異なる標的を多数含むCoDA cohortに分けて読む必要があります。
 
-ただし、この順位はspacer長に基づく粗い集団傾向であり、候補固有の活性予測ではありません。現在の`TGGS` / `TGAAAR` / `TGPGAAAR` linkerとCoDA 3F、ELD/KKR、F2Aを組み合わせた完全構成は、上記研究で同一条件のまま比較されていません。したがって、`6 > 5 >> 7`を予測indel率や成功確率へ変換してはいけません。
+| 一次研究 | 比較したもの | 定量結果 | この順位への意味 |
+|---|---|---|---|
+| Shimizu et al. (2009), DOI: [10.1016/j.bmcl.2009.02.109](https://doi.org/10.1016/j.bmcl.2009.02.109) | 同じZFNペアと6 aa `TGAAAR` linkerを使い、reporterのspacerを4–8 bpに変更したHEK293T episomal SSA | 6 bpで鋭い最大値を示し、4、5、7、8 bpは約6分の1の活性 | 6 bpを5 bpより先に置く最も直接的な根拠。ただしplasmid reporterとDD/RR FokIでの比較 |
+| Händel et al. (2009), DOI: [10.1038/mt.2008.233](https://doi.org/10.1038/mt.2008.233) | 同一ZF背景で11種類のZF–FokI linkerと4–18 bp spacerを系統比較 | 6 aa linkerでは6 bpが7 bpの約5倍（episomal）、約4倍（chromosomal）。4 aa linkerは5–6 bp、より長いlinkerは7 bp以上にも活性域を拡大した | linker長と配列がspacer選択性を変えることを実証。7 bpを使えるlinkerはあるが、5–6 bpほど限定的・一様ではない |
+| Bhakta et al. (2013), DOI: [10.1101/gr.143693.112](https://doi.org/10.1101/gr.143693.112) | 5/6/7 bpに`TGGS`/`TGAAAR`/`TGPGAAAR`を割り当てたextended-MA ZFN | 6+6-finger ZFNは21標的中15標的（71%）で変異を生成 | 現在の3種類の割当てに実用例があることを支持。ただし標的・finger数が異なるため、spacer間効率の比較にはならない |
+| Chen et al. (2013), DOI: [10.1093/nar/gks1356](https://doi.org/10.1093/nar/gks1356) | zebrafish内在性標的に対する84組の3-finger CoDA ZFN | 5 bpと6 bpのindel率分布に有意差なし（P=0.42）。7 bpは5/6 bpより「active」になる割合が約4–5分の1 | `6 > 5`を強い差とは扱わず、`5 >> 7`として7 bpを明確に下げる根拠 |
+
+Chen 2013のSupplementary Table S1を、同論文がgermline変異を得られる目安として定義したsomatic indel率`>0.27%`で集計すると次のとおりです。
+
+| Spacer | ZFNペア数 | Active（>0.27%） | Active率 | 平均somatic indel率 |
+|---:|---:|---:|---:|---:|
+| 5 bp | 30 | 17 | 56.7% | 2.73% |
+| 6 bp | 28 | 13 | 46.4% | 2.64% |
+| 7 bp | 26 | 3 | 11.5% | 0.121% |
+
+7 bpのactive率は5 bpの約1/4.9、6 bpの約1/4.0です。一方、5 bpと6 bpはこのin vivo cohortでは同等であり、`6 > 5`はShimizu 2009の同一背景での直接比較をtie-breakへ弱く反映したものです。`>>`はこの証拠の非対称性を表しますが、特定候補の倍率を表す記号ではありません。
+
+ただし、この順位はspacer長に基づく粗い集団傾向であり、候補固有の活性予測ではありません。Händel 2009とShimizu 2009は同じ標的背景でlinker/spacer効果を比較できる一方、Chen 2013とBhakta 2013では標的配列、ZF array、細胞・生物、FokI構成なども候補間で変わります。現在の`TGGS` / `TGAAAR` / `TGPGAAAR` linkerとCoDA 3F、ELD/KKR、F2Aを組み合わせた完全構成は、いずれの研究でもそのまま比較されていません。したがって、上表の率を本サイトの候補へ予測indel率や成功確率として転用してはいけません。
 
 ## CoDAの組立て
 

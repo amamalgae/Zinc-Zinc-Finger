@@ -1,6 +1,6 @@
 # Zinc Zinc Finger: AI handoff and decision record
 
-Last reconciled: 2026-08-18, for PR #45 based on `main` commit `855b065`, plus the source files listed in section 10.
+Last reconciled: 2026-08-18, after PR #45 based on `main` commit `069d1ce`, plus the source files listed in section 10.
 
 This document is the durable context for a new AI or developer who has no access to the prior ChatGPT conversations. Read it before modifying the scientific logic. The current README explains what the public site does; this file also explains what it used to do, why approaches were removed, what the evidence can and cannot support, and which questions remain open.
 
@@ -133,9 +133,11 @@ Candidates are sorted by:
 2. an explicit spacer preference displayed as `6 > 5 >> 7` (implemented as the ordinal order 6 bp, then 5 bp, then 7 bp);
 3. lower genomic start coordinate.
 
-Distance remains the primary criterion because the tool is intended to place a cleavage region near a requested KI position. The spacer preference is applied only when candidates have equal distance. It is a low-resolution, cohort-informed tie-break rather than a candidate-specific activity prediction: Shimizu 2009 found a strong 6-bp optimum for the 6-aa `TGAAAR` ZF-FokI linker, while the independent CoDA cohort in Chen 2013 found 7-bp targets substantially less likely to be active than 5- or 6-bp targets. The double separator in `6 > 5 >> 7` communicates this deliberate demotion of 7 bp; it is not a numerical weight or activity ratio. The current complete CoDA-3F/ELD/F2A/KKR construct was not tested in those experiments, so the ranking must not be reported as an expected indel percentage.
+Distance remains the primary criterion because the tool is intended to place a cleavage region near a requested KI position. The spacer preference is applied only when candidates have equal distance. It is a low-resolution, cohort-informed tie-break rather than a candidate-specific activity prediction. Shimizu 2009 varied the reporter spacer while retaining the same ZFN pair and 6-aa `TGAAAR` linker: the 6-bp reporter produced about sixfold the activity of the 4-, 5-, 7-, and 8-bp reporters in an episomal HEK293T SSA assay. Händel 2009 independently found that a 6-aa linker gave about fivefold higher activity at 6 bp than 7 bp in an episomal assay and about fourfold higher activity in a chromosomal assay.
 
-Sources: Shimizu et al. (2009), DOI `10.1016/j.bmcl.2009.02.109`; Chen et al. (2013), DOI `10.1093/nar/gks1356`.
+The independent Chen 2013 zebrafish CoDA cohort separates the weak `6 > 5` claim from the strong `5 >> 7` claim. Recalculation of Supplementary Table S1 using the paper's active threshold of somatic indel rate `>0.27%` gives 17/30 (56.7%) active at 5 bp, 13/28 (46.4%) at 6 bp, and 3/26 (11.5%) at 7 bp. The corresponding arithmetic mean indel rates are 2.73%, 2.64%, and 0.121%. The original analysis found no significant difference between the 5- and 6-bp indel-rate distributions (Wilcoxon P=0.42), while a 7-bp target was about 4–5-fold less likely to be active. Thus the double separator in `6 > 5 >> 7` communicates the evidence asymmetry; it is not a numerical weight or candidate-specific activity ratio. The current complete CoDA-3F/ELD/F2A/KKR construct was not tested in those experiments, so the ranking must not be reported as an expected indel percentage.
+
+Sources: Händel et al. (2009), DOI `10.1038/mt.2008.233`; Shimizu et al. (2009), DOI `10.1016/j.bmcl.2009.02.109`; Bhakta et al. (2013), DOI `10.1101/gr.143693.112`; Chen et al. (2013), DOI `10.1093/nar/gks1356`.
 
 The scanner returns at most 30 candidates; the UI shows the first 12 and CSV can contain the returned set. No B-score, PWM, SVM, predicted affinity, predicted indel percentage, or off-target score is used in current ranking.
 
@@ -151,7 +153,9 @@ The current spacer-dependent linker map is:
 
 These were inherited from the extended-MA implementation. Treat them as a design choice, not as a measurement that uniquely determines the exact cleavage position.
 
-Händel et al. (2009), DOI `10.1038/mt.2008.233`, systematically compared ZF-FokI inter-domain linkers across spacer lengths. Bhakta et al. (2013), DOI `10.1101/gr.143693.112`, used the exact `TGGS`/`TGAAAR`/`TGPGAAAR` mapping for 5/6/7-bp targets. These studies support retaining the three constructs, but they do not establish equal performance or a candidate-specific success probability; 7-bp output remains the least-supported rank class.
+Händel et al. (2009), DOI `10.1038/mt.2008.233`, systematically compared 11 ZF-FokI inter-domain linker variants across 4–18-bp spacers in episomal and chromosomal human-cell assays. Short 4-aa linkers were restricted to 5–6-bp spacers, whereas longer linkers expanded activity to 7 bp and beyond but were less spacer-selective. Bhakta et al. (2013), DOI `10.1101/gr.143693.112`, used the exact `TGGS`/`TGAAAR`/`TGPGAAAR` peptide mapping for 5/6/7-bp targets and obtained mutations at 15/21 loci (71%) with 6+6-finger extended-MA ZFNs. That result supports feasibility of the mapping but cannot rank spacer lengths because target sequence, array composition, and assay context vary between loci.
+
+The direct linker studies used different FokI dimer variants and reporter contexts from the current ELD/KKR output; the Bhakta study used extended-MA arrays rather than the current CoDA 3F arrays. None validates the exact complete project construct.
 
 ## 4. Exact current protein construct
 
