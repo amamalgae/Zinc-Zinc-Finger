@@ -103,7 +103,7 @@ test("the selected-design panel states the ranking distance once instead of repe
 
   // Nothing in the selected-design region may drop below 11px, on any viewport.
   const region = css.slice(css.indexOf(".selected-design {"));
-  const selectors = /\.(selected-heading|selected-lead|selected-metrics|display-kicker|dna-[a-z-]+|strand-name|reverse-strand|forward-strand|target-legend|binding-note)/;
+  const selectors = /\.(selected-heading|selected-lead|selected-metrics|display-kicker|selected-rank|dna-[a-z-]+|direction-name|strand-name|reverse-strand|forward-strand|binding-note)/;
   for (const rule of region.split("\n")) {
     if (!selectors.test(rule)) continue;
     for (const [, size] of rule.matchAll(/font-size: (\d+(?:\.\d+)?)px/g)) {
@@ -113,6 +113,36 @@ test("the selected-design panel states the ranking distance once instead of repe
       assert.ok(Number(size) >= 11, `${rule.trim()} uses ${size}px`);
     }
   }
+});
+
+test("the diagram carries its own legend, binding direction, and colour language", () => {
+  const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
+
+  // Legend and direction belong inside the dark panel, next to the colours they name.
+  const map = app.slice(app.indexOf('<div className="dna-map">'), app.indexOf("</figure>"));
+  assert.match(map, /className="dna-legend"/);
+  assert.match(map, /左ZFNが認識 · ZF1–ZF3/);
+  assert.match(map, /右ZFNが認識 · ZF4–ZF6/);
+  assert.doesNotMatch(app, /target-legend/);
+
+  // The antiparallel right monomer is shown, not only footnoted.
+  assert.match(map, /className="dna-direction"/);
+  assert.ok(map.indexOf('className="dna-direction"') < map.indexOf('className="dna-row dna-labels"'));
+  assert.match(css, /\.dna-direction \.left i::after/);
+  assert.match(css, /\.dna-direction \.right i::before/);
+
+  // Candidate rows use the diagram's left/spacer/right colours and show the ranking distance.
+  assert.match(app, /<b className="left">\{candidate\.leftTop\}<\/b>/);
+  assert.match(app, /<b className="right">\{candidate\.rightTop\}<\/b>/);
+  assert.match(css, /\.candidate-sequence b\.left \{ color: var\(--green\); \}/);
+  assert.match(css, /\.candidate-sequence b\.right \{ color: var\(--blue\); \}/);
+  assert.match(app, /希望位置 ±\{formatCut\(candidate\.distance\)\} bp/);
+
+  // The display panel names which candidate it is showing.
+  assert.match(app, /className="selected-rank">候補 <strong>\{String\(selectedRank\)\.padStart\(2, "0"\)\}<\/strong>/);
+  assert.match(app, /const LISTED_CANDIDATE_LIMIT = 12;/);
+  assert.doesNotMatch(app, /candidates\.slice\(0, 12\)/);
 });
 
 test("an original 3ZF mechanism diagram explains the design before sequence input", () => {

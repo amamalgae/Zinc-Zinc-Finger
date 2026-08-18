@@ -55,7 +55,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
   align-items: center;
   gap: 64px;
 }
-.eyebrow, .section-intro > span, .selected-heading > div > span, .output-heading > div > span {
+.eyebrow, .section-intro > span, .display-kicker, .output-heading > div > span {
   color: var(--green); font-size: 10px; font-weight: 900; letter-spacing: .17em;
 }
 .hero h1 { margin: 16px 0 18px; font-size: clamp(44px, 6vw, 72px); line-height: 1.08; letter-spacing: -.055em; }
@@ -200,12 +200,14 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .candidate:hover { border-color: var(--green); background: #f7faf7; }
 .candidate.selected { border-color: var(--green); background: var(--green-soft); box-shadow: inset 4px 0 0 var(--green); }
 .candidate-rank { color: #98a39c; font-size: 9px; font-weight: 900; }
-.candidate-sequence { min-width: 0; overflow: hidden; text-overflow: ellipsis; font: 9px ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; }
+.candidate-sequence { min-width: 0; overflow: hidden; text-overflow: ellipsis; font: 700 11px ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; }
+.candidate-sequence b.left { color: var(--green); }
+.candidate-sequence b.right { color: var(--blue); }
 .candidate-sequence i { padding: 0 4px; color: var(--orange); font-style: normal; }
 .candidate-summary { display: grid; gap: 2px; text-align: right; }
-.candidate-summary strong { color: var(--green); font-size: 9px; }
-.candidate-summary small { color: var(--muted); font-size: 7px; }
-.candidate-action { min-width: 62px; color: var(--green); font-size: 9px; font-weight: 900; text-align: right; text-decoration: underline; text-underline-offset: 3px; }
+.candidate-summary strong { color: var(--green); font-size: 10px; }
+.candidate-summary small { color: var(--muted); font-size: 10px; }
+.candidate-action { min-width: 62px; color: var(--green); font-size: 10px; font-weight: 900; text-align: right; text-decoration: underline; text-underline-offset: 3px; }
 .candidate.selected .candidate-action { text-decoration: none; }
 .empty-state { margin-top: 12px; padding: 32px 20px; border-radius: 14px; background: #f5f6f3; text-align: center; }
 .empty-state strong { font-size: 14px; }
@@ -218,7 +220,10 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .selected-heading > div:first-child { flex: 1; }
 .selected-heading p { max-width: 680px; margin: 9px 0 0; color: var(--muted); font-size: 11px; line-height: 1.8; }
 .selected-lead { color: var(--ink); font-size: 13px; line-height: 1.85; }
+.display-tags { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 14px; }
 .display-kicker { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; }
+.selected-rank { color: var(--muted); font-size: 11px; font-weight: 700; }
+.selected-rank strong { color: var(--green); font-size: 13px; font-weight: 900; }
 .display-kicker i { width: 7px; height: 7px; border-radius: 50%; background: #66a953; }
 .selected-metrics { display: flex; align-items: stretch; gap: 18px; }
 .selected-metrics > div { min-width: 92px; padding-left: 12px; display: grid; align-content: center; gap: 3px; border-left: 3px solid var(--green); }
@@ -227,12 +232,21 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .binding-figure { margin: 26px 0 0; padding: 0; border: 0; background: transparent; }
 .dna-scroll { margin-top: 0; overflow: hidden; border: 0; border-radius: 14px; background: #18231f; }
 .dna-map { min-width: 0; padding: 18px 14px; color: #fff; }
-.dna-group-labels, .dna-row { display: grid; grid-template-columns: 44px 25px repeat(3, minmax(0, 1fr)) minmax(88px, .9fr) repeat(3, minmax(0, 1fr)) 25px; align-items: stretch; gap: 3px; }
+.dna-group-labels, .dna-direction, .dna-row { display: grid; grid-template-columns: 44px 25px repeat(3, minmax(0, 1fr)) minmax(88px, .9fr) repeat(3, minmax(0, 1fr)) 25px; align-items: stretch; gap: 3px; }
 .dna-group-labels { margin-bottom: 10px; }
 .dna-group-labels strong { padding: 7px 6px; display: grid; place-items: center; border-radius: 5px; font-size: 11px; letter-spacing: .04em; }
 .dna-group-labels .left { grid-column: 3 / 6; background: #2b4a3c; color: #ccecae; }
 .dna-group-labels .spacer { grid-column: 6; background: #633922; color: #ffc5a5; }
 .dna-group-labels .right { grid-column: 7 / 10; background: #294653; color: #c7edfb; }
+.dna-direction { margin-bottom: 9px; }
+.dna-direction > * { min-width: 0; }
+.direction-name { grid-column: 1 / 3; display: grid; place-items: center; color: #9fb3a8; font-size: 11px; font-weight: 900; }
+.dna-direction .left, .dna-direction .right { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 900; }
+.dna-direction .left { grid-column: 3 / 6; color: #b9e5c7; }
+.dna-direction .right { grid-column: 7 / 10; color: #b9dfef; }
+.dna-direction i { position: relative; flex: 1; height: 1px; background: currentColor; }
+.dna-direction .left i::after { position: absolute; top: -3.5px; right: 0; border-top: 3.5px solid transparent; border-bottom: 3.5px solid transparent; border-left: 6px solid currentColor; content: ""; }
+.dna-direction .right i::before { position: absolute; top: -3.5px; left: 0; border-top: 3.5px solid transparent; border-bottom: 3.5px solid transparent; border-right: 6px solid currentColor; content: ""; }
 .dna-row > * { min-width: 0; display: grid; place-items: center; }
 .dna-labels { margin-bottom: 6px; }
 .dna-labels strong { min-height: 22px; color: #b9e5c7; font-size: 12px; }
@@ -247,11 +261,11 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .dna-row code.spacer-sequence { border-color: #b95c31; background: #633922; color: #ffc5a5; font-size: 14px; letter-spacing: .08em; }
 .reverse-strand { margin-top: 3px; }
 .reverse-strand code { min-height: 39px; opacity: .86; }
-.target-legend { margin-top: 13px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px 18px; color: var(--muted); font-size: 11px; }
-.target-legend span { display: inline-flex; align-items: center; gap: 6px; }
-.target-legend i { width: 9px; height: 9px; border-radius: 3px; background: #2b4a3c; }
-.target-legend .spacer i { background: #b95c31; }
-.target-legend .right i { background: #294653; }
+.dna-legend { margin-top: 15px; padding-top: 13px; display: flex; align-items: center; flex-wrap: wrap; gap: 9px 20px; border-top: 1px solid rgba(255,255,255,.13); color: #c2d3c8; font-size: 11px; }
+.dna-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.dna-legend i { width: 11px; height: 11px; border: 1px solid #639575; border-radius: 3px; background: #2b4a3c; }
+.dna-legend .spacer i { border-color: #b95c31; background: #633922; }
+.dna-legend .right i { border-color: #5b8ca0; background: #294653; }
 .binding-note { margin: 12px 0 0; color: var(--muted); font-size: 12px; line-height: 1.75; }
 .finger-pair { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .finger-group { min-width: 0; padding: 17px; border-radius: 15px; background: #f2f5f0; }
@@ -388,7 +402,9 @@ footer p { margin: 0; }
   .selected-lead { font-size: 12px; }
   .binding-figure { margin-top: 18px; padding: 0; }
   .dna-map { padding: 13px 6px; }
-  .dna-group-labels, .dna-row { grid-template-columns: 24px 16px repeat(3, minmax(0, 1fr)) minmax(0, 1.6fr) repeat(3, minmax(0, 1fr)) 16px; gap: 2px; }
+  .dna-group-labels, .dna-direction, .dna-row { grid-template-columns: 24px 16px repeat(3, minmax(0, 1fr)) minmax(0, 1.6fr) repeat(3, minmax(0, 1fr)) 16px; gap: 2px; }
+  .dna-direction { margin-bottom: 7px; }
+  .dna-direction .left, .dna-direction .right { gap: 5px; }
   .dna-group-labels strong { padding: 5px 2px; font-size: 11px; line-height: 1.3; text-align: center; }
   .dna-labels strong { font-size: 11px; }
   .dna-labels .spacer-label { font-size: 11px; }
@@ -397,7 +413,7 @@ footer p { margin: 0; }
   .dna-row code { min-height: 36px; font-size: 12px; letter-spacing: .02em; }
   .dna-row code.spacer-sequence { min-height: 36px; font-size: 11px; letter-spacing: 0; }
   .reverse-strand code { min-height: 34px; }
-  .target-legend { gap: 7px 12px; font-size: 11px; }
+  .dna-legend { margin-top: 12px; padding-top: 11px; gap: 7px 13px; font-size: 11px; }
   .finger-cards { gap: 5px; }
   .finger-card { padding: 8px; }
   .finger-card > strong { font-size: 14px; }
