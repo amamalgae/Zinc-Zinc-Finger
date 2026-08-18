@@ -12,6 +12,7 @@ Sander 2011のContext-Dependent Assembly（CoDA）archiveを使い、左右3-fin
 - 左右とも3-fingerに固定し、5–7 bp spacerを探索
 - F1–F2とF2–F3で同じF2 target / recognition helixを共有する場合だけ組み立て
 - archiveにない組合せを予測や補間で埋めない
+- 希望スペーサー中心と探索範囲はスピナーのない手入力欄で、初期値はいずれも1000 bp。希望中心が入力配列外なら赤色で訂正を求め、候補計算を停止
 - 希望スペーサー中心への近さを最優先し、同距離では`6 > 5 >> 7`の順で候補を順位付け
 - 選択候補について、F/R配列とZF1–ZF6の対応、左右3ZFのN→C方向、FokI ELD（−）/KKR（＋）のヘテロ二量体を動的な構成図で表示
 - 各fingerの標的triplet、7 aa recognition helix、F2 context、完全array配列を表示
