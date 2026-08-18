@@ -100,6 +100,12 @@ function ZfnBindingDiagram({ candidate }: { candidate: CodaCandidate }) {
 
       <div className="dna-scroll" aria-label="選択した標的塩基配列とZF1からZF6の対応">
         <div className="dna-map">
+          <div className="dna-ruler" aria-hidden="true">
+            <span className="ruler-name">座標</span>
+            <span className="left">{candidate.start + 1}</span>
+            <span className="spacer">中心 {formatCut(candidate.cut)}</span>
+            <span className="right">{candidate.start + 18 + candidate.spacerLength}</span>
+          </div>
           <div className="dna-group-labels" aria-hidden="true">
             <strong className="left">左ZFN標的 · 9 bp</strong>
             <strong className="spacer">spacer · {candidate.spacerLength} bp</strong>
@@ -140,7 +146,7 @@ function ZfnBindingDiagram({ candidate }: { candidate: CodaCandidate }) {
         </div>
       </div>
 
-      <p className="binding-note">F鎖を5′→3′で表示しています。図中の矢印はタンパク質のN→C方向です。右ZFNはDNAと逆平行に結合するため、配列上ではZF6 → ZF5 → ZF4の順に並びます。</p>
+      <p className="binding-note">上端の座標は、入力配列の5′端を1とする位置です（この候補は{candidate.start + 1}–{candidate.start + 18 + candidate.spacerLength} bp）。F鎖を5′→3′で表示しています。図中の矢印はタンパク質のN→C方向です。右ZFNはDNAと逆平行に結合するため、配列上ではZF6 → ZF5 → ZF4の順に並びます。</p>
     </figure>
   );
 }
@@ -246,7 +252,6 @@ export default function Home() {
           <div className="output-card">
             <div className="output-heading"><div><span>PROTEIN OUTPUT</span><h2>1本のORFで、左右2本のZFNを発現</h2></div><span className="protein-only-badge">出力形式：Protein FASTA</span></div>
             <p className="output-intro">選択した左右CoDA arrayをFokI ELD/KKRと組み合わせ、F2Aで連結した完全アミノ酸配列を出力します。</p>
-            <ArchitectureDiagram />
             <div className="output-stats"><span><strong>{construct.protein.length}</strong>aa precursor</span><span><strong>{construct.processedLeftProtein.length}</strong>aa left product</span><span><strong>{construct.processedRightProtein.length}</strong>aa right product</span><span><strong>{FMDV_F2A.length}</strong>aa F2A</span></div>
             <div className="download-row">
               <button className="primary-action" type="button" onClick={() => downloadText(codaConstructToProteinFasta(construct), `${construct.name}-protein.fasta`)}><span aria-hidden="true">↓</span> Protein FASTAを保存（3配列）</button>
@@ -256,14 +261,13 @@ export default function Home() {
           </div>
 
           <details className="technical-details">
-            <summary>finger構成と設計詳細を見る</summary>
+            <summary>finger構成と単一ORFの構成を見る</summary>
             <div className="technical-details-body">
+              <ArchitectureDiagram />
               <div className="finger-pair"><FingerGroup title={`Left ZF · CoDA F2=${selected.leftArray.f2Context}`} fingers={selected.leftArray.fingers} /><FingerGroup title={`Right ZF · CoDA F2=${selected.rightArray.f2Context}`} fingers={selected.rightArray.fingers} /></div>
               <div className="sequence-details embedded"><div><span>Left array N→C</span><code>{selected.leftArray.protein}</code></div><div><span>Right array N→C</span><code>{selected.rightArray.protein}</code></div></div>
             </div>
           </details>
-
-          <div className="donor-card"><div><span>核酸供与体</span><strong>{CODA_ZFN_DONORS.length} component categories</strong></div><ul>{CODA_ZFN_DONORS.map((donor) => <li key={donor.component}><span>{donor.component}</span><i>{donor.scientificName}</i><small>{donor.detail}</small></li>)}</ul></div>
         </section>
       )}
 
@@ -274,6 +278,7 @@ export default function Home() {
           <article><span>FOKI HETERODIMER</span><h3>Doyon et al. 2011</h3><p>ELD/KKR obligate heterodimerを比較し、高活性とhomodimer抑制を示した研究。</p><a href="https://doi.org/10.1038/nmeth.1539" target="_blank" rel="noreferrer">DOI 10.1038/nmeth.1539 <span aria-hidden="true">↗</span></a></article>
           <article><span>MAMMALIAN F2A–ZFN</span><h3>Lei et al. 2011</h3><p>F2Aで左右ZFNを連結し、ヒト細胞でCCR5編集を実施した先例。</p><a href="https://doi.org/10.1038/mt.2011.12" target="_blank" rel="noreferrer">DOI 10.1038/mt.2011.12 <span aria-hidden="true">↗</span></a></article>
         </div>
+        <div className="donor-card"><div><span>核酸供与体</span><strong>{CODA_ZFN_DONORS.length} component categories</strong></div><ul>{CODA_ZFN_DONORS.map((donor) => <li key={donor.component}><span>{donor.component}</span><i>{donor.scientificName}</i><small>{donor.detail}</small></li>)}</ul></div>
         <p className="evidence-note">CoDAは設計時の標的別selectionを省けますが、実装後の発現、標的結合、切断効率、毒性、off-targetの検証は省けません。archiveに存在することを個別候補の成功保証として扱わないでください。</p>
       </section>
 
