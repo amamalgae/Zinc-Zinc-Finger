@@ -61,11 +61,13 @@ test("protein output offers annotated GenPept without inventing a DNA sequence",
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
   const exporter = readFileSync(new URL("../src/coda-construct-output.ts", import.meta.url), "utf8");
 
-  assert.match(app, /注釈付きProteinを保存（GenPept）/);
-  assert.match(app, /Protein FASTAを保存（前駆体1配列）/);
+  assert.match(app, /DOWNLOAD \(GenPept\)/);
+  assert.match(app, /DOWNLOAD \(Protein FASTA\)/);
   assert.match(app, /codaResultFilename\(selectedRank, "gp"\)/);
   assert.match(app, /codaResultFilename\(selectedRank, "fasta"\)/);
   assert.match(app, /ZF1–ZF6、FokI ELD\/KKR、F2Aをfeature/);
+  assert.match(app, /<div className="protein-sequence"[\s\S]*?AMINO ACID SEQUENCE[\s\S]*?\{construct\.protein\}[\s\S]*?<\/div>/);
+  assert.doesNotMatch(app, /<details className="sequence-details compact"/);
   assert.doesNotMatch(app, /processedLeftProtein|processedRightProtein|Processed left|Processed right/);
   assert.match(exporter, /\/region_name=/);
   assert.doesNotMatch(exporter, /processed_left|processed_right|predicted_product/);
@@ -94,7 +96,7 @@ test("interactive controls remain distinguishable from informational labels", ()
   assert.match(app, /aria-pressed=\{selected\}/);
   assert.match(app, /✓ 選択中/);
   assert.match(app, /CSVを保存/);
-  assert.match(app, /Protein FASTAを保存/);
+  assert.match(app, /DOWNLOAD \(Protein FASTA\)/);
   assert.match(app, /<ul className="hero-benefits"/);
   assert.doesNotMatch(app, /構成可能なペアだけを提示/);
   assert.match(app, /<ul className="hero-benefits"[\s\S]*?<li>ブラウザ内で処理<\/li>[\s\S]*?<li>GenPept \/ Protein FASTA出力<\/li>[\s\S]*?<\/ul>/);
@@ -122,6 +124,9 @@ test("selected-design diagram foregrounds the variable target sequence and six-f
   assert.match(app, /選択内容の表示/);
   assert.match(app, /標的塩基配列とfingerの対応/);
   assert.match(app, /選択した標的塩基配列とZF1–ZF6の対応/);
+  assert.match(app, /<div className="panel-heading"><span>02<\/span><div><small>SELECT<\/small>/);
+  assert.match(app, /<div className="output-heading"><div className="panel-heading"><span>03<\/span><div><small>PROTEIN OUTPUT<\/small>/);
+  assert.doesNotMatch(app, /<small>RESULTS<\/small>/);
   assert.match(app, /左ZFN標的 · 9 bp/);
   assert.match(app, /右ZFN標的 · 9 bp/);
   assert.match(app, /strand-name">F</);
