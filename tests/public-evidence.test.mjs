@@ -57,6 +57,17 @@ test("candidate ranking shows the compact spacer order and keeps its rationale i
   assert.match(readme, /現在の.*CoDA 3F、ELD\/KKR、F2A.*いずれの研究でもそのまま比較されていません/);
 });
 
+test("protein output offers annotated GenPept without inventing a DNA sequence", () => {
+  const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
+  const exporter = readFileSync(new URL("../src/coda-construct-output.ts", import.meta.url), "utf8");
+
+  assert.match(app, /注釈付きProteinを保存（GenPept）/);
+  assert.match(app, /ZF1–ZF6、FokI ELD\/KKR、F2Aをfeature/);
+  assert.match(exporter, /\/region_name=/);
+  assert.match(exporter, /Protein-only design; no nucleotide sequence or codon choice is implied/);
+  assert.doesNotMatch(exporter, /optimizeCodingSequence|construct\.cds/);
+});
+
 test("interactive controls remain distinguishable from informational labels", () => {
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
   const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
