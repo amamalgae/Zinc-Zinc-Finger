@@ -89,7 +89,7 @@ const POSITION_SUFFIX: Readonly<Record<FingerPosition, string>> = {
   2: "HLRTH",
   3: "HLKTH",
 };
-const CANONICAL_FINGER_LINKER = "TGEKP";
+export const CODA_FINGER_LINKER = "TGEKP";
 
 export function codaFingerSequence(position: FingerPosition, helix: string): string {
   return `${COMMON_PREFIX}${helix}${POSITION_SUFFIX[position]}`;
@@ -98,7 +98,7 @@ export function codaFingerSequence(position: FingerPosition, helix: string): str
 export function codaArraySequence(fingers: readonly CodaFinger[]): string {
   return fingers
     .map(({ position, helix }) => codaFingerSequence(position, helix))
-    .join(CANONICAL_FINGER_LINKER);
+    .join(CODA_FINGER_LINKER);
 }
 
 /**
