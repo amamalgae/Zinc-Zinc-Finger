@@ -1,6 +1,6 @@
 # Zinc Zinc Finger: AI handoff and decision record
 
-Last reconciled: 2026-08-18, for PR #47 based on `main` commit `8374b91`, plus the source files listed in section 10.
+Last reconciled: 2026-08-18, for PR #48 based on `main` commit `b62b67e`, plus the source files listed in section 10.
 
 This document is the durable context for a new AI or developer who has no access to the prior ChatGPT conversations. Read it before modifying the scientific logic. The current README explains what the public site does; this file also explains what it used to do, why approaches were removed, what the evidence can and cannot support, and which questions remain open.
 
@@ -184,7 +184,9 @@ For spacer lengths 5/6/7 bp, respectively, the expected lengths are:
 | 6 bp | 290 aa | 602 aa | 311 aa | 291 aa |
 | 7 bp | 292 aa | 606 aa | 313 aa | 293 aa |
 
-The FASTA exporter emits three sequences: precursor, predicted processed-left, and predicted processed-right. It emits no CDS, stop codon, promoter, terminator, UTR, marker, or vector backbone.
+The primary exporter emits one annotated precursor in standard protein GenPept (`.gp`). Its nine 1-based inclusive `Region` features are ZF1–ZF3, FokI (ELD), F2A, ZF4–ZF6, and FokI (KKR). Each ZF note records the local CoDA finger number, target triplet, and recognition helix; FokI notes record the engineered substitutions. This open text format is directly supported for annotated amino-acid sequences by SnapGene and Benchling, and by Geneious as GenBank-flat protein data. ApE is intentionally not a target because it is a DNA/plasmid editor. Feature names and coordinates are portable; display colors are application-specific.
+
+The secondary FASTA exporter continues to emit three sequences: precursor, predicted processed-left, and predicted processed-right. Neither exporter emits a CDS, stop codon, promoter, terminator, UTR, marker, vector backbone, or implied codon choice.
 
 ### 4.2 Evidence and limits of the combined construct
 
@@ -218,7 +220,7 @@ Open regulatory question: determine how the relevant Japanese recombinant-DNA pa
 | `src/ZfnOverviewDiagram.tsx` | original static introductory SVG shown between the hero and sequence input |
 | `src/coda-design-engine.ts` | input parsing, reverse complement, geometry scan, ordering, CSV |
 | `src/coda-module-archive.ts` | archive validation, exact CoDA lookup, full 3F sequence construction |
-| `src/coda-construct-output.ts` | current ELD/F2A/KKR protein construct and Protein FASTA |
+| `src/coda-construct-output.ts` | current ELD/F2A/KKR protein construct, annotated GenPept, and Protein FASTA |
 | `src/zfn-binding-map.ts` | tested mapping from a selected F/R duplex to global ZF1–ZF6 display order and recognition triplets |
 | `data/coda-2011-units.json` | complete transcribed CoDA F1/F2/F3 archive |
 | `src/index.css` | current presentation |
@@ -259,7 +261,8 @@ The current archive/selection tests establish implementation consistency, not bi
 - scanner order equals an independent exhaustive oracle for both strands, all 5-7 bp spacers, distance bounds, and the 6-bp then 5-bp then 7-bp equal-distance tie-break;
 - ambiguity does not join separated sequence fragments;
 - unsupported characters block design;
-- current output contains full arrays, ELD, F2A, and KKR but no generated CDS.
+- current output contains full arrays, ELD, F2A, and KKR but no generated CDS;
+- every GenPept `Region` coordinate slices the exact expected ZF, FokI, or F2A peptide from the precursor, and the GenPept `ORIGIN` reconstructs the complete precursor exactly.
 
 The tests do **not** reproduce all 181 B2H array measurements from Sander 2011, nor do they convert the paper's population results into a probability for each new candidate.
 
@@ -338,10 +341,11 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 14. **Spacer-priority phase:** requested spacer-center distance remained the primary rank criterion, but the equal-distance tie-break changed from symmetric closeness to 6 bp to the evidence-informed order 6 bp, 5 bp, then 7 bp. The UI states this order and explicitly says it is not a candidate-specific activity prediction.
 15. **Selected-display legibility phase (P0 of a three-step redesign):** the selected-design panel said the same thing four times — a figure caption, three summary cards, the in-diagram band labels, and the legend all restated the left 9 bp / spacer / right 9 bp split — so the panel read as four unrelated blocks. The summary cards and the second heading were removed, leaving the diagram as the single statement of that split; the caption survives as a screen-reader-only figure caption. The ranking key `distance` (bp from the requested spacer center) had never been rendered even though it is the primary sort criterion, so it is now the first metric and opens the panel's lead sentence. Type in the region was rebuilt on a 26 / 13 / 12 / 11 px scale with target bases at 17 px, and the 5-8 px labels — 5 px on phones — were raised to a hard 11 px floor that `tests/public-evidence.test.mjs` enforces for every rule in the region. Remaining steps: P1 covers in-diagram legend, binding direction, and candidate/display color continuity; P2 covers a coordinate ruler, real horizontal scrolling on phones, and moving candidate-independent blocks out of the panel.
 16. **In-diagram explanation phase (P1):** the legend moved from a separate block below the figure onto the dark panel itself, beside the colours it names, and now ties each colour to its fingers (ZF1–ZF3 left, ZF4–ZF6 right). A direction row above the ZF labels draws the protein N→C run of each monomer, so the antiparallel right array is shown rather than only footnoted; the footnote remains as the text equivalent for assistive technology, since the row is `aria-hidden`. Candidate rows in step 02 adopted the diagram's left-green / spacer-orange / right-blue language and now state the ranking distance (`希望位置 ±N bp`) that the display panel leads with, and the panel names which candidate it is showing (`候補 NN / M件`). The 12-row list cap became the shared `LISTED_CANDIDATE_LIMIT` constant so the badge, the count line, and the list cannot drift apart. Remaining: P2 (coordinate ruler, real horizontal scrolling on phones, moving candidate-independent blocks out of the panel).
-17. **Panel-scope phase (P2, final step of the redesign):** the diagram gained a coordinate ruler above the band labels, so the figure states where in the pasted sequence the target sits (1-based, `start + 1` to `start + 18 + spacer`), which nothing on the page had shown before. `.dna-scroll` had `overflow: hidden` despite its name, so anything that could not shrink was clipped rather than scrolled: at 320 px the 7 bp spacer cell needed 46 px and got 36 px, silently cutting bases. It is now `overflow-x: auto` with `.dna-map { min-width: 268px }` and a wider mobile spacer column (2.2fr), measured so that nothing clips at any width and no horizontal scrolling appears at 360 px or above — decision 12's no-scroll requirement holds for phones, and below 360 px the panel scrolls instead of lying about the sequence. Two candidate-independent blocks left the panel: the fixed ORF architecture strip moved into the `finger構成と単一ORFの構成` disclosure, and the donor list moved to the evidence section, which is where fixed provenance belongs. The panel now contains only what changes when the selected candidate changes.
 17. **Spacer-priority notation phase:** the public result summary now uses `6 > 5 >> 7` instead of an equal-looking arrow chain. The public input panel no longer carries the literature rationale; README is the durable explanation of the notation, evidence, and limitations. `>>` is explicitly qualitative and does not alter the ordinal implementation or imply an activity ratio.
+18. **Panel-scope phase (P2, final step of the redesign):** the diagram gained a coordinate ruler above the band labels, so the figure states where in the pasted sequence the target sits (1-based, `start + 1` to `start + 18 + spacer`), which nothing on the page had shown before. `.dna-scroll` had `overflow: hidden` despite its name, so anything that could not shrink was clipped rather than scrolled: at 320 px the 7 bp spacer cell needed 46 px and got 36 px, silently cutting bases. It is now `overflow-x: auto` with `.dna-map { min-width: 268px }` and a wider mobile spacer column (2.2fr), measured so that nothing clips at any width and no horizontal scrolling appears at 360 px or above — decision 12's no-scroll requirement holds for phones, and below 360 px the panel scrolls instead of lying about the sequence. Two candidate-independent blocks left the panel: the fixed ORF architecture strip moved into the `finger構成と単一ORFの構成` disclosure, and the donor list moved to the evidence section, which is where fixed provenance belongs. The panel now contains only what changes when the selected candidate changes.
+19. **Annotated-protein export phase:** standard GenPept replaced FASTA as the primary download without reintroducing DNA generation. The precursor carries nine protein `Region` features for ZF1–ZF6, FokI ELD/KKR, and F2A so SnapGene, Benchling, Geneious, and other protein-aware editors can render the architecture. The three-sequence FASTA remains available as a secondary interoperability export.
 
-### 7.2 Complete main-branch commit/PR ledger through PR #47
+### 7.2 Complete main-branch commit/PR ledger through PR #48
 
 | Date | Commit / PR | Change and significance |
 |---|---|---|
@@ -402,6 +406,7 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 | 2026-08-18 | PR #45 | Replaced the equal-looking spacer arrow chain with `6 > 5 >> 7`, moved the scientific rationale and limitations from the public input panel into README, and defined `>>` as qualitative rather than a numerical activity ratio. |
 | 2026-08-18 | PR #46 | Quantified the linker and spacer evidence behind `6 > 5 >> 7` (Händel 2009 linker comparison, Chen 2013 84-pair strata recalculated at the paper's >0.27% threshold) while keeping the tie-break qualitative. |
 | 2026-08-18 | PR #47 | Added the input-sequence coordinate ruler to the target diagram, replaced the clipping `overflow: hidden` with measured scroll behaviour that still avoids horizontal scrolling at 360 px and above, and moved the fixed ORF strip and donor list out of the candidate-specific panel. |
+| 2026-08-18 | PR #48 | Added standard GenPept protein output with exact ZF1–ZF6, FokI ELD/KKR, and F2A Region features while retaining the three-sequence FASTA and avoiding any implied DNA/codon sequence. |
 
 The abandoned T2A stage cited Katayama and Yamamoto (2025), DOI `10.3390/ijms26157602`, as a GSG-T2A ZFN precedent. It is historical only: current output uses an FMDV-derived F2A sequence without the old GSG-T2A implementation.
 
