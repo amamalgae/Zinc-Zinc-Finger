@@ -73,6 +73,20 @@ test("protein output offers annotated GenPept without inventing a DNA sequence",
   assert.doesNotMatch(exporter, /optimizeCodingSequence|construct\.cds/);
 });
 
+test("coordinate controls are manual-only, default to 1000, and expose an accessible range error", () => {
+  const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
+
+  assert.match(app, /useState\(DEFAULT_DESIRED_CUT_INPUT\)/);
+  assert.match(app, /useState\(DEFAULT_MAX_DISTANCE_INPUT\)/);
+  assert.equal((app.match(/type="text" inputMode="numeric" pattern="\[0-9\]\*"/g) ?? []).length, 2);
+  assert.doesNotMatch(app, /type="number"|step=\{50\}|初期値500 bp/);
+  assert.match(app, /aria-invalid=\{Boolean\(desiredCutError\)\}/);
+  assert.match(app, /id="desired-cut-error" className="field-error" role="alert"/);
+  assert.match(app, /invalidCharacterCount \|\| desiredCutError/);
+  assert.match(css, /input\[aria-invalid="true"\].*border-color: #c7352c/);
+});
+
 test("interactive controls remain distinguishable from informational labels", () => {
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
   const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
