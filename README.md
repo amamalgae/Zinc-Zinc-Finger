@@ -12,7 +12,7 @@ Sander 2011のContext-Dependent Assembly（CoDA）archiveを使い、左右3-fin
 - 左右とも3-fingerに固定し、5–7 bp spacerを探索
 - F1–F2とF2–F3で同じF2 target / recognition helixを共有する場合だけ組み立て
 - archiveにない組合せを予測や補間で埋めない
-- 希望スペーサー中心への近さを最優先し、同距離では実験傾向に基づき6 bp、5 bp、7 bpの順で候補を順位付け（候補固有の活性や実切断塩基を予測する値ではありません）
+- 希望スペーサー中心への近さを最優先し、同距離では`6 > 5 >> 7`の順で候補を順位付け
 - 選択候補について、F/R配列とZF1–ZF6の対応、左右3ZFのN→C方向、FokI ELD（−）/KKR（＋）のヘテロ二量体を動的な構成図で表示
 - 各fingerの標的triplet、7 aa recognition helix、F2 context、完全array配列を表示
 - `NLS–CoDA 3F–FokI ELD–F2A–NLS–CoDA 3F–FokI KKR`の単一ORFを生成
@@ -24,6 +24,14 @@ Sander 2011のContext-Dependent Assembly（CoDA）archiveを使い、左右3-fin
 入力配列はブラウザ内だけで処理され、外部へ送信されません。FASTA header、空白、位置番号は無視します。IUPAC曖昧塩基とgapは`N`として座標を保持し、それらをまたぐ標的窓は候補から除外します。未対応文字がある場合は設計を停止します。
 
 画面右上の`ver.N (PR #N)`は、その版を導入したGitHub Pull Request `#N`に対応し、表記自体から該当PRを開けます。
+
+## Spacer候補順位の根拠
+
+候補順位は、まず希望スペーサー中心からの絶対距離で決めます。距離が同じ候補だけ、spacer長を`6 > 5 >> 7`の順に扱います。ここで`>`は6 bpを5 bpより優先し、`>>`は7 bpを5–6 bpより明確に後順位へ置くことを表す定性的な表記です。実装上の順序は6、5、7という離散的なtie-breakであり、記号の数は定量的な活性比を意味しません。
+
+6 bpを最初に置く根拠は、6 aaのZF–FokI linker `TGAAAR`が6 bp spacerに強く制限された活性を示したShimizu et al. (2009), DOI: [10.1016/j.bmcl.2009.02.109](https://doi.org/10.1016/j.bmcl.2009.02.109)です。7 bpを明確に後順位へ置く根拠は、独立したCoDA ZFN cohortで7 bp標的が5–6 bp標的より大幅に低い活性傾向を示したChen et al. (2013), DOI: [10.1093/nar/gks1356](https://doi.org/10.1093/nar/gks1356)です。
+
+ただし、この順位はspacer長に基づく粗い集団傾向であり、候補固有の活性予測ではありません。現在の`TGGS` / `TGAAAR` / `TGPGAAAR` linkerとCoDA 3F、ELD/KKR、F2Aを組み合わせた完全構成は、上記研究で同一条件のまま比較されていません。したがって、`6 > 5 >> 7`を予測indel率や成功確率へ変換してはいけません。
 
 ## CoDAの組立て
 
