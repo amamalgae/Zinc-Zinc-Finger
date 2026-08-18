@@ -1,6 +1,6 @@
 # Zinc Zinc Finger: AI handoff and decision record
 
-Last reconciled: 2026-08-17, for PR #42 based on `main` commit `9695a8a`, plus the source files listed in section 10.
+Last reconciled: 2026-08-18, for PR #45 based on `main` commit `855b065`, plus the source files listed in section 10.
 
 This document is the durable context for a new AI or developer who has no access to the prior ChatGPT conversations. Read it before modifying the scientific logic. The current README explains what the public site does; this file also explains what it used to do, why approaches were removed, what the evidence can and cannot support, and which questions remain open.
 
@@ -336,7 +336,7 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 16. **In-diagram explanation phase (P1):** the legend moved from a separate block below the figure onto the dark panel itself, beside the colours it names, and now ties each colour to its fingers (ZF1–ZF3 left, ZF4–ZF6 right). A direction row above the ZF labels draws the protein N→C run of each monomer, so the antiparallel right array is shown rather than only footnoted; the footnote remains as the text equivalent for assistive technology, since the row is `aria-hidden`. Candidate rows in step 02 adopted the diagram's left-green / spacer-orange / right-blue language and now state the ranking distance (`希望位置 ±N bp`) that the display panel leads with, and the panel names which candidate it is showing (`候補 NN / M件`). The 12-row list cap became the shared `LISTED_CANDIDATE_LIMIT` constant so the badge, the count line, and the list cannot drift apart. Remaining: P2 (coordinate ruler, real horizontal scrolling on phones, moving candidate-independent blocks out of the panel).
 17. **Spacer-priority notation phase:** the public result summary now uses `6 > 5 >> 7` instead of an equal-looking arrow chain. The public input panel no longer carries the literature rationale; README is the durable explanation of the notation, evidence, and limitations. `>>` is explicitly qualitative and does not alter the ordinal implementation or imply an activity ratio.
 
-### 7.2 Complete main-branch commit/PR ledger through PR #44
+### 7.2 Complete main-branch commit/PR ledger through PR #45
 
 | Date | Commit / PR | Change and significance |
 |---|---|---|
@@ -394,6 +394,7 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 | 2026-08-17 | PR #42 | Applied the equal-distance spacer preference 6 bp, 5 bp, then 7 bp; added disclosure, regression coverage, and scientific rationale. |
 | 2026-08-17 | PR #43 | Removed the duplicated target-layout summary and second heading from the selected-design panel, surfaced the requested-center distance as the leading metric, and set an enforced 11 px minimum type size for the region. |
 | 2026-08-18 | PR #44 | Moved the sequence legend onto the diagram, drew each monomer's N→C binding direction in the figure, unified candidate-row and diagram colours, and labelled which candidate the display panel is showing. |
+| 2026-08-18 | PR #45 | Replaced the equal-looking spacer arrow chain with `6 > 5 >> 7`, moved the scientific rationale and limitations from the public input panel into README, and defined `>>` as qualitative rather than a numerical activity ratio. |
 
 The abandoned T2A stage cited Katayama and Yamamoto (2025), DOI `10.3390/ijms26157602`, as a GSG-T2A ZFN precedent. It is historical only: current output uses an FMDV-derived F2A sequence without the old GSG-T2A implementation.
 
