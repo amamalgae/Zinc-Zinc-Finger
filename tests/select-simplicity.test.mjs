@@ -23,7 +23,14 @@ test("candidate rows progressively reveal in batches of 30", () => {
   assert.match(css, /\.candidate\[hidden\]\s*\{\s*display:\s*none/);
 });
 
-test("genome checking no longer overlays or blocks SELECT after the initial transition", () => {
+test("a requested genome page stays hidden until each row has a genome summary", () => {
+  assert.match(progressive, /rowHasGenomeSummary/);
+  assert.match(progressive, /genomeSummaryReady/);
+  assert.match(progressive, /dataset\.genomePageLoading = "true"/);
+  assert.match(css, /candidate-list\[data-genome-page-loading="true"\]::after/);
+});
+
+test("later genome pages never cover or block existing SELECT candidates", () => {
   assert.doesNotMatch(css, /\.results-panel::before/);
   assert.doesNotMatch(css, /\.results-panel::after/);
 });
