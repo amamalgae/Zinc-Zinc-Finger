@@ -1,14 +1,14 @@
 # v3 Bhakta 2013 implementation addendum
 
-Status: implemented in PR #63 on 2026-08-21. Read this together with `docs/AI_HANDOFF.md`; where the older handoff describes v2 as the public default, this addendum supersedes that product decision.
+Status: implemented in PR #63 on 2026-08-21; public search-window behavior was simplified in PR #78 so the complete submitted target DNA is now searched directly. Read this together with `docs/AI_HANDOFF.md`; where older text describes requested-center/range controls, PR #78 supersedes that product decision.
 
 ## Public profiles
 
-The public method selector now exposes:
+The public method selector exposes:
 
 1. `v3 · Bhakta 2013` — default.
-2. `v2 · Gupta + CoDA fallback` — unchanged 3-finger logic.
-3. `v1 · CoDA only` — unchanged 3-finger logic.
+2. `v2 · Gupta + CoDA fallback` — unchanged 3-finger assembly logic.
+3. `v1 · CoDA only` — unchanged 3-finger assembly logic.
 
 v3 is an independent design route. It does not concatenate CoDA arrays, split Gupta 2F modules, or mix Gupta/CoDA fingers into a Bhakta array.
 
@@ -24,6 +24,8 @@ top strand 5' -> 3'
 [left 18 bp] [spacer 5-7 bp] [right 18 bp]
       6F                         6F
 ```
+
+Every complete footprint that fits inside the submitted target DNA is examined. The public UI does not ask for a requested center or ±range. Candidate rows instead show the spacer-center between-bases coordinate from the beginning of the submitted sequence, e.g. `+65` or `+64.5`.
 
 The left recognition strand is the reverse complement of the left top-strand 18-mer. The right recognition strand is the right top-strand 18-mer. Each recognition strand is divided into six 3-bp modules and reversed into protein N-to-C order because C2H2 fingers bind DNA antiparallel.
 
@@ -49,9 +51,7 @@ combined B-score >= 15
 
 A site below 15 is not returned by v3 even if all twelve one-finger modules exist.
 
-The user's product decision for v3 is explicit: **distance from the requested spacer center must not rank candidates.** The requested center and range define the search window and distance remains displayed, but any site inside that acceptable window may be chosen on functional grounds.
-
-v3 ordering is therefore:
+v3 ordering across the full submitted target DNA is:
 
 1. higher combined B-score;
 2. fewer TSO/context warnings;
@@ -60,19 +60,19 @@ v3 ordering is therefore:
 5. spacer preference 6 bp, then 5 bp, then 7 bp;
 6. genomic start only as a deterministic final tie-break.
 
-Distance is deliberately absent from the v3 comparator. A regression test requires a B20 candidate 900 bp from the requested center to outrank a B16 candidate at distance 0.
+Position is not a functional ranking factor. The displayed `+coordinate` only tells the user where the spacer center lies in the input sequence. A regression test still verifies the underlying principle that higher functional evidence outranks mere positional proximity.
 
 This ranking is a heuristic ordering of published evidence, not an indel probability. The existing exact L6+R6 benchmark contains 21 targets with 15 active and reconstructs 20/21 published B-scores; the retained CS7-3 discrepancy is paper B=21 versus module-sum B=20. Across those 21 exact L6+R6 cases the reconstructed B-score ROC-AUC is about 0.656, so do not overstate fine-grained score differences.
 
 ## 3-6F alternatives
 
-The main search returns L6+R6 candidates, matching the Bhakta 2013 recommended first-pass workflow. Once a v3 site is selected, the technical disclosure computes all 16 spacer-proximal combinations:
+The main search returns L6+R6 candidates, matching the Bhakta 2013 recommended first-pass workflow. Once a v3 site is selected, `bhaktaAlternativesForCandidate()` generates all 16 spacer-proximal combinations:
 
 ```text
 L3..L6 x R3..R6
 ```
 
-The shorter arrays use the triplets closest to the spacer. They are displayed as empirical alternatives with B-score/context information. They are not promoted into the primary candidate list, and the ordering among those alternatives is not a measured activity prediction.
+The shorter arrays use the triplets closest to the spacer. They are displayed as empirical alternatives, not independent primary candidate sites and not measured activity predictions.
 
 ## Linkers and nuclease architecture
 
@@ -103,7 +103,9 @@ Bhakta 2013 did not test this exact ELD/KKR + F2A complete construct. Doyon Y et
 - six-finger antiparallel order and complete terminal sequences are checked;
 - all 16 L3..L6 x R3..R6 alternatives are generated for HIV992;
 - protein export annotates ZF1 through ZF12 and reaches the precursor terminus exactly;
-- the v3 comparator is explicitly tested to ignore distance in favor of B-score.
+- the v3 comparator is explicitly tested to ignore positional distance in favor of B-score.
+
+`tests/full-target-search.test.mjs` additionally fixes the PR #78 product behavior: the public helper searches the entire submitted DNA, center/range inputs are absent, and spacer-center coordinates remain available in the candidate list/CSV.
 
 The full repository acceptance commands remain:
 
