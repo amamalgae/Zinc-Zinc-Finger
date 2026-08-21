@@ -27,6 +27,7 @@ export type BhaktaFinger = ZfnFinger & {
 
 export type BhaktaArray = ZfnArray & {
   method: "bhakta-2013";
+  fingerCount: 3 | 4 | 5 | 6;
   fingers: readonly BhaktaFinger[];
   bScore: number;
   tsoIssues: number;
@@ -50,8 +51,9 @@ export function buildBhaktaArray(
   threePrimeFlank?: string,
 ): BhaktaArray | null {
   if (!/^[ACGT]+$/.test(recognition) || recognition.length % 3 !== 0) return null;
-  const fingerCount = recognition.length / 3;
-  if (fingerCount < 3 || fingerCount > 6) return null;
+  const count = recognition.length / 3;
+  if (count !== 3 && count !== 4 && count !== 5 && count !== 6) return null;
+  const fingerCount: 3 | 4 | 5 | 6 = count;
 
   const triplets = Array.from({ length: fingerCount }, (_, index) =>
     recognition.slice(index * 3, index * 3 + 3),
