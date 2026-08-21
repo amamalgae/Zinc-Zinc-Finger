@@ -155,7 +155,7 @@ export function generateZfnCandidates(
       const distance = Math.abs(cut - desiredCut);
       if (distance > searchDistance) continue;
       candidates.push({
-        id: `${profile}-${start}-${spacerLength}`,
+        id: profile === "bhakta-2013" ? `bhakta-${start}-${spacerLength}` : `${start}-${spacerLength}`,
         profile,
         start,
         cut,
