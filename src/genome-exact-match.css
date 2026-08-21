@@ -83,33 +83,46 @@
 
 .genome-file-status.error span { color: #b42318; font-weight: 800; }
 
-.genome-scope-note {
-  margin: 8px 0 0;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.55;
+/* SELECT is deliberately outcome-first: explanatory copy stays out of the list. */
+.selection-help,
+.genome-scope-note,
+.genome-match-counts,
+.candidate-summary > strong,
+.candidate-summary > small {
+  display: none;
 }
 
 .genome-match {
-  padding: 1px 6px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 2px 7px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 0;
   font-style: normal;
   font-weight: 900;
+  line-height: 1;
 }
 
+.genome-match::after { font-size: 12px; }
 .genome-match.exact-duplicate { background: #fee4e2; color: #b42318; }
 .genome-match.near-high { background: var(--orange-soft); color: #9b421d; }
 .genome-match.near-mid { background: #fff4d6; color: #76550a; }
-.genome-match.near-weak { background: #f2f3f2; color: #69756e; }
-.genome-match.clear { background: var(--green-soft); color: var(--green); }
-.genome-match.target-missing { background: #f2f3f2; color: #69756e; }
 
-.genome-match-counts {
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 700;
-  white-space: nowrap;
+/* Non-actionable absence/reference states stay silent. */
+.genome-match.clear,
+.genome-match.target-missing,
+.genome-match.near-weak {
+  display: none;
+}
+
+html[lang="ja"] .genome-match.exact-duplicate::after { content: "完全一致"; }
+html[lang="en"] .genome-match.exact-duplicate::after { content: "Exact"; }
+.genome-match.near-high::after { content: "≤2 mm"; }
+.genome-match.near-mid::after { content: "3–4 mm"; }
+
+.candidate-summary:not(:has(.genome-match.exact-duplicate, .genome-match.near-high, .genome-match.near-mid)) {
+  display: none;
 }
 
 /*
@@ -173,6 +186,4 @@
 @media (max-width: 600px) {
   .genome-file-control { align-items: stretch; flex-direction: column; }
   .genome-file-control > button { align-self: flex-start; }
-  .candidate-summary { flex-wrap: wrap; white-space: normal; }
-  .genome-match-counts { white-space: normal; }
 }
