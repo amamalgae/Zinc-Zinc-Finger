@@ -50,7 +50,7 @@ const en = {
   mechanismCta: "Start designing",
 
   targetLabel: "Target DNA",
-  targetHint: "top strand 5′→3′ · FASTA accepted",
+  targetHint: "top strand 5′→3′ · FASTA accepted · entire sequence searched",
   ambiguous: "bp ambiguous",
   unsupported: "unsupported characters",
   methodLabel: "Method",
@@ -75,8 +75,8 @@ const en = {
   genomeErrorRead: "Could not read this genome file.",
 
   candidates: "candidates",
-  rankingNote: "Nearest to the requested center first; ties prefer 6 > 5 >> 7 bp spacers.",
-  bhaktaRankingNote: "Ranked for functional promise: higher combined B-score first, then fewer context warnings, then 6 > 5 >> 7 bp spacers. Distance does not affect rank.",
+  rankingNote: "Across the full target DNA, 6 > 5 >> 7 bp spacers are preferred, then Gupta coverage for v2.",
+  bhaktaRankingNote: "Across the full target DNA, ranked for functional promise: higher combined B-score first, then fewer context warnings, then 6 > 5 >> 7 bp spacers.",
   copyHint: "Drag across a sequence to select and copy it.",
   selected: "Selected",
   select: "Select",
@@ -85,7 +85,7 @@ const en = {
   emptyCharsTitle: "Unsupported characters in the input",
   emptyCharsBody: "Remove the unsupported characters. IUPAC ambiguity codes are allowed.",
   emptyNoneTitle: "No candidates",
-  emptyNoneBody: "No site in this sequence can be built from the selected archive. Widen the range, change the sequence, or switch method.",
+  emptyNoneBody: "No site in this target DNA can be built from the selected archive. Change the sequence or switch method.",
 
   precursorStat: "aa precursor",
   f2aStat: "aa F2A",
@@ -164,7 +164,7 @@ const ja: Copy = {
   mechanismCta: "設計を始める",
 
   targetLabel: "標的 DNA",
-  targetHint: "上鎖 5′→3′ · FASTA 可",
+  targetHint: "上鎖 5′→3′ · FASTA 可 · 入力全体を探索",
   ambiguous: "bp が曖昧塩基",
   unsupported: "件の未対応文字",
   methodLabel: "設計法",
@@ -189,8 +189,8 @@ const ja: Copy = {
   genomeErrorRead: "ゲノムファイルを読み取れませんでした。",
 
   candidates: "候補",
-  rankingNote: "希望中心に近い順。同距離では 6 > 5 >> 7 bp の spacer を優先します。",
-  bhaktaRankingNote: "機能的な有望度で順位付けします。combined B-score が高いものを優先し、同点では context 警告が少ないもの、次に 6 > 5 >> 7 bp spacer を優先します。中心からの距離は順位に使いません。",
+  rankingNote: "標的 DNA 全体から探索し、6 > 5 >> 7 bp spacer を優先します。v2 はその後に Gupta で構成できる腕数を使います。",
+  bhaktaRankingNote: "標的 DNA 全体から探索し、機能的な有望度で順位付けします。combined B-score、context 警告、次に 6 > 5 >> 7 bp spacer の順です。",
   copyHint: "配列はドラッグで選択・コピーできます。",
   selected: "選択中",
   select: "選択",
@@ -199,7 +199,7 @@ const ja: Copy = {
   emptyCharsTitle: "入力に未対応の文字があります",
   emptyCharsBody: "未対応文字を取り除いてください。IUPAC 曖昧塩基は使えます。",
   emptyNoneTitle: "候補がありません",
-  emptyNoneBody: "選択中の archive で構成できる部位がこの配列にはありません。探索範囲、配列、設計法のいずれかを変えてください。",
+  emptyNoneBody: "選択中の archive で構成できる部位がこの標的 DNA にはありません。配列または設計法を変えてください。",
 
   precursorStat: "aa 前駆体",
   f2aStat: "aa F2A",

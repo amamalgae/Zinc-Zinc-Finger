@@ -6,11 +6,14 @@ Before changing this repository, read [docs/AI_HANDOFF.md](docs/AI_HANDOFF.md) i
 
 - The public designer exposes three profiles: `v3 · Bhakta 2013` (default), `v2 · Gupta + CoDA fallback`, and `v1 · CoDA only`.
 - v3 uses Bhakta 2013 extended modular assembly with 6 fingers per monomer, exact public Barbas/Bhakta one-finger modules, 18-bp half-sites, 5-7-bp spacers, and combined B-score >=15. Do not impute missing modules.
-- v3 candidate order is functional rather than positional: combined B-score first, then context/module evidence and spacer preference. Distance from the requested spacer center only bounds the acceptable search window and is displayed; it must not affect v3 rank.
-- v2/v1 remain 3-finger methods and retain their existing distance-first ranking. Do not split Gupta 2F modules, mix methods inside one 3F monomer, or invent missing CoDA rows.
-- Preserve strand orientation, ambiguous-base coordinates, and the meaning of the displayed spacer center for every profile.
+- The complete submitted target DNA is the public search window. Do not restore separate requested-center or ±range controls unless that is an explicit later product decision.
+- v3 candidate order is functional rather than positional: combined B-score first, then context/module evidence and spacer preference. Candidate position must not affect v3 rank except genomic start as a deterministic final tie-break.
+- v2/v1 remain 3-finger methods. With no requested center, their public order is spacer preference `6 > 5 >> 7`, then method-specific evidence (v2 favors more Gupta-completed arms), then genomic start. Do not split Gupta 2F modules, mix methods inside one 3F monomer, or invent missing CoDA rows.
+- Candidate rows retain the spacer-center coordinate from the beginning of the submitted target DNA. For a half-integer center, display the earlier integer (`64.5` → `+64`) rather than a decimal. This is a location coordinate, not a distance score.
+- Preserve strand orientation and ambiguous-base coordinates. The exact geometric center may be half-integer internally even though the public coordinate is floored for compact display.
 - The public exporters are protein-only: annotated GenPept and Protein FASTA contain only the selected precursor polyprotein. Do not emit predicted F2A-processed products or restore codon presets, CDS, or nucleotide GenBank without an explicit product decision.
 - Input and optional local files must stay in the browser; do not add telemetry or sequence upload.
+- Genome input may contain multiple FASTA/FASTA.gz/ZIP files. Keep all selected filenames visible; when a ZIP is parsed, also expose every recognized FASTA entry name rather than truncating or collapsing the list.
 
 ## Scientific and regulatory guardrails
 
