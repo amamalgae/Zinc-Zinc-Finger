@@ -16,8 +16,8 @@ Gupta 2012のtwo-finger module archiveを優先し、構成できない片側だ
 - GuptaはXLSにある6 bp標的、CoDAは共有F2 contextが一致する組合せだけを使い、archiveにない組合せを予測や補間で埋めない
 - 希望スペーサー中心と探索範囲はスピナーのない手入力欄で、初期値はいずれも1000 bp。希望中心が入力配列外なら赤色で訂正を求め、候補計算を停止
 - 希望スペーサー中心への近さを最優先し、同距離では`6 > 5 >> 7`の順で候補を順位付け
-- 公開画面の表示文字はすべて英語（`index.html`の`lang`とdescription、模式図、検証メッセージ、開閉ラベルを含む）。公開UIが描画しない旧研究モジュールの文字列は日本語のまま
-- 画面文字は13px未満を使わず（模式図内を除く）、01 INPUT / 02 SELECT / 03 PROTEIN OUTPUTは説明文を置かないミニマル構成。項目名は`Target DNA`・`Method`・`Spacer center`・`Range ±bp`の英語1語で、状態表示は問題があるときだけ出す。候補行は塩基配列を独立した行に置いて全長を読めるようにする
+- 表示文字は英語と日本語の2言語。全文字列は`src/i18n.ts`の`COPY.en` / `COPY.ja`にあり、初回は`navigator.languages`から自動判定、右上のスイッチで切り替えて`localStorage`に保存する。公開UIが描画しない旧研究モジュールの文字列は日本語のまま
+- 画面文字は13px未満を使わず（模式図内を除く）、01 INPUT / 02 SELECT / 03 PROTEIN OUTPUTはセクションキー自体を見出しにした説明文なしのミニマル構成。項目名は1語（`Target DNA`・`Method`・`Spacer center`・`Range ±bp`）、状態表示は問題があるときだけ出す。候補は1件1行の薄いタイルで、順位・左右half-siteとspacer・設計法・希望中心からの距離を1行に収める
 - 02 SELECTは順位付けされた候補を最大30件すべてスクロール表示し、候補行全体を押して選択可能。表示塩基配列は選択状態を保ったままマウスドラッグで範囲選択・コピー可能
 - 各fingerの標的triplet、7 aa recognition helix、設計法、module ID、完全array配列を表示
 - `NLS–ZF-L 3F–FokI ELD–F2A–NLS–ZF-R 3F–FokI KKR`の単一ORFを生成

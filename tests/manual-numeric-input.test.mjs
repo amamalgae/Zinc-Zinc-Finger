@@ -20,6 +20,6 @@ test("manual coordinate controls default to 1000 and accept unsigned integers", 
 
 test("only a desired center inside the input sequence is valid", () => {
   assert.equal(desiredCutInputError("1000", 1000), null);
-  assert.equal(desiredCutInputError("1001", 1000), "Enter a coordinate between 0 and 1000.");
-  assert.equal(desiredCutInputError("", 1000), "Enter a whole number of 0 or more.");
+  assert.deepEqual(desiredCutInputError("1001", 1000), { kind: "out-of-range", maximum: 1000 });
+  assert.deepEqual(desiredCutInputError("", 1000), { kind: "not-an-integer" });
 });

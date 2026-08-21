@@ -1,3 +1,5 @@
+import type { Copy } from "./i18n.ts";
+
 const LEFT_FINGERS = [
   { label: "ZF1", x: 140 },
   { label: "ZF2", x: 235 },
@@ -54,12 +56,12 @@ function MobileDnaCell({ side }: { side: "left" | "right" }) {
   return <div className={`overview-mobile-dna-cell ${side}`}>NNN</div>;
 }
 
-function MobileOverviewDiagram() {
+function MobileOverviewDiagram({ copy }: { copy: Copy }) {
   return (
     <div
       className="overview-mobile-diagram"
       role="img"
-      aria-label="ZF1 to ZF6 bind the 9 bp half-sites on the F and R strands; FokI ELD and KKR cut both strands across the 5 to 7 bp spacer between them"
+      aria-label={copy.mechanismMobileAria}
     >
       <div className="overview-mobile-array right">
         <span className="overview-mobile-terminus">C</span>
@@ -77,7 +79,7 @@ function MobileOverviewDiagram() {
         <MobileDnaCell side="left" />
         <div className="overview-mobile-spacer">
           <span>5–7 bp spacer</span>
-          <small className="cut-label">cut site</small>
+          <small className="cut-label">{copy.cutSite}</small>
           <LightningIcon position="top" />
         </div>
         <MobileDnaCell side="right" />
@@ -92,7 +94,7 @@ function MobileOverviewDiagram() {
         <MobileDnaCell side="left" />
         <div className="overview-mobile-spacer">
           <span>5–7 bp spacer</span>
-          <small className="cut-label">cut site</small>
+          <small className="cut-label">{copy.cutSite}</small>
           <LightningIcon position="bottom" />
         </div>
         <MobileDnaCell side="right" />
@@ -112,22 +114,22 @@ function MobileOverviewDiagram() {
   );
 }
 
-export default function ZfnOverviewDiagram() {
+export default function ZfnOverviewDiagram({ copy }: { copy: Copy }) {
   return (
     <section className="mechanism-overview" id="how-zfn-works" aria-labelledby="mechanism-title">
       <div className="mechanism-heading">
         <div>
           <span>HOW A 3-FINGER ZFN PAIR WORKS</span>
-          <h2 id="mechanism-title">How a ZFN pair<br />finds and cuts DNA</h2>
+          <h2 id="mechanism-title">{copy.mechanismTitle}</h2>
         </div>
-        <p>The zinc fingers read the DNA; FokI is the nuclease that cuts it. Once both ZFNs are bound to their 9 bp half-sites, the two FokI variants meet over the spacer and form the complex that cleaves.</p>
+        <p>{copy.mechanismBody}</p>
       </div>
 
       <figure className="overview-figure">
-        <div className="overview-svg-scroll" tabIndex={0} aria-label="Diagram of a 3-finger ZFN pair">
+        <div className="overview-svg-scroll" tabIndex={0} aria-label={copy.mechanismFigureAria}>
           <svg className="overview-svg" viewBox="0 0 1040 430" role="img" aria-labelledby="zfn-overview-title zfn-overview-desc">
-            <title id="zfn-overview-title">Two 3-finger ZFNs bound to DNA with a FokI heterodimer cutting the spacer</title>
-            <desc id="zfn-overview-desc">ZF1 to ZF3 of the left ZFN and ZF4 to ZF6 of the right ZFN bind the 9 bp half-sites on the F and R strands. FokI ELD and KKR form a heterodimer over the 5 to 7 bp spacer between them.</desc>
+            <title id="zfn-overview-title">{copy.mechanismSvgTitle}</title>
+            <desc id="zfn-overview-desc">{copy.mechanismSvgDesc}</desc>
             <defs>
               <linearGradient id="overview-left-finger" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0" stopColor="#f2f8ef" />
@@ -189,22 +191,21 @@ export default function ZfnOverviewDiagram() {
             <path className="overview-lightning" d="M518.5 174 H537.5 L530.5 185 H544.5 L516.5 206 L524.5 192 H510.5 Z" />
             <path className="overview-lightning" d="M518.5 258 H537.5 L530.5 269 H544.5 L516.5 290 L524.5 276 H510.5 Z" />
             <text className="overview-spacer-length" x="527.5" y="207">5–7 bp spacer</text>
-            <text className="overview-spacer-label" x="527.5" y="260">cut site</text>
+            <text className="overview-spacer-label" x="527.5" y="260">{copy.cutSite}</text>
           </svg>
         </div>
-        <MobileOverviewDiagram />
-        <figcaption>ZFNs work as a pair, never alone. ZF1 to ZF6 are numbered here for the explanation; each monomer is its own 3-finger array.</figcaption>
+        <MobileOverviewDiagram copy={copy} />
+        <figcaption>{copy.mechanismCaption}</figcaption>
       </figure>
 
       <ol className="mechanism-steps">
-        <li><span>01</span><div><strong>Recognise</strong><p>One finger reads 3 bp, so three fingers read 9 bp.</p></div></li>
-        <li><span>02</span><div><strong>Dimerise</strong><p>The ELD (−) and KKR (+) FokI domains pair only with each other.</p></div></li>
-        <li><span>03</span><div><strong>Cut</strong><p>The 5–7 bp spacer between the two half-sites is where the break falls.</p></div></li>
+        <li><span>01</span><div><strong>{copy.stepRecogniseTitle}</strong><p>{copy.stepRecogniseBody}</p></div></li>
+        <li><span>02</span><div><strong>{copy.stepDimeriseTitle}</strong><p>{copy.stepDimeriseBody}</p></div></li>
+        <li><span>03</span><div><strong>{copy.stepCutTitle}</strong><p>{copy.stepCutBody}</p></div></li>
       </ol>
 
       <div className="mechanism-footer">
-        <p><strong>This tool</strong> searches your sequence for sites that can be built into exactly this arrangement, and writes out the complete amino acid sequence.</p>
-        <a href="#designer">Start designing <span aria-hidden="true">↓</span></a>
+        <a href="#designer">{copy.mechanismCta} <span aria-hidden="true">↓</span></a>
       </div>
     </section>
   );

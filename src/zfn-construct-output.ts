@@ -3,10 +3,10 @@ import type { ZfnCandidate } from "./zfn-design-engine.ts";
 import type { ZfnArray } from "./zfn-array.ts";
 
 export const ZFN_DONORS = [
-  { component: "SV40 NLS (both arms)", scientificName: "Betapolyomavirus macacae", detail: "nuclear localisation signal" },
-  { component: "3-finger framework (both arms)", scientificName: "synthetic C2H2 array", detail: "Gupta/Zhu Zif268 scaffold or Sander CoDA framework" },
-  { component: "FokI ELD / KKR", scientificName: "Flavobacterium okeanokoites", detail: "cleavage domain with engineered obligate-heterodimer mutations" },
-  { component: "F2A", scientificName: "Foot-and-mouth disease virus", detail: "FMDV-derived 2A peptide; the paired-ZFN single ORF precedent is Lei 2011" },
+  { component: "SV40 NLS", scientificName: "Betapolyomavirus macacae", detailKey: "donorNls" },
+  { component: "3-finger framework", scientificName: "synthetic C2H2 array", detailKey: "donorFramework" },
+  { component: "FokI ELD / KKR", scientificName: "Flavobacterium okeanokoites", detailKey: "donorFokI" },
+  { component: "F2A", scientificName: "Foot-and-mouth disease virus", detailKey: "donorF2A" },
 ] as const;
 
 export type ZfnMonomer = { arm: "left" | "right"; fokIVariant: "ELD" | "KKR"; protein: string };
