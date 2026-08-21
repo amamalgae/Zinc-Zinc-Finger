@@ -1,6 +1,6 @@
 # Zinc Zinc Finger: AI handoff and decision record
 
-Last reconciled: 2026-08-21 for Bhakta 2013 v3 implementation PR #63.
+Last reconciled: 2026-08-21 for Bhakta 2013 v3 implementation PR #63 plus the optional exact-genome-match addition in PR #64.
 
 This is the current durable specification. The pre-v3 handoff remains recoverable in Git history; `docs/AI_HANDOFF_V2_ARCHIVE.md` records that transition, and `docs/AI_HANDOFF_V3_BHAKTA_2013.md` contains the detailed v3 rationale and validation notes.
 
@@ -49,9 +49,9 @@ Distance remains displayed because the user may care where the cut lies, but it 
 
 No ranking is a candidate-specific probability of editing.
 
-### 2.2 Browser-local sequence handling
+### 2.2 Browser-local sequence handling and optional genome identity check
 
-All target sequence handling stays in the browser. Do not add telemetry or upload sequence data.
+All target and genome sequence handling stays in the browser. Do not add telemetry or upload sequence data.
 
 `parseDNAInput()` preserves coordinates:
 
@@ -62,6 +62,30 @@ All target sequence handling stays in the browser. Do not add telemetry or uploa
 - any candidate window containing `N` is unavailable.
 
 Never revert to the old `replace(/[^ACGT]/g, "")` behavior in public design code because it can join bases across an unknown position.
+
+Genome input is **optional**. With no genome file, candidate generation and ranking are exactly the normal v1/v2/v3 workflow. If supplied, the public UI accepts:
+
+- one plain FASTA (`.fa`, `.fasta`, `.fna`, `.fas`);
+- the same FASTA formats gzip-compressed;
+- one ZIP containing multiple FASTA files, including gzip-compressed FASTA entries.
+
+The feature is deliberately a sequence-identity guardrail, not a restored off-target predictor. For every returned candidate it counts genomic loci where:
+
+1. the complete left physical half-site matches exactly;
+2. the complete right physical half-site matches exactly in the paired orientation;
+3. the spacer **length** matches the candidate.
+
+Spacer bases themselves are ignored because the zinc-finger arrays do not recognize the spacer sequence. Both genomic orientations are searched. This works for the v3 18-bp half-sites and the v1/v2 9-bp half-sites.
+
+Interpretation is intentionally narrow:
+
+- 0 matches: the candidate pair itself was not found in the supplied genome; do not interpret this as safety;
+- 1 match: exact paired recognition geometry is unique in the supplied genome;
+- >1 matches: the exact paired recognition geometry is repeated and should be treated as an obvious sequence-identity warning.
+
+These counts do **not** alter candidate rank, do not estimate cleavage probability, and do not imply that a unique exact pair is specific or safe. Mismatched sites, chromatin, methylation, expression, cell type and biochemical ZF specificity are outside this check. The legacy PROGNOS implementation remains nonpublic. Its limitations are retained from Fine M et al. (2014), DOI `10.1093/nar/gkt1326`, and Sander JD et al. (2013), DOI `10.1093/nar/gkt716`.
+
+Plain FASTA is read as a stream in a Web Worker. ZIP handling necessarily incurs decompression memory cost; there is no artificial application file-size cap, but device/browser memory is the practical limit, especially on mobile devices.
 
 ### 2.3 Simple public workflow
 
@@ -83,6 +107,7 @@ Do not turn cohort-level results into per-candidate probabilities. In particular
 - Gupta 2012: 9/11 zebrafish targets above the stated threshold is a small selectively evaluated cohort, not a general probability.
 - CoDA archive membership is not a guarantee of function.
 - B-score is a useful eligibility/ranking signal, not a calibrated indel predictor.
+- an exact-genome-match count is a deterministic sequence identity fact, not an off-target or safety score.
 
 The complete ELD/KKR + F2A constructs emitted by this project combine separately supported parts. They were not tested as exact complete constructs in the Bhakta, Gupta, or CoDA primary studies.
 
@@ -244,6 +269,19 @@ Retain the exhaustive Gupta and CoDA archive tests. v3 must not weaken v1/v2 inv
 - all 4^9 recognition 9-mers are exhaustively checked against exact CoDA assembly rules.
 - ambiguous-base coordinates remain preserved.
 
+### Exact genome matching
+
+`tests/genome-exact-match.test.mjs` checks that the optional genome feature:
+
+- ignores spacer bases while requiring the candidate spacer length;
+- finds both genomic orientations;
+- counts repeated physical loci;
+- parses multiline/multirecord FASTA without joining contigs;
+- does not let ambiguous genome bases create an exact match;
+- supports the longer v3 Bhakta half-sites as well as v1/v2 9-bp half-sites.
+
+This validation establishes sequence-counting behavior only. It does not validate off-target cleavage prediction.
+
 ## 8. Repository map
 
 Current public-path files:
@@ -258,9 +296,11 @@ Current public-path files:
 - `src/zhu-module-archive.ts` — position-specific Zhu 1F archive.
 - `src/coda-module-archive.ts` — exact CoDA builder.
 - `src/zfn-construct-output.ts` — current variable-length protein-only exporter.
+- `src/genome-exact-match.ts` — deterministic exact paired-half-site counter and FASTA record parser.
+- `src/genome-exact-match.worker.ts` — browser-local FASTA/FASTA.gz/ZIP reader and background genome scan.
 - `src/ZfnOverviewDiagram.tsx` — conventional 3F paired-ZFN teaching diagram; copy explicitly notes that v3 extends each monomer to 6F.
 
-Scientific/legacy analysis code remains because it preserves validation history. Do not delete it merely because the current public UI does not render it.
+Scientific/legacy analysis code remains because it preserves validation history. In particular, `src/off-target-engine.ts` and `src/off-target.worker.ts` remain legacy PROGNOS research code and are not the public exact-match feature. Do not delete legacy code merely because the current public UI does not render it.
 
 ## 9. Acceptance commands
 
@@ -291,6 +331,7 @@ A dependency audit warning is not the same as a scientific-design failure, but d
 | ELD/KKR | Doyon Y et al. (2011), DOI `10.1038/nmeth.1539` |
 | paired-ZFN F2A precedent | Lei Y et al. (2011), DOI `10.1038/mt.2011.12` |
 | spacer/linker evidence | Händel EM et al. (2009), DOI `10.1038/mt.2008.233`; Shimizu Y et al. (2009), DOI `10.1016/j.bmcl.2009.02.109`; Chen S et al. (2013), DOI `10.1093/nar/gks1356` |
+| reason not to treat legacy PROGNOS as a safety score | Fine M et al. (2014), DOI `10.1093/nar/gkt1326`; Sander JD et al. (2013), DOI `10.1093/nar/gkt716` |
 
 ## 11. Open scientific limitations
 
@@ -298,5 +339,6 @@ A dependency audit warning is not the same as a scientific-design failure, but d
 2. B-score is not a calibrated activity model. The current v3 rank is evidence-informed, not probabilistic.
 3. Historical TSO and module recommendation fields are secondary tie-break evidence. If future validation shows they do not improve independent performance, remove them from ranking rather than retaining them for tradition.
 4. The exact Bhakta-6F/ELD/F2A/KKR complete construct needs experimental validation in the intended host.
-5. FokI variants such as the attenuated Miller 2019 designs remain a separate future architecture decision and should not be silently substituted into v3.
-6. FTO remains outside the scope of software logic and requires jurisdiction/use-specific review.
+5. The optional genome identity check does not enumerate mismatched binding sites and cannot establish specificity or safety; experimentally important off-targets can therefore be absent from its report.
+6. FokI variants such as the attenuated Miller 2019 designs remain a separate future architecture decision and should not be silently substituted into v3.
+7. FTO remains outside the scope of software logic and requires jurisdiction/use-specific review.
