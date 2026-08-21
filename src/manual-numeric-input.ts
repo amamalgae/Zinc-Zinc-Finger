@@ -8,10 +8,15 @@ export function parseUnsignedIntegerInput(value: string): number | null {
   return Number.isSafeInteger(parsed) ? parsed : null;
 }
 
-export function desiredCutInputError(value: string, sequenceLength: number): string | null {
+/** Language-free so the caller renders the message in the active UI language. */
+export type DesiredCutError =
+  | { kind: "not-an-integer" }
+  | { kind: "out-of-range"; maximum: number };
+
+export function desiredCutInputError(value: string, sequenceLength: number): DesiredCutError | null {
   const parsed = parseUnsignedIntegerInput(value);
-  if (parsed === null) return "Enter a whole number of 0 or more.";
+  if (parsed === null) return { kind: "not-an-integer" };
   const maximum = Math.max(0, sequenceLength);
-  if (parsed > maximum) return `Enter a coordinate between 0 and ${maximum}.`;
+  if (parsed > maximum) return { kind: "out-of-range", maximum };
   return null;
 }

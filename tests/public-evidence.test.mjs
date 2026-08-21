@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
+import { COPY, detectLanguage } from "../src/i18n.ts";
+
 const publicEvidenceFiles = [
   "README.md",
   "THIRD_PARTY_NOTICES.md",
@@ -30,19 +32,20 @@ test("landing page leads with Gupta-first design and qualifies the 9-of-11 cohor
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
 
   assert.match(app, /GUPTA 2012 · 2F MODULE ZFN DESIGNER/);
-  assert.match(app, /<h1>Design a ZFN pair<\/h1>/);
+  assert.equal(COPY.en.heroTitle, "Design a ZFN pair");
   assert.doesNotMatch(app, /標的DNAから、|ZFNペア候補を設計。/);
-  assert.match(app, /searches the Gupta 2012 two-finger archive first/);
-  assert.match(app, /falls back to CoDA for a monomer it cannot build/);
+  assert.match(COPY.en.heroBody, /searches the Gupta 2012 two-finger archive first/);
+  assert.match(COPY.en.heroBody, /falls back to CoDA for a monomer it cannot build/);
   assert.match(app, /label: "v2 · Gupta \+ CoDA fallback"/);
   assert.match(app, /label: "v1 · CoDA only"/);
   assert.doesNotMatch(app, /Design v[12]/);
   assert.match(app, /<select id="design-profile"/);
-  assert.match(app, /returns the amino acid sequence/);
-  assert.match(app, /Enter a sequence/);
+  assert.match(COPY.en.heroBody, /returns the amino acid sequence/);
+  assert.equal(COPY.en.heroCta, "Enter a sequence");
   assert.match(app, /<strong>9\/11<\/strong>/);
-  assert.match(app, /zebrafish targets mutated/);
-  assert.match(app, /not the success probability of any candidate on this site/);
+  assert.match(COPY.en.studyHeadline, /zebrafish targets mutated/);
+  assert.match(COPY.en.studyCaveat, /not the success probability of any candidate on this site/);
+  assert.match(COPY.ja.studyCaveat, /各候補の成功確率ではありません/);
   assert.doesNotMatch(app, /3つのfingerで/i);
 });
 
@@ -50,7 +53,7 @@ test("candidate ranking shows the compact spacer order and keeps its rationale i
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
   const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
 
-  assert.match(app, /nearest to the requested center first; ties prefer 6 &gt; 5 &gt;&gt; 7 bp spacers/);
+  assert.match(COPY.en.rankingNote, /Nearest to the requested center first; ties prefer 6 > 5 >> 7 bp spacers/);
   assert.doesNotMatch(app, /spacer長の実験傾向を用いた優先順位/);
   assert.match(readme, /`6 > 5 >> 7`/);
   assert.match(readme, /Shimizu et al\. \(2009\).*10\.1016\/j\.bmcl\.2009\.02\.109/);
@@ -67,12 +70,13 @@ test("protein output offers annotated GenPept without inventing a DNA sequence",
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
   const exporter = readFileSync(new URL("../src/zfn-construct-output.ts", import.meta.url), "utf8");
 
-  assert.match(app, /GenPept \(annotated\)/);
-  assert.match(app, /"true">↓<\/span> FASTA</);
+  assert.equal(COPY.en.downloadGenPept, "GenPept (annotated)");
+  assert.equal(COPY.en.downloadFasta, "FASTA");
   assert.match(app, /resultFilename\(selectedRank, "gp"\)/);
   assert.match(app, /resultFilename\(selectedRank, "fasta"\)/);
-  assert.match(app, /records each finger's method, module ID and recognition helix/);
-  assert.match(app, /<div className="protein-sequence"[\s\S]*?AMINO ACID SEQUENCE[\s\S]*?\{construct\.protein\}[\s\S]*?<\/div>/);
+  assert.match(COPY.en.outputIntro, /records each finger's method, module ID and recognition helix/);
+  assert.match(app, /<div className="protein-sequence"[\s\S]*?\{copy\.sequenceLabel\}[\s\S]*?\{construct\.protein\}[\s\S]*?<\/div>/);
+  assert.equal(COPY.en.sequenceLabel, "AMINO ACID SEQUENCE");
   assert.doesNotMatch(app, /<details className="sequence-details compact"/);
   assert.doesNotMatch(app, /processedLeftProtein|processedRightProtein|Processed left|Processed right/);
   assert.match(exporter, /\/region_name=/);
@@ -100,12 +104,12 @@ test("interactive controls remain distinguishable from informational labels", ()
   const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
 
   assert.match(app, /aria-pressed=\{selected\}/);
-  assert.match(app, /✓ Selected/);
+  assert.match(app, /`✓ \$\{copy\.selected\}`/);
   assert.match(app, /"true">↓<\/span> CSV</);
-  assert.match(app, /"true">↓<\/span> FASTA</);
   assert.match(app, /<ul className="hero-benefits"/);
   assert.doesNotMatch(app, /構成可能なペアだけを提示/);
-  assert.match(app, /<ul className="hero-benefits"[\s\S]*?<li>Runs in the browser<\/li>[\s\S]*?<li>GenPept \/ protein FASTA<\/li>[\s\S]*?<\/ul>/);
+  assert.match(app, /<ul className="hero-benefits"[\s\S]*?\{copy\.heroBenefitBrowser\}[\s\S]*?\{copy\.heroBenefitFormats\}[\s\S]*?<\/ul>/);
+  assert.equal(COPY.en.heroBenefitBrowser, "Runs in the browser");
   assert.match(css, /button:focus-visible, a:focus-visible, summary:focus-visible/);
   assert.match(css, /\.technical-details > summary::after/);
   assert.match(css, /\.candidate-action/);
@@ -113,7 +117,7 @@ test("interactive controls remain distinguishable from informational labels", ()
   assert.match(app, /hasTextSelectionWithin\(event\.currentTarget\)/);
   assert.doesNotMatch(app, /<button className=\{`candidate/);
   assert.match(css, /\.candidate-sequence \{[^}]*cursor: text;[^}]*user-select: text;/);
-  assert.match(app, /Drag across a sequence to select and copy it/);
+  assert.match(COPY.en.copyHint, /Drag across a sequence to select and copy it/);
   assert.doesNotMatch(app, /希望位置から。初期値1000 bp/);
   assert.match(css, /\.input-panel, \.results-panel, \.evidence \{ border: 1px solid/);
 });
@@ -123,11 +127,13 @@ test("selection flows directly into protein output while retaining technical det
   const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
 
   assert.doesNotMatch(app, /buildZfnBindingMap|ZfnBindingDiagram|選択内容の表示|標的塩基配列とfingerの対応/);
-  assert.match(app, /<div className="panel-heading"><span>02<\/span><div><small>SELECT<\/small>/);
-  assert.match(app, /<div className="output-heading"><div className="panel-heading"><span>03<\/span><div><small>PROTEIN OUTPUT<\/small>/);
+  assert.match(app, /<div className="panel-heading"><span>02<\/span><h2>SELECT<\/h2>/);
+  assert.match(app, /<div className="output-heading"><div className="panel-heading"><span>03<\/span><h2>PROTEIN OUTPUT<\/h2>/);
+  assert.match(app, /<div className="panel-heading"><span>01<\/span><h2>INPUT<\/h2>/);
+  assert.doesNotMatch(app, /<h2>Enter the target<\/h2>|<h2>Pick a candidate<\/h2>|<h2>Get the sequence<\/h2>/);
   assert.doesNotMatch(app, /<small>RESULTS<\/small>/);
   assert.doesNotMatch(app, /className="selected-design"/);
-  assert.match(app, /<summary>Finger detail and ORF architecture<\/summary>/);
+  assert.equal(COPY.en.technicalSummary, "Finger detail and ORF architecture");
   assert.doesNotMatch(css, /\.selected-design|\.selected-heading|\.binding-figure|\.dna-map/);
 });
 
@@ -137,7 +143,7 @@ test("candidate rows retain the selected target sequence and ranking distance", 
 
   assert.match(app, /<b className="left">\{candidate\.leftTop\}<\/b>/);
   assert.match(app, /<b className="right">\{candidate\.rightTop\}<\/b>/);
-  assert.match(app, /±\{formatCut\(candidate\.distance\)\} bp from center/);
+  assert.match(app, /±\{formatCut\(candidate\.distance\)\} bp · \{candidate\.spacerLength\} bp/);
   assert.match(css, /\.candidate-sequence b\.left \{ color: var\(--green\); \}/);
   assert.match(css, /\.candidate-sequence b\.right \{ color: var\(--blue\); \}/);
 
@@ -146,7 +152,7 @@ test("candidate rows retain the selected target sequence and ranking distance", 
 test("the public UI renders every returned candidate without a duplicate display panel", () => {
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
   assert.match(app, /className="candidate-list">\{candidates\.map\(/);
-  assert.match(app, /All candidates, nearest to the requested center first/);
+  assert.match(app, /\{copy\.rankingNote\}/);
   assert.doesNotMatch(app, /LISTED_CANDIDATE_LIMIT|listedCandidates|candidates\.slice\(/);
   assert.doesNotMatch(app, /dna-ruler|dna-legend|dna-direction|selected-rank/);
 });
@@ -158,8 +164,8 @@ test("protein output retains its technical disclosure and keeps evidence separat
   assert.doesNotMatch(panel, /ZFN_DONORS/);
   assert.match(evidence, /ZFN_DONORS/);
   assert.ok(panel.indexOf("PROTEIN OUTPUT") < panel.indexOf('<details className="technical-details">'));
-  assert.ok(panel.indexOf("<ArchitectureDiagram />") > panel.indexOf('<details className="technical-details">'));
-  assert.match(app, /<summary>Finger detail and ORF architecture<\/summary>/);
+  assert.ok(panel.indexOf("<ArchitectureDiagram copy={copy} />") > panel.indexOf('<details className="technical-details">'));
+  assert.match(app, /<summary>\{copy\.technicalSummary\}<\/summary>/);
 });
 
 test("an original 3ZF mechanism diagram explains the design before sequence input", () => {
@@ -169,8 +175,8 @@ test("an original 3ZF mechanism diagram explains the design before sequence inpu
   const patch = readFileSync(new URL("../src/ui-patch.css", import.meta.url), "utf8");
 
   assert.ok(app.indexOf("<ZfnOverviewDiagram />") < app.indexOf('<section className="designer"'));
-  assert.match(diagram, /How a ZFN pair<br \/>finds and cuts DNA/);
-  assert.match(diagram, /One finger reads 3 bp, so three fingers read 9 bp/);
+  assert.equal(COPY.en.mechanismTitle, "How a ZFN pair finds and cuts DNA");
+  assert.match(COPY.en.stepRecogniseBody, /One finger reads 3 bp, so three fingers read 9 bp/);
   assert.doesNotMatch(diagram, /およそ3 bp|左右2本で標的を挟む/);
   assert.match(diagram, /Left ZFN · protein N → C/);
   assert.match(diagram, /Right ZFN · protein N → C/);
@@ -219,15 +225,15 @@ test("no interface text is set below the legible floor, and each step states wha
   // The three steps are carried by the numbered badge, the section key and the
   // controls themselves; prose instructions are deliberately absent.
   assert.doesNotMatch(app, /ここですること|ここで得られるもの|className="panel-help"/);
-  assert.match(app, /<small>INPUT<\/small><h2>Enter the target<\/h2>/);
-  assert.match(app, /<small>SELECT<\/small><h2>Pick a candidate<\/h2>/);
-  assert.match(app, /<small>PROTEIN OUTPUT<\/small><h2>Get the sequence<\/h2>/);
-  assert.match(app, /<span>Method<\/span>/);
-  assert.match(app, /<span>Spacer center<\/span>/);
-  assert.match(app, /<span>Range ±bp<\/span>/);
+  assert.match(app, /<span>\{copy\.methodLabel\}<\/span>/);
+  assert.match(app, /<span>\{copy\.spacerCenterLabel\}<\/span>/);
+  assert.match(app, /<span>\{copy\.rangeLabel\}<\/span>/);
+  assert.equal(COPY.en.methodLabel, "Method");
+  assert.equal(COPY.en.spacerCenterLabel, "Spacer center");
+  assert.equal(COPY.en.rangeLabel, "Range ±bp");
 });
 
-test("the public interface is written in English", () => {
+test("interface copy lives in the dictionary, in both languages", () => {
   const surfaces = [
     "index.html",
     "src/App.tsx",
@@ -239,9 +245,22 @@ test("the public interface is written in English", () => {
   ];
   const japanese = /[぀-ヿ一-鿿]/;
 
+  // Every reader-facing string resolves through COPY, so no component,
+  // stylesheet or data module carries prose of its own in either language.
   for (const path of surfaces) {
     const source = readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
     const offending = source.split("\n").filter((line) => japanese.test(line));
-    assert.deepEqual(offending, [], `${path} still renders Japanese text`);
+    assert.deepEqual(offending, [], `${path} carries Japanese text outside the dictionary`);
   }
+
+  assert.deepEqual(Object.keys(COPY.ja), Object.keys(COPY.en));
+  for (const [key, value] of Object.entries(COPY.en)) {
+    if (typeof value !== "string") continue;
+    assert.doesNotMatch(value, japanese, `COPY.en.${key} is not English`);
+  }
+  assert.match(COPY.ja.heroTitle, japanese);
+
+  assert.equal(detectLanguage(["ja-JP", "en-US"]), "ja");
+  assert.equal(detectLanguage(["en-GB"]), "en");
+  assert.equal(detectLanguage([]), "en");
 });
