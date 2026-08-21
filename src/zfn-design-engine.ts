@@ -9,7 +9,7 @@ import {
 import { buildGuptaArray } from "./gupta-module-archive.ts";
 import type { ZfnArray } from "./zfn-array.ts";
 
-export type DesignProfile = "bhakta-2013" | "gupta-coda" | "coda-only";
+export type DesignProfile = "bhakta-2013" | "bhakta-2013-3xgnn" | "gupta-coda" | "coda-only";
 
 export type ZfnCandidate = {
   id: string;
@@ -62,7 +62,18 @@ function complement(base: string | undefined): string | undefined {
   return complements[base.toUpperCase()];
 }
 
-function buildLegacyArray(recognition: string, profile: Exclude<DesignProfile, "bhakta-2013">): ZfnArray | null {
+function isBhaktaProfile(profile: DesignProfile): boolean {
+  return profile === "bhakta-2013" || profile === "bhakta-2013-3xgnn";
+}
+
+function isThreeGnnRecognition(recognition: string): boolean {
+  return /^(G[ACGT]{2}){3}$/.test(recognition);
+}
+
+function buildLegacyArray(
+  recognition: string,
+  profile: Exclude<DesignProfile, "bhakta-2013" | "bhakta-2013-3xgnn">,
+): ZfnArray | null {
   if (profile === "coda-only") return buildCodaArray(recognition);
   return buildGuptaArray(recognition) ?? buildCodaArray(recognition);
 }
@@ -87,7 +98,7 @@ function compareBhaktaFunctional(
 }
 
 export function compareZfnCandidates(left: ZfnCandidate, right: ZfnCandidate): number {
-  if (left.profile === "bhakta-2013" && right.profile === "bhakta-2013") {
+  if (isBhaktaProfile(left.profile) && isBhaktaProfile(right.profile)) {
     return compareBhaktaFunctional(left, right);
   }
   return (
@@ -120,7 +131,9 @@ export function generateZfnCandidates(
   const resultLimit = limit === undefined ? null : Math.max(0, Math.floor(limit));
   if (resultLimit === 0) return [];
 
-  const halfSiteLength = profile === "bhakta-2013" ? 18 : 9;
+  const isExtendedBhakta = profile === "bhakta-2013";
+  const isGnn3Bhakta = profile === "bhakta-2013-3xgnn";
+  const halfSiteLength = isExtendedBhakta ? 18 : 9;
   const candidates: ZfnCandidate[] = [];
   for (const spacerLength of [5, 6, 7]) {
     const footprint = halfSiteLength * 2 + spacerLength;
@@ -137,12 +150,17 @@ export function generateZfnCandidates(
       let rightArray: ZfnArray | null;
       let functionalMetrics: ReturnType<typeof bhaktaMetrics> | undefined;
 
-      if (profile === "bhakta-2013") {
+      if (isBhaktaProfile(profile)) {
+        if (isGnn3Bhakta && (!isThreeGnnRecognition(leftRecognition) || !isThreeGnnRecognition(rightRecognition))) continue;
         const leftBhakta = buildBhaktaArray(leftRecognition, complement(dna[start - 1]));
         const rightBhakta = buildBhaktaArray(rightRecognition, dna[start + footprint]);
         if (!leftBhakta || !rightBhakta) continue;
         functionalMetrics = bhaktaMetrics(leftBhakta, rightBhakta);
-        if (functionalMetrics.combinedBScore < BHAKTA_B_SCORE_CUTOFF) continue;
+        // Bhakta et al. prospectively applied B>=15 to the L6+R6 workflow.
+        // For the separately exposed 3xGNN 3F mode, retain B-score as a
+        // continuous ranking signal rather than importing that 6F eligibility
+        // threshold into a configuration for which it was not established.
+        if (isExtendedBhakta && functionalMetrics.combinedBScore < BHAKTA_B_SCORE_CUTOFF) continue;
         leftArray = leftBhakta;
         rightArray = rightBhakta;
       } else {
@@ -155,7 +173,11 @@ export function generateZfnCandidates(
       const distance = Math.abs(cut - desiredCut);
       if (distance > searchDistance) continue;
       candidates.push({
-        id: profile === "bhakta-2013" ? `bhakta-${start}-${spacerLength}` : `${start}-${spacerLength}`,
+        id: isExtendedBhakta
+          ? `bhakta-${start}-${spacerLength}`
+          : isGnn3Bhakta
+            ? `bhakta-3xgnn-${start}-${spacerLength}`
+            : `${start}-${spacerLength}`,
         profile,
         start,
         cut,
