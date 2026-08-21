@@ -86,11 +86,13 @@ export function countExactPairMatchesInSequence(
 }
 
 export class ExactGenomeMatchAccumulator {
+  private readonly candidates: readonly ExactGenomeCandidate[];
   private readonly counts: Map<string, number>;
   private genomeBasesValue = 0;
   private sequenceCountValue = 0;
 
-  constructor(private readonly candidates: readonly ExactGenomeCandidate[]) {
+  constructor(candidates: readonly ExactGenomeCandidate[]) {
+    this.candidates = candidates;
     this.counts = new Map(candidates.map(({ id }) => [id, 0]));
   }
 
@@ -118,9 +120,12 @@ export class ExactGenomeMatchAccumulator {
 }
 
 export class FastaLineScanner {
+  private readonly matcher: ExactGenomeMatchAccumulator;
   private chunks: string[] = [];
 
-  constructor(private readonly matcher: ExactGenomeMatchAccumulator) {}
+  constructor(matcher: ExactGenomeMatchAccumulator) {
+    this.matcher = matcher;
+  }
 
   private flush(): void {
     if (!this.chunks.length) return;
