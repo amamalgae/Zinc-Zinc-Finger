@@ -182,7 +182,11 @@ export function generateZfnCandidatesAcrossSequence(
   profile: DesignProfile = "gupta-coda",
   limit?: number,
 ): ZfnCandidate[] {
-  return generateZfnCandidates(dna, 0, dna.length, profile, limit);
+  return generateZfnCandidates(dna, 0, dna.length, profile, limit).map((candidate) => ({
+    ...candidate,
+    // Public coordinates use the earlier integer for half-integer spacer centers.
+    cut: Math.floor(candidate.cut),
+  }));
 }
 
 export function bhaktaAlternativesForCandidate(candidate: ZfnCandidate): BhaktaAlternative[] {
@@ -234,7 +238,7 @@ function arraySource(array: ZfnArray): string {
 
 export function zfnCandidatesToCsv(candidates: readonly ZfnCandidate[]): string {
   const header = [
-    "rank", "design_profile", "combined_b_score", "tso_warnings", "spacer_center_between_bases", "spacer_bp",
+    "rank", "design_profile", "combined_b_score", "tso_warnings", "spacer_center_coordinate", "spacer_bp",
     "left_half_site_top_5to3", "spacer", "right_half_site_top_5to3",
     "left_method", "right_method", "left_assembly", "right_assembly",
     "left_fingers_NtoC", "right_fingers_NtoC", "left_array_NtoC", "right_array_NtoC",
@@ -244,7 +248,7 @@ export function zfnCandidatesToCsv(candidates: readonly ZfnCandidate[]): string 
     candidate.profile,
     candidate.combinedBScore ?? "",
     candidate.tsoIssues ?? "",
-    formatCut(candidate.cut),
+    Math.floor(candidate.cut),
     candidate.spacerLength,
     candidate.leftTop,
     candidate.spacer,
