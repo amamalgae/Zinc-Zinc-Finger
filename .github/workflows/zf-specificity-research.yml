@@ -8,6 +8,8 @@ on:
       - ".github/workflows/zf-specificity-research.yml"
       - "scripts/benchmark-zf-specificity-models.mjs"
       - "scripts/benchmark-persikov-2014.mjs"
+      - "scripts/benchmark-zfmodels-2014.R"
+      - "scripts/export-bhakta-l6r6-for-predictors.mjs"
       - "scripts/zf-specificity-adapters/**"
       - "tests/zf-specificity-benchmark.test.mjs"
       - "tests/persikov-2015-adapter.test.mjs"
@@ -55,41 +57,30 @@ jobs:
           test -n "$EXE"
           node scripts/benchmark-persikov-2014.mjs "$EXE"
 
-  inspect-zfmodels-assets:
+  zfmodels-2014:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-node@v4
         with:
-          python-version: "3.12"
+          node-version: 22
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: "release"
+      - name: Install benchmark R packages
+        run: Rscript -e 'install.packages(c("jsonlite", "randomForest"), repos="https://cloud.r-project.org")'
       - name: Download Gupta 2014 supplementary bundle from Europe PMC
         run: |
           curl --fail --location --retry 3 \
             https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4005693/supplementaryFiles \
             --output /tmp/pmc4005693-supp.zip
-          file /tmp/pmc4005693-supp.zip
-          unzip -l /tmp/pmc4005693-supp.zip
           mkdir -p /tmp/zfmodels-supp
           unzip -q /tmp/pmc4005693-supp.zip -d /tmp/zfmodels-supp
-          find /tmp/zfmodels-supp -maxdepth 2 -type f -printf '%f\t%s bytes\n'
-      - name: Inspect training assets
+          test -s /tmp/zfmodels-supp/supp_gku132_nar-03543-h-2013-File009.txt
+      - name: Export Bhakta exact L6+R6 cohort
+        run: node scripts/export-bhakta-l6r6-for-predictors.mjs > /tmp/bhakta-l6r6.json
+      - name: Reconstruct ZFModels and benchmark activity ranking
         run: |
-          python -m pip install --quiet openpyxl
-          python - <<'PY'
-          from pathlib import Path
-          from openpyxl import load_workbook
-          root=Path('/tmp/zfmodels-supp')
-          for txt in root.rglob('*.txt'):
-              print('TXT', txt.name, txt.stat().st_size)
-              with txt.open(errors='replace') as handle:
-                  for _, line in zip(range(30), handle):
-                      print(line.rstrip())
-          for xlsx in root.rglob('*.xlsx'):
-              print('XLSX', xlsx.name, xlsx.stat().st_size)
-              wb=load_workbook(xlsx, read_only=True, data_only=True)
-              print('SHEETS', wb.sheetnames)
-              for ws in wb.worksheets:
-                  print('SHEET', ws.title, 'rows', ws.max_row, 'cols', ws.max_column)
-                  for row in ws.iter_rows(min_row=1, max_row=min(ws.max_row, 8), values_only=True):
-                      print(row)
-          PY
+          Rscript scripts/benchmark-zfmodels-2014.R \
+            /tmp/zfmodels-supp/supp_gku132_nar-03543-h-2013-File009.txt \
+            /tmp/bhakta-l6r6.json
