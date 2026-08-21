@@ -1,6 +1,6 @@
 # Zinc Zinc Finger: AI handoff and decision record
 
-Last reconciled: 2026-08-21 for Bhakta 2013 v3 implementation PR #63 plus the optional exact-genome-match addition in PR #64.
+Last reconciled: 2026-08-21 for the full-target search and complete genome-filename display in PR #78.
 
 This is the current durable specification. The pre-v3 handoff remains recoverable in Git history; `docs/AI_HANDOFF_V2_ARCHIVE.md` records that transition, and `docs/AI_HANDOFF_V3_BHAKTA_2013.md` contains the detailed v3 rationale and validation notes.
 
@@ -30,11 +30,15 @@ The site emits amino-acid sequences only as annotated GenPept and protein FASTA.
 
 ## 2. Product decisions that must survive handoff
 
-### 2.1 Candidate ranking differs by profile
+### 2.1 The submitted target DNA is the search window
 
-This is deliberate and must not be homogenized.
+The public UI no longer asks for a requested spacer center or a `Range ±bp`. The complete parsed target DNA is searched from beginning to end. Candidate location is retained as the spacer-center between-bases coordinate from the beginning of the submitted target sequence, shown compactly as `+65` or, for odd spacer lengths, for example `+64.5`.
 
-**v3 Bhakta 2013:** the user's explicit decision is that distance from the requested spacer center must **not** rank candidates. The center and `Range ±bp` define an acceptable search window. Inside that window, candidates are ranked for functional promise:
+The coordinate is informative only; it is not a ranking score.
+
+Candidate ranking differs by profile and this must not be homogenized.
+
+**v3 Bhakta 2013:** candidates are ranked for functional promise:
 
 1. higher combined B-score;
 2. fewer TSO/context warnings;
@@ -43,13 +47,11 @@ This is deliberate and must not be homogenized.
 5. spacer preference 6 bp, then 5 bp, then 7 bp;
 6. genomic start only as a deterministic final tie-break.
 
-Distance remains displayed because the user may care where the cut lies, but it is absent from the v3 comparator. `tests/bhakta-v3.test.mjs` contains a regression requiring a B20 candidate 900 bp away to outrank a B16 candidate at distance 0.
-
-**v2/v1:** retain the established distance-first order: distance to requested spacer center, then 6 > 5 >> 7 bp, then method-specific tie-breaking.
+**v2/v1:** with no arbitrary requested center, ordering is spacer preference `6 > 5 >> 7`, then method-specific evidence. v2 next favors candidates with more Gupta-completed arms; genomic start is the final deterministic tie-break. When genome-aware ordering is active, strong sequence-similarity evidence is applied according to `src/genome-ranking.ts`, but requested-center distance is never reintroduced.
 
 No ranking is a candidate-specific probability of editing.
 
-### 2.2 Browser-local sequence handling and optional genome identity check
+### 2.2 Browser-local sequence handling and optional genome similarity check
 
 All target and genome sequence handling stays in the browser. Do not add telemetry or upload sequence data.
 
@@ -63,27 +65,24 @@ All target and genome sequence handling stays in the browser. Do not add telemet
 
 Never revert to the old `replace(/[^ACGT]/g, "")` behavior in public design code because it can join bases across an unknown position.
 
-Genome input is **optional**. With no genome file, candidate generation and ranking are exactly the normal v1/v2/v3 workflow. If supplied, the public UI accepts:
+Genome input is **optional**. With no genome file, candidate generation and ranking are the normal v1/v2/v3 workflow. The public UI accepts multiple selected or drag-and-dropped files:
 
-- one plain FASTA (`.fa`, `.fasta`, `.fna`, `.fas`);
+- plain FASTA (`.fa`, `.fasta`, `.fna`, `.fas`);
 - the same FASTA formats gzip-compressed;
-- one ZIP containing multiple FASTA files, including gzip-compressed FASTA entries.
+- ZIP archives containing multiple FASTA files, including gzip-compressed FASTA entries.
 
-The feature is deliberately a sequence-identity guardrail, not a restored off-target predictor. For every returned candidate it counts genomic loci where:
+All selected filenames must remain visible without ellipsis. After ZIP parsing, each recognized FASTA entry is also displayed as `archive.zip / path/to/entry.fa` so the user can verify exactly what was read.
 
-1. the complete left physical half-site matches exactly;
-2. the complete right physical half-site matches exactly in the paired orientation;
-3. the spacer **length** matches the candidate.
+The feature is deliberately a sequence-similarity guardrail, not an off-target predictor. For every returned candidate it searches paired physical half-sites in both genomic orientations across 5-, 6-, and 7-bp spacer geometries. Spacer bases themselves are ignored because the zinc-finger arrays do not recognize the spacer sequence.
 
-Spacer bases themselves are ignored because the zinc-finger arrays do not recognize the spacer sequence. Both genomic orientations are searched. This works for the v3 18-bp half-sites and the v1/v2 9-bp half-sites.
+Current mismatch envelope:
 
-Interpretation is intentionally narrow:
+- v1/v2: each 9-bp half-site permits up to 4 mismatches, with up to 5 total;
+- v3: each 18-bp half-site permits up to 4 mismatches independently, with up to 8 total.
 
-- 0 matches: the candidate pair itself was not found in the supplied genome; do not interpret this as safety;
-- 1 match: exact paired recognition geometry is unique in the supplied genome;
-- >1 matches: the exact paired recognition geometry is repeated and should be treated as an obvious sequence-identity warning.
+Exact extra copies are strongly penalized. Non-exact similarity is secondary to v3 functional evidence; 1-2 total mismatches are a stronger secondary factor, 3-4 are weaker tie-break evidence, and >=5 total mismatches are displayed but do not affect rank. Genome-aware ordering is disabled when the intended exact target cannot be confirmed for every candidate in the supplied genome.
 
-These counts do **not** alter candidate rank, do not estimate cleavage probability, and do not imply that a unique exact pair is specific or safe. Mismatched sites, chromatin, methylation, expression, cell type and biochemical ZF specificity are outside this check. The legacy PROGNOS implementation remains nonpublic. Its limitations are retained from Fine M et al. (2014), DOI `10.1093/nar/gkt1326`, and Sander JD et al. (2013), DOI `10.1093/nar/gkt716`.
+These counts do not estimate cleavage probability and do not imply that a candidate is specific or safe. Chromatin, methylation, expression, cell type and biochemical ZF specificity remain outside this screen. The legacy PROGNOS implementation remains nonpublic. Its limitations are retained from Fine M et al. (2014), DOI `10.1093/nar/gkt1326`, and Sander JD et al. (2013), DOI `10.1093/nar/gkt716`.
 
 Plain FASTA is read as a stream in a Web Worker. ZIP handling necessarily incurs decompression memory cost; there is no artificial application file-size cap, but device/browser memory is the practical limit, especially on mobile devices.
 
@@ -95,7 +94,7 @@ Keep the public path small:
 - `02 SELECT`
 - `03 PROTEIN OUTPUT`
 
-The method is chosen from one compact dropdown. Candidate rows stay dense and selectable; sequence text remains mouse-selectable. Do not add duplicate selected-candidate summary panels when the same facts already appear in the candidate row and technical disclosure.
+The method is chosen from one compact dropdown. There are no public center/range numeric controls. Candidate rows stay dense and selectable; sequence text remains mouse-selectable. Do not add duplicate selected-candidate summary panels when the same facts already appear in the candidate row and technical disclosure.
 
 All reader-facing copy belongs in `src/i18n.ts` in both English and Japanese. No readable interface text should be below 13 px outside the fixed-grid mechanism diagram.
 
@@ -107,7 +106,7 @@ Do not turn cohort-level results into per-candidate probabilities. In particular
 - Gupta 2012: 9/11 zebrafish targets above the stated threshold is a small selectively evaluated cohort, not a general probability.
 - CoDA archive membership is not a guarantee of function.
 - B-score is a useful eligibility/ranking signal, not a calibrated indel predictor.
-- an exact-genome-match count is a deterministic sequence identity fact, not an off-target or safety score.
+- genome exact/mismatch counts are deterministic sequence facts within a finite search envelope, not an off-target or safety score.
 
 The complete ELD/KKR + F2A constructs emitted by this project combine separately supported parts. They were not tested as exact complete constructs in the Bhakta, Gupta, or CoDA primary studies.
 
@@ -132,6 +131,8 @@ top strand 5' -> 3'
 - right recognition strand = `rightTop`;
 - each 18-mer is six target triplets;
 - C2H2 fingers bind antiparallel, so protein N-to-C finger order is the reverse of 5'-to-3' target-triplet order.
+
+Every footprint that fits wholly inside the submitted target DNA is eligible for archive evaluation.
 
 ### 3.2 Module archive and framework
 
@@ -196,7 +197,7 @@ v3 uses the Bhakta 2013 mapping:
 
 The broader 6 > 5 >> 7 preference also draws on Shimizu Y et al. (2009), DOI `10.1016/j.bmcl.2009.02.109`; Händel EM et al. (2009), DOI `10.1038/mt.2008.233`; and Chen S et al. (2013), DOI `10.1093/nar/gks1356`.
 
-For v3, spacer is a late tie-break after B-score/context evidence. For v2/v1, spacer is a tie-break after requested-center distance.
+For v3, spacer is a late tie-break after B-score/context evidence. For v2/v1, spacer preference is the first non-genome public ordering criterion because there is no requested-center distance.
 
 ## 4. v2 Gupta 2012 + CoDA fallback
 
@@ -211,6 +212,8 @@ Primary sources:
 For a 9-mer, `buildGuptaArray()` tests intact 2F placement as F2-F3 or F1-F2 and fills only the remaining position with the corresponding Zhu position-specific 1F module. Do not split a Gupta 2F unit or substitute one helix.
 
 If a complete Gupta 3F cannot be made, v2 replaces the entire monomer with an exact CoDA 3F. Mixing Gupta and CoDA fingers inside one 3F is prohibited.
+
+Without genome-aware ordering, v2 ranks by spacer preference `6 > 5 >> 7`, then number of Gupta-completed arms, then genomic start.
 
 ## 5. v1 CoDA
 
@@ -228,6 +231,8 @@ C2H2 orientation example:
 recognition DNA 5'-GTG-GGG-GAG-3'
 protein N->C: F1=GAG, F2=GGG, F3=GTG
 ```
+
+Without genome-aware ordering, v1 ranks by spacer preference `6 > 5 >> 7`, then genomic start.
 
 ## 6. Nuclease and single-ORF output
 
@@ -260,6 +265,8 @@ Protein features must account for variable v3 array length. v3 output has ZF1-ZF
 
 `tests/bhakta-v3.test.mjs` additionally checks the current production path, eligibility cutoff, distance-free v3 rank, all 16 alternatives, complete terminal sequences, and ZF1-ZF12 output coordinates.
 
+`tests/full-target-search.test.mjs` checks that the public helper searches the complete submitted DNA, that center/range controls are absent, that legacy v1/v2 ranking no longer uses requested-center distance, and that CSV/candidate rows retain the absolute spacer-center coordinate instead.
+
 ### Gupta / CoDA
 
 Retain the exhaustive Gupta and CoDA archive tests. v3 must not weaken v1/v2 invariants.
@@ -269,18 +276,21 @@ Retain the exhaustive Gupta and CoDA archive tests. v3 must not weaken v1/v2 inv
 - all 4^9 recognition 9-mers are exhaustively checked against exact CoDA assembly rules.
 - ambiguous-base coordinates remain preserved.
 
-### Exact genome matching
+### Genome similarity
 
-`tests/genome-exact-match.test.mjs` checks that the optional genome feature:
+The genome tests check that the optional feature:
 
-- ignores spacer bases while requiring the candidate spacer length;
+- ignores spacer bases while searching 5/6/7-bp spacer lengths;
 - finds both genomic orientations;
 - counts repeated physical loci;
 - parses multiline/multirecord FASTA without joining contigs;
 - does not let ambiguous genome bases create an exact match;
-- supports the longer v3 Bhakta half-sites as well as v1/v2 9-bp half-sites.
+- supports the longer v3 Bhakta half-sites as well as v1/v2 9-bp half-sites;
+- retains the profile-specific mismatch envelope;
+- accepts multiple selected files and drag/drop;
+- lists every selected file and every FASTA entry recognized inside ZIP files without truncation.
 
-This validation establishes sequence-counting behavior only. It does not validate off-target cleavage prediction.
+This validation establishes sequence-search/counting behavior only. It does not validate off-target cleavage prediction.
 
 ## 8. Repository map
 
@@ -288,7 +298,7 @@ Current public-path files:
 
 - `src/App.tsx` — public workflow and profile selector.
 - `src/i18n.ts` — all public English/Japanese copy.
-- `src/zfn-design-engine.ts` — shared profile scanner and profile-specific ordering.
+- `src/zfn-design-engine.ts` — shared profile scanner, full-target public helper, and profile-specific ordering.
 - `src/zfn-array.ts` — variable-length common ZF-array type.
 - `src/bhakta-module-archive.ts` — current v3 array builder.
 - `src/module-archive.ts` — 49-entry Barbas/Bhakta one-finger scientific archive retained from the earlier research implementation.
@@ -296,11 +306,11 @@ Current public-path files:
 - `src/zhu-module-archive.ts` — position-specific Zhu 1F archive.
 - `src/coda-module-archive.ts` — exact CoDA builder.
 - `src/zfn-construct-output.ts` — current variable-length protein-only exporter.
-- `src/genome-exact-match.ts` — deterministic exact paired-half-site counter and FASTA record parser.
-- `src/genome-exact-match.worker.ts` — browser-local FASTA/FASTA.gz/ZIP reader and background genome scan.
+- `src/genome-exact-match.ts` — paired-half-site similarity counter and FASTA record parser.
+- `src/genome-exact-match.worker.ts` — browser-local FASTA/FASTA.gz/ZIP reader, filename inventory and background genome scan.
 - `src/ZfnOverviewDiagram.tsx` — conventional 3F paired-ZFN teaching diagram; copy explicitly notes that v3 extends each monomer to 6F.
 
-Scientific/legacy analysis code remains because it preserves validation history. In particular, `src/off-target-engine.ts` and `src/off-target.worker.ts` remain legacy PROGNOS research code and are not the public exact-match feature. Do not delete legacy code merely because the current public UI does not render it.
+Scientific/legacy analysis code remains because it preserves validation history. In particular, `src/off-target-engine.ts` and `src/off-target.worker.ts` remain legacy PROGNOS research code and are not the public genome-similarity feature. Do not delete legacy code merely because the current public UI does not render it.
 
 ## 9. Acceptance commands
 
@@ -339,6 +349,6 @@ A dependency audit warning is not the same as a scientific-design failure, but d
 2. B-score is not a calibrated activity model. The current v3 rank is evidence-informed, not probabilistic.
 3. Historical TSO and module recommendation fields are secondary tie-break evidence. If future validation shows they do not improve independent performance, remove them from ranking rather than retaining them for tradition.
 4. The exact Bhakta-6F/ELD/F2A/KKR complete construct needs experimental validation in the intended host.
-5. The optional genome identity check does not enumerate mismatched binding sites and cannot establish specificity or safety; experimentally important off-targets can therefore be absent from its report.
+5. The optional genome similarity screen is finite and sequence-only. It cannot establish specificity or safety, and experimentally important off-targets may fall outside its mismatch envelope or depend on biology not represented in sequence matching.
 6. FokI variants such as the attenuated Miller 2019 designs remain a separate future architecture decision and should not be silently substituted into v3.
 7. FTO remains outside the scope of software logic and requires jurisdiction/use-specific review.
