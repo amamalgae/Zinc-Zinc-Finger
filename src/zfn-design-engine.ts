@@ -113,11 +113,11 @@ export function generateZfnCandidates(
   desiredCut: number,
   maxDistance = 1000,
   profile: DesignProfile = "gupta-coda",
-  limit = 30,
+  limit?: number,
 ): ZfnCandidate[] {
-  if (!Number.isFinite(desiredCut) || !Number.isFinite(maxDistance) || !Number.isFinite(limit)) return [];
+  if (!Number.isFinite(desiredCut) || !Number.isFinite(maxDistance)) return [];
   const searchDistance = Math.max(0, maxDistance);
-  const resultLimit = Math.max(0, Math.floor(limit));
+  const resultLimit = limit === undefined ? null : Math.max(0, Math.floor(limit));
   if (resultLimit === 0) return [];
 
   const halfSiteLength = profile === "bhakta-2013" ? 18 : 9;
@@ -173,7 +173,8 @@ export function generateZfnCandidates(
       });
     }
   }
-  return candidates.sort(compareZfnCandidates).slice(0, resultLimit);
+  const sorted = candidates.sort(compareZfnCandidates);
+  return resultLimit === null ? sorted : sorted.slice(0, resultLimit);
 }
 
 export function bhaktaAlternativesForCandidate(candidate: ZfnCandidate): BhaktaAlternative[] {
