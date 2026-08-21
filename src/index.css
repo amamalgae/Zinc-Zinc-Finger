@@ -180,6 +180,14 @@ textarea { width: 100%; height: 138px; margin-top: 8px; padding: 14px; resize: v
 textarea:focus, input:focus, select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(23,79,61,.09); outline: none; }
 .input-meta { margin-top: 6px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 10px; color: var(--muted); font-size: 9px; }
 .warning { color: #a64c27 !important; }
+.method-selector { margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border: 0; }
+.method-selector legend { margin-bottom: 7px; color: var(--ink); font-size: 9px; font-weight: 900; }
+.method-selector label { min-width: 0; padding: 10px; display: flex; align-items: flex-start; gap: 8px; border: 1px solid #cbd5cd; border-radius: 10px; background: #fff; cursor: pointer; }
+.method-selector label.active { border-color: var(--green); background: var(--green-soft); box-shadow: inset 3px 0 0 var(--green); }
+.method-selector input { margin: 2px 0 0; accent-color: var(--green); }
+.method-selector label > span { min-width: 0; display: grid; gap: 3px; }
+.method-selector strong { color: var(--ink); font-size: 9px; line-height: 1.4; }
+.method-selector small { color: var(--muted); font-size: 7px; line-height: 1.45; }
 .simple-controls { margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .simple-controls label { display: grid; gap: 5px; color: var(--muted); font-size: 9px; }
 .simple-controls label > span { color: var(--ink); font-weight: 800; }
@@ -284,7 +292,7 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .donor-card li small { color: var(--muted); font-size: 7px; line-height: 1.5; }
 
 .evidence { width: min(1180px, calc(100% - 40px)); margin: 18px auto 0; padding: 34px; }
-.reference-grid { margin-top: 22px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.reference-grid { margin-top: 22px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 .reference-grid article { padding: 16px; border-radius: 13px; background: #f2f5f0; }
 .reference-grid article > span { color: var(--green); font-size: 7px; font-weight: 900; letter-spacing: .12em; }
 .reference-grid h3 { margin: 8px 0 7px; font-size: 14px; }
@@ -347,7 +355,7 @@ footer p { margin: 0; }
   .mechanism-footer { align-items: stretch; flex-direction: column; }
   .mechanism-footer a { width: 100%; }
   .input-panel, .results-panel, .evidence { padding: 19px; border-radius: 18px; }
-  .simple-controls, .donor-card ul, .reference-grid { grid-template-columns: 1fr; }
+  .method-selector, .simple-controls, .donor-card ul, .reference-grid { grid-template-columns: 1fr; }
   .candidate { grid-template-columns: 24px minmax(0, 1fr); }
   .candidate-summary { grid-column: 2; text-align: left; }
   .candidate-action { grid-column: 2; text-align: left; }

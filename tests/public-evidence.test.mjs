@@ -26,16 +26,19 @@ test("public evidence excludes host-specific F2A paper and retains Lei paired-ZF
   assert.match(contents, /10\.1038\/mt\.2011\.12/);
 });
 
-test("landing page leads with the CoDA-based value proposition and qualifies the 50% cohort result", () => {
+test("landing page leads with Gupta-first design and qualifies the 9-of-11 cohort", () => {
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
 
-  assert.match(app, /SANDER 2011 · CoDA-based ZFN Designer/);
+  assert.match(app, /GUPTA 2012 · 2F MODULE ZFN DESIGNER/);
   assert.match(app, /<h1>ZFNペアを設計<\/h1>/);
   assert.doesNotMatch(app, /標的DNAから、|ZFNペア候補を設計。/);
-  assert.match(app, /CoDAで構成可能な左右ZFNペアを検索し、アミノ酸配列を出力します。/);
+  assert.match(app, /Gupta 2012の2F archiveを優先して左右ZFNペアを検索し、アミノ酸配列を出力します。/);
+  assert.match(app, /構成できない片側だけCoDAへ戻せます/);
+  assert.match(app, /Design v2 · Gupta \+ CoDA fallback/);
+  assert.match(app, /Design v1 · CoDA only/);
   assert.doesNotMatch(app, /実験に使う完全アミノ酸配列まで出力します。/);
   assert.match(app, /配列を入力して設計する/);
-  assert.match(app, /38標的中19標的で/);
+  assert.match(app, /11標的中9標的で/);
   assert.match(app, /各候補の成功確率ではありません/);
   assert.doesNotMatch(app, /3つのfingerで/i);
 });
@@ -59,13 +62,13 @@ test("candidate ranking shows the compact spacer order and keeps its rationale i
 
 test("protein output offers annotated GenPept without inventing a DNA sequence", () => {
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
-  const exporter = readFileSync(new URL("../src/coda-construct-output.ts", import.meta.url), "utf8");
+  const exporter = readFileSync(new URL("../src/zfn-construct-output.ts", import.meta.url), "utf8");
 
   assert.match(app, /Download \(GenPept: featureあり\)/);
   assert.match(app, /Download \(fasta\)/);
-  assert.match(app, /codaResultFilename\(selectedRank, "gp"\)/);
-  assert.match(app, /codaResultFilename\(selectedRank, "fasta"\)/);
-  assert.match(app, /ZF1–ZF6、FokI ELD\/KKR、F2Aをfeature/);
+  assert.match(app, /resultFilename\(selectedRank, "gp"\)/);
+  assert.match(app, /resultFilename\(selectedRank, "fasta"\)/);
+  assert.match(app, /各fingerの設計法、module ID、認識helixを記録/);
   assert.match(app, /<div className="protein-sequence"[\s\S]*?AMINO ACID SEQUENCE[\s\S]*?\{construct\.protein\}[\s\S]*?<\/div>/);
   assert.doesNotMatch(app, /<details className="sequence-details compact"/);
   assert.doesNotMatch(app, /processedLeftProtein|processedRightProtein|Processed left|Processed right/);
@@ -148,8 +151,8 @@ test("protein output retains its technical disclosure and keeps evidence separat
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
   const panel = app.slice(app.indexOf('<section className="protein-output-section">'), app.indexOf('<section className="evidence">'));
   const evidence = app.slice(app.indexOf('<section className="evidence">'));
-  assert.doesNotMatch(panel, /CODA_ZFN_DONORS/);
-  assert.match(evidence, /CODA_ZFN_DONORS/);
+  assert.doesNotMatch(panel, /ZFN_DONORS/);
+  assert.match(evidence, /ZFN_DONORS/);
   assert.ok(panel.indexOf("PROTEIN OUTPUT") < panel.indexOf('<details className="technical-details">'));
   assert.ok(panel.indexOf("<ArchitectureDiagram />") > panel.indexOf('<details className="technical-details">'));
   assert.match(app, /<summary>finger構成と単一ORFの構成を見る<\/summary>/);

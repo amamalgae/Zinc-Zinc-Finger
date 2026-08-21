@@ -1,6 +1,7 @@
 import archiveData from "../data/coda-2011-units.json" with { type: "json" };
+import type { FingerPosition, ZfnArray, ZfnFinger } from "./zfn-array.ts";
 
-export type FingerPosition = 1 | 2 | 3;
+export type { FingerPosition } from "./zfn-array.ts";
 
 type CodaUnitKind = "f1" | "f3";
 
@@ -14,19 +15,15 @@ type CodaUnitRow = {
 
 type F2ContextRow = { target: string; helix: string };
 
-export type CodaFinger = {
-  position: FingerPosition;
-  triplet: string;
-  helix: string;
+export type CodaFinger = ZfnFinger & {
   source: "CoDA F1 unit" | "fixed CoDA F2" | "CoDA F3 unit";
   f2Context: string;
 };
 
-export type CodaArray = {
-  recognition: string;
+export type CodaArray = ZfnArray & {
+  method: "coda-2011";
   f2Context: string;
   fingers: readonly [CodaFinger, CodaFinger, CodaFinger];
-  protein: string;
 };
 
 const units = archiveData.units as CodaUnitRow[];
@@ -116,14 +113,18 @@ export function buildCodaArray(recognition: string): CodaArray | null {
   if (!f1 || !f3) return null;
 
   const fingers: readonly [CodaFinger, CodaFinger, CodaFinger] = [
-    { position: 1, triplet: f1Target, helix: f1.helix, source: "CoDA F1 unit", f2Context: f2Target },
-    { position: 2, triplet: f2Target, helix: f2Helix, source: "fixed CoDA F2", f2Context: f2Target },
-    { position: 3, triplet: f3Target, helix: f3.helix, source: "CoDA F3 unit", f2Context: f2Target },
+    { position: 1, triplet: f1Target, helix: f1.helix, source: "CoDA F1 unit", f2Context: f2Target, protein: codaFingerSequence(1, f1.helix) },
+    { position: 2, triplet: f2Target, helix: f2Helix, source: "fixed CoDA F2", f2Context: f2Target, protein: codaFingerSequence(2, f2Helix) },
+    { position: 3, triplet: f3Target, helix: f3.helix, source: "CoDA F3 unit", f2Context: f2Target, protein: codaFingerSequence(3, f3.helix) },
   ];
   return {
     recognition,
+    method: "coda-2011",
+    methodLabel: "CoDA 2011",
+    assembly: `CoDA shared F2=${f2Target}`,
     f2Context: f2Target,
     fingers,
+    linkers: [CODA_FINGER_LINKER, CODA_FINGER_LINKER],
     protein: codaArraySequence(fingers),
   };
 }

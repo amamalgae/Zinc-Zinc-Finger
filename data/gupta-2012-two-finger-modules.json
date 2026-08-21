@@ -1,0 +1,1146 @@
+{
+  "metadata": {
+    "citation": "Gupta et al. (2012)",
+    "doi": "10.1038/nmeth.1994",
+    "source": "Supplementary Table 2: Implementation archive",
+    "sourceFile": "NIHMS397909-supplement-3.xls",
+    "sourceMd5": "1998b2a86b539c624bbb5ee944875530",
+    "scoring": "The workbook does not assign good/fair/poor to every rationally derived archive row. This transcription therefore preserves availability and provenance without imputing a per-row score."
+  },
+  "targets": [
+    {
+      "id": "2FM-1",
+      "f1Helix": "RSDTLTQ",
+      "f2Helix": "QRGNLTR",
+      "origin": "Selected",
+      "target": "GAAACG"
+    },
+    {
+      "id": "2FM-1",
+      "f1Helix": "RSDTLTQ",
+      "f2Helix": "QRGNLTR",
+      "origin": "Selected",
+      "target": "GAAATG"
+    },
+    {
+      "id": "2FM-1-QRG",
+      "f1Helix": "QRGTLTQ",
+      "f2Helix": "QRGNLTR",
+      "origin": "Designed",
+      "target": "GAAACA"
+    },
+    {
+      "id": "2FM-1-QRG",
+      "f1Helix": "QRGTLTQ",
+      "f2Helix": "QRGNLTR",
+      "origin": "Designed",
+      "target": "GAAATA"
+    },
+    {
+      "id": "2FM-2",
+      "f1Helix": "RSDTLVE",
+      "f2Helix": "QRGNLTR",
+      "origin": "Selected",
+      "target": "GAACCG"
+    },
+    {
+      "id": "2FM-2",
+      "f1Helix": "RSDTLVE",
+      "f2Helix": "QRGNLTR",
+      "origin": "Selected",
+      "target": "GAACTG"
+    },
+    {
+      "id": "2FM-2-QRG",
+      "f1Helix": "QRGTLVE",
+      "f2Helix": "QRGNLTR",
+      "origin": "Designed",
+      "target": "GAACCA"
+    },
+    {
+      "id": "2FM-2-QRG",
+      "f1Helix": "QRGTLVE",
+      "f2Helix": "QRGNLTR",
+      "origin": "Designed",
+      "target": "GAACTA"
+    },
+    {
+      "id": "2FM-3",
+      "f1Helix": "RSDTLQR",
+      "f2Helix": "QKSNLTR",
+      "origin": "Selected",
+      "target": "GAAGCG"
+    },
+    {
+      "id": "2FM-3",
+      "f1Helix": "RSDTLQR",
+      "f2Helix": "QKSNLTR",
+      "origin": "Selected",
+      "target": "GAAGTG"
+    },
+    {
+      "id": "2FM-3-QRG",
+      "f1Helix": "QRGTLQR",
+      "f2Helix": "QKSNLTR",
+      "origin": "Selected",
+      "target": "GAAGCA"
+    },
+    {
+      "id": "2FM-3-QRG",
+      "f1Helix": "QRGTLQR",
+      "f2Helix": "QKSNLTR",
+      "origin": "Selected",
+      "target": "GAAGTA"
+    },
+    {
+      "id": "2FM-4",
+      "f1Helix": "RSDTLKG",
+      "f2Helix": "QRCNLTR",
+      "origin": "Rationally Designed",
+      "target": "GAATCG"
+    },
+    {
+      "id": "2FM-4",
+      "f1Helix": "RSDTLKG",
+      "f2Helix": "QRCNLTR",
+      "origin": "Rationally Designed",
+      "target": "GAATTG"
+    },
+    {
+      "id": "2FM-4",
+      "f1Helix": "RSDTLKG",
+      "f2Helix": "QRCNLTR",
+      "origin": "Rationally Designed",
+      "target": "GAATAG"
+    },
+    {
+      "id": "2FM-4-QRG",
+      "f1Helix": "QRGTLKG",
+      "f2Helix": "QRCNLTR",
+      "origin": "Rationally Designed",
+      "target": "GAATCA"
+    },
+    {
+      "id": "2FM-4-QRG",
+      "f1Helix": "QRGTLKG",
+      "f2Helix": "QRCNLTR",
+      "origin": "Rationally Designed",
+      "target": "GAATTA"
+    },
+    {
+      "id": "2FM-4-QRG",
+      "f1Helix": "QRGTLKG",
+      "f2Helix": "QRCNLTR",
+      "origin": "Rationally Designed",
+      "target": "GAATAA"
+    },
+    {
+      "id": "2FM-5",
+      "f1Helix": "RSDTLKQ",
+      "f2Helix": "DKGNLTR",
+      "origin": "Rationally Designed",
+      "target": "GACACG"
+    },
+    {
+      "id": "2FM-5",
+      "f1Helix": "RSDTLKQ",
+      "f2Helix": "DKGNLTR",
+      "origin": "Rationally Designed",
+      "target": "GACATG"
+    },
+    {
+      "id": "2FM-5-QRG",
+      "f1Helix": "QRGTLKQ",
+      "f2Helix": "DKGNLTR",
+      "origin": "Rationally Designed",
+      "target": "GACACA"
+    },
+    {
+      "id": "2FM-5-QRG",
+      "f1Helix": "QRGTLKQ",
+      "f2Helix": "DKGNLTR",
+      "origin": "Rationally Designed",
+      "target": "GACATA"
+    },
+    {
+      "id": "2FM-6",
+      "f1Helix": "RSDTLMV",
+      "f2Helix": "DRSNLTR",
+      "origin": "Rationally Designed",
+      "target": "GACCCG"
+    },
+    {
+      "id": "2FM-6",
+      "f1Helix": "RSDTLMV",
+      "f2Helix": "DRSNLTR",
+      "origin": "Rationally Designed",
+      "target": "GACCTG"
+    },
+    {
+      "id": "2FM-6-QRG",
+      "f1Helix": "QRGTLMV",
+      "f2Helix": "DRSNLTR",
+      "origin": "Rationally Designed",
+      "target": "GACCCA"
+    },
+    {
+      "id": "2FM-6-QRG",
+      "f1Helix": "QRGTLMV",
+      "f2Helix": "DRSNLTR",
+      "origin": "Rationally Designed",
+      "target": "GACCTA"
+    },
+    {
+      "id": "2FM-7",
+      "f1Helix": "RSDTLER",
+      "f2Helix": "DRGNLTR",
+      "origin": "Selected",
+      "target": "GACGCG"
+    },
+    {
+      "id": "2FM-7",
+      "f1Helix": "RSDTLER",
+      "f2Helix": "DRGNLTR",
+      "origin": "Selected",
+      "target": "GACGTG"
+    },
+    {
+      "id": "2FM-7-QRG",
+      "f1Helix": "QRGTLER",
+      "f2Helix": "DRGNLTR",
+      "origin": "Selected",
+      "target": "GACGCA"
+    },
+    {
+      "id": "2FM-7-QRG",
+      "f1Helix": "QRGTLER",
+      "f2Helix": "DRGNLTR",
+      "origin": "Selected",
+      "target": "GACGTA"
+    },
+    {
+      "id": "2FM-8",
+      "f1Helix": "RSDTLKG",
+      "f2Helix": "DRCNLTR",
+      "origin": "Selected",
+      "target": "GACTTG"
+    },
+    {
+      "id": "2FM-8",
+      "f1Helix": "RSDTLKG",
+      "f2Helix": "DRCNLTR",
+      "origin": "Selected",
+      "target": "GACTCG"
+    },
+    {
+      "id": "2FM-8-QRG",
+      "f1Helix": "QRGTLKG",
+      "f2Helix": "DRCNLTR",
+      "origin": "Selected",
+      "target": "GACTTA"
+    },
+    {
+      "id": "2FM-8-QRG",
+      "f1Helix": "QRGTLKG",
+      "f2Helix": "DRCNLTR",
+      "origin": "Selected",
+      "target": "GACTCA"
+    },
+    {
+      "id": "2FM-9",
+      "f1Helix": "RSDTLVE",
+      "f2Helix": "RKRNLTR",
+      "origin": "Rationally Designed",
+      "target": "GAGACG"
+    },
+    {
+      "id": "2FM-9",
+      "f1Helix": "RSDTLVE",
+      "f2Helix": "RKRNLTR",
+      "origin": "Rationally Designed",
+      "target": "GAGATG"
+    },
+    {
+      "id": "2FM-9-QRG",
+      "f1Helix": "QRGTLVE",
+      "f2Helix": "RKRNLTR",
+      "origin": "Rationally Designed",
+      "target": "GAGACA"
+    },
+    {
+      "id": "2FM-9-QRG",
+      "f1Helix": "QRGTLVE",
+      "f2Helix": "RKRNLTR",
+      "origin": "Rationally Designed",
+      "target": "GAGATA"
+    },
+    {
+      "id": "2FM-10",
+      "f1Helix": "RSDTLKE",
+      "f2Helix": "RSSNLTR",
+      "origin": "Selected",
+      "target": "GAGCCG"
+    },
+    {
+      "id": "2FM-10",
+      "f1Helix": "RSDTLKE",
+      "f2Helix": "RSSNLTR",
+      "origin": "Selected",
+      "target": "GAGCTG"
+    },
+    {
+      "id": "2FM-10-QRG",
+      "f1Helix": "QRGTLKE",
+      "f2Helix": "RSSNLTR",
+      "origin": "Selected",
+      "target": "GAGCCA"
+    },
+    {
+      "id": "2FM-10-QRG",
+      "f1Helix": "QRGTLKE",
+      "f2Helix": "RSSNLTR",
+      "origin": "Selected",
+      "target": "GAGCTA"
+    },
+    {
+      "id": "2FM-11",
+      "f1Helix": "RSDTLIR",
+      "f2Helix": "RAENLTR",
+      "origin": "Selected",
+      "target": "GAGGCG"
+    },
+    {
+      "id": "2FM-11",
+      "f1Helix": "RSDTLIR",
+      "f2Helix": "RAENLTR",
+      "origin": "Selected",
+      "target": "GAGGTG"
+    },
+    {
+      "id": "2FM-11-QRG",
+      "f1Helix": "QRGTLIR",
+      "f2Helix": "RAENLTR",
+      "origin": "Selected",
+      "target": "GAGGCA"
+    },
+    {
+      "id": "2FM-11-QRG",
+      "f1Helix": "QRGTLIR",
+      "f2Helix": "RAENLTR",
+      "origin": "Selected",
+      "target": "GAGGTA"
+    },
+    {
+      "id": "2FM-12",
+      "f1Helix": "RSDTLKE",
+      "f2Helix": "KGCNLTR",
+      "origin": "Selected",
+      "target": "GAGTCG"
+    },
+    {
+      "id": "2FM-12",
+      "f1Helix": "RSDTLKE",
+      "f2Helix": "KGCNLTR",
+      "origin": "Selected",
+      "target": "GAGTTG"
+    },
+    {
+      "id": "2FM-12-QRG",
+      "f1Helix": "QRGTLKE",
+      "f2Helix": "KGCNLTR",
+      "origin": "Selected",
+      "target": "GAGTCA"
+    },
+    {
+      "id": "2FM-12-QRG",
+      "f1Helix": "QRGTLKE",
+      "f2Helix": "KGCNLTR",
+      "origin": "Selected",
+      "target": "GAGTTA"
+    },
+    {
+      "id": "2FM-13",
+      "f1Helix": "RSDTLKQ",
+      "f2Helix": "AAGNLTR",
+      "origin": "Selected",
+      "target": "GATACG"
+    },
+    {
+      "id": "2FM-13",
+      "f1Helix": "RSDTLKQ",
+      "f2Helix": "AAGNLTR",
+      "origin": "Selected",
+      "target": "GATATG"
+    },
+    {
+      "id": "2FM-13-QRG",
+      "f1Helix": "QRGTLKQ",
+      "f2Helix": "AAGNLTR",
+      "origin": "Selected",
+      "target": "GATACA"
+    },
+    {
+      "id": "2FM-13-QRG",
+      "f1Helix": "QRGTLKQ",
+      "f2Helix": "AAGNLTR",
+      "origin": "Selected",
+      "target": "GATATA"
+    },
+    {
+      "id": "2FM-14",
+      "f1Helix": "RSDTLLE",
+      "f2Helix": "LKGHLTR",
+      "origin": "Rationally Designed",
+      "target": "GATCCG"
+    },
+    {
+      "id": "2FM-14",
+      "f1Helix": "RSDTLLE",
+      "f2Helix": "LKGHLTR",
+      "origin": "Rationally Designed",
+      "target": "GATCTG"
+    },
+    {
+      "id": "2FM-14-QRG",
+      "f1Helix": "QRGTLLE",
+      "f2Helix": "LKGHLTR",
+      "origin": "Rationally Designed",
+      "target": "GATCCA"
+    },
+    {
+      "id": "2FM-14-QRG",
+      "f1Helix": "QRGTLLE",
+      "f2Helix": "LKGHLTR",
+      "origin": "Rationally Designed",
+      "target": "GATCTA"
+    },
+    {
+      "id": "2FM-15",
+      "f1Helix": "RSDTLMR",
+      "f2Helix": "IRSNLTR",
+      "origin": "Selected",
+      "target": "GATGCG"
+    },
+    {
+      "id": "2FM-15",
+      "f1Helix": "RSDTLMR",
+      "f2Helix": "IRSNLTR",
+      "origin": "Selected",
+      "target": "GATGTG"
+    },
+    {
+      "id": "2FM-15-QRG",
+      "f1Helix": "QRGTLMR",
+      "f2Helix": "IRSNLTR",
+      "origin": "Selected",
+      "target": "GATGCA"
+    },
+    {
+      "id": "2FM-15-QRG",
+      "f1Helix": "QRGTLMR",
+      "f2Helix": "IRSNLTR",
+      "origin": "Selected",
+      "target": "GATGTA"
+    },
+    {
+      "id": "2FM-16",
+      "f1Helix": "RSDTLRT",
+      "f2Helix": "TKSNLTR",
+      "origin": "Selected",
+      "target": "GATTCG"
+    },
+    {
+      "id": "2FM-16",
+      "f1Helix": "RSDTLRT",
+      "f2Helix": "TKSNLTR",
+      "origin": "Selected",
+      "target": "GATTTG"
+    },
+    {
+      "id": "2FM-16-QRG",
+      "f1Helix": "QRGTLRT",
+      "f2Helix": "TKSNLTR",
+      "origin": "Selected",
+      "target": "GATTCA"
+    },
+    {
+      "id": "2FM-17",
+      "f1Helix": "RSDTLTQ",
+      "f2Helix": "QRGHLTR",
+      "origin": "Selected",
+      "target": "GGAACG"
+    },
+    {
+      "id": "2FM-17",
+      "f1Helix": "RSDTLTQ",
+      "f2Helix": "QRGHLTR",
+      "origin": "Selected",
+      "target": "GGAATG"
+    },
+    {
+      "id": "2FM-17-QRG",
+      "f1Helix": "QRGTLTQ",
+      "f2Helix": "QRGHLTR",
+      "origin": "Selected",
+      "target": "GGAACA"
+    },
+    {
+      "id": "2FM-17-QRG",
+      "f1Helix": "QRGTLTQ",
+      "f2Helix": "QRGHLTR",
+      "origin": "Selected",
+      "target": "GGAATA"
+    },
+    {
+      "id": "2FM-18",
+      "f1Helix": "RSDTLRE",
+      "f2Helix": "QRGHLTR",
+      "origin": "Selected",
+      "target": "GGACCG"
+    },
+    {
+      "id": "2FM-18",
+      "f1Helix": "RSDTLRE",
+      "f2Helix": "QRGHLTR",
+      "origin": "Selected",
+      "target": "GGACTG"
+    },
+    {
+      "id": "2FM-18-QRG",
+      "f1Helix": "QRGTLRE",
+      "f2Helix": "QRGHLTR",
+      "origin": "Selected",
+      "target": "GGACCA"
+    },
+    {
+      "id": "2FM-18-QRG",
+      "f1Helix": "QRGTLRE",
+      "f2Helix": "QRGHLTR",
+      "origin": "Selected",
+      "target": "GGACTA"
+    },
+    {
+      "id": "2FM-19",
+      "f1Helix": "RSDTLVR",
+      "f2Helix": "QSGHLTR",
+      "origin": "Selected",
+      "target": "GGAGCG"
+    },
+    {
+      "id": "2FM-19",
+      "f1Helix": "RSDTLVR",
+      "f2Helix": "QSGHLTR",
+      "origin": "Selected",
+      "target": "GGAGTG"
+    },
+    {
+      "id": "2FM-19-QRG",
+      "f1Helix": "QRGTLVR",
+      "f2Helix": "QSGHLTR",
+      "origin": "Selected",
+      "target": "GGAGCA"
+    },
+    {
+      "id": "2FM-19-QRG",
+      "f1Helix": "QRGTLVR",
+      "f2Helix": "QSGHLTR",
+      "origin": "Selected",
+      "target": "GGAGTA"
+    },
+    {
+      "id": "2FM-20",
+      "f1Helix": "RSDTLKG",
+      "f2Helix": "QRCHLTR",
+      "origin": "Rationally Designed",
+      "target": "GGATCG"
+    },
+    {
+      "id": "2FM-20",
+      "f1Helix": "RSDTLKG",
+      "f2Helix": "QRCHLTR",
+      "origin": "Rationally Designed",
+      "target": "GGATTG"
+    },
+    {
+      "id": "2FM-20",
+      "f1Helix": "RSDTLKG",
+      "f2Helix": "QRCHLTR",
+      "origin": "Rationally Designed",
+      "target": "GGATAG"
+    },
+    {
+      "id": "2FM-20-QRG",
+      "f1Helix": "QRGTLKG",
+      "f2Helix": "QRCHLTR",
+      "origin": "Rationally Designed",
+      "target": "GGATCA"
+    },
+    {
+      "id": "2FM-20-QRG",
+      "f1Helix": "QRGTLKG",
+      "f2Helix": "QRCHLTR",
+      "origin": "Rationally Designed",
+      "target": "GGATTA"
+    },
+    {
+      "id": "2FM-20-QRG",
+      "f1Helix": "QRGTLKG",
+      "f2Helix": "QRCHLTR",
+      "origin": "Rationally Designed",
+      "target": "GGATAA"
+    },
+    {
+      "id": "2FM-1014",
+      "f1Helix": "RSDTLKE",
+      "f2Helix": "ARRNLTR",
+      "origin": "Selected",
+      "target": "GGCATG"
+    },
+    {
+      "id": "2FM-1014",
+      "f1Helix": "RSDTLKE",
+      "f2Helix": "ARRNLTR",
+      "origin": "Selected",
+      "target": "GGCACG"
+    },
+    {
+      "id": "2FM-1014-QRG",
+      "f1Helix": "QRGTLKE",
+      "f2Helix": "ARRNLTR",
+      "origin": "Selected",
+      "target": "GGCATA"
+    },
+    {
+      "id": "2FM-1014-QRG",
+      "f1Helix": "QRGTLKE",
+      "f2Helix": "ARRNLTR",
+      "origin": "Selected",
+      "target": "GGCACA"
+    },
+    {
+      "id": "2FM-21",
+      "f1Helix": "RSDTLMV",
+      "f2Helix": "DRSHLTR",
+      "origin": "Rationally Designed",
+      "target": "GGCCCG"
+    },
+    {
+      "id": "2FM-21",
+      "f1Helix": "RSDTLMV",
+      "f2Helix": "DRSHLTR",
+      "origin": "Rationally Designed",
+      "target": "GGCCTG"
+    },
+    {
+      "id": "2FM-21-QRG",
+      "f1Helix": "QRGTLMV",
+      "f2Helix": "DRSHLTR",
+      "origin": "Rationally Designed",
+      "target": "GGCCCA"
+    },
+    {
+      "id": "2FM-21-QRG",
+      "f1Helix": "QRGTLMV",
+      "f2Helix": "DRSHLTR",
+      "origin": "Rationally Designed",
+      "target": "GGCCTA"
+    },
+    {
+      "id": "2FM-23",
+      "f1Helix": "RSDTLLR",
+      "f2Helix": "ESGHLTR",
+      "origin": "Selected",
+      "target": "GGCGCG"
+    },
+    {
+      "id": "2FM-23",
+      "f1Helix": "RSDTLLR",
+      "f2Helix": "ESGHLTR",
+      "origin": "Selected",
+      "target": "GGCGTG"
+    },
+    {
+      "id": "2FM-23-QRG",
+      "f1Helix": "QRGTLLR",
+      "f2Helix": "ESGHLTR",
+      "origin": "Selected",
+      "target": "GGCGCA"
+    },
+    {
+      "id": "2FM-23-QRG",
+      "f1Helix": "QRGTLLR",
+      "f2Helix": "ESGHLTR",
+      "origin": "Selected",
+      "target": "GGCGTA"
+    },
+    {
+      "id": "2FM-24",
+      "f1Helix": "RSDTLKG",
+      "f2Helix": "DRCHLTR",
+      "origin": "Rationally Designed",
+      "target": "GGCTCG"
+    },
+    {
+      "id": "2FM-24",
+      "f1Helix": "RSDTLKG",
+      "f2Helix": "DRCHLTR",
+      "origin": "Rationally Designed",
+      "target": "GGCTTG"
+    },
+    {
+      "id": "2FM-24-QRG",
+      "f1Helix": "QRGTLKG",
+      "f2Helix": "DRCHLTR",
+      "origin": "Rationally Designed",
+      "target": "GGCTCA"
+    },
+    {
+      "id": "2FM-24-QRG",
+      "f1Helix": "QRGTLKG",
+      "f2Helix": "DRCHLTR",
+      "origin": "Rationally Designed",
+      "target": "GGCTTA"
+    },
+    {
+      "id": "2FM-25",
+      "f1Helix": "RSDTLVE",
+      "f2Helix": "RKRHLTR",
+      "origin": "Selected",
+      "target": "GGGACG"
+    },
+    {
+      "id": "2FM-25",
+      "f1Helix": "RSDTLVE",
+      "f2Helix": "RKRHLTR",
+      "origin": "Selected",
+      "target": "GGGATG"
+    },
+    {
+      "id": "2FM-25-QRG",
+      "f1Helix": "QRGTLVE",
+      "f2Helix": "RKRHLTR",
+      "origin": "Selected",
+      "target": "GGGACA"
+    },
+    {
+      "id": "2FM-25-QRG",
+      "f1Helix": "QRGTLVE",
+      "f2Helix": "RKRHLTR",
+      "origin": "Selected",
+      "target": "GGGATA"
+    },
+    {
+      "id": "2FM-26",
+      "f1Helix": "RSDTLKE",
+      "f2Helix": "RSSHLTR",
+      "origin": "Selected",
+      "target": "GGGCCG"
+    },
+    {
+      "id": "2FM-26",
+      "f1Helix": "RSDTLKE",
+      "f2Helix": "RSSHLTR",
+      "origin": "Selected",
+      "target": "GGGCTG"
+    },
+    {
+      "id": "2FM-26-QRG",
+      "f1Helix": "QRGTLKE",
+      "f2Helix": "RSSHLTR",
+      "origin": "Selected",
+      "target": "GGGCCA"
+    },
+    {
+      "id": "2FM-26-QRG",
+      "f1Helix": "QRGTLKE",
+      "f2Helix": "RSSHLTR",
+      "origin": "Selected",
+      "target": "GGGCTA"
+    },
+    {
+      "id": "2FM-27",
+      "f1Helix": "RSDTLAR",
+      "f2Helix": "RAEHLTR",
+      "origin": "Selected",
+      "target": "GGGGCG"
+    },
+    {
+      "id": "2FM-27",
+      "f1Helix": "RSDTLAR",
+      "f2Helix": "RAEHLTR",
+      "origin": "Selected",
+      "target": "GGGGTG"
+    },
+    {
+      "id": "2FM-27-QRG",
+      "f1Helix": "QRGTLAR",
+      "f2Helix": "RAEHLTR",
+      "origin": "Selected",
+      "target": "GGGGCA"
+    },
+    {
+      "id": "2FM-27-QRG",
+      "f1Helix": "QRGTLAR",
+      "f2Helix": "RAEHLTR",
+      "origin": "Selected",
+      "target": "GGGGTA"
+    },
+    {
+      "id": "2FM-28",
+      "f1Helix": "RSDTLLL",
+      "f2Helix": "RSDHLTR",
+      "origin": "Selected",
+      "target": "GGGTTG"
+    },
+    {
+      "id": "2FM-28-QRG",
+      "f1Helix": "QRGTLLL",
+      "f2Helix": "RSDHLTR",
+      "origin": "Selected",
+      "target": "GGGTTA"
+    },
+    {
+      "id": "2FM-29",
+      "f1Helix": "RSDTLKQ",
+      "f2Helix": "AAGHLTR",
+      "origin": "Rationally Designed",
+      "target": "GGTACG"
+    },
+    {
+      "id": "2FM-29",
+      "f1Helix": "RSDTLKQ",
+      "f2Helix": "AAGHLTR",
+      "origin": "Rationally Designed",
+      "target": "GGTATG"
+    },
+    {
+      "id": "2FM-29-QRG",
+      "f1Helix": "QRGTLKQ",
+      "f2Helix": "AAGHLTR",
+      "origin": "Rationally Designed",
+      "target": "GGTACA"
+    },
+    {
+      "id": "2FM-22",
+      "f1Helix": "RSDTLLE",
+      "f2Helix": "SGGHLTR",
+      "origin": "Selected",
+      "target": "GGTCCG"
+    },
+    {
+      "id": "2FM-22",
+      "f1Helix": "RSDTLLE",
+      "f2Helix": "SGGHLTR",
+      "origin": "Selected",
+      "target": "GGTCTG"
+    },
+    {
+      "id": "2FM-22-QRG",
+      "f1Helix": "QRGTLLE",
+      "f2Helix": "SGGHLTR",
+      "origin": "Selected",
+      "target": "GGTCCA"
+    },
+    {
+      "id": "2FM-22-QRG",
+      "f1Helix": "QRGTLLE",
+      "f2Helix": "SGGHLTR",
+      "origin": "Selected",
+      "target": "GGTCTA"
+    },
+    {
+      "id": "2FM-31",
+      "f1Helix": "RSDTLRR",
+      "f2Helix": "IRFHLTR",
+      "origin": "Selected",
+      "target": "GGTGTG"
+    },
+    {
+      "id": "2FM-31",
+      "f1Helix": "RSDTLRR",
+      "f2Helix": "IRFHLTR",
+      "origin": "Selected",
+      "target": "GGTGCG"
+    },
+    {
+      "id": "2FM-31-QRG",
+      "f1Helix": "QRGTLRR",
+      "f2Helix": "IRFHLTR",
+      "origin": "Selected",
+      "target": "GGTGTA"
+    },
+    {
+      "id": "2FM-31-QRG",
+      "f1Helix": "QRGTLRR",
+      "f2Helix": "IRFHLTR",
+      "origin": "Selected",
+      "target": "GGTGCA"
+    },
+    {
+      "id": "2FM-33",
+      "f1Helix": "RSDTLTQ",
+      "f2Helix": "QRGDLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GCAACG"
+    },
+    {
+      "id": "2FM-33-QRG",
+      "f1Helix": "QRGTLTQ",
+      "f2Helix": "QRGDLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GCAACA"
+    },
+    {
+      "id": "2FM-33",
+      "f1Helix": "RSDTLTQ",
+      "f2Helix": "QRGDLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GCAATG"
+    },
+    {
+      "id": "2FM-33-QRG",
+      "f1Helix": "QRGTLTQ",
+      "f2Helix": "QRGDLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GCAATA"
+    },
+    {
+      "id": "2FM-34",
+      "f1Helix": "RSDTLTQ",
+      "f2Helix": "QRGELTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GTAACG"
+    },
+    {
+      "id": "2FM-34-QRG",
+      "f1Helix": "QRGTLTQ",
+      "f2Helix": "QRGELTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GTAACA"
+    },
+    {
+      "id": "2FM-34",
+      "f1Helix": "RSDTLTQ",
+      "f2Helix": "QRGELTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GTAATG"
+    },
+    {
+      "id": "2FM-34-QRG",
+      "f1Helix": "QRGTLTQ",
+      "f2Helix": "QRGELTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GTAATA"
+    },
+    {
+      "id": "2FM-35",
+      "f1Helix": "RSDTLAE",
+      "f2Helix": "CARDLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GCCACG"
+    },
+    {
+      "id": "2FM-35-QRG",
+      "f1Helix": "QRGTLAE",
+      "f2Helix": "CARDLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GCCACA"
+    },
+    {
+      "id": "2FM-36",
+      "f1Helix": "RSDTLKQ",
+      "f2Helix": "AAGDLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GCTACG"
+    },
+    {
+      "id": "2FM-36-QRG",
+      "f1Helix": "QRGTLKQ",
+      "f2Helix": "AAGDLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GCTACA"
+    },
+    {
+      "id": "2FM-36",
+      "f1Helix": "RSDTLKQ",
+      "f2Helix": "AAGDLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GCTATG"
+    },
+    {
+      "id": "2FM-36-QRG",
+      "f1Helix": "QRGTLKQ",
+      "f2Helix": "AAGDLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GCTATA"
+    },
+    {
+      "id": "2FM-37",
+      "f1Helix": "RSDHLTQ",
+      "f2Helix": "QRGNLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GAAAGG"
+    },
+    {
+      "id": "2FM-37-QRG",
+      "f1Helix": "QRGHLTQ",
+      "f2Helix": "QRGNLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GAAAGA"
+    },
+    {
+      "id": "2FM-37",
+      "f1Helix": "RSDHLTQ",
+      "f2Helix": "QRGNLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GAATGG"
+    },
+    {
+      "id": "2FM-37-QRG",
+      "f1Helix": "QRGHLTQ",
+      "f2Helix": "QRGNLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GAATGA"
+    },
+    {
+      "id": "2FM-38",
+      "f1Helix": "RSDHLKQ",
+      "f2Helix": "AAGNLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GATAGG"
+    },
+    {
+      "id": "2FM-38-QRG",
+      "f1Helix": "QRGHLKQ",
+      "f2Helix": "AAGNLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GATAGA"
+    },
+    {
+      "id": "2FM-39",
+      "f1Helix": "RSDNLKQ",
+      "f2Helix": "AAGNLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GATAAG"
+    },
+    {
+      "id": "2FM-39-QRG",
+      "f1Helix": "QRGNLKQ",
+      "f2Helix": "AAGNLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GATAAA"
+    },
+    {
+      "id": "2FM-40",
+      "f1Helix": "RSDTLVE",
+      "f2Helix": "RKRSLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GTGACG"
+    },
+    {
+      "id": "2FM-40-QRG",
+      "f1Helix": "QRGTLVE",
+      "f2Helix": "RKRSLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GTGACA"
+    },
+    {
+      "id": "2FM-40",
+      "f1Helix": "RSDTLVE",
+      "f2Helix": "RKRSLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GTGATG"
+    },
+    {
+      "id": "2FM-40-QRG",
+      "f1Helix": "QRGTLVE",
+      "f2Helix": "RKRSLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GTGATA"
+    },
+    {
+      "id": "2FM-41",
+      "f1Helix": "RSDNLTQ",
+      "f2Helix": "QRGNLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GAAAAG"
+    },
+    {
+      "id": "2FM-41-QRG",
+      "f1Helix": "QRGNLTQ",
+      "f2Helix": "QRGNLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GAAAAA"
+    },
+    {
+      "id": "2FM-42",
+      "f1Helix": "RSDTLKQ",
+      "f2Helix": "DKRSLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GTCACG"
+    },
+    {
+      "id": "2FM-42-QRG",
+      "f1Helix": "QRGTLKQ",
+      "f2Helix": "DKRSLTR",
+      "origin": "Site directed mutagenesis",
+      "target": "GTCACA"
+    },
+    {
+      "id": "2FM-48",
+      "f1Helix": "DKGTLTQ",
+      "f2Helix": "QRGNLTR",
+      "origin": "N-terminal Cap",
+      "target": "GAAACT"
+    },
+    {
+      "id": "2FM-48",
+      "f1Helix": "DKGTLTQ",
+      "f2Helix": "QRGNLTR",
+      "origin": "N-terminal Cap",
+      "target": "GAAATT"
+    },
+    {
+      "id": "2FM-49",
+      "f1Helix": "DKRTLTQ",
+      "f2Helix": "QRGNLTR",
+      "origin": "N-terminal Cap",
+      "target": "GAAACC"
+    },
+    {
+      "id": "2FM-49",
+      "f1Helix": "DKRTLTQ",
+      "f2Helix": "QRGNLTR",
+      "origin": "N-terminal Cap",
+      "target": "GAAATC"
+    },
+    {
+      "id": "2FM-51",
+      "f1Helix": "DKGTLVE",
+      "f2Helix": "RKRHLTR",
+      "origin": "N-terminal Cap",
+      "target": "GGGACT"
+    },
+    {
+      "id": "2FM-52",
+      "f1Helix": "DKGTLKE",
+      "f2Helix": "RSSNLTR",
+      "origin": "N-terminal Cap",
+      "target": "GAGCCT"
+    },
+    {
+      "id": "2FM-52",
+      "f1Helix": "DKGTLKE",
+      "f2Helix": "RSSNLTR",
+      "origin": "N-terminal Cap",
+      "target": "GAGCTT"
+    },
+    {
+      "id": "2FM-1131",
+      "f1Helix": "DKGTLVE",
+      "f2Helix": "QRGNLTR",
+      "origin": "N-terminal Cap",
+      "target": "GAACCT"
+    }
+  ]
+}

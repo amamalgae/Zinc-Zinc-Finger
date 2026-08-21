@@ -15,11 +15,11 @@ async function listFiles(dir) {
   return files;
 }
 
-test("study card names the organisms actually tested in Sander 2011", async () => {
+test("study card qualifies the selectively tested Gupta 2012 cohort", async () => {
   const app = await readFile(new URL("../src/App.tsx", import.meta.url), "utf8");
-  assert.match(app, /38標的中19標的で/);
-  assert.match(app, /実証宿主：ゼブラフィッシュ／シロイヌナズナ／ダイズ/);
-  assert.match(app, /Sander 2011の実験条件で得られた集団成績です。本サイトが提示する各候補の成功確率ではありません。/);
+  assert.match(app, /11標的中9標的で/);
+  assert.match(app, /ゼブラフィッシュ変異導入/);
+  assert.match(app, /Gupta 2012で選択的に評価された小規模cohortの成績です。本サイトの各候補の成功確率ではありません。/);
 });
 
 test("design computation contains no runtime network API", async () => {
