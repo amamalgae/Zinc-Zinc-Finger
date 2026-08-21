@@ -1,0 +1,19 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import test from "node:test";
+
+const appSource = await readFile(new URL("../src/App.tsx", import.meta.url), "utf8");
+const workerSource = await readFile(new URL("../src/genome-exact-match.worker.ts", import.meta.url), "utf8");
+
+test("genome picker accepts multiple files and drag-and-drop", () => {
+  assert.match(appSource, /id="genome-file"[^>]*type="file"[^>]*multiple/);
+  assert.match(appSource, /onDrop=\{\(event\) =>/);
+  assert.match(appSource, /event\.dataTransfer\.files/);
+  assert.match(appSource, /mergeGenomeFiles/);
+});
+
+test("genome worker scans all selected files into one accumulator", () => {
+  assert.match(workerSource, /files: File\[\]/);
+  assert.match(workerSource, /for \(const file of files\) fastaFiles \+= await scanGenomeFile\(file, matcher\)/);
+  assert.doesNotMatch(workerSource, /event\.data\.file,/);
+});
