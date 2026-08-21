@@ -34,8 +34,10 @@ test("landing page leads with Gupta-first design and qualifies the 9-of-11 cohor
   assert.doesNotMatch(app, /標的DNAから、|ZFNペア候補を設計。/);
   assert.match(app, /Gupta 2012の2F archiveを優先して左右ZFNペアを検索し、アミノ酸配列を出力します。/);
   assert.match(app, /構成できない片側だけCoDAへ戻せます/);
-  assert.match(app, /Design v2 · Gupta \+ CoDA fallback/);
-  assert.match(app, /Design v1 · CoDA only/);
+  assert.match(app, /label: "v2 · Gupta \+ CoDA fallback"/);
+  assert.match(app, /label: "v1 · CoDA only"/);
+  assert.doesNotMatch(app, /Design v[12]/);
+  assert.match(app, /<select id="design-profile"/);
   assert.doesNotMatch(app, /実験に使う完全アミノ酸配列まで出力します。/);
   assert.match(app, /配列を入力して設計する/);
   assert.match(app, /11標的中9標的で/);

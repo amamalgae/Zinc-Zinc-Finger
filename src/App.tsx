@@ -96,6 +96,11 @@ function hasTextSelectionWithin(element: HTMLElement): boolean {
   );
 }
 
+const DESIGN_PROFILE_OPTIONS: ReadonlyArray<{ value: DesignProfile; label: string; note: string }> = [
+  { value: "gupta-coda", label: "v2 · Gupta + CoDA fallback", note: "デフォルト · Gupta 2012を優先し、片側モノマー単位でfallback" },
+  { value: "coda-only", label: "v1 · CoDA only", note: "従来方式 · Sander 2011" },
+];
+
 function methodPairLabel(candidate: ZfnCandidate): string {
   return `${candidate.leftArray.methodLabel} / ${candidate.rightArray.methodLabel}`;
 }
@@ -126,6 +131,8 @@ export default function Home() {
   const [maxDistanceInput, setMaxDistanceInput] = useState(DEFAULT_MAX_DISTANCE_INPUT);
   const [designProfile, setDesignProfile] = useState<DesignProfile>("gupta-coda");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const designProfileOption = DESIGN_PROFILE_OPTIONS.find(({ value }) => value === designProfile) ?? DESIGN_PROFILE_OPTIONS[0];
 
   const parsedInput = useMemo(() => parseDNAInput(rawSequence), [rawSequence]);
   const { dna, ambiguousBaseCount, invalidCharacterCount } = parsedInput;
@@ -187,11 +194,16 @@ export default function Home() {
           <label htmlFor="target-sequence">上鎖 5′→3′（FASTA可）</label>
           <textarea id="target-sequence" value={rawSequence} onChange={(event) => { setRawSequence(event.target.value); setSelectedId(null); }} spellCheck={false} />
           <div className="input-meta"><span>{dna.length} bp</span><span className={ambiguousBaseCount ? "warning" : ""}>{ambiguousBaseCount ? `曖昧塩基 ${ambiguousBaseCount} bp（候補から除外）` : "曖昧塩基なし"}</span><span className={invalidCharacterCount ? "warning" : ""}>{invalidCharacterCount ? `未対応文字 ${invalidCharacterCount}件` : "入力形式OK"}</span></div>
-          <fieldset className="method-selector">
-            <legend>設計法</legend>
-            <label className={designProfile === "gupta-coda" ? "active" : undefined}><input type="radio" name="design-profile" value="gupta-coda" checked={designProfile === "gupta-coda"} onChange={() => { setDesignProfile("gupta-coda"); setSelectedId(null); }} /><span><strong>Design v2 · Gupta + CoDA fallback</strong><small>デフォルト · Gupta 2012を優先し、片側モノマー単位でfallback</small></span></label>
-            <label className={designProfile === "coda-only" ? "active" : undefined}><input type="radio" name="design-profile" value="coda-only" checked={designProfile === "coda-only"} onChange={() => { setDesignProfile("coda-only"); setSelectedId(null); }} /><span><strong>Design v1 · CoDA only</strong><small>従来方式 · Sander 2011</small></span></label>
-          </fieldset>
+          <div className="method-selector">
+            <label htmlFor="design-profile"><span>設計法</span></label>
+            <div className="method-select">
+              <select id="design-profile" value={designProfile} aria-describedby="design-profile-note" onChange={(event) => { setDesignProfile(event.target.value as DesignProfile); setSelectedId(null); }}>
+                {DESIGN_PROFILE_OPTIONS.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
+              </select>
+              <i aria-hidden="true" />
+            </div>
+            <small id="design-profile-note">{designProfileOption.note}</small>
+          </div>
           <div className="simple-controls">
             <label className={desiredCutError ? "has-error" : undefined}><span>希望スペーサー中心</span><input type="text" inputMode="numeric" pattern="[0-9]*" value={desiredCutInput} aria-invalid={Boolean(desiredCutError)} aria-describedby={desiredCutError ? "desired-cut-error" : "desired-cut-help"} onChange={(event) => { if (/^\d*$/.test(event.target.value)) setDesiredCutInput(event.target.value); setSelectedId(null); }} />{desiredCutError ? <small id="desired-cut-error" className="field-error" role="alert"><i aria-hidden="true">!</i>{desiredCutError}</small> : <small id="desired-cut-help">5′端からの塩基間座標</small>}</label>
             <label><span>探索範囲（±bp）</span><input type="text" inputMode="numeric" pattern="[0-9]*" value={maxDistanceInput} onChange={(event) => { if (/^\d*$/.test(event.target.value)) setMaxDistanceInput(event.target.value); setSelectedId(null); }} /><small>希望位置から</small></label>
