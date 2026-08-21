@@ -12,8 +12,9 @@ test("SELECT UX contract keeps the first genome page fast and later pages progre
   assert.match(contract, /first 30 baseline-ranked candidates/);
   assert.match(contract, /minimum visible duration of 500 ms/);
   assert.match(contract, /Web Worker/);
+  assert.match(contract, /either-half anchoring/);
   assert.match(contract, /0 mismatch/);
-  assert.match(contract, /8 mismatch/);
+  assert.match(contract, /21 mismatch/);
   assert.match(contract, /above 4 are reference-only/);
   assert.match(contract, /No row is labelled "recommended"/);
 });
