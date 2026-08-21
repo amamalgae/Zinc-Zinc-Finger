@@ -7,8 +7,8 @@ import {
   APP_VERSION_PR_URL,
 } from "../src/app-version.ts";
 
-test("displayed version links to the progressive-candidate PR", () => {
-  assert.equal(APP_VERSION_NUMBER, 74);
-  assert.equal(APP_VERSION, "ver.74 (PR #74)");
-  assert.equal(APP_VERSION_PR_URL, "https://github.com/amamalgae/Zinc-Zinc-Finger/pull/74");
+test("displayed version links to the genome-transition PR", () => {
+  assert.equal(APP_VERSION_NUMBER, 75);
+  assert.equal(APP_VERSION, "ver.75 (PR #75)");
+  assert.equal(APP_VERSION_PR_URL, "https://github.com/amamalgae/Zinc-Zinc-Finger/pull/75");
 });
