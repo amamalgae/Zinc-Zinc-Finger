@@ -1,6 +1,6 @@
-export type FingerPosition = 1 | 2 | 3;
+export type FingerPosition = 1 | 2 | 3 | 4 | 5 | 6;
 
-export type ZfnArrayMethod = "gupta-2012" | "coda-2011";
+export type ZfnArrayMethod = "gupta-2012" | "coda-2011" | "bhakta-2013";
 
 export type ZfnFinger = {
   position: FingerPosition;
@@ -15,7 +15,10 @@ export type ZfnArray = {
   method: ZfnArrayMethod;
   methodLabel: string;
   assembly: string;
-  fingers: readonly [ZfnFinger, ZfnFinger, ZfnFinger];
-  linkers: readonly [string, string];
+  fingerCount?: 3 | 4 | 5 | 6;
+  fingers: readonly ZfnFinger[];
+  linkers: readonly string[];
   protein: string;
+  nTerminalFixed?: string;
+  cTerminalFixed?: string;
 };
