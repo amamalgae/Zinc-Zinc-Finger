@@ -105,11 +105,11 @@
 .genome-match.exact-duplicate { background: #fee4e2; color: #b42318; }
 .genome-match.near-high { background: var(--orange-soft); color: #9b421d; }
 .genome-match.near-mid { background: #fff4d6; color: #76550a; }
+.genome-match.near-weak { background: #f3f5f4; color: var(--muted); }
 
-/* No badge is shown when there is no 0-4 mismatch alternative. */
+/* Silence only true absence/reference failures; 5-8 mismatch stays visible but subdued. */
 .genome-match.clear,
-.genome-match.target-missing,
-.genome-match.near-weak {
+.genome-match.target-missing {
   display: none;
 }
 
