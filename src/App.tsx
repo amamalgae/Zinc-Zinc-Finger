@@ -166,6 +166,7 @@ function CandidateRow({ candidate, rank, selected, onSelect, copy, exactPairMatc
   copy: Copy;
   exactPairMatches?: number;
 }) {
+  const isBhakta = candidate.profile === "bhakta-2013";
   const functionalScore = candidate.combinedBScore === undefined ? "" : `B${candidate.combinedBScore} · `;
   const genomeLabel = exactPairMatches === undefined
     ? null
@@ -178,8 +179,8 @@ function CandidateRow({ candidate, rank, selected, onSelect, copy, exactPairMatc
   return (
     <div className={`candidate ${selected ? "selected" : ""}`} role="button" tabIndex={0} aria-pressed={selected} onClick={(event) => { if (!hasTextSelectionWithin(event.currentTarget)) onSelect(); }} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect(); } }}>
       <span className="candidate-rank">{String(rank).padStart(2, "0")}</span>
-      <span className="candidate-sequence"><b className="left">{candidate.leftTop}</b><i>{candidate.spacer}</i><b className="right">{candidate.rightTop}</b></span>
-      <span className="candidate-summary"><strong>{compactMethodPairLabel(candidate)}</strong><small>{functionalScore}±{formatCut(candidate.distance)} bp · {candidate.spacerLength} bp</small>{genomeLabel ? <em className={`genome-match ${genomeClass}`}>{genomeLabel}</em> : null}</span>
+      <span className={`candidate-sequence ${isBhakta ? "extended" : ""}`}><b className="left">{candidate.leftTop}</b><i>{candidate.spacer}</i><b className="right">{candidate.rightTop}</b></span>
+      <span className="candidate-summary">{isBhakta ? null : <strong>{compactMethodPairLabel(candidate)}</strong>}<small>{functionalScore}±{formatCut(candidate.distance)} bp · {candidate.spacerLength} bp</small>{genomeLabel ? <em className={`genome-match ${genomeClass}`}>{genomeLabel}</em> : null}</span>
       <span className="candidate-action" aria-hidden="true">{selected ? `✓ ${copy.selected}` : `${copy.select} →`}</span>
     </div>
   );
