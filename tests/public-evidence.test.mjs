@@ -193,3 +193,29 @@ test("an original 3ZF mechanism diagram explains the design before sequence inpu
   assert.match(patch, /\.overview-mobile-lightning\.bottom \{\s*bottom: -6px;/);
   assert.doesNotMatch(diagram, /2ACB03D5|IN BRIEF|Zinc finger nucleases \(ZFNs\)/);
 });
+
+test("no interface text is set below the legible floor, and each step states what to do", () => {
+  const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
+  const sheets = ["../src/index.css", "../src/ui-patch.css"].map((file) =>
+    readFileSync(new URL(file, import.meta.url), "utf8"),
+  );
+
+  // The 3ZF-FokI schematic is drawn on a fixed grid and keeps its own units;
+  // everything the reader has to read as text stays at 13px or larger.
+  const undersized = [];
+  for (const sheet of sheets) {
+    for (const [, selector, body] of sheet.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+      if (selector.includes(".overview") && !selector.includes("figcaption")) continue;
+      for (const [, value] of body.matchAll(/font(?:-size)?:\s*([^;]+)/g)) {
+        for (const [, px] of value.matchAll(/(\d+(?:\.\d+)?)px/g)) {
+          if (Number(px) < 13) undersized.push(`${selector.trim()} → ${px}px`);
+        }
+      }
+    }
+  }
+  assert.deepEqual(undersized, []);
+
+  assert.match(app, /<p className="panel-help"><b>ここですること<\/b>切断したい部位の前後を含むDNA配列/);
+  assert.match(app, /<p className="selection-help"><b>ここですること<\/b>使いたい候補の行を押して選びます/);
+  assert.match(app, /<p className="panel-help"><b>ここで得られるもの<\/b>選んだ候補をそのまま発現に使うための/);
+});

@@ -191,6 +191,7 @@ export default function Home() {
       <section className="designer" id="designer">
         <div className="input-panel">
           <div className="panel-heading"><span>01</span><div><small>INPUT</small><h2>標的周辺配列を入力</h2></div></div>
+          <p className="panel-help"><b>ここですること</b>切断したい部位の前後を含むDNA配列を貼り付け、その中心の位置を入力します。候補は入力と同時に下の02へ表示されます。</p>
           <label htmlFor="target-sequence">上鎖 5′→3′（FASTA可）</label>
           <textarea id="target-sequence" value={rawSequence} onChange={(event) => { setRawSequence(event.target.value); setSelectedId(null); }} spellCheck={false} />
           <div className="input-meta"><span>{dna.length} bp</span><span className={ambiguousBaseCount ? "warning" : ""}>{ambiguousBaseCount ? `曖昧塩基 ${ambiguousBaseCount} bp（候補から除外）` : "曖昧塩基なし"}</span><span className={invalidCharacterCount ? "warning" : ""}>{invalidCharacterCount ? `未対応文字 ${invalidCharacterCount}件` : "入力形式OK"}</span></div>
@@ -215,7 +216,7 @@ export default function Home() {
         <div className="results-panel">
           <div className="panel-heading"><span>02</span><div><small>SELECT</small><h2>ZFNペア候補を選択</h2></div><button className="secondary-action" type="button" disabled={!candidates.length} onClick={() => downloadText(zfnCandidatesToCsv(candidates), "zfn-design-candidates.csv", "text/csv;charset=utf-8")}><span aria-hidden="true">↓</span> CSVを保存</button></div>
           <div className="result-count"><strong>{candidates.length}</strong><span>設計候補</span><small>全候補を表示 · 希望位置優先 · 同距離6 &gt; 5 &gt;&gt; 7 bp · 同条件ではGupta優先</small></div>
-          {candidates.length ? <p className="selection-help">候補を押すと設計内容が切り替わります。塩基配列はドラッグして選択・コピーできます。</p> : null}
+          {candidates.length ? <p className="selection-help"><b>ここですること</b>使いたい候補の行を押して選びます。押すと下の03の出力が、その候補の配列に切り替わります。塩基配列はドラッグして選択・コピーできます。</p> : null}
           {candidates.length ? <div className="candidate-list">{candidates.map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} />)}</div> : <div className="empty-state"><strong>{desiredCutError ? "希望スペーサー中心を訂正してください" : invalidCharacterCount ? "未対応文字があります" : "候補がありません"}</strong><p>{desiredCutError ? "入力欄の赤いメッセージに従い、入力配列内の座標を指定してください。" : invalidCharacterCount ? "赤字の未対応文字を修正してから設計してください。IUPAC曖昧塩基は入力できます。" : "選択中のarchiveで左右9 bpを構成できる部位がありません。探索範囲、入力配列、または設計法を変更してください。"}</p></div>}
         </div>
       </section>
@@ -224,6 +225,7 @@ export default function Home() {
         <section className="protein-output-section">
           <div className="output-card">
             <div className="output-heading"><div className="panel-heading"><span>03</span><div><small>PROTEIN OUTPUT</small><h2>1本のORFで、左右2本のZFNを発現</h2></div></div><span className="protein-only-badge">出力形式：GenPept / Protein FASTA</span></div>
+            <p className="panel-help"><b>ここで得られるもの</b>選んだ候補をそのまま発現に使うための、アミノ酸配列1本です。下のボタンからGenPept（feature付き）またはFASTAで保存できます。</p>
             <p className="output-intro">選択した左右array（{methodPairLabel(selected)}）をFokI ELD/KKRと組み合わせ、F2Aで連結した前駆体polyprotein 1配列を出力します。GenPeptには各fingerの設計法、module ID、認識helixを記録します。</p>
             <div className="output-stats"><span><strong>{construct.protein.length}</strong>aa precursor</span><span><strong>{FMDV_F2A.length}</strong>aa F2A</span></div>
             <div className="download-row">

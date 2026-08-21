@@ -4,7 +4,7 @@
 
 .local-badge::after {
   content: "ローカル処理";
-  font-size: 10px;
+  font-size: 14px;
 }
 
 /* Keep cut marks centered on the spacer borders without colliding with labels. */
@@ -70,6 +70,6 @@
 
 @media (max-width: 600px) {
   .local-badge::after {
-    font-size: 9px;
+    font-size: 13px;
   }
 }
