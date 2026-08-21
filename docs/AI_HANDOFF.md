@@ -1,552 +1,270 @@
 # Zinc Zinc Finger: AI handoff and decision record
 
-Last reconciled: 2026-08-21, for candidate-list fix PR #56 based on `main` commit `93df84f`, plus the source files listed in section 10.
+Last reconciled: 2026-08-21 for Bhakta 2013 v3 implementation PR #63.
 
-This document is the durable context for a new AI or developer who has no access to the prior ChatGPT conversations. Read it before modifying the scientific logic. The current README explains what the public site does; this file also explains what it used to do, why approaches were removed, what the evidence can and cannot support, and which questions remain open.
+This is the current durable specification. The pre-v3 handoff remains recoverable in Git history; `docs/AI_HANDOFF_V2_ARCHIVE.md` records that transition, and `docs/AI_HANDOFF_V3_BHAKTA_2013.md` contains the detailed v3 rationale and validation notes.
 
-## 1. Executive summary
+## 1. Current product
 
-Zinc Zinc Finger is a static, browser-local React/TypeScript tool for finding **pairs of 3-finger ZFNs** around a requested location. The default profile uses Gupta 2012 2F modules plus Zhu 2011 position-specific 1F modules, with monomer-level CoDA fallback. A CoDA-only legacy profile remains selectable.
+Zinc Zinc Finger is a static, browser-local React/TypeScript tool for finding paired ZFN sites and emitting a protein-only single-ORF precursor.
+
+Public method profiles:
+
+1. **v3 · Bhakta 2013** — default. Extended modular assembly, six fingers per monomer, combined B-score >=15.
+2. **v2 · Gupta + CoDA fallback** — three fingers per monomer. Complete Gupta 2F+1F monomer if possible; otherwise replace that entire monomer with CoDA.
+3. **v1 · CoDA only** — exact CoDA shared-F2 assembly, three fingers per monomer.
+
+The public page is <https://amamalgae.github.io/Zinc-Zinc-Finger/>. GitHub Pages deploys from `main` after CI.
+
+Common output architecture:
 
 ```text
-top strand 5' -> 3'
+v3:
+NLS-Bhakta ZF-L 6F-FokI ELD-F2A-NLS-Bhakta ZF-R 6F-FokI KKR
 
-left 9 bp half-site | spacer 5-7 bp | right 9 bp half-site
-        ZF-L                    ZF-R
-
-protein output:
+v2/v1:
 NLS-ZF-L 3F-FokI ELD-F2A-NLS-ZF-R 3F-FokI KKR
 ```
 
-The project began as a broader 3-6-finger extended modular-assembly designer with activity scoring, optional recognition models, genome-wide off-target scanning, base-skipping, assay design, codon optimization, and GenBank export. Those implementations and validation datasets remain for reproducibility, but the public UI was intentionally simplified. The current site uses the complete Gupta 2012 implementation archive and exact Zhu 2011 1F lookup first, then the complete Sander 2011 CoDA unit archive as fallback; it produces amino-acid sequences only and makes no candidate-specific activity claim.
+The site emits amino-acid sequences only as annotated GenPept and protein FASTA. It does not choose codons, emit nucleotide GenBank, or claim a complete expression cassette.
 
-The public page is <https://amamalgae.github.io/Zinc-Zinc-Finger/>. GitHub Pages deploys from `main` after build and tests.
+## 2. Product decisions that must survive handoff
 
-## 2. Product intent and decisions that should survive a handoff
+### 2.1 Candidate ranking differs by profile
 
-The intended use is practical ZFN site selection for knock-in and related genome-editing work, including microbial or microalgal systems. The user is not asking for an exhaustive general-purpose ZF research platform. Preserve these decisions unless explicitly changed:
+This is deliberate and must not be homogenized.
 
-1. **Current default design method: v2, Gupta 2012 plus CoDA fallback, 3 fingers per monomer.** A Gupta monomer is one intact published 2F module in F1-F2 or F2-F3 plus the remaining position-specific Zhu 2011 1F module. If that complete 3F monomer cannot be built, replace the whole monomer with CoDA. `v1 · CoDA only` preserves the previous behavior. The two profiles are chosen from a single compact dropdown rather than side-by-side radio cards, and the labels carry no `Design` prefix because `v1`/`v2` alone is unambiguous. These design-profile labels are distinct from the site release badge `ver.N (PR #N)`.
-2. **Do not invent archive entries or mix methods inside one 3F.** A missing Gupta 6-bp target or CoDA table cell is unavailable, not a value to predict or interpolate. Gupta/CoDA mixing is allowed only between left and right monomers.
-3. **Protein output only.** The site does not choose codons because the eventual host range is not fixed. Codon optimization and DNA-level QC belong at the synthesis stage for the actual host, organelle, vector, and cloning constraints.
-4. **Simple public workflow.** The current UI should remain understandable to a ZFN beginner. Historical research modules can remain in code/tests without being exposed in the main workflow.
-5. **KI-oriented search radius.** The desired spacer center and search range are manual-entry integer fields with no browser stepper; both default to 1000 bp. The desired center must be within `0..input length`: an out-of-range value shows a red accessible correction message and blocks candidate generation. The search range does not use that sequence-length validation. The requested coordinate is the desired **spacer center**, not a guaranteed FokI phosphodiester-bond cleavage coordinate.
-6. **Browser-local processing.** Target and genome sequences must not be uploaded. The site has no API, analytics, or external persistence for sequence input.
-7. **Several candidates should be tested.** Archive membership and geometric rank are not activity estimates. A practical experiment should compare multiple candidates in the relevant expression system, ideally with an SSA or another cleavage pre-screen before relying on KI.
-8. **No FTO conclusion in the software.** Public disclosure, an expired patent, or an independently written implementation does not by itself establish freedom to operate for a use and jurisdiction.
-9. **Future 6-finger work is a separate design decision.** Do not obtain "6F" merely by concatenating two current CoDA 3F arrays without a defined construction rule and supporting validation.
-10. **Lead the public page with the user outcome, then explain the mechanism before input.** The hero identifies `GUPTA 2012 · 2F MODULE ZFN DESIGNER`, explains Gupta-first design and monomer-level CoDA fallback, and states that it emits protein sequences. The Gupta result may be displayed as **9 of 11 targets with >0.5% indels**, but must be labeled as a selectively chosen small cohort rather than a candidate-specific probability. Immediately after the hero, show the original introductory 3ZF–FokI mechanism figure; place sequence input after that figure. Candidate-specific finger detail belongs in the technical disclosure below protein output.
-11. **Type is sized for first-time readers, not for density.** No text a reader has to read is set below 13px; body copy, form labels, candidate rows, and output text sit at 14-16px, and the display headings were pulled down (hero to a 34-52px clamp, the study figure to 50-68px) so the headline no longer dwarfs the interface text it introduces. The 3ZF-FokI schematic is exempt: it is drawn on a fixed grid and keeps its own units. `tests/public-evidence.test.mjs` enforces the floor.
-12. **The interface ships in English and Japanese, and every string lives in `src/i18n.ts`.** `COPY.en` and `COPY.ja` hold the same keys; components, stylesheets and data modules carry no prose of their own, so a new string means a new key in both languages. The language is detected from `navigator.languages` on first load, overridable from the header switch, remembered in `localStorage`, and mirrored onto `document.documentElement.lang`. `tests/public-evidence.test.mjs` fails on kana or kanji in any rendering surface, on a key present in one language but not the other, and on Japanese leaking into `COPY.en`. Legacy research modules the public UI never renders (`off-target-engine.ts`, `off-target.worker.ts`, `fauser-context.ts`, `construct-output.ts`, `coda-construct-output.ts`) keep their Japanese strings; move them into the dictionary only if they are ever surfaced.
-13. **The three steps are minimal, and prose is not how they explain themselves.** Prose instructions were tried and removed: with a paragraph under every heading the panels lost their rhythm and the reader could no longer tell where to look. The section key *is* the heading — `01 INPUT`, `02 SELECT`, `03 PROTEIN OUTPUT` — with no translated subtitle beneath it; the numbered badge, that key and the controls carry the meaning. Field names are single words (`Target DNA`, `Method`, `Spacer center`, `Range ±bp`). Status text appears only when there is something to say: the input meta row always shows the length, and ambiguous-base or unsupported-character counts only when non-zero. Candidate rows are one thin tile each — rank, full half-site/spacer/half-site sequence, method pair, distance and spacer length — so a screenful shows a dozen; the row label drops the method year because each method has exactly one and the technical disclosure still carries the full provenance. Do not reintroduce per-step explanatory paragraphs; if a control needs an explanation, the control is wrong.
-14. **Interactive elements must not resemble passive labels.** Buttons and selectable candidates use a consistent action treatment: strong border or solid fill, an action verb, a directional/download marker where helpful, a sufficiently large hit area, and visible keyboard focus. Candidate selection must be conveyed in text as well as color. Disclosure summaries must show explicit open/close affordances. Passive facts and feature labels should remain plain text or use low-emphasis markers rather than outlined pills that could be mistaken for buttons.
-15. **Do not duplicate the selected candidate in a separate confirmation panel.** Step 02 already shows the left half-site, spacer, right half-site, requested-center distance, spacer length, F2 contexts, and selected state. The workflow therefore proceeds directly from `02 SELECT` to `03 PROTEIN OUTPUT`. Keep `finger構成と単一ORFの構成を見る` below the output so users can inspect target triplets, recognition helices, complete arrays, and ORF architecture when needed.
-13. **Teach the ZFN architecture before asking for sequence.** The overview between hero and input is a site-native inline SVG, not a copied paper or slide image. It must show exactly three fingers per monomer, F/R DNA labels, two 9-bp recognition regions, a 5–7 bp spacer, antiparallel N→C directions, and FokI ELD (−)/KKR (+) meeting at the spacer. It should separate the roles as “ZF recognizes” and “FokI cuts,” then lead directly into the designer. Both strands are marked with separate lightning-shaped cuts so the double-strand break reads without a textual DSB label. The C termini belong after each FokI domain on the spacer side: right KKR is `N–ZF4–ZF5–ZF6–FokI–C`, and left ELD is `N–ZF1–ZF2–ZF3–FokI–C`. At phone width, use the dedicated compact diagram and keep the entire mechanism visible without horizontal scrolling.
+**v3 Bhakta 2013:** the user's explicit decision is that distance from the requested spacer center must **not** rank candidates. The center and `Range ±bp` define an acceptable search window. Inside that window, candidates are ranked for functional promise:
 
-### 2.1 Why CoDA was selected after the literature and availability review
+1. higher combined B-score;
+2. fewer TSO/context warnings;
+3. fewer historically unfavorable modules;
+4. more historically favorable modules;
+5. spacer preference 6 bp, then 5 bp, then 7 bp;
+6. genomic start only as a deterministic final tie-break.
 
-The current CoDA choice was not made from one paper in isolation. It followed implementation and quantitative comparison of the approaches below. The decisive question was: **which method can a general browser tool implement reproducibly from inspectable source material, without inventing missing ZFs or redistributing a restricted/unclearly licensed model?**
+Distance remains displayed because the user may care where the cut lies, but it is absent from the v3 comparator. `tests/bhakta-v3.test.mjs` contains a regression requiring a B20 candidate 900 bp away to outrank a B16 candidate at distance 0.
 
-| Route reviewed | Scientific result in this repository | Availability / IP constraint | Product decision |
-|---|---|---|---|
-| Barbas one-finger and extended modular assembly (Bhakta 2010/2013) | Transparent modules and useful B-score signal, but context transfer is imperfect; reconstructed AUC varied from 0.656 to 0.875 by cohort. | Published sequences can be audited, but simple independent-triplet assembly does not solve adjacent-finger context. | Retained as benchmark/legacy code, not the public designer. |
-| Zhu position-specific 3F modules (Zhu 2011) | Directly tabulated position-specific modules, but only 81 modules; the paper's tested pairs did not map cleanly onto the old Barbas archive. | Inspectable supplement, but narrower target coverage and weaker general basis than the selected CoDA pairs. | Used briefly, then replaced by complete CoDA archive. |
-| DeepZF (Aizenshtein-Gazit 2022) | Near-random activity discrimination on the independent Chen cohort: ROC-AUC 0.491; therefore unsuitable as an activity ranker here. | Upstream weights had no explicit redistribution terms when reviewed, so bundling them under this repository's MIT presentation was not justified. | Evaluated, removed, and not redistributed. |
-| Persikov expanded linear SVM (Persikov 2014) | Useful as a separate recognition-model comparison, not a validated current ZFN activity score. | Official model is accepted only as a user-supplied local file because explicit redistribution permission was not established. | Legacy optional local comparator only. |
-| ZFDesign (Ichikawa 2023) | Stronger modern context-aware design route and scientifically relevant comparison. | The article states that selection data and underlying code require an academic MTA. That is incompatible with silently bundling them in a public general-use MIT repository. | Cited for comparison; code/data excluded. |
-| Fauser four-base-context data (Fauser 2024) | Adds context information, but compatibility with the present framework and direct ZFN activity were not established. | Workbook can be user-loaded locally; no basis to merge it into a complete public ORF as if validated. | Legacy experimental comparator only. |
-| CoDA (Sander 2011) | 319 F1 units, 18 fixed F2 contexts, and 344 F3 units were selected experimentally; exact shared-F2 joins yield 6,680 auditable 9-mers. No new target-specific selection is required during in-silico design. | The article, supplements, and WO2011017293A2 expose a finite archive and framework that can be independently transcribed and structurally audited. This improves reproducibility, but does **not** establish patent clearance. | Selected for the public 3F designer; missing entries remain unavailable and every completed ZFN still requires experiments. |
+**v2/v1:** retain the established distance-first order: distance to requested spacer center, then 6 > 5 >> 7 bp, then method-specific tie-breaking.
 
-This choice therefore has two linked reasons:
+No ranking is a candidate-specific probability of editing.
 
-1. **Scientific/engineering reason:** CoDA represents experimentally selected adjacent-finger contexts and has an exact finite lookup rule. It is more defensible than independent one-finger concatenation, and unlike a predictive model its available/unavailable boundary can be exhaustively tested over all `4^9` targets.
-2. **Availability/IP reason:** the public tool can describe exactly which published rows and patent-disclosed framework sequences it uses, while avoiding redistribution of MTA-controlled code/data or model files without clear redistribution terms. This is a provenance and distribution-risk decision, not a legal opinion that CoDA is unencumbered.
+### 2.2 Browser-local sequence handling
 
-Do not collapse the second reason into “CoDA is patent-free.” WO2011017293A2 and its national family must be analyzed by jurisdiction, legal status, claim scope, date, and intended use. A ceased PCT record, publication of sequences, independently written TypeScript, or the repository's MIT license cannot alone answer FTO. The software should preserve this distinction and direct commercial or regulated users to a current claim-level review.
+All target sequence handling stays in the browser. Do not add telemetry or upload sequence data.
 
-## 3. Exact current design logic
+`parseDNAInput()` preserves coordinates:
 
-### 3.1 Input parsing and coordinates
+- FASTA headers, whitespace and position digits are ignored;
+- A/C/G/T are retained;
+- IUPAC ambiguity, `-`, and `.` become `N` rather than being deleted;
+- unsupported characters also occupy a blocked coordinate and are counted separately;
+- any candidate window containing `N` is unavailable.
 
-`src/coda-design-engine.ts` accepts plain DNA or FASTA.
+Never revert to the old `replace(/[^ACGT]/g, "")` behavior in public design code because it can join bases across an unknown position.
 
-- FASTA headers, whitespace, and position digits are ignored.
-- `A/C/G/T` are retained.
-- IUPAC ambiguous bases, `-`, and `.` become `N`, so coordinates do not collapse.
-- Unsupported characters also become `N`, are counted separately, and block design in the UI.
-- Any target window containing `N` is unavailable because `buildCodaArray()` accepts only `[ACGT]{9}`.
+### 2.3 Simple public workflow
 
-This behavior was fixed in PR #20. Before that fix, removing ambiguity could concatenate bases from opposite sides of an unknown position and create a target sequence that was not present in the input. Coordinate preservation is therefore a safety invariant, not cosmetic normalization.
+Keep the public path small:
 
-### 3.2 Target geometry and strand orientation
+- `01 INPUT`
+- `02 SELECT`
+- `03 PROTEIN OUTPUT`
 
-For each spacer length `s` in 5, 6, and 7 bp, the scanner considers a footprint of `18 + s` bp:
+The method is chosen from one compact dropdown. Candidate rows stay dense and selectable; sequence text remains mouse-selectable. Do not add duplicate selected-candidate summary panels when the same facts already appear in the candidate row and technical disclosure.
 
-```text
-top strand: 5'-[leftTop:9]-[spacer:s]-[rightTop:9]-3'
-```
+All reader-facing copy belongs in `src/i18n.ts` in both English and Japanese. No readable interface text should be below 13 px outside the fixed-grid mechanism diagram.
 
-- Left recognition strand, 5' to 3': `reverseComplement(leftTop)`.
-- Right recognition strand, 5' to 3': `rightTop`.
-- Displayed spacer center: `start + 9 + s/2`. A 5 or 7 bp spacer therefore has a half-integer center.
-- The center is a geometry/ranking coordinate, not an assertion that FokI cleaves one particular bond.
+### 2.4 Scientific claims
 
-C2H2 fingers bind DNA antiparallel. For recognition sequence `5'-GTG-GGG-GAG-3'`, protein order N to C is:
+Do not turn cohort-level results into per-candidate probabilities. In particular:
+
+- Bhakta 2013 L6+R6: 15/21 active is not a 71% probability for a new v3 candidate.
+- Gupta 2012: 9/11 zebrafish targets above the stated threshold is a small selectively evaluated cohort, not a general probability.
+- CoDA archive membership is not a guarantee of function.
+- B-score is a useful eligibility/ranking signal, not a calibrated indel predictor.
+
+The complete ELD/KKR + F2A constructs emitted by this project combine separately supported parts. They were not tested as exact complete constructs in the Bhakta, Gupta, or CoDA primary studies.
+
+Public-data implementation is not freedom-to-operate clearance.
+
+## 3. v3 Bhakta 2013 exact logic
+
+Primary source: Bhakta MS et al. (2013), DOI `10.1101/gr.143693.112`.
+
+Framework source: Mandell JG, Barbas CF III (2006), DOI `10.1093/nar/gkl209`.
+
+### 3.1 Geometry
+
+v3 scans:
 
 ```text
-F1 = GAG, F2 = GGG, F3 = GTG
+top strand 5' -> 3'
+[leftTop:18] [spacer:5-7] [rightTop:18]
 ```
 
-An orientation change here can yield apparently plausible but biologically wrong arrays. The exhaustive CoDA tests and Gupta reconstruction tests must continue to pass.
+- left recognition strand = reverse complement of `leftTop`;
+- right recognition strand = `rightTop`;
+- each 18-mer is six target triplets;
+- C2H2 fingers bind antiparallel, so protein N-to-C finger order is the reverse of 5'-to-3' target-triplet order.
 
-### 3.3 Gupta 2F + Zhu 1F lookup
+### 3.2 Module archive and framework
 
-Primary sources: Gupta et al. (2012), DOI `10.1038/nmeth.1994`, Supplementary Table 2 implementation workbook; Zhu et al. (2011), DOI `10.1242/dev.066779`, Supplementary Table S1.
+`src/module-archive.ts` contains the retained 49-entry Barbas/Bhakta one-finger archive with:
 
-`data/gupta-2012-two-finger-modules.json` contains 162 unique 6-bp targets and 87 unique 2F module identifiers, transcribed from `NIHMS397909-supplement-3.xls` (MD5 `1998b2a86b539c624bbb5ee944875530`). `src/zhu-module-archive.ts` contains 27 target triplets at each of three protein positions, for 81 position-specific 1F modules.
+- target triplet;
+- 7-aa recognition helix;
+- published module B-score;
+- historical favorable/unfavorable/not-evaluated recommendation;
+- TSO-context flag.
 
-For a 9-mer, `buildGuptaArray()` tests two intact-module placements:
+`src/bhakta-module-archive.ts` constructs 3-6F arrays with:
 
-1. F2-F3 uses the DNA 5′ six bases as the Gupta 2F target and the final triplet as the Zhu F1 target;
-2. F1-F2 uses the DNA 3′ six bases as the Gupta 2F target and the first triplet as the Zhu F3 target.
+```text
+N-terminal fixed       LEPGEKP
+finger framework       YKCPECGKSFS + helix + HQRTH
+inter-finger linker    TGEKP
+C-terminal fixed       TGKKTS
+```
 
-If both are possible, the deterministic implementation currently takes F2-F3 first. This is not an activity claim. Do not split a 2F module, substitute one helix, or interpolate a missing 6-bp row. The Gupta online methods describe good/fair/poor scoring, but the workbook does not assign categories to every rationally derived row; the application therefore does not impute a Gupta activity score.
+Only exact archive triplets are available. No missing module is predicted or substituted.
 
-`gupta-coda` is the default profile. Each half-site independently uses a complete Gupta 3F when available, otherwise a complete CoDA 3F. `coda-only` preserves the previous public method. Mixing methods within one 3F monomer is forbidden.
+The exact Bhakta 2013 Supplemental Appendices XLS is not bundled in the repository and was not directly used as a redistributed source file. Do not claim that every emitted array is a verbatim copy of an appendix row. The implementation is audited using the public module archive, published target sequences/B-scores, benchmark reconstruction, and the published framework description.
 
-Exhaustive enumeration over all `4^9` recognition sequences gives 8,700 Gupta-buildable half-sites (3.319%), 6,680 CoDA-buildable half-sites (2.548%), and a union of 13,978 (5.332%). The union is 2.09-fold the CoDA half-site coverage under a uniform 9-mer model. Do not convert this directly into genomic pair density or activity.
+### 3.3 Eligibility
 
-### 3.4 CoDA lookup
+For L6+R6:
 
-Current source: Sander et al. (2011), DOI `10.1038/nmeth.1542`, Supplementary Tables 1-2, checked against WO2011017293A2.
+```text
+combined B-score = sum(left six module B-scores) + sum(right six module B-scores)
+```
 
-`data/coda-2011-units.json` contains:
+v3 returns the site only if:
 
-| Record type | Count |
-|---|---:|
-| Fixed F2 contexts | 18 |
-| F1 units | 319 |
-| F3 units | 344 |
-| F1 + F3 units | 663 |
+```text
+combined B-score >= 15
+```
 
-For a 9-mer, `buildCodaArray()` reverses the three DNA triplets into protein order. It then requires all of the following:
+A site can be fully assemblable but absent from v3 because B <15. Published CS3-1 is the regression fixture for this: it reconstructs at B=14 and must be excluded.
 
-1. the middle triplet is one of the 18 fixed F2 contexts;
-2. an F1 unit exists for the `(F2 context, F1 target)` composite key;
-3. an F3 unit exists for the `(F2 context, F3 target)` composite key;
-4. the F1 and F3 rows declare the exact recognition helix of that fixed F2.
+Published HIV992 is the positive production fixture: L6+R6 reconstructs at B=17.
 
-The number of assemblable recognition 9-mers is the sum, over F2 contexts, of `F1_count x F3_count`: **6,680 of 262,144 possible 9-mers (2.548%)**. A valid ZFN pair requires both 9-mer half-sites to be assemblable.
+### 3.4 3-6F alternatives
 
-The array framework comes from WO2011017293A2, SEQ ID NOs 841-844:
+Primary search is L6+R6, matching the Bhakta first-pass workflow. For a selected v3 site, `bhaktaAlternativesForCandidate()` generates all 16 spacer-proximal combinations:
 
-- common prefix: `FQCRICMRNFS`;
-- position suffixes: F1 `HTRTH`, F2 `HLRTH`, F3 `HLKTH`;
-- inter-finger linker: `TGEKP`;
-- each complete 3F array is 79 aa.
+```text
+L3,L4,L5,L6 x R3,R4,R5,R6
+```
 
-### 3.5 Candidate order
+These are displayed in technical details. They are empirical alternatives, not independent primary candidate sites and not measured activity predictions.
 
-Candidates are sorted by:
+### 3.5 Spacer-dependent ZF-FokI linkers
 
-1. absolute distance from the requested spacer center;
-2. an explicit spacer preference displayed as `6 > 5 >> 7` (implemented as the ordinal order 6 bp, then 5 bp, then 7 bp);
-3. for otherwise equal candidates in Gupta-first mode, more Gupta-built monomers;
-4. lower genomic start coordinate.
+v3 uses the Bhakta 2013 mapping:
 
-Distance remains the primary criterion because the tool is intended to place a cleavage region near a requested KI position. The spacer preference is applied only when candidates have equal distance. It is a low-resolution, cohort-informed tie-break rather than a candidate-specific activity prediction. Shimizu 2009 varied the reporter spacer while retaining the same ZFN pair and 6-aa `TGAAAR` linker: the 6-bp reporter produced about sixfold the activity of the 4-, 5-, 7-, and 8-bp reporters in an episomal HEK293T SSA assay. Händel 2009 independently found that a 6-aa linker gave about fivefold higher activity at 6 bp than 7 bp in an episomal assay and about fourfold higher activity in a chromosomal assay.
-
-The independent Chen 2013 zebrafish CoDA cohort separates the weak `6 > 5` claim from the strong `5 >> 7` claim. Recalculation of Supplementary Table S1 using the paper's active threshold of somatic indel rate `>0.27%` gives 17/30 (56.7%) active at 5 bp, 13/28 (46.4%) at 6 bp, and 3/26 (11.5%) at 7 bp. The corresponding arithmetic mean indel rates are 2.73%, 2.64%, and 0.121%. The original analysis found no significant difference between the 5- and 6-bp indel-rate distributions (Wilcoxon P=0.42), while a 7-bp target was about 4–5-fold less likely to be active. Thus the double separator in `6 > 5 >> 7` communicates the evidence asymmetry; it is not a numerical weight or candidate-specific activity ratio. The current complete CoDA-3F/ELD/F2A/KKR construct was not tested in those experiments, so the ranking must not be reported as an expected indel percentage.
-
-Sources: Händel et al. (2009), DOI `10.1038/mt.2008.233`; Shimizu et al. (2009), DOI `10.1016/j.bmcl.2009.02.109`; Bhakta et al. (2013), DOI `10.1101/gr.143693.112`; Chen et al. (2013), DOI `10.1093/nar/gks1356`.
-
-The scanner returns at most 30 candidates; the scrollable UI list and CSV both contain the complete returned set. No B-score, PWM, SVM, predicted affinity, predicted indel percentage, or off-target score is used in current ranking.
-
-### 3.6 ZF-FokI linkers
-
-The current spacer-dependent linker map is:
-
-| Spacer | ZF-FokI linker |
+| spacer | linker |
 |---:|---|
 | 5 bp | `TGGS` |
 | 6 bp | `TGAAAR` |
 | 7 bp | `TGPGAAAR` |
 
-These were inherited from the extended-MA implementation. Treat them as a design choice, not as a measurement that uniquely determines the exact cleavage position.
+The broader 6 > 5 >> 7 preference also draws on Shimizu Y et al. (2009), DOI `10.1016/j.bmcl.2009.02.109`; Händel EM et al. (2009), DOI `10.1038/mt.2008.233`; and Chen S et al. (2013), DOI `10.1093/nar/gks1356`.
 
-Händel et al. (2009), DOI `10.1038/mt.2008.233`, systematically compared 11 ZF-FokI inter-domain linker variants across 4–18-bp spacers in episomal and chromosomal human-cell assays. Short 4-aa linkers were restricted to 5–6-bp spacers, whereas longer linkers expanded activity to 7 bp and beyond but were less spacer-selective. Bhakta et al. (2013), DOI `10.1101/gr.143693.112`, used the exact `TGGS`/`TGAAAR`/`TGPGAAAR` peptide mapping for 5/6/7-bp targets and obtained mutations at 15/21 loci (71%) with 6+6-finger extended-MA ZFNs. That result supports feasibility of the mapping but cannot rank spacer lengths because target sequence, array composition, and assay context vary between loci.
+For v3, spacer is a late tie-break after B-score/context evidence. For v2/v1, spacer is a tie-break after requested-center distance.
 
-The direct linker studies used different FokI dimer variants and reporter contexts from the current ELD/KKR output; the Bhakta study used extended-MA arrays rather than the current CoDA 3F arrays. None validates the exact complete project construct.
+## 4. v2 Gupta 2012 + CoDA fallback
 
-## 4. Exact current protein construct
+Primary sources:
 
-### 4.1 Architecture
+- Gupta A et al. (2012), DOI `10.1038/nmeth.1994`.
+- Zhu C et al. (2011), DOI `10.1242/dev.066779`.
+- Sander JD et al. (2011), DOI `10.1038/nmeth.1542`.
 
-For every selected site:
+`data/gupta-2012-two-finger-modules.json` contains 162 unique 6-bp targets and 87 unique 2F module identifiers from the Gupta implementation workbook.
+
+For a 9-mer, `buildGuptaArray()` tests intact 2F placement as F2-F3 or F1-F2 and fills only the remaining position with the corresponding Zhu position-specific 1F module. Do not split a Gupta 2F unit or substitute one helix.
+
+If a complete Gupta 3F cannot be made, v2 replaces the entire monomer with an exact CoDA 3F. Mixing Gupta and CoDA fingers inside one 3F is prohibited.
+
+## 5. v1 CoDA
+
+`data/coda-2011-units.json` contains:
+
+- 319 F1 units;
+- 18 fixed F2 contexts;
+- 344 F3 units.
+
+`buildCodaArray()` joins outer fingers only where the same fixed F2 context is present. The exact finite archive produces 6,680 assemblable 9-mers out of 4^9 possible sequences. Missing cells remain unavailable.
+
+C2H2 orientation example:
 
 ```text
-MAPKKKRKV-CoDA-left3F-linker-FokI_ELD-
-VKQLLNFDLLKLAGDVESNPGP-
-MAPKKKRKV-CoDA-right3F-linker-FokI_KKR
+recognition DNA 5'-GTG-GGG-GAG-3'
+protein N->C: F1=GAG, F2=GGG, F3=GTG
 ```
 
-- `MAPKKKRKV` is the current SV40 NLS prefix, including the leading Met.
-- FokI is UniProt P14870 residues 384-579, 196 aa.
-- ELD mutations: Q486E, N496D, I499L.
-- KKR mutations: E490K, H537R, I538K.
-- F2A is the current 22-aa FMDV-derived project sequence `VKQLLNFDLLKLAGDVESNPGP`.
-- Ribosomal skipping is modeled between the terminal Gly and Pro. The upstream product retains the first 21 F2A residues; the downstream product begins with Pro, followed by the right monomer's `MAPKKKRKV`.
-
-For spacer lengths 5/6/7 bp, respectively, the expected lengths are:
-
-| Spacer | Each monomer within precursor | Precursor |
-|---:|---:|---:|
-| 5 bp | 288 aa | 598 aa |
-| 6 bp | 290 aa | 602 aa |
-| 7 bp | 292 aa | 606 aa |
-
-The primary exporter emits one annotated precursor in standard protein GenPept (`.gp`). Its nine 1-based inclusive `Region` features are ZF1–ZF3, FokI (ELD), F2A, ZF4–ZF6, and FokI (KKR). Each ZF note records the local CoDA finger number, target triplet, and recognition helix; FokI notes record the engineered substitutions. This open text format is directly supported for annotated amino-acid sequences by SnapGene and Benchling, and by Geneious as GenBank-flat protein data. ApE is intentionally not a target because it is a DNA/plasmid editor. Feature names and coordinates are portable; display colors are application-specific.
-
-The Protein FASTA exporter emits the same single precursor sequence. Neither format emits predicted F2A-processed products, a CDS, stop codon, promoter, terminator, UTR, marker, vector backbone, or implied codon choice. Download names follow the displayed candidate rank: for example, candidate 01 produces `ZFN_Result01.gp` or `ZFN_Result01.fasta`.
-
-### 4.2 Evidence and limits of the combined construct
+## 6. Nuclease and single-ORF output
 
-- Doyon et al. (2011), DOI `10.1038/nmeth.1539`, directly supports ELD/KKR as an improved obligate-heterodimer FokI architecture. The supplied full paper confirms the substitutions above and reports activity improvement while retaining homodimer suppression.
-- Lei et al. (2011), DOI `10.1038/mt.2011.12`, is a mammalian precedent for expressing a ZFN pair from one F2A-linked ORF.
+FokI ELD/KKR source: Doyon Y et al. (2011), DOI `10.1038/nmeth.1539`.
 
-These papers support separate components or strategies. Lei 2011 supports the paired-ZFN F2A architecture; it is not claimed here as the primary source of the exact 22-aa project constant. **No cited experiment tests this exact CoDA-3F/ELD/F2A/KKR construct.** Expression, F2A processing, localization, cleavage, toxicity, on-target editing, and off-target activity all remain experimental questions.
-
-### 4.3 Nucleic-acid donor/provenance nuance
+The project uses:
 
-The current UI intentionally says **four component categories**, not four biological taxa:
+- ELD: Q486E / N496D / I499L;
+- KKR: E490K / H537R / I538K.
 
-| Current component | Current display | Interpretation |
-|---|---|---|
-| SV40 NLS | *Betapolyomavirus macacae* | biological source taxon |
-| CoDA 3F framework and selected helices | `synthetic C2H2 array` | synthetic/patent-disclosed framework; no source organism is asserted by current code |
-| FokI ELD/KKR | *Flavobacterium okeanokoites* | biological source plus engineered mutations |
-| F2A | Foot-and-mouth disease virus | biological source taxon |
+F2A paired-ZFN precedent: Lei Y et al. (2011), DOI `10.1038/mt.2011.12`.
 
-The legacy extended-MA code in `src/construct-output.ts` lists a human Sp1C framework and therefore four taxa including *Homo sapiens*. That legacy map is not the provenance map of the current CoDA output. A future agent must not reintroduce *Homo sapiens* into current regulatory output simply because it remains in legacy code.
+The project constant is the 22-aa FMDV-derived sequence `VKQLLNFDLLKLAGDVESNPGP`. Describe it generically as FMDV-derived unless a primary source for that exact constant is separately established.
 
-Open regulatory question: determine how the relevant Japanese recombinant-DNA paperwork wants a synthetic/patent-disclosed C2H2 framework recorded, and whether a defensible organismal antecedent can be documented. Until that provenance is established, report the CoDA array as synthetic rather than inventing a donor organism.
+Protein features must account for variable v3 array length. v3 output has ZF1-ZF12; v2/v1 have ZF1-ZF6. Fixed Bhakta terminal sequences are part of the array protein and must be counted in feature-coordinate cursors even though they are not labeled as separate ZF regions.
 
-## 5. Repository map: current versus retained legacy code
+## 7. Validation evidence retained in the repository
 
-### 5.1 Current public execution path
+### Bhakta
 
-| Path | Role |
-|---|---|
-| `src/App.tsx` | Entire current UI and download actions |
-| `src/ZfnOverviewDiagram.tsx` | original static introductory SVG shown between the hero and sequence input |
-| `src/zfn-design-engine.ts` | Gupta-first/CoDA-only profile, monomer fallback, geometry scan, ordering, CSV |
-| `src/gupta-module-archive.ts` | Gupta archive validation, intact 2F + Zhu 1F lookup, full 3F construction |
-| `src/zhu-module-archive.ts` | Zhu 2011 position-specific 1F modules and Zif268 scaffold |
-| `src/coda-design-engine.ts` | shared input parsing/reverse complement and legacy CoDA-only scanner |
-| `src/coda-module-archive.ts` | archive validation, exact CoDA lookup, full CoDA 3F sequence construction |
-| `src/zfn-construct-output.ts` | current provenance-aware ELD/F2A/KKR protein construct, GenPept, and Protein FASTA |
-| `src/zfn-array.ts` | common finger/array types for Gupta and CoDA |
-| `src/zfn-binding-map.ts` | tested mapping from a selected F/R duplex to global ZF1–ZF6 display order and recognition triplets |
-| `data/gupta-2012-two-finger-modules.json` | complete transcribed Gupta 2F implementation archive |
-| `data/coda-2011-units.json` | complete transcribed CoDA F1/F2/F3 archive |
-| `src/index.css` | current presentation |
-| `src/app-version.ts` | visible `ver.N (PR #N)` label and link to the implementation PR |
-| `tests/coda-3finger.test.mjs` | archive, exhaustive lookup, orientation, parsing, scanner, output tests |
-| `tests/gupta-2012.test.mjs` | Gupta counts/hash, all-row reconstruction, published helix example, fallback boundary, output provenance |
-| `tests/app-version.test.mjs` | version label/PR-link regression test |
-| `tests/zfn-binding-map.test.mjs` | global/local finger numbering, antiparallel right-array order, and F/R complement tests |
-| `scripts/audit-coda-archive.mjs` | independent archive counts and coverage report |
-| `scripts/audit-gupta-archive.mjs` | independent Gupta counts, hash, helix validity, and all-row reconstruction report |
+`scripts/benchmark-bhakta-2013.mjs` and `tests/bhakta-benchmark.test.mjs` retain:
 
-### 5.2 Legacy/reproducibility path, not used by current `App.tsx`
+- 92 reconstructed 3-6F array variants, 41 active;
+- exact L6+R6 exploratory cohort: 10 sites, 7 active;
+- prospective L6+R6 cohort: 11 sites, 8 active;
+- combined exact L6+R6: 21 sites, 15 active;
+- published full-array B-score reproduced for 20/21 sites;
+- known CS7-3 discrepancy: published 21 vs calculated 20;
+- combined exact-L6+R6 B-score ROC-AUC about 0.656.
 
-| Path group | Historical purpose |
-|---|---|
-| `src/design-engine.ts`, `src/module-archive.ts` | Barbas extended modular assembly, 3-6F/asymmetric arrays, B-score, TSO, 1c base-skipping |
-| `src/off-target-engine.ts`, `src/off-target.worker.ts` | browser-local genome scan, LR/RL/LL/RR enumeration, PROGNOS ZFN v2.0 scoring |
-| `src/persikov-svm.ts` | optional local parser/evaluator for official Persikov `SVMl7.mod` |
-| `src/fauser-context.ts` | local parser for Fauser 2024 Supplementary Data 33 four-base context data |
-| `src/assay-design.ts`, `src/portfolio.ts` | independent-candidate portfolio, SSA duplex and simple amplicon-primer suggestions |
-| `src/construct-output.ts` | legacy Sp1C ZFN pair, codon presets, CDS and GenBank exporters |
-| `data/*benchmark*.json`, `scripts/benchmark-*.mjs` | reproducible historical benchmarks and reasons not to overclaim scoring |
+`tests/bhakta-v3.test.mjs` additionally checks the current production path, eligibility cutoff, distance-free v3 rank, all 16 alternatives, complete terminal sequences, and ZF1-ZF12 output coordinates.
 
-Do not delete these merely because the current page does not import them. They are the audit trail for discarded product directions. Conversely, do not assume that a passing legacy test means a feature is public.
+### Gupta / CoDA
 
-`fflate` remains a dependency because the retained Fauser workbook parser reads `.xlsx` files. It is not needed by the current Gupta/CoDA UI path.
+Retain the exhaustive Gupta and CoDA archive tests. v3 must not weaken v1/v2 invariants.
 
-## 6. What is actually validated
+- Gupta workbook rows are finite and non-imputed.
+- CoDA 319/18/344 inventory is audited.
+- all 4^9 recognition 9-mers are exhaustively checked against exact CoDA assembly rules.
+- ambiguous-base coordinates remain preserved.
 
-### 6.1 Current Gupta and CoDA validation
+## 8. Repository map
 
-The current archive/selection tests establish implementation consistency, not biological efficacy:
+Current public-path files:
 
-- exact Gupta counts: 162 target rows, 162 unique targets, 87 unique modules, source MD5 match;
-- every Gupta row reconstructs in an F2-F3 3F test context with exact F1/F2 recognition helices;
-- the published dab2ip `GACATGGAC` array reproduces `LKGNLTR / RSDTLKQ / DKGNLTR` in protein N-to-C order;
-- Gupta-first fallback occurs only at a complete 3F monomer boundary; CoDA-only yields two CoDA monomers;
-- generic GenPept records per-finger Gupta/Zhu/CoDA provenance and exact coordinates;
-- exact counts: 18 F2, 319 F1, 344 F3;
-- valid triplets and 7-aa helices;
-- no duplicate `(unit, F2 target, outer target)` keys;
-- every unit's F2 helix equals its fixed F2 declaration;
-- F1/F3 target-count distributions match independently encoded patent totals;
-- all `4^9 = 262,144` 9-mers are enumerated, and exactly the F1-by-F3 combinations sharing a fixed F2 assemble;
-- scanner order equals an independent exhaustive oracle for both strands, all 5-7 bp spacers, distance bounds, and the 6-bp then 5-bp then 7-bp equal-distance tie-break;
-- ambiguity does not join separated sequence fragments;
-- unsupported characters block design;
-- current output contains full arrays, ELD, F2A, and KKR but no generated CDS;
-- every GenPept `Region` coordinate slices the exact expected ZF, FokI, or F2A peptide from the precursor, and the GenPept `ORIGIN` reconstructs the complete precursor exactly.
+- `src/App.tsx` — public workflow and profile selector.
+- `src/i18n.ts` — all public English/Japanese copy.
+- `src/zfn-design-engine.ts` — shared profile scanner and profile-specific ordering.
+- `src/zfn-array.ts` — variable-length common ZF-array type.
+- `src/bhakta-module-archive.ts` — current v3 array builder.
+- `src/module-archive.ts` — 49-entry Barbas/Bhakta one-finger scientific archive retained from the earlier research implementation.
+- `src/gupta-module-archive.ts` — v2 Gupta 2F+1F builder.
+- `src/zhu-module-archive.ts` — position-specific Zhu 1F archive.
+- `src/coda-module-archive.ts` — exact CoDA builder.
+- `src/zfn-construct-output.ts` — current variable-length protein-only exporter.
+- `src/ZfnOverviewDiagram.tsx` — conventional 3F paired-ZFN teaching diagram; copy explicitly notes that v3 extends each monomer to 6F.
 
-The tests do **not** reproduce Gupta's selection distributions or Sander's 181 B2H array measurements, nor do they convert population results into a probability for each new candidate.
+Scientific/legacy analysis code remains because it preserves validation history. Do not delete it merely because the current public UI does not render it.
 
-Gupta 2012 reports >0.5% indels for 9/11 tested zebrafish targets. The targets were chosen for multiple design and biological goals rather than sampled randomly from the archive, and the authors explicitly cautioned that 82% would not be fully representative. Treat it as a small selected cohort, not a general success rate.
+## 9. Acceptance commands
 
-Sander 2011 reports that 139/181 arrays (76.8%) exceeded threefold B2H activity and 14/181 (7.7%) were below 1.57-fold; ZFN-induced mutation was detected for 19/38 sites (50%). These are cohort-level results under the paper's conditions, not the success probability of an arbitrary archive-compatible site from this application.
-
-### 6.2 Historical activity and specificity benchmarks
-
-These results explain past decisions. They are not current CoDA candidate scores.
-
-#### Bhakta extended MA
-
-Bhakta et al. (2013), DOI `10.1101/gr.143693.112`:
-
-- 21 tabulated L6+R6 cases, 15 active: combined B-score ROC-AUC 0.656.
-- Prospective subset, 11 cases/8 active: B-score ROC-AUC 0.875.
-- Figure-2 reconstruction, 92 array variants/41 active: B-score ROC-AUC 0.834; threshold B-score >=15 had sensitivity 0.732, specificity 0.804, precision 0.750.
-- Calculated B-score matched 20/21 tabulated values. CS7-3 calculates to 20 from module values while Table 1 prints 21; this discrepancy is kept, not silently corrected.
-
-These data supported the earlier extended-MA prototype but do not validate the present CoDA protein sequences.
-
-#### DeepZF evaluation and removal
-
-DeepZF was initially embedded as a PWM cross-check. On 49 Barbas modules, the nominal triplet was top-1 for 16/49 and top-3 for 25/49. In 21 Bhakta L6+R6 cases, DeepZF alone was near random (AUC 0.522). An independent Chen 2013 CoDA cohort with extractable sequences had 82 pairs (32 active, 50 inactive); DeepZF fit versus somatic indel had Spearman rho 0.053 and activity ROC-AUC 0.491. It was therefore removed rather than promoted to an activity ranker. The bundled weights were also removed because the upstream repository did not provide explicit redistribution terms.
-
-Relevant sources: Aizenshtein-Gazit et al. (2022), DOI `10.1093/bioinformatics/btac469`; Chen et al. (2013), DOI `10.1093/nar/gks1356`.
-
-#### Zhu position-specific 3F library
-
-Zhu et al. (2011), DOI `10.1242/dev.066779`:
-
-- 29 tested ZFN pairs; 8 reached the paper's >=1% somatic-lesion criterion.
-- Of 174 used module positions, only 4 recognition helices matched the then-current Barbas archive; exact protein pairs matched 0/29.
-- Transferring only target-sequence composition to the 25 scorable cases gave B-score ROC-AUC 0.585 and the old combined ranking AUC 0.570. This was not a direct protein-level validation.
-- Table S5/S7 identifiers for `sbno2`, `sgk`, and `spon1b` are shifted; the repository maps by gene and recognition sequences and preserves the discrepancy in tests.
-
-The site briefly switched to the 81 Zhu position-specific modules because they were directly tabulated for 3F arrays, then switched again to the fuller and selection-free CoDA archive.
-
-#### PROGNOS and genome-wide off-target work
-
-Fine et al. (2014), DOI `10.1093/nar/gkt1326`, was independently implemented. All 46 published half-site mismatch counts and the relative ZFN-v2.0 order were reproduced.
-
-| Dataset | Evaluated sites | Positives | PROGNOS ROC-AUC | Average precision |
-|---|---:|---:|---:|---:|
-| Fine HBB 3F | 22 | 6 | 0.698 | 0.399 |
-| Fine HBB 4F | 22 | 1 | 0.524 | 0.091 |
-| Sander CCR5 screened cohort | 137 | 22 | 0.642 | 0.338 |
-| Sander VEGFA screened cohort | 158 | 34 | 0.677 | 0.428 |
-| Paschon TRAC 1-5 pooled | 122 | 16 | 0.759 | 0.369 |
-
-Sander et al. (2013), DOI `10.1093/nar/gkt716`, showed that requiring both half-sites to be within three mismatches recovered only 30/51 independent positive loci, while allowing either half-site to anchor within three mismatches recovered 51/51. However, PROGNOS score correlated poorly with measured indel fraction (pooled Spearman rho approximately -0.076), and a fixed score >=50 behaved inconsistently. The score was therefore treated only as a relative ranking, never a cleavage-probability threshold.
-
-Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping and asymmetric/N-terminal-FokI geometry support in the old research UI. All five TRAC pairs required geometry outside the older contiguous equal-arm assumption: four used 1c base-skipping and TRAC 5 used unequal 6F/5F arms. These features remain legacy and are not part of current CoDA 3F output.
-
-#### Persikov and Fauser auxiliary approaches
-
-- Persikov and Singh (2014), DOI `10.1093/nar/gkt890`: an optional locally supplied expanded linear SVM was allowed only as a limited tie-break in the extended-MA phase. The model is not redistributed.
-- Fauser et al. (2024), DOI `10.1038/s41467-024-45100-w`: 182 four-base-context rows could be loaded locally and compared separately. They were kept out of the primary rank and complete ORF because framework compatibility and ZFN activity were not established.
-
-## 7. Development history and why the architecture changed
-
-### 7.1 Scientific/product phases
-
-1. **Initial prototype (2026-08-06):** a lightweight browser ZFN designer was created and published with GitHub Pages.
-2. **Extended MA and scoring phase:** Barbas modules, B-score/TSO, 3-6F arrays, DeepZF, then independent activity benchmarks were added. DeepZF did not generalize as an activity predictor and was removed.
-3. **Off-target research phase:** local genome scanning, PROGNOS, asymmetric anchoring, screened-cohort validation, Paschon base-skipping, and asymmetric arrays were added. Results supported relative triage but not a universal safety threshold.
-4. **Experiment-output phase:** candidate portfolios, SSA/amplicon suggestions, ELD/KKR full constructs, 2A-linked single ORFs, codon presets, donor mapping, and GenBank were added.
-5. **Simplification phase:** the product goal was narrowed to a beginner-readable 3F tool. The site briefly used Zhu's 81 position-specific modules.
-6. **Current CoDA phase:** Zhu modules were replaced with the complete Sander 2011 CoDA archive; output was reduced to amino acids; input/archive/scanner validation was hardened after an ambiguity-coordinate bug was identified.
-7. **Value-first UI phase:** the landing page was reorganized around the practical outcome: target DNA in, CoDA-compatible paired ZFNs and complete amino-acid output out. Sander's 19/38 cohort result became the prominent evidence hook with an explicit non-probability qualification; sequence input now follows the hero directly, and finger-level detail is collapsed below protein output.
-8. **Interaction-clarity phase:** passive feature chips were replaced with check-marked text, actions received consistent fill/border, verbs, icons, hit areas, and focus states, candidate rows gained explicit selected/unselected wording with `aria-pressed`, and disclosure rows gained visible open/close cues. The rule is role clarity without relying on color alone.
-9. **Selected-pair explanation phase:** the compact half-site row was replaced with a sequence-linked diagram showing both 3ZF monomers, global ZF1–ZF6 correspondence, N/C direction, F/R duplex orientation, the spacer cleavage region, and FokI ELD (−)/KKR (+) obligate heterodimerization. The mapping is generated from the selected candidate and protected by an orientation test rather than being a static illustration.
-10. **Pre-input mechanism phase:** after the selected-result diagram proved too late to teach first-time visitors what they were designing, an original inline-SVG overview was placed between the hero and INPUT. It introduces the two 3ZF monomers around an F/R duplex, separates ZF recognition from FokI cleavage, and then hands the visitor into the sequence workflow. The supplied reference slide was used only to understand the requested information hierarchy and was not copied or committed.
-11. **Mechanism-diagram legibility phase:** the ambiguous dotted center guide and slash-like cut marks were replaced with lightning-shaped cuts on both F and R rows. The KKR- and ELD-side C termini were moved after their FokI domains and rendered above the domain shapes. A separate compact phone layout preserves F/R, ZF1–ZF6, N/C, ELD/KKR, spacer length, and both cut marks in one viewport without horizontal scrolling.
-12. **Selected-target focus phase:** the numbered selected-pair explanation was changed into an unnumbered design-confirmation panel. Candidate-specific target bases now appear first as left 9 bp, spacer, and right 9 bp, with the F/R duplex and ZF1–ZF6 mapping visible without horizontal scrolling. Repeated fixed-architecture explanations and the duplicate FokI citation were removed from this panel because the pre-input mechanism figure and evidence section already cover them.
-13. **Display-versus-control phase:** the selected-design region stopped using the same bordered white card as the input and candidate controls. It now uses a borderless tinted background, states that it is display-only, and directs changes back to step 02. The target diagram also lost its nested outline, while the protein-output card retains a boundary because it contains the download action.
-14. **Spacer-priority phase:** requested spacer-center distance remained the primary rank criterion, but the equal-distance tie-break changed from symmetric closeness to 6 bp to the evidence-informed order 6 bp, 5 bp, then 7 bp. The UI states this order and explicitly says it is not a candidate-specific activity prediction.
-15. **Selected-display legibility phase (P0 of a three-step redesign):** the selected-design panel said the same thing four times — a figure caption, three summary cards, the in-diagram band labels, and the legend all restated the left 9 bp / spacer / right 9 bp split — so the panel read as four unrelated blocks. The summary cards and the second heading were removed, leaving the diagram as the single statement of that split; the caption survives as a screen-reader-only figure caption. The ranking key `distance` (bp from the requested spacer center) had never been rendered even though it is the primary sort criterion, so it is now the first metric and opens the panel's lead sentence. Type in the region was rebuilt on a 26 / 13 / 12 / 11 px scale with target bases at 17 px, and the 5-8 px labels — 5 px on phones — were raised to a hard 11 px floor that `tests/public-evidence.test.mjs` enforces for every rule in the region. Remaining steps: P1 covers in-diagram legend, binding direction, and candidate/display color continuity; P2 covers a coordinate ruler, real horizontal scrolling on phones, and moving candidate-independent blocks out of the panel.
-16. **In-diagram explanation phase (P1):** the legend moved from a separate block below the figure onto the dark panel itself, beside the colours it names, and now ties each colour to its fingers (ZF1–ZF3 left, ZF4–ZF6 right). A direction row above the ZF labels draws the protein N→C run of each monomer, so the antiparallel right array is shown rather than only footnoted; the footnote remains as the text equivalent for assistive technology, since the row is `aria-hidden`. Candidate rows in step 02 adopted the diagram's left-green / spacer-orange / right-blue language and now state the ranking distance (`希望位置 ±N bp`) that the display panel leads with, and the panel names which candidate it is showing (`候補 NN / M件`). The 12-row list cap became the shared `LISTED_CANDIDATE_LIMIT` constant so the badge, the count line, and the list cannot drift apart. Remaining: P2 (coordinate ruler, real horizontal scrolling on phones, moving candidate-independent blocks out of the panel).
-17. **Spacer-priority notation phase:** the public result summary now uses `6 > 5 >> 7` instead of an equal-looking arrow chain. The public input panel no longer carries the literature rationale; README is the durable explanation of the notation, evidence, and limitations. `>>` is explicitly qualitative and does not alter the ordinal implementation or imply an activity ratio.
-18. **Panel-scope phase (P2, final step of the redesign):** the diagram gained a coordinate ruler above the band labels, so the figure states where in the pasted sequence the target sits (1-based, `start + 1` to `start + 18 + spacer`), which nothing on the page had shown before. `.dna-scroll` had `overflow: hidden` despite its name, so anything that could not shrink was clipped rather than scrolled: at 320 px the 7 bp spacer cell needed 46 px and got 36 px, silently cutting bases. It is now `overflow-x: auto` with `.dna-map { min-width: 268px }` and a wider mobile spacer column (2.2fr), measured so that nothing clips at any width and no horizontal scrolling appears at 360 px or above — decision 12's no-scroll requirement holds for phones, and below 360 px the panel scrolls instead of lying about the sequence. Two candidate-independent blocks left the panel: the fixed ORF architecture strip moved into the `finger構成と単一ORFの構成` disclosure, and the donor list moved to the evidence section, which is where fixed provenance belongs. The panel now contains only what changes when the selected candidate changes.
-19. **Annotated-protein export phase:** standard GenPept replaced FASTA as the primary download without reintroducing DNA generation. The precursor carries nine protein `Region` features for ZF1–ZF6, FokI ELD/KKR, and F2A so SnapGene, Benchling, Geneious, and other protein-aware editors can render the architecture. The three-sequence FASTA remains available as a secondary interoperability export.
-20. **Single-precursor output phase:** GenPept and Protein FASTA now both contain only the selected precursor polyprotein; the predicted left/right F2A products were removed from the public model and files. Both filenames use the displayed result rank (`ZFN_ResultNN.gp` / `.fasta`) so parallel candidate downloads remain identifiable.
-21. **Manual coordinate-input phase:** desired spacer center and search range defaults became 1000 bp, and native number inputs were replaced with digit-only manual fields so browsers do not show increment/decrement steppers. Only the desired center is range-validated against input length; invalid values display a red `role=alert` correction and suppress candidate generation.
-22. **Selectable-result-sequence phase:** candidate rows retain whole-row mouse and keyboard selection through an accessible `role=button`, but are no longer native buttons. Their colored DNA text explicitly permits text selection; a completed drag selection suppresses the row click handler, so users can copy bases without changing or losing the selected green candidate. No separate copy or download control was added.
-23. **Workflow-numbering phase:** PR #52 established the explicit action sequence `01 INPUT`, `02 SELECT`, and `03 PROTEIN OUTPUT`; at that phase the candidate-specific DNA/finger diagram remained as an unnumbered confirmation display. Phase 25 later removed that intermediate display.
-24. **Direct-protein-output phase:** the precursor amino-acid sequence is always visible in step 03 instead of hiding behind a disclosure.
-25. **Direct-select-to-output phase:** the separate unnumbered selected-content display and its sequence/finger diagram were removed because step 02 already exposes the selected half-sites and ranking facts. Step 03 now follows step 02 directly, while `finger構成と単一ORFの構成を見る` remains below it. Download controls are labelled `Download (GenPept: featureあり)` and `Download (fasta)`.
-26. **Gupta-first phase:** the complete Gupta 2012 implementation workbook (162 unique 6-bp targets, 87 unique 2F module identifiers) was transcribed and combined with the Zhu 2011 position-specific 1F archive to build 3F monomers. The default profile uses Gupta per monomer and falls back to a complete CoDA monomer when unavailable; a CoDA-only control preserves the former design path. Candidate rows, CSV, FASTA, and GenPept expose method provenance. No missing target or unpublished specificity category is imputed.
-27. **Complete candidate-list phase:** the scanner already returned up to 30 ranked candidates, but the public list rendered only the first 12 while displaying the full count. The separate 12-row presentation cap was removed; the existing bounded scroll region now renders and permits selection of every returned candidate, matching the count and CSV.
-
-### 7.2 Complete main-branch commit/PR ledger through merged PR #56
-
-| Date | Commit / PR | Change and significance |
-|---|---|---|
-| 2026-08-06 | `e811739` | Repository initialization. |
-| 2026-08-06 | `f64b976` | First React/Vite prototype, tests, MIT license, and Pages workflow. |
-| 2026-08-06 | `99df09c` | Pages deployment fix after enabling Pages. |
-| 2026-08-06 | `d9eaa1f` / #1 | Extended MA archive and embedded DeepZF PWM cross-check. |
-| 2026-08-07 | `f1347c7` / #2 | Bhakta activity benchmark; B-score/TSO alignment and regression tests. |
-| 2026-08-07 | `f5f65f6` | Deployment trigger for benchmark release. |
-| 2026-08-07 | `51f5c1f` | One-time Pages bootstrap. |
-| 2026-08-07 | `3ef7921` | Allowed a successful Pages run to bootstrap current `main`. |
-| 2026-08-07 | `4f41bd4` | Scheduled one-time current Pages deployment. |
-| 2026-08-07 | `91ec3fb` | Scheduled deployment at a specific minute. |
-| 2026-08-07 | `ee3b187` | Temporary retry logic for Pages recovery. |
-| 2026-08-07 | `4631359` | Restored the standard Pages workflow. |
-| 2026-08-07 | `6130e6a` / #3 | Chen external validation; DeepZF removed from activity ranking after near-random validation. |
-| 2026-08-07 | `cb73422` / #4 | Browser-local genome-wide search and PROGNOS implementation. |
-| 2026-08-07 | `c7a5702` / #5 | Triggered deployment of off-target release. |
-| 2026-08-07 | `dfbbaa8` / #6 | Sander/Fine specificity reconstruction; asymmetric half-site anchoring. |
-| 2026-08-07 | `80a1201` / #7 | Full screened cohorts; removed unsupported fixed PROGNOS threshold from ranking; added Paschon data. |
-| 2026-08-07 | `14e93a8` / #8 | Independent arm lengths, Paschon 1c base-skipping, masked search, TRAC validation. |
-| 2026-08-07 | `fb22460` / #9 | Zhu 2011 applicability benchmark without mixing its modules into Barbas ranking. |
-| 2026-08-07 | `4776779` / #10 | Removed bundled DeepZF files; added optional local Persikov SVM evaluator. |
-| 2026-08-07 | `68041d3` / #11 | Candidate portfolio, full ELD/KKR constructs, Fauser comparison, SSA/amplicon outputs. |
-| 2026-08-07 | `15efb97` / #12 | Single-ORF 2A-linked left/right ZFN output; initially GSG-T2A. |
-| 2026-08-13 | `4308f91` / #13 | Displayed four donor taxa for the then-current Sp1C/T2A construct. |
-| 2026-08-13 | `ba6ba30` / #14 | Replaced the complex public UI with a simple Zhu 3F designer; switched to the current 22-aa FMDV-derived F2A. |
-| 2026-08-13 | `f25f045` / #15 | Updated 3F page metadata. |
-| 2026-08-13 | `6688248` / #16 | Updated rendered-title regression test. |
-| 2026-08-13 | `b4c2ae0` / #17 | Replaced search-range toggle with numeric +/-bp input, default 500 bp. |
-| 2026-08-13 | `56e0e7e` / #18 | Replaced Zhu modules with complete Sander CoDA archive and exact F2-context assembly. |
-| 2026-08-14 | `cde821f` / #19 | Removed CoDA codon presets, CDS FASTA, and GenBank; standardized on protein output. |
-| 2026-08-17 | `b36fa2b` / #20 | Preserved ambiguity coordinates, blocked unsupported characters, validated archive at startup, exhaustively tested lookup and scanner order, and added CI. |
-| 2026-08-17 | `56dd4a8` / #21 | Added the visible `ver.21 (PR #21)` badge, linked it to the implementation PR, and added a regression test. |
-| 2026-08-17 | `a4d78f9` / #22 | Added this durable AI handoff, repository agent instructions, literature ledger, source hashes, and full historical decision record. |
-| 2026-08-17 | `9889df7` / #23 | Removed host-specific F2A evidence from the general tool, retained Lei 2011 as the paired-ZFN F2A precedent, and made the scientific plus IP/availability rationale for CoDA explicit. |
-| 2026-08-17 | `3de0489` / #24 | Rebuilt the public landing flow around the user's goal, fixed the hero label as `SANDER 2011 · CoDA-based ZFN Designer`, displayed the Sander 19/38 cohort result with its scientific limitation, moved input directly below the hero, and deferred finger-level technical details until after protein output. |
-| 2026-08-17 | `d07c48e` / #25 | Separated interactive controls from passive information through consistent action styling, explicit action/state text, keyboard focus, `aria-pressed`, and disclosure open/close cues. |
-| 2026-08-17 | `69d3f88` / #26 | Added a selected-sequence 3ZF–FokI diagram with tested ZF1–ZF6/F–R mapping, N/C orientation, and ELD (−)/KKR (+) nuclease heterodimer explanation. |
-| 2026-08-17 | `3a9cc34` / #27 | Kept the central ELD (−) / KKR (+) heterodimer label on one line after visual inspection of the deployed diagram. |
-| 2026-08-17 | `aa54fbc` / #28 | Added an original pre-input SVG overview of the two 3ZF monomers, F/R duplex, 5–7 bp spacer, and FokI heterodimer mechanism. |
-| 2026-08-17 | PR #29 | Replaced ambiguous center marks with separate F/R lightning cuts, corrected both post-FokI C termini, and added a no-horizontal-scroll phone layout. |
-| 2026-08-17 | PR #30 | Pointed the public GitHub link to the repository Code page. |
-| 2026-08-17 | PR #31 | Clarified browser-local processing and the host evidence for the CoDA study. |
-| 2026-08-17 | PR #32 | Clarified the local-processing label and spacer cut-site marks. |
-| 2026-08-17 | PR #33 | Corrected spacer cut-mark and label alignment. |
-| 2026-08-17 | PR #34 | Increased the spacer cut-site label size. |
-| 2026-08-17 | PR #35 | Removed a redundant hero benefit. |
-| 2026-08-17 | PR #36 | Unified spacer annotation styling. |
-| 2026-08-17 | PR #37 | Clarified the beginner-facing ZFN mechanism heading. |
-| 2026-08-17 | PR #38 | Simplified the hero title. |
-| 2026-08-17 | PR #39 | Simplified the hero description. |
-| 2026-08-17 | PR #40 | Refocused the selected-design panel on the candidate-specific target DNA. |
-| 2026-08-17 | `9695a8a` / #41 | Separated the selected-design display from interactive controls. |
-| 2026-08-17 | PR #42 | Applied the equal-distance spacer preference 6 bp, 5 bp, then 7 bp; added disclosure, regression coverage, and scientific rationale. |
-| 2026-08-17 | PR #43 | Removed the duplicated target-layout summary and second heading from the selected-design panel, surfaced the requested-center distance as the leading metric, and set an enforced 11 px minimum type size for the region. |
-| 2026-08-18 | PR #44 | Moved the sequence legend onto the diagram, drew each monomer's N→C binding direction in the figure, unified candidate-row and diagram colours, and labelled which candidate the display panel is showing. |
-| 2026-08-18 | PR #45 | Replaced the equal-looking spacer arrow chain with `6 > 5 >> 7`, moved the scientific rationale and limitations from the public input panel into README, and defined `>>` as qualitative rather than a numerical activity ratio. |
-| 2026-08-18 | PR #46 | Quantified the linker and spacer evidence behind `6 > 5 >> 7` (Händel 2009 linker comparison, Chen 2013 84-pair strata recalculated at the paper's >0.27% threshold) while keeping the tie-break qualitative. |
-| 2026-08-18 | PR #47 | Added the input-sequence coordinate ruler to the target diagram, replaced the clipping `overflow: hidden` with measured scroll behaviour that still avoids horizontal scrolling at 360 px and above, and moved the fixed ORF strip and donor list out of the candidate-specific panel. |
-| 2026-08-18 | PR #48 | Added standard GenPept protein output with exact ZF1–ZF6, FokI ELD/KKR, and F2A Region features while retaining the three-sequence FASTA and avoiding any implied DNA/codon sequence. |
-| 2026-08-18 | PR #49 | Reduced both GenPept and Protein FASTA to the selected precursor polyprotein only, removed predicted post-F2A products from the public model, and tied both filenames to the displayed candidate number (`ZFN_ResultNN`). |
-| 2026-08-18 | PR #50 | Set both coordinate controls to 1000 by default, removed native number steppers in favour of manual digit entry, and added an accessible red correction state when the desired spacer center lies outside the input sequence. |
-| 2026-08-18 | PR #51 | Removed the exploration-range default hint and made candidate DNA manually selectable while preserving whole-row candidate selection, green selected state, and keyboard operation. |
-| 2026-08-18 | PR #52 | Renamed step 02 from RESULTS to SELECT, numbered the output card as 03 PROTEIN OUTPUT, made its precursor amino-acid sequence always visible, and relabelled both file controls as explicit DOWNLOAD actions. |
-| 2026-08-18 | PR #53 | Removed the redundant selected-content display and sequence/finger diagram, retained the technical finger/ORF disclosure below step 03, and clarified the two download labels. |
-| 2026-08-21 | PR #55 | Added the complete Gupta 2012 2F implementation archive, default Gupta-first 3F monomer construction with Zhu 2011 1F completion, monomer-level CoDA fallback, the selectable CoDA-only v1 profile, provenance-aware outputs, and archive/coverage audits. |
-| 2026-08-21 | PR #56 | Removed the 12-row presentation cap so all scanner-returned candidates (up to 30) appear in the existing scrollable list and remain selectable, matching the displayed count and CSV. |
-
-The abandoned T2A stage cited Katayama and Yamamoto (2025), DOI `10.3390/ijms26157602`, as a GSG-T2A ZFN precedent. It is historical only: current output uses an FMDV-derived F2A sequence without the old GSG-T2A implementation.
-
-## 8. Reference ledger
-
-Every paper DOI needed to understand the current implementation, retained validation, and rejected routes through 2026-08-17 is listed here. “Current” means it directly informs the present UI/output; “legacy” means it explains retained code, validation, or a rejected route.
-
-| Status | First author, year, DOI | Role in this project |
-|---|---|---|
-| Current | Gupta, 2012, `10.1038/nmeth.1994` | Default 2F module archive, 1F/2F assembly strategy, and small zebrafish validation cohort. |
-| Current | Zhu, 2011, `10.1242/dev.066779` | Position-specific 1F modules used to complete Gupta 3F arrays. |
-| Current | Sander, 2011, `10.1038/nmeth.1542` | CoDA method and F1/F2/F3 unit archive. |
-| Current | Doyon, 2011, `10.1038/nmeth.1539` | FokI ELD/KKR mutations and obligate-heterodimer evidence. |
-| Current | Lei, 2011, `10.1038/mt.2011.12` | Prior ZFN pair expressed from an F2A-linked ORF in mammalian cells. |
-| Context | Zhang, 2024, `10.1016/j.sbi.2024.102836` | Review of the updated C2H2 ZF-DNA recognition code; guided caution about simple triplet independence. |
-| Legacy | Bhakta, 2010, `10.1007/978-1-60761-753-2_1` | Barbas one-finger modular-assembly sequences/framework summary. |
-| Current/legacy | Händel, 2009, `10.1038/mt.2008.233` | Systematic ZF-FokI inter-domain linker and spacer-length comparison. |
-| Current | Shimizu, 2009, `10.1016/j.bmcl.2009.02.109` | Restricted 6-bp spacer tolerance of the `TGAAAR` linker; supports the first spacer tie-break. |
-| Current/legacy | Bhakta, 2013, `10.1101/gr.143693.112` | Exact 5/6/7-bp linker mapping, extended MA, B-score, and activity benchmarks. |
-| Current/legacy | Chen, 2013, `10.1093/nar/gks1356` | Independent CoDA ZFN cohort; supports demoting 7-bp ties and was also used to reject DeepZF as an activity ranker. |
-| Legacy | Sander, 2013, `10.1093/nar/gkt716` | Prospective and screened off-target cohorts; asymmetric anchor validation. |
-| Legacy | Fine, 2014, `10.1093/nar/gkt1326` | PROGNOS ZFN v2.0 equations, parameters, and HBB 3F/4F validation. |
-| Legacy | Persikov, 2014, `10.1093/nar/gkt890` | Expanded linear SVM and overlapping four-base recognition model. |
-| Legacy | Paschon, 2019, `10.1038/s41467-019-08867-x` | 1c base-skipping, asymmetric arm lengths, NC architecture, TRAC off-target data. |
-| Legacy | Aizenshtein-Gazit, 2022, `10.1093/bioinformatics/btac469` | DeepZF forward PWM model; evaluated and removed. |
-| Comparison only | Ichikawa, 2023, `10.1038/s41587-022-01624-4` | ZFDesign comparison; code/selection data require academic MTA and are not included. |
-| Legacy/experimental | Fauser, 2024, `10.1038/s41467-024-45100-w` | Four-base context table loaded locally; not promoted into main rank/output. |
-| Historical construct | Katayama, 2025, `10.3390/ijms26157602` | Earlier GSG-T2A ZFN construct rationale; superseded by current F2A decision. |
-
-Patent/data references without a DOI:
-
-- WO2011017293A2: CoDA disclosure, archive totals, and SEQ ID NOs 841-844 used for current framework verification.
-- UniProt P14870: FokI reference protein; current cleavage domain is residues 384-579.
-- ENA/GenBank J04623: original FokI coding-sequence reference.
-- NCBI BioProject PRJNA179355: Bhakta T2-X6 sequencing data; it is **not** a missing row-by-row table of all 268 SSA constructs.
-
-## 9. Known gaps, risks, and recommended next work
-
-### Highest priority scientific gaps
-
-1. **No individual Gupta or CoDA activity model.** Current candidates are archive-compatible and use only geometric/method tie-breaks. Gupta's implementation workbook does not assign good/fair/poor to every rationally derived row, so no missing score is inferred. A future score requires a row-resolved primary source mapping every implemented module to its measured category.
-2. **No current off-target workflow.** The old scanner and benchmark evidence remain, but the current 3F UI does not expose genome-wide search. Reintroducing it is nontrivial because 3F anchors generate many hits and mobile performance can be poor. A lightweight exact/near-match report should be specified and benchmarked separately.
-3. **Regulatory provenance of both frameworks.** Resolve reporting for the Gupta/Zhu Zif268 scaffold and the synthetic CoDA framework before making donor-organism claims.
-4. **Complete-construct validation.** Test expression, F2A processing, nuclear localization, and paired nuclease activity of the exact Gupta/CoDA-3F/ELD/F2A/KKR architecture in the target organism.
-5. **Experimental candidate portfolio.** The practical output should encourage 2-3 spatially independent candidate pairs rather than treating rank 1 as uniquely optimal.
-
-### Engineering risks
-
-- Never sanitize ambiguity by deletion; preserve coordinates.
-- Never reverse only one of the two left-arm operations; the left top-strand half-site must become its reverse complement before Gupta or CoDA lookup.
-- Do not equate spacer center with an exact cut bond.
-- Do not make a missing unit available through a predictive model without labeling it as a different, unvalidated design method.
-- Do not split a Gupta 2F module or mix Gupta and CoDA fingers within one 3F monomer.
-- Do not let legacy `construct-output.ts` reintroduce DNA output or the Sp1C donor map into current exports.
-- If the Gupta JSON is edited, require the source MD5/count audit plus all-row reconstruction test.
-- If the CoDA JSON is edited, require archive audit plus exhaustive 9-mer test; a count-only check is insufficient.
-- Preserve GitHub Pages base path `/Zinc-Zinc-Finger/` and the rendered HTML test.
-
-### Claims that must not appear without new evidence
-
-- “CoDA candidate X has a 50% success probability.”
-- “Gupta candidate X has an 82% success probability.”
-- “PROGNOS score is the probability of cleavage” or “score >=50 is safe/unsafe.”
-- “ELD/KKR + F2A + Gupta/CoDA 3F has been validated as one construct.”
-- “The software is patent-clear” or “commercial use is cleared.”
-- “Four current donor taxa” while the CoDA framework is still labeled synthetic.
-
-## 10. Source files supplied during development
-
-The following files were inspected directly on 2026-08-17. They are not committed because they are third-party papers/supplements; only transformed data and provenance notes belong in this repository. A future AI will need the user to reattach them if it must re-audit raw rows.
-
-| Supplied file | SHA-256 | Identification and use |
-|---|---|---|
-| `gupta2012.pdf` | `e743d1dfd5db0586167f080dad163cb5c4b01382a844d6b96528f08577e1ac11` | Gupta 2012 main article and online methods; DOI `10.1038/nmeth.1994`. |
-| `NIHMS397909-supplement-1.pdf` | `d2a50d8c1ccfa68013fae6e38f8258d00b2149d00a57146c857eb22c5b2174ee` | Gupta 2012 Supplementary Figures/Tables/Discussion; specificity categories, validated ZFNs, and limitations. |
-| `gupta2012-supp2.xls` | `5ee84348f2a1bda56ed7d5e4cf43bd356580b40ecfd74c10eac8b8e450841f6a` | Gupta 2012 B1H selection archive (493 rows); inspected for provenance, not bundled. |
-| `NIHMS397909-supplement-3.xls` | `9445ce488d5710622dd6b24517327f5675150c58fbad18679c202171f942b376` | Gupta 2012 implementation archive (162 target rows, 87 unique 2F IDs); source for `data/gupta-2012-two-finger-modules.json`. MD5 `1998b2a86b539c624bbb5ee944875530`. |
-| `document(1).xls` | `b11b2f30c9156fc18cf420ebb507fe704da3f84155e2d5ffdf4eae46538f919d` | Zhu 2011 Supplementary Table S1; 82 rows, position-specific module/plasmid inventory. |
-| `document (1)(1).xls` | `904a443d00d909894d3169999207ddf15ed578198fa9e751aa0042a8f8d9874b` | Zhu 2011 Supplementary Table S5; 76 rows, ZFP names, target triplets, B2H 3-AT and PWM columns. |
-| `document (2)(1).xls` | `c4bf085d2da80c342eb6d3b3642897479f47172ca88fd8f41a71b66bdf6495c4` | Zhu 2011 Supplementary Table S7; 30 rows, target sites and lesion frequencies. |
-| `nar_42_6_e42_s0(2).zip` | `4a2fd52af04e135c83e4e331372a9c477d51304ff0c2fc8a327a001be25824f6` | ZIP containing Fine 2014 79-page supplement `nar-02842-met-h-2013-File002.pdf`; inner PDF SHA-256 `dbf9d5e05fa081e9754ef96df34be1fd30bef1844e3707371b86af730675e1b5`. Tables 8-9 support the committed HBB data. |
-| `2011_...FokI...ELDKKR(1).pdf` | `12ff798e84585f6db18afac8d115aace15ae3ca3db7f59e5590c0c98ecaffc7d` | Full 8-page Doyon 2011 paper; confirms ELD/KKR substitutions and activity/specificity interpretation. |
-
-The three Zhu workbook hashes exactly match the hashes already recorded in `data/zhu-2011-ma-zfn-benchmark.json`. The Fine inner-PDF hash exactly matches `data/fine-2014-zfn-off-targets.json`. This is a source-identity check, not an independent verification of every transformed JSON field.
-
-Full-text availability note: the Doyon paper and Fine supplement above were available and read locally. The three Zhu supplementary workbooks were read directly. The freely accessible full texts of Händel 2009, Shimizu 2009, Bhakta 2013, and Chen 2013 were inspected for the PR #42 spacer-ranking decision. This reconciliation did not have a separate local full-text PDF for every other paper in section 8; conclusions about those works rely on the repository's prior full-text/supplement analyses and retained provenance. Obtain the paper/supplement before changing a claim that depends on an unreviewed table or sequence.
-
-## 11. Commands and acceptance checklist
-
-Requirements: Node.js 22 or newer; CI currently uses Node 24.
+Run at minimum:
 
 ```bash
 npm ci
@@ -556,22 +274,29 @@ npm run audit:coda
 npm test
 ```
 
-Optional historical benchmarks:
+`npm run audit:gupta` is also useful when Gupta data changes.
 
-```bash
-npm run benchmark
-node scripts/benchmark-persikov-2014.mjs /path/to/pwm_predict
-```
+A dependency audit warning is not the same as a scientific-design failure, but dependency security findings should be reported and addressed separately rather than silently ignored.
 
-The Persikov benchmark requires the official external predictor and is intentionally not part of the normal CI command.
+## 10. Primary-source ledger for current output
 
-Before merging a scientific change, confirm:
+| Component / decision | Primary source |
+|---|---|
+| Bhakta extended modular assembly, B-score threshold, 3-6F evaluation | Bhakta MS et al. (2013), DOI `10.1101/gr.143693.112` |
+| Sp1C/Zinc Finger Tools framework | Mandell JG, Barbas CF III (2006), DOI `10.1093/nar/gkl209` |
+| public modular-assembly archive summary | Bhakta M, Segal DJ (2010), DOI `10.1007/978-1-60761-753-2_1` |
+| Gupta 2F archive | Gupta A et al. (2012), DOI `10.1038/nmeth.1994` |
+| Zhu position-specific 1F modules | Zhu C et al. (2011), DOI `10.1242/dev.066779` |
+| CoDA | Sander JD et al. (2011), DOI `10.1038/nmeth.1542` |
+| ELD/KKR | Doyon Y et al. (2011), DOI `10.1038/nmeth.1539` |
+| paired-ZFN F2A precedent | Lei Y et al. (2011), DOI `10.1038/mt.2011.12` |
+| spacer/linker evidence | Händel EM et al. (2009), DOI `10.1038/mt.2008.233`; Shimizu Y et al. (2009), DOI `10.1016/j.bmcl.2009.02.109`; Chen S et al. (2013), DOI `10.1093/nar/gks1356` |
 
-- current versus legacy scope is explicit;
-- source row/table and DOI are recorded;
-- the algorithm has an independent oracle or fixture, not only snapshot tests;
-- strand orientation and ambiguity coordinates are tested;
-- quantitative results state `n`, endpoint, and whether analysis is prospective, retrospective, reconstructed, or transferred across protein archives;
-- cohort performance is not restated as candidate-specific probability;
-- protein/DNA provenance and third-party licensing are updated in `THIRD_PARTY_NOTICES.md` where applicable;
-- this handoff is updated with the decision and the reason.
+## 11. Open scientific limitations
+
+1. The exact Bhakta Supplemental Appendices XLS has not been bundled or used as a verbatim sequence table. If obtained with suitable redistribution/provenance terms, use it to add exact full-array sequence cross-checks rather than to replace the independent archive logic blindly.
+2. B-score is not a calibrated activity model. The current v3 rank is evidence-informed, not probabilistic.
+3. Historical TSO and module recommendation fields are secondary tie-break evidence. If future validation shows they do not improve independent performance, remove them from ranking rather than retaining them for tradition.
+4. The exact Bhakta-6F/ELD/F2A/KKR complete construct needs experimental validation in the intended host.
+5. FokI variants such as the attenuated Miller 2019 designs remain a separate future architecture decision and should not be silently substituted into v3.
+6. FTO remains outside the scope of software logic and requires jurisdiction/use-specific review.
