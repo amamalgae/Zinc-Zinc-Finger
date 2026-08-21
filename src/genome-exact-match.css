@@ -116,8 +116,7 @@
   display: none;
 }
 
-html[lang="ja"] .genome-match.exact-duplicate::after { content: "完全一致"; }
-html[lang="en"] .genome-match.exact-duplicate::after { content: "Exact"; }
+.genome-match.exact-duplicate::after { content: "Duplicate"; }
 .genome-match.near-high::after { content: "≤2 mm"; }
 .genome-match.near-mid::after { content: "3–4 mm"; }
 
@@ -127,6 +126,7 @@ html[lang="en"] .genome-match.exact-duplicate::after { content: "Exact"; }
 
 /* A wrong/mismatched reference genome is exceptional and shown once, not on every row. */
 .candidate-list:has(.genome-match.target-missing)::before {
+  content: "Target not found";
   display: block;
   margin: 0 0 8px;
   padding: 7px 9px;
@@ -136,8 +136,6 @@ html[lang="en"] .genome-match.exact-duplicate::after { content: "Exact"; }
   font-size: 12px;
   font-weight: 800;
 }
-html[lang="ja"] .candidate-list:has(.genome-match.target-missing)::before { content: "標的をゲノムで確認できません"; }
-html[lang="en"] .candidate-list:has(.genome-match.target-missing)::before { content: "Target not confirmed in genome"; }
 
 /*
  * While a genome scan is pending, SELECT is intentionally covered so the
