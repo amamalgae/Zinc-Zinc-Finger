@@ -59,11 +59,11 @@ function MobileOverviewDiagram() {
     <div
       className="overview-mobile-diagram"
       role="img"
-      aria-label="F鎖とR鎖の左右9塩基をZF1からZF6が認識し、中央の5から7塩基のspacerでFokI ELDマイナスとKKRプラスが両鎖を切断する構成図"
+      aria-label="ZF1 to ZF6 bind the 9 bp half-sites on the F and R strands; FokI ELD and KKR cut both strands across the 5 to 7 bp spacer between them"
     >
       <div className="overview-mobile-array right">
         <span className="overview-mobile-terminus">C</span>
-        <div className="overview-mobile-foki positive"><strong>FokI</strong><small>KKR（＋）</small></div>
+        <div className="overview-mobile-foki positive"><strong>FokI</strong><small>KKR (+)</small></div>
         <MobileFinger label="ZF6" side="right" />
         <MobileFinger label="ZF5" side="right" />
         <MobileFinger label="ZF4" side="right" />
@@ -77,7 +77,7 @@ function MobileOverviewDiagram() {
         <MobileDnaCell side="left" />
         <div className="overview-mobile-spacer">
           <span>5–7 bp spacer</span>
-          <small className="cut-label">切断部位</small>
+          <small className="cut-label">cut site</small>
           <LightningIcon position="top" />
         </div>
         <MobileDnaCell side="right" />
@@ -92,7 +92,7 @@ function MobileOverviewDiagram() {
         <MobileDnaCell side="left" />
         <div className="overview-mobile-spacer">
           <span>5–7 bp spacer</span>
-          <small className="cut-label">切断部位</small>
+          <small className="cut-label">cut site</small>
           <LightningIcon position="bottom" />
         </div>
         <MobileDnaCell side="right" />
@@ -105,7 +105,7 @@ function MobileOverviewDiagram() {
         <MobileFinger label="ZF1" side="left" />
         <MobileFinger label="ZF2" side="left" />
         <MobileFinger label="ZF3" side="left" />
-        <div className="overview-mobile-foki negative"><strong>FokI</strong><small>ELD（−）</small></div>
+        <div className="overview-mobile-foki negative"><strong>FokI</strong><small>ELD (−)</small></div>
         <span className="overview-mobile-terminus">C</span>
       </div>
     </div>
@@ -118,16 +118,16 @@ export default function ZfnOverviewDiagram() {
       <div className="mechanism-heading">
         <div>
           <span>HOW A 3-FINGER ZFN PAIR WORKS</span>
-          <h2 id="mechanism-title">ZFNがDNAを認識して<br />切断する仕組み</h2>
+          <h2 id="mechanism-title">How a ZFN pair<br />finds and cuts DNA</h2>
         </div>
-        <p>ZFはDNA配列を見分ける部分、FokIはDNAを切るヌクレアーゼです。左右のZFNがそれぞれ9 bpへ結合すると、spacer上で2種類のFokIが組み合わさり、切断可能な複合体になります。</p>
+        <p>The zinc fingers read the DNA; FokI is the nuclease that cuts it. Once both ZFNs are bound to their 9 bp half-sites, the two FokI variants meet over the spacer and form the complex that cleaves.</p>
       </div>
 
       <figure className="overview-figure">
-        <div className="overview-svg-scroll" tabIndex={0} aria-label="3-finger ZFNペアの構成図">
+        <div className="overview-svg-scroll" tabIndex={0} aria-label="Diagram of a 3-finger ZFN pair">
           <svg className="overview-svg" viewBox="0 0 1040 430" role="img" aria-labelledby="zfn-overview-title zfn-overview-desc">
-            <title id="zfn-overview-title">左右の3-finger ZFNがDNAを認識し、FokIヘテロ二量体がspacerを切断する構成</title>
-            <desc id="zfn-overview-desc">F鎖とR鎖からなるDNAの左右9塩基を、左ZFNのZF1からZF3と右ZFNのZF4からZF6が認識する。中央の5から7塩基のspacerでFokI ELDマイナスとKKRプラスがヘテロ二量体を形成する。</desc>
+            <title id="zfn-overview-title">Two 3-finger ZFNs bound to DNA with a FokI heterodimer cutting the spacer</title>
+            <desc id="zfn-overview-desc">ZF1 to ZF3 of the left ZFN and ZF4 to ZF6 of the right ZFN bind the 9 bp half-sites on the F and R strands. FokI ELD and KKR form a heterodimer over the 5 to 7 bp spacer between them.</desc>
             <defs>
               <linearGradient id="overview-left-finger" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0" stopColor="#f2f8ef" />
@@ -163,13 +163,13 @@ export default function ZfnOverviewDiagram() {
             <path className="overview-protein-link right" d="M635 91 C607 91 606 116 590 132" />
             <path className="overview-foki positive" filter="url(#overview-shadow)" d="M595 86 C628 103 632 145 610 172 C596 190 570 198 544 187 C521 178 505 156 509 132 C514 102 549 73 595 86 Z" />
             <text className="overview-foki-name positive" x="568" y="126">FokI</text>
-            <text className="overview-foki-variant positive" x="568" y="148">KKR（＋）</text>
+            <text className="overview-foki-variant positive" x="568" y="148">KKR (+)</text>
             <text className="overview-terminus right" x="496" y="178">C</text>
 
             <path className="overview-protein-link left" d="M420 347 C447 347 451 326 467 309" />
             <path className="overview-foki negative" filter="url(#overview-shadow)" d="M462 286 C479 266 508 258 533 270 C557 281 570 306 564 331 C557 361 523 386 481 373 C448 363 435 318 462 286 Z" />
             <text className="overview-foki-name negative" x="505" y="315">FokI</text>
-            <text className="overview-foki-variant negative" x="505" y="337">ELD（−）</text>
+            <text className="overview-foki-variant negative" x="505" y="337">ELD (−)</text>
             <text className="overview-terminus left" x="579" y="354">C</text>
 
             <text className="overview-strand-name f" x="56" y="215">F</text>
@@ -189,22 +189,22 @@ export default function ZfnOverviewDiagram() {
             <path className="overview-lightning" d="M518.5 174 H537.5 L530.5 185 H544.5 L516.5 206 L524.5 192 H510.5 Z" />
             <path className="overview-lightning" d="M518.5 258 H537.5 L530.5 269 H544.5 L516.5 290 L524.5 276 H510.5 Z" />
             <text className="overview-spacer-length" x="527.5" y="207">5–7 bp spacer</text>
-            <text className="overview-spacer-label" x="527.5" y="260">切断部位</text>
+            <text className="overview-spacer-label" x="527.5" y="260">cut site</text>
           </svg>
         </div>
         <MobileOverviewDiagram />
-        <figcaption>1本のZFNだけではなく、左右一対で働く構成です。図のZF1〜ZF6は説明用の通し番号で、実際のCoDA設計では左右それぞれ3-finger arrayを構成します。</figcaption>
+        <figcaption>ZFNs work as a pair, never alone. ZF1 to ZF6 are numbered here for the explanation; each monomer is its own 3-finger array.</figcaption>
       </figure>
 
       <ol className="mechanism-steps">
-        <li><span>01</span><div><strong>配列を認識</strong><p>1 fingerが3 bp、3 fingerで9 bpを認識します。</p></div></li>
-        <li><span>02</span><div><strong>中央で会合</strong><p>ELD（−）とKKR（＋）のFokIが異種二量体を形成します。</p></div></li>
-        <li><span>03</span><div><strong>DNAを切断</strong><p>左右の認識部位に挟まれた5–7 bp spacerが切断領域になります。</p></div></li>
+        <li><span>01</span><div><strong>Recognise</strong><p>One finger reads 3 bp, so three fingers read 9 bp.</p></div></li>
+        <li><span>02</span><div><strong>Dimerise</strong><p>The ELD (−) and KKR (+) FokI domains pair only with each other.</p></div></li>
+        <li><span>03</span><div><strong>Cut</strong><p>The 5–7 bp spacer between the two half-sites is where the break falls.</p></div></li>
       </ol>
 
       <div className="mechanism-footer">
-        <p><strong>このツールが行うこと：</strong>入力配列から、この左右3ZF＋FokI構成を作れる標的候補を探し、完全アミノ酸配列を出力します。</p>
-        <a href="#designer">この構成で設計を始める <span aria-hidden="true">↓</span></a>
+        <p><strong>This tool</strong> searches your sequence for sites that can be built into exactly this arrangement, and writes out the complete amino acid sequence.</p>
+        <a href="#designer">Start designing <span aria-hidden="true">↓</span></a>
       </div>
     </section>
   );

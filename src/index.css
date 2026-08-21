@@ -241,8 +241,8 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .sequence-details { margin-top: 12px; border: 1px solid var(--line); border-radius: 11px; }
 .sequence-details summary { min-height: 44px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-left: 4px solid var(--green); background: #f5f8f5; color: var(--green); font-size: 15px; font-weight: 900; cursor: pointer; list-style: none; }
 .sequence-details summary::-webkit-details-marker { display: none; }
-.sequence-details summary::after { content: "+ 開く"; white-space: nowrap; font-size: 14px; }
-.sequence-details[open] summary::after { content: "− 閉じる"; }
+.sequence-details summary::after { content: "+ Show"; white-space: nowrap; font-size: 14px; }
+.sequence-details[open] summary::after { content: "− Hide"; }
 .sequence-details summary:hover { background: var(--green-soft); }
 .sequence-details > div { padding: 0 14px 12px; display: grid; gap: 5px; }
 .sequence-details span { color: var(--muted); font-size: 13px; }
@@ -269,8 +269,8 @@ textarea:focus, input:focus, select:focus { border-color: var(--green); box-shad
 .technical-details { margin-top: 14px; overflow: hidden; border: 1px solid var(--line); border-radius: 15px; background: #fff; }
 .technical-details > summary { min-height: 48px; padding: 14px 17px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-left: 4px solid var(--green); background: #f5f8f5; color: var(--green); font-size: 15px; font-weight: 900; cursor: pointer; list-style: none; }
 .technical-details > summary::-webkit-details-marker { display: none; }
-.technical-details > summary::after { content: "+ 開く"; white-space: nowrap; font-size: 14px; }
-.technical-details[open] > summary::after { content: "− 閉じる"; }
+.technical-details > summary::after { content: "+ Show"; white-space: nowrap; font-size: 14px; }
+.technical-details[open] > summary::after { content: "− Hide"; }
 .technical-details > summary:hover { background: var(--green-soft); }
 .technical-details[open] > summary { border-bottom: 1px solid var(--line); background: #f7f9f5; }
 .technical-details-body { padding: 4px 17px 17px; }

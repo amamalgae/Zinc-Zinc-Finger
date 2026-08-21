@@ -3,7 +3,7 @@
 }
 
 .local-badge::after {
-  content: "ローカル処理";
+  content: "Runs in your browser";
   font-size: 14px;
 }
 
