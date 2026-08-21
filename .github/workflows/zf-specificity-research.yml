@@ -1,9 +1,17 @@
 name: ZF specificity research benchmark
 
 on:
-  push:
+  pull_request:
     branches:
-      - benchmark-zf-specificity-models
+      - main
+    paths:
+      - ".github/workflows/zf-specificity-research.yml"
+      - "scripts/benchmark-zf-specificity-models.mjs"
+      - "scripts/benchmark-persikov-2014.mjs"
+      - "scripts/zf-specificity-adapters/**"
+      - "tests/zf-specificity-benchmark.test.mjs"
+      - "tests/persikov-2015-adapter.test.mjs"
+      - "docs/ZF_SPECIFICITY_BENCHMARK.md"
   workflow_dispatch:
 
 jobs:
@@ -16,6 +24,10 @@ jobs:
           node-version: 22
       - name: Run isolated baseline benchmark
         run: node scripts/benchmark-zf-specificity-models.mjs
+      - name: Run benchmark adapter tests
+        run: |
+          node tests/zf-specificity-benchmark.test.mjs
+          node tests/persikov-2015-adapter.test.mjs
 
   princeton-pwm-predict:
     runs-on: ubuntu-latest
@@ -42,3 +54,35 @@ jobs:
           EXE="$(find /tmp/pwm_predict -type f -name pwm_predict -perm -111 | head -n 1)"
           test -n "$EXE"
           node scripts/benchmark-persikov-2014.mjs "$EXE"
+
+  inspect-zfmodels-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Download Gupta 2014 supplementary training assets
+        run: |
+          curl --fail --location --retry 3 \
+            https://pmc.ncbi.nlm.nih.gov/articles/instance/4005693/bin/supp_gku132_nar-03543-h-2013-File008.xlsx \
+            --output /tmp/zfmodels.xlsx
+          curl --fail --location --retry 3 \
+            https://pmc.ncbi.nlm.nih.gov/articles/instance/4005693/bin/supp_gku132_nar-03543-h-2013-File009.txt \
+            --output /tmp/zfmodels.txt
+          ls -lh /tmp/zfmodels.xlsx /tmp/zfmodels.txt
+          echo "--- TXT HEAD ---"
+          head -n 30 /tmp/zfmodels.txt
+      - name: Inspect workbook structure
+        run: |
+          python -m pip install --quiet openpyxl
+          python - <<'PY'
+          from openpyxl import load_workbook
+          p='/tmp/zfmodels.xlsx'
+          wb=load_workbook(p, read_only=True, data_only=True)
+          print('SHEETS', wb.sheetnames)
+          for ws in wb.worksheets:
+              print('SHEET', ws.title, 'rows', ws.max_row, 'cols', ws.max_column)
+              for row in ws.iter_rows(min_row=1, max_row=min(ws.max_row, 8), values_only=True):
+                  print(row)
+          PY
