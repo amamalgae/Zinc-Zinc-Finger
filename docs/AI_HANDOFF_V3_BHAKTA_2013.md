@@ -25,7 +25,7 @@ top strand 5' -> 3'
       6F                         6F
 ```
 
-Every complete footprint that fits inside the submitted target DNA is examined. The public UI does not ask for a requested center or ±range. Candidate rows instead show the spacer-center between-bases coordinate from the beginning of the submitted sequence, e.g. `+65` or `+64.5`.
+Every complete footprint that fits inside the submitted target DNA is examined. The public UI does not ask for a requested center or ±range. Candidate rows show a compact spacer-center coordinate from the beginning of the submitted sequence. If the exact geometric center is half-integer, the earlier integer is displayed (`64.5` → `+64`). The exact internal geometry remains unchanged.
 
 The left recognition strand is the reverse complement of the left top-strand 18-mer. The right recognition strand is the right top-strand 18-mer. Each recognition strand is divided into six 3-bp modules and reversed into protein N-to-C order because C2H2 fingers bind DNA antiparallel.
 
@@ -60,7 +60,7 @@ v3 ordering across the full submitted target DNA is:
 5. spacer preference 6 bp, then 5 bp, then 7 bp;
 6. genomic start only as a deterministic final tie-break.
 
-Position is not a functional ranking factor. The displayed `+coordinate` only tells the user where the spacer center lies in the input sequence. A regression test still verifies the underlying principle that higher functional evidence outranks mere positional proximity.
+Position is not a functional ranking factor. The displayed `+coordinate` only tells the user approximately where the spacer center lies in the input sequence under the earlier-integer display convention. A regression test still verifies the underlying principle that higher functional evidence outranks mere positional proximity.
 
 This ranking is a heuristic ordering of published evidence, not an indel probability. The existing exact L6+R6 benchmark contains 21 targets with 15 active and reconstructs 20/21 published B-scores; the retained CS7-3 discrepancy is paper B=21 versus module-sum B=20. Across those 21 exact L6+R6 cases the reconstructed B-score ROC-AUC is about 0.656, so do not overstate fine-grained score differences.
 
@@ -105,7 +105,7 @@ Bhakta 2013 did not test this exact ELD/KKR + F2A complete construct. Doyon Y et
 - protein export annotates ZF1 through ZF12 and reaches the precursor terminus exactly;
 - the v3 comparator is explicitly tested to ignore positional distance in favor of B-score.
 
-`tests/full-target-search.test.mjs` additionally fixes the PR #78 product behavior: the public helper searches the entire submitted DNA, center/range inputs are absent, and spacer-center coordinates remain available in the candidate list/CSV.
+`tests/full-target-search.test.mjs` additionally fixes the PR #78 product behavior: the public helper searches the entire submitted DNA, center/range inputs are absent, and the candidate list/CSV use the earlier integer for half-integer spacer-center coordinates.
 
 The full repository acceptance commands remain:
 
