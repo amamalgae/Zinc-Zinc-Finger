@@ -16,6 +16,7 @@ export type ExactGenomeCandidateSummary = {
   candidateId: string;
   exactPairMatches: number;
   extraExactMatches: number;
+  /** Index 0 is exact, 1-4 are exact totals, index 5 is total >=5. */
   alternativeCountsByMismatch: number[];
   closestAlternative: GenomeSimilarityHit | null;
 };
@@ -28,9 +29,11 @@ export type ExactGenomeMatchResult = {
 };
 
 export const GENOME_MAX_HALF_MISMATCHES = 4;
-export const GENOME_MAX_TOTAL_MISMATCHES = 5;
+export const GENOME_LEGACY_MAX_TOTAL_MISMATCHES = 5;
+export const GENOME_BHAKTA_MAX_TOTAL_MISMATCHES = 8;
 export const GENOME_SPACER_LENGTHS = [5, 6, 7] as const;
 
+const DISPLAY_MISMATCH_BUCKET_MAX = 5;
 const COMPLEMENT: Readonly<Record<string, string>> = {
   A: "T",
   C: "G",
@@ -45,7 +48,8 @@ type Orientation = 0 | 1;
 
 type PreparedCandidate = {
   candidate: ExactGenomeCandidate;
-  halfLength: number;
+  halfLength: 9 | 18;
+  maxTotalMismatches: 5 | 8;
   orientations: readonly [
     { firstHalf: string; secondHalf: string },
     { firstHalf: string; secondHalf: string },
@@ -94,10 +98,7 @@ function addExactPairStarts(
   }
 }
 
-/**
- * Compatibility helper for exact matching at the candidate's own spacer.
- * The similarity scanner below additionally checks 5/6/7-bp spacers.
- */
+/** Compatibility helper for exact matching at the candidate's own spacer. */
 export function countExactPairMatchesInSequence(
   sequence: string,
   candidate: ExactGenomeCandidate,
@@ -140,7 +141,7 @@ function replaceEncodedBase(code: number, position: number, bits: number): numbe
   return (code & ~(3 << shift)) | (bits << shift);
 }
 
-function nineMerVariantCodes(sequence: string, maxMismatches: 1 | 2): number[] {
+function nineMerVariantCodes(sequence: string): number[] {
   const original = encodeNineMer(sequence);
   if (original < 0) return [];
   const originalBits = [...sequence].map((base) => BASE_BITS[base]);
@@ -151,7 +152,6 @@ function nineMerVariantCodes(sequence: string, maxMismatches: 1 | 2): number[] {
       if (firstBits === originalBits[first]) continue;
       const oneMismatch = replaceEncodedBase(original, first, firstBits);
       result.add(oneMismatch);
-      if (maxMismatches < 2) continue;
 
       for (let second = first + 1; second < 9; second += 1) {
         for (let secondBits = 0; secondBits < 4; secondBits += 1) {
@@ -187,8 +187,11 @@ function hammingDistanceAt(
 function hitIsBetter(left: GenomeSimilarityHit, right: GenomeSimilarityHit): boolean {
   return (
     left.totalMismatches < right.totalMismatches ||
-    (left.totalMismatches === right.totalMismatches && Math.max(left.leftMismatches, left.rightMismatches) < Math.max(right.leftMismatches, right.rightMismatches)) ||
-    (left.totalMismatches === right.totalMismatches && Math.max(left.leftMismatches, left.rightMismatches) === Math.max(right.leftMismatches, right.rightMismatches) && left.leftMismatches < right.leftMismatches)
+    (left.totalMismatches === right.totalMismatches
+      && Math.max(left.leftMismatches, left.rightMismatches) < Math.max(right.leftMismatches, right.rightMismatches)) ||
+    (left.totalMismatches === right.totalMismatches
+      && Math.max(left.leftMismatches, left.rightMismatches) === Math.max(right.leftMismatches, right.rightMismatches)
+      && left.leftMismatches < right.leftMismatches)
   );
 }
 
@@ -210,9 +213,13 @@ function prepareCandidate(candidate: ExactGenomeCandidate): PreparedCandidate {
   if (leftTop.length !== rightTop.length || ![9, 18].includes(leftTop.length)) {
     throw new Error("UNSUPPORTED_HALF_SITE_LENGTH");
   }
+  const halfLength = leftTop.length as 9 | 18;
   return {
     candidate: { ...candidate, leftTop, rightTop },
-    halfLength: leftTop.length,
+    halfLength,
+    maxTotalMismatches: halfLength === 18
+      ? GENOME_BHAKTA_MAX_TOTAL_MISMATCHES
+      : GENOME_LEGACY_MAX_TOTAL_MISMATCHES,
     orientations: [
       { firstHalf: leftTop, secondHalf: rightTop },
       {
@@ -233,7 +240,6 @@ function buildSeedIndex(candidates: readonly PreparedCandidate[]): Map<number, S
   const seedIndex = new Map<number, SeedAnchor[]>();
 
   candidates.forEach((prepared, candidateIndex) => {
-    const seedMismatchLimit: 1 | 2 = prepared.halfLength === 9 ? 2 : 1;
     prepared.orientations.forEach((orientationPattern, orientationIndex) => {
       const orientation = orientationIndex as Orientation;
       for (const spacerLength of GENOME_SPACER_LENGTHS) {
@@ -243,7 +249,7 @@ function buildSeedIndex(candidates: readonly PreparedCandidate[]): Map<number, S
             const offset = halfIndex === 0
               ? chunkStart
               : prepared.halfLength + spacerLength + chunkStart;
-            for (const code of nineMerVariantCodes(chunk, seedMismatchLimit)) {
+            for (const code of nineMerVariantCodes(chunk)) {
               addSeedAnchor(seedIndex, code, { candidateIndex, orientation, spacerLength, offset });
             }
           }
@@ -269,7 +275,7 @@ function verifyHit(
   const secondMismatches = hammingDistanceAt(sequence, secondStart, pattern.secondHalf, GENOME_MAX_HALF_MISMATCHES);
   if (secondMismatches === null) return null;
   const totalMismatches = firstMismatches + secondMismatches;
-  if (totalMismatches > GENOME_MAX_TOTAL_MISMATCHES) return null;
+  if (totalMismatches > prepared.maxTotalMismatches) return null;
 
   const leftMismatches = orientation === 0 ? firstMismatches : secondMismatches;
   const rightMismatches = orientation === 0 ? secondMismatches : firstMismatches;
@@ -292,7 +298,7 @@ export class ExactGenomeMatchAccumulator {
     this.candidates = candidates.map(prepareCandidate);
     this.seedIndex = buildSeedIndex(this.candidates);
     this.accumulators = candidates.map(() => ({
-      countsByMismatch: Array.from({ length: GENOME_MAX_TOTAL_MISMATCHES + 1 }, () => 0),
+      countsByMismatch: Array.from({ length: DISPLAY_MISMATCH_BUCKET_MAX + 1 }, () => 0),
       exactBySpacer: new Map(GENOME_SPACER_LENGTHS.map((spacer) => [spacer, 0])),
       closestNonExact: null,
     }));
@@ -350,7 +356,8 @@ export class ExactGenomeMatchAccumulator {
     hits.forEach((candidateHits, candidateIndex) => {
       const accumulator = this.accumulators[candidateIndex];
       for (const hit of candidateHits.values()) {
-        accumulator.countsByMismatch[hit.totalMismatches] += 1;
+        const bucket = Math.min(hit.totalMismatches, DISPLAY_MISMATCH_BUCKET_MAX);
+        accumulator.countsByMismatch[bucket] += 1;
         if (hit.totalMismatches === 0) {
           accumulator.exactBySpacer.set(hit.spacerLength, (accumulator.exactBySpacer.get(hit.spacerLength) ?? 0) + 1);
         } else {
