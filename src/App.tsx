@@ -8,7 +8,6 @@ import {
   formatCut,
   generateZfnCandidates,
   parseDNAInput,
-  reverseComplement,
   zfnCandidatesToCsv,
   type BhaktaAlternative,
   type DesignProfile,
