@@ -62,27 +62,34 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Download Gupta 2014 supplementary training assets
+      - name: Download Gupta 2014 supplementary bundle from Europe PMC
         run: |
           curl --fail --location --retry 3 \
-            https://pmc.ncbi.nlm.nih.gov/articles/instance/4005693/bin/supp_gku132_nar-03543-h-2013-File008.xlsx \
-            --output /tmp/zfmodels.xlsx
-          curl --fail --location --retry 3 \
-            https://pmc.ncbi.nlm.nih.gov/articles/instance/4005693/bin/supp_gku132_nar-03543-h-2013-File009.txt \
-            --output /tmp/zfmodels.txt
-          ls -lh /tmp/zfmodels.xlsx /tmp/zfmodels.txt
-          echo "--- TXT HEAD ---"
-          head -n 30 /tmp/zfmodels.txt
-      - name: Inspect workbook structure
+            https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4005693/supplementaryFiles \
+            --output /tmp/pmc4005693-supp.zip
+          file /tmp/pmc4005693-supp.zip
+          unzip -l /tmp/pmc4005693-supp.zip
+          mkdir -p /tmp/zfmodels-supp
+          unzip -q /tmp/pmc4005693-supp.zip -d /tmp/zfmodels-supp
+          find /tmp/zfmodels-supp -maxdepth 2 -type f -printf '%f\t%s bytes\n'
+      - name: Inspect training assets
         run: |
           python -m pip install --quiet openpyxl
           python - <<'PY'
+          from pathlib import Path
           from openpyxl import load_workbook
-          p='/tmp/zfmodels.xlsx'
-          wb=load_workbook(p, read_only=True, data_only=True)
-          print('SHEETS', wb.sheetnames)
-          for ws in wb.worksheets:
-              print('SHEET', ws.title, 'rows', ws.max_row, 'cols', ws.max_column)
-              for row in ws.iter_rows(min_row=1, max_row=min(ws.max_row, 8), values_only=True):
-                  print(row)
+          root=Path('/tmp/zfmodels-supp')
+          for txt in root.rglob('*.txt'):
+              print('TXT', txt.name, txt.stat().st_size)
+              with txt.open(errors='replace') as handle:
+                  for _, line in zip(range(30), handle):
+                      print(line.rstrip())
+          for xlsx in root.rglob('*.xlsx'):
+              print('XLSX', xlsx.name, xlsx.stat().st_size)
+              wb=load_workbook(xlsx, read_only=True, data_only=True)
+              print('SHEETS', wb.sheetnames)
+              for ws in wb.worksheets:
+                  print('SHEET', ws.title, 'rows', ws.max_row, 'cols', ws.max_column)
+                  for row in ws.iter_rows(min_row=1, max_row=min(ws.max_row, 8), values_only=True):
+                      print(row)
           PY
