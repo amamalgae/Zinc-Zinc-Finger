@@ -26,16 +26,20 @@ The full screened cohort was retrieved from the supplementary workbook archived 
 
 Source data and supplementary material were retrieved from the article's Springer Nature downloads. The repository MIT license does not relicense the extracted scientific dataset.
 
-## Barbas one-finger module data
+## Bhakta/Barbas one-finger module data and v3 extended modular assembly
 
-The recognition-helix sequences, target triplets, and module recommendations in `src/module-archive.ts` are scientific sequence data reported across the Barbas modular-assembly literature and summarized by:
+The recognition-helix sequences, target triplets, published module B-scores, and historical module recommendations in `src/module-archive.ts` are scientific sequence data reported across the Barbas modular-assembly literature and summarized by:
 
 - Bhakta M, Segal DJ (2010), *The generation of zinc finger proteins by modular assembly*, DOI: 10.1007/978-1-60761-753-2_1.
 - Bhakta MS et al. (2013), *Highly active zinc-finger nucleases by extended modular assembly*, DOI: 10.1101/gr.143693.112. The article is distributed under CC BY-NC 3.0.
 
-The code in this repository was written independently. The repository's MIT license applies to that code and does not purport to relicense third-party publications, patents, plasmids, or biological materials.
+The v3 public profile independently assembles exact modules from this 49-module archive into 3–6-finger arrays, using 6+6 fingers for primary candidate search. It requires the prospective Bhakta combined B-score threshold of at least 15 and exposes shorter 3–6F combinations only as alternatives for a selected site. The project does not convert B-score or the reported 15/21 L6+R6 cohort into a candidate-specific probability.
 
-These legacy modules and their associated analysis remain in the repository for reproducibility, but are not used by the current public 3-finger interface or its complete-ORF exporter.
+The fixed Sp1C-style array segments used by `src/bhakta-module-archive.ts` follow the framework description and Zinc Finger Tools implementation reported in:
+
+- Mandell JG, Barbas CF III (2006), *Zinc Finger Tools: custom DNA-binding domains for transcription factors and nucleases*, DOI: 10.1093/nar/gkl209.
+
+The exact Bhakta 2013 Supplemental Appendices XLS is not redistributed in this repository. The implementation is instead audited against the public module archive, published B-scores, published target sequences, and the retained Bhakta benchmark reconstruction. The independently written code is MIT-licensed; the repository license does not purport to relicense third-party publications, patents, plasmids, sequence data, or biological materials.
 
 ## CoDA 2011 context-dependent assembly data
 
@@ -49,7 +53,7 @@ These legacy modules and their associated analysis remain in the repository for 
 
 ### Why CoDA remains in the public implementation
 
-CoDA is included as the legacy-only mode and the monomer-level fallback for Gupta-first design because its finite unit archive and exact shared-F2 assembly rule can be independently transcribed and audited. This is a reproducibility decision, not a statement that CoDA is biologically superior at every target or free of intellectual-property restrictions.
+CoDA is included as the v1 mode and the monomer-level fallback for v2 Gupta-first design because its finite unit archive and exact shared-F2 assembly rule can be independently transcribed and audited. This is a reproducibility decision, not a statement that CoDA is biologically superior at every target or free of intellectual-property restrictions.
 
 The project deliberately does not bundle ZFDesign code/data, DeepZF weights, or the official Persikov model. ZFDesign's article requires an academic material transfer agreement for the selection data and code; the other external model files did not carry redistribution terms sufficiently explicit for this project when reviewed. Their omission avoids representing third-party weights or restricted data as MIT-licensed project assets. CoDA's own patent family, sequence disclosures, and any claims applicable to a country, date, product, or commercial use still require a separate freedom-to-operate review. A public patent document or a ceased PCT application is not, by itself, a worldwide FTO conclusion.
 
@@ -65,16 +69,21 @@ The project deliberately does not bundle ZFDesign code/data, DeepZF weights, or 
 
 The implementation does not infer missing 2F targets. Gupta's online methods describe good/fair/poor scoring, but the implementation workbook does not assign those categories to every rationally derived row; no unreported per-row score is imputed here. The repository MIT license does not relicense the articles, supplements, sequence data, plasmids, patents, or biological materials.
 
-## Spacer priority and ZF-FokI linker mapping
+## Candidate order, spacer preference, and ZF-FokI linker mapping
 
-`src/coda-design-engine.ts` keeps requested spacer-center distance as the primary candidate-order criterion. Candidates at equal distance use the coarse preference 6 bp, 5 bp, then 7 bp, and the generated proteins use `TGGS`, `TGAAAR`, and `TGPGAAAR` for 5-, 6-, and 7-bp spacers, respectively. These decisions draw on:
+The public methods intentionally use different ranking policies.
+
+- v3 Bhakta 2013: distance from the requested spacer center defines the acceptable search window but does **not** affect rank. Candidates are ordered by higher combined B-score, then context/module evidence, then the coarse spacer preference 6 bp, 5 bp, 7 bp.
+- v2 Gupta/CoDA and v1 CoDA: requested spacer-center distance remains the primary rank criterion; equal-distance candidates use the coarse spacer preference 6 bp, 5 bp, 7 bp.
+
+Generated proteins use `TGGS`, `TGAAAR`, and `TGPGAAAR` for 5-, 6-, and 7-bp spacers, respectively. These choices draw on:
 
 - Händel EM et al. (2009), *Expanding or restricting the target site repertoire of zinc-finger nucleases: the inter-domain linker as a major determinant of target site selectivity*, DOI: 10.1038/mt.2008.233.
 - Shimizu Y et al. (2009), *Restricted spacer tolerance of a zinc finger nuclease with a six amino acid linker*, DOI: 10.1016/j.bmcl.2009.02.109.
 - Bhakta MS et al. (2013), *Highly active zinc-finger nucleases by extended modular assembly*, DOI: 10.1101/gr.143693.112.
 - Chen S et al. (2013), *A large-scale in vivo analysis reveals that TALENs are significantly more mutagenic than ZFNs generated using context-dependent assembly*, DOI: 10.1093/nar/gks1356.
 
-No article code or row-level dataset from these publications is included for this rule. The spacer preference is not an indel-rate model and does not validate the complete CoDA-3F/ELD/F2A/KKR construct.
+The rankings are not indel-rate models. Neither spacer preference nor B-score validates the exact complete ELD/KKR + F2A construct emitted by the current application.
 
 ## Persikov–Singh expanded linear SVM
 
@@ -103,15 +112,15 @@ No ZFDesign code or restricted training data are included here.
 - UniProt P14870, Type II restriction enzyme FokI from *Flavobacterium okeanokoites*.
 - ENA/GenBank J04623, the original FokI coding sequence.
 
-The generated DNA is a computed synthetic coding sequence, not a plasmid or expression cassette copied from a repository. No Addgene plasmid sequence or biological material is included. Sequence output does not grant patent, material-transfer, biosafety, or freedom-to-operate rights.
+The public output is a computed synthetic protein design, not a plasmid or expression cassette copied from a repository. No Addgene plasmid sequence or biological material is included. Sequence output does not grant patent, material-transfer, biosafety, or freedom-to-operate rights.
 
 ## F2A bicistronic ZFN output
 
-`src/construct-output.ts` and `src/coda-construct-output.ts` join the left FokI-ELD ZFN and right FokI-KKR ZFN in one ORF using the 22-aa FMDV-derived F2A sequence `VKQLLNFDLLKLAGDVESNPGP`. The paired-ZFN architecture is supported by:
+The current protein exporter joins the left FokI-ELD ZFN and right FokI-KKR ZFN in one ORF using the 22-aa FMDV-derived F2A sequence `VKQLLNFDLLKLAGDVESNPGP`. The paired-ZFN architecture is supported by:
 
 - Lei Y et al. (2011), *Gene editing of human embryonic stem cells via an engineered baculoviral vector carrying zinc-finger nucleases*, DOI: 10.1038/mt.2011.12.
 
-Lei expressed the right and left ZFNs from a baculoviral construct with an intervening F2A sequence and demonstrated CCR5 editing in human embryonic stem cells. That paper supports the single-ORF paired-ZFN strategy; this repository does not claim that Lei is the source of the exact 22-aa project constant. Ribosomal skipping is modeled between the terminal glycine and proline, leaving the first 21 residues on the upstream ZFN and proline on the downstream ZFN. The complete CoDA-3F/ELD/F2A/KKR combination generated here is a design proposal and has not itself been experimentally validated.
+Lei expressed the right and left ZFNs from a baculoviral construct with an intervening F2A sequence and demonstrated CCR5 editing in human embryonic stem cells. That paper supports the single-ORF paired-ZFN strategy; this repository does not claim that Lei is the source of the exact 22-aa project constant. The complete Bhakta-6F/ELD/F2A/KKR, Gupta/CoDA-3F/ELD/F2A/KKR, and CoDA-3F/ELD/F2A/KKR combinations generated here are design proposals and have not themselves been experimentally validated as complete constructs.
 
 ## Fauser 2024 four-base context data
 
@@ -119,8 +128,8 @@ Lei expressed the right and left ZFNs from a baculoviral construct with an inter
 
 - Fauser F et al. (2024), *A versatile platform for locus-scale genome rewriting and verification*, DOI: 10.1038/s41467-024-45100-w. The article and supplementary material are distributed under CC BY 4.0.
 
-The 182-row workbook is not bundled. Users retrieve it from the publisher and select it locally; the browser does not upload or retain it. Context-derived candidates are kept out of the primary Barbas/B-score ranking and complete-ORF export because framework compatibility and direct ZFN activity have not been established here.
+The 182-row workbook is not bundled. Users retrieve it from the publisher and select it locally; the browser does not upload or retain it. Context-derived candidates are kept out of the current public ranking and complete ORF because framework compatibility and direct ZFN activity have not been established here.
 
 ## fflate
 
-The application uses `fflate` 0.8.2 to decompress locally selected `.xlsx` files in the browser. fflate is copyright 2020–2023 Arjun Barrett and is distributed under the MIT License. Its package license text is available in the installed npm distribution and at <https://github.com/101arrowz/fflate>.
+The application uses `fflate` 0.8.2 to decompress locally selected `.xlsx` files in the browser for retained research comparators. fflate is copyright 2020–2023 Arjun Barrett and is distributed under the MIT License. Its package license text is available in the installed npm distribution and at <https://github.com/101arrowz/fflate>.
