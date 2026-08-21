@@ -1,5 +1,6 @@
 const PAGE_SIZE = 30;
 const LOAD_AHEAD_PX = 96;
+const MIN_GENOME_TRANSITION_MS = 500;
 
 type ListState = {
   visible: number;
@@ -10,6 +11,10 @@ const states = new WeakMap<HTMLElement, ListState>();
 const boundLists = new WeakSet<HTMLElement>();
 let generation = 0;
 let refreshQueued = false;
+let genomeTransitionActive = false;
+let genomeTransitionRequested = false;
+let genomeTransitionStartedAt = 0;
+let genomeTransitionTimer: number | null = null;
 
 function candidateRows(list: HTMLElement): HTMLElement[] {
   return Array.from(list.children).filter(
@@ -49,7 +54,7 @@ function applyVisibleRows(list: HTMLElement) {
     boundLists.add(list);
     list.addEventListener("scroll", () => {
       const current = states.get(list);
-      if (!current) return;
+      if (!current || genomeTransitionActive) return;
       if (list.scrollHeight - list.scrollTop - list.clientHeight > LOAD_AHEAD_PX) return;
       const total = candidateRows(list).length;
       if (current.visible >= total) return;
@@ -59,9 +64,88 @@ function applyVisibleRows(list: HTMLElement) {
   }
 }
 
+function resultsPanel(): HTMLElement | null {
+  return document.querySelector<HTMLElement>(".results-panel");
+}
+
+function genomeStatus(): HTMLElement | null {
+  return document.querySelector<HTMLElement>(".genome-file-status");
+}
+
+function genomeIsReady(): boolean {
+  return Boolean(document.querySelector(".genome-scope-note"));
+}
+
+function beginGenomeTransition() {
+  if (genomeTransitionActive) return;
+  const panel = resultsPanel();
+  if (!panel || !document.querySelector(".candidate-list")) {
+    genomeTransitionRequested = true;
+    return;
+  }
+  genomeTransitionRequested = false;
+  genomeTransitionActive = true;
+  genomeTransitionStartedAt = performance.now();
+  panel.classList.add("genome-transition-loading");
+}
+
+function finishGenomeTransition() {
+  if (!genomeTransitionActive) {
+    genomeTransitionRequested = false;
+    return;
+  }
+  if (genomeTransitionTimer !== null) {
+    window.clearTimeout(genomeTransitionTimer);
+    genomeTransitionTimer = null;
+  }
+  resultsPanel()?.classList.remove("genome-transition-loading");
+  genomeTransitionActive = false;
+  genomeTransitionRequested = false;
+  generation += 1;
+  queueRefresh();
+}
+
+function finishGenomeTransitionAfterMinimum() {
+  const remaining = Math.max(0, MIN_GENOME_TRANSITION_MS - (performance.now() - genomeTransitionStartedAt));
+  if (genomeTransitionTimer !== null) window.clearTimeout(genomeTransitionTimer);
+  genomeTransitionTimer = window.setTimeout(() => {
+    genomeTransitionTimer = null;
+    finishGenomeTransition();
+  }, remaining);
+}
+
+function requestGenomeTransition() {
+  genomeTransitionRequested = true;
+  beginGenomeTransition();
+}
+
+function syncGenomeTransition() {
+  const status = genomeStatus();
+  if (!status) {
+    if (genomeTransitionActive) finishGenomeTransition();
+    else genomeTransitionRequested = false;
+    return;
+  }
+
+  if (status.classList.contains("error")) {
+    finishGenomeTransition();
+    return;
+  }
+
+  if (genomeIsReady()) {
+    if (genomeTransitionActive) finishGenomeTransitionAfterMinimum();
+    return;
+  }
+
+  if (document.querySelector(".candidate-list") && (genomeTransitionRequested || !genomeTransitionActive)) {
+    beginGenomeTransition();
+  }
+}
+
 function refresh() {
   compactGenomeLabels();
   document.querySelectorAll<HTMLElement>(".candidate-list").forEach(applyVisibleRows);
+  syncGenomeTransition();
 }
 
 function queueRefresh() {
@@ -83,24 +167,40 @@ observer.observe(document.documentElement, {
   childList: true,
   subtree: true,
   characterData: true,
+  attributes: true,
+  attributeFilter: ["class"],
 });
 
 document.addEventListener("input", (event) => {
   const target = event.target;
   if (!(target instanceof Element)) return;
-  if (target.matches("#target-sequence, .simple-controls input")) resetProgressiveList();
+  if (target.matches("#target-sequence, .simple-controls input")) {
+    if (genomeStatus()) requestGenomeTransition();
+    resetProgressiveList();
+  }
 });
 
 document.addEventListener("change", (event) => {
   const target = event.target;
   if (!(target instanceof Element)) return;
-  if (target.matches("#design-profile")) resetProgressiveList();
+  if (target.matches("#genome-file")) {
+    const input = target as HTMLInputElement;
+    if (input.files?.length) requestGenomeTransition();
+    return;
+  }
+  if (target.matches("#design-profile")) {
+    if (genomeStatus()) requestGenomeTransition();
+    resetProgressiveList();
+  }
 });
 
 document.addEventListener("click", (event) => {
   const target = event.target;
   if (!(target instanceof Element)) return;
-  if (target.closest(".example-button")) resetProgressiveList();
+  if (target.closest(".example-button")) {
+    if (genomeStatus()) requestGenomeTransition();
+    resetProgressiveList();
+  }
 });
 
 queueRefresh();
