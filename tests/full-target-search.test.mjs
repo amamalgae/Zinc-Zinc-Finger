@@ -6,6 +6,7 @@ import {
   compareZfnCandidates,
   generateZfnCandidates,
   generateZfnCandidatesAcrossSequence,
+  zfnCandidatesToCsv,
 } from "../src/zfn-design-engine.ts";
 
 const TARGET = "TGCAGGGCCTATTGCACCAGGCCAGATGAGAGAACCAAGGGG";
@@ -40,7 +41,6 @@ test("public UI removes center/range inputs and shows the spacer-center coordina
 test("CSV keeps absolute spacer-center coordinate and drops center-distance output", () => {
   const candidates = generateZfnCandidates(TARGET, 21, 0, "bhakta-2013", 30);
   assert.ok(candidates.length);
-  const { zfnCandidatesToCsv } = await import("../src/zfn-design-engine.ts");
   const csv = zfnCandidatesToCsv(candidates);
   assert.match(csv, /spacer_center_between_bases/);
   assert.doesNotMatch(csv.split("\n", 1)[0], /distance/);
