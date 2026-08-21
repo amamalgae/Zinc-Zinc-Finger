@@ -253,10 +253,7 @@ export default function Home() {
   }, [language]);
 
   useEffect(() => {
-    if (!genomeFile || !candidates.length) {
-      setGenomeCheck({ status: "idle" });
-      return;
-    }
+    if (!genomeFile || !candidates.length) return;
 
     let worker: Worker | null = null;
     const timer = window.setTimeout(() => {
