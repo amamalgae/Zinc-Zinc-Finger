@@ -215,7 +215,13 @@ test("no interface text is set below the legible floor, and each step states wha
   }
   assert.deepEqual(undersized, []);
 
-  assert.match(app, /<p className="panel-help"><b>ここですること<\/b>切断したい部位の前後を含むDNA配列/);
-  assert.match(app, /<p className="selection-help"><b>ここですること<\/b>使いたい候補の行を押して選びます/);
-  assert.match(app, /<p className="panel-help"><b>ここで得られるもの<\/b>選んだ候補をそのまま発現に使うための/);
+  // The three steps are carried by the numbered badge, the section key and the
+  // controls themselves; prose instructions are deliberately absent.
+  assert.doesNotMatch(app, /ここですること|ここで得られるもの|className="panel-help"/);
+  assert.match(app, /<small>INPUT<\/small><h2>標的配列を入力<\/h2>/);
+  assert.match(app, /<small>SELECT<\/small><h2>候補を選択<\/h2>/);
+  assert.match(app, /<small>PROTEIN OUTPUT<\/small><h2>アミノ酸配列を出力<\/h2>/);
+  assert.match(app, /<span>Method<\/span>/);
+  assert.match(app, /<span>Spacer center<\/span>/);
+  assert.match(app, /<span>Range ±bp<\/span>/);
 });
