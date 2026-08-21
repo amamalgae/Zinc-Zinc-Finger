@@ -17,3 +17,11 @@ test("genome worker scans all selected files into one accumulator", () => {
   assert.match(workerSource, /for \(const file of files\) fastaFiles \+= await scanGenomeFile\(file, matcher\)/);
   assert.doesNotMatch(workerSource, /event\.data\.file,/);
 });
+
+test("genome worker returns the first 30 candidates before checking the remainder", () => {
+  assert.match(workerSource, /INITIAL_CANDIDATE_BATCH = 30/);
+  assert.match(workerSource, /candidates\.slice\(0, INITIAL_CANDIDATE_BATCH\)/);
+  assert.match(workerSource, /worker\.postMessage\(\{ type: "result", result: firstResult \}\)/);
+  assert.match(workerSource, /candidates\.slice\(INITIAL_CANDIDATE_BATCH\)/);
+  assert.match(workerSource, /mergeBatchResults\(firstResult, remainingResult\)/);
+});
