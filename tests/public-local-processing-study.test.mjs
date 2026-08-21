@@ -17,12 +17,14 @@ async function listFiles(dir) {
   return files;
 }
 
-test("study card qualifies the selectively tested Gupta 2012 cohort", async () => {
+test("study card reports the Bhakta 2013 L6+R6 cohort without turning it into a candidate probability", async () => {
   const app = await readFile(new URL("../src/App.tsx", import.meta.url), "utf8");
-  assert.match(app, /<strong>9\/11<\/strong>/);
-  assert.match(COPY.en.studyHeadline, /zebrafish targets mutated in Gupta 2012/);
-  assert.equal(COPY.en.studyCaveat, "A small, selectively evaluated cohort. It is not the success probability of any candidate on this site.");
-  assert.match(COPY.ja.studyCaveat, /小規模 cohort/);
+  assert.match(app, /<strong>15\/21<\/strong>/);
+  assert.match(app, /Bhakta et al\. 2013/);
+  assert.match(app, /10\.1101\/gr\.143693\.112/);
+  assert.match(COPY.en.evidenceBhakta, /15 of 21/);
+  assert.match(COPY.en.evidenceNote, /not candidate-specific success probabilities/);
+  assert.match(COPY.ja.evidenceNote, /各候補固有の成功確率ではありません/);
 });
 
 test("design computation contains no runtime network API", async () => {
@@ -43,7 +45,6 @@ test("header displays the concise local-processing label", async () => {
   assert.equal(COPY.en.heroPrivacy, "Sequences stay on your device");
   assert.equal(COPY.en.localBadgeAria, "Designs are computed in your browser; sequences are never sent to a server");
   assert.match(COPY.ja.localBadgeAria, /サーバーへ送信されることはありません/);
-  // The badge renders its own text, so no stylesheet may substitute a label.
   assert.doesNotMatch(patch, /\.local-badge/);
 });
 

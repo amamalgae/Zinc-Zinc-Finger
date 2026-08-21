@@ -16,6 +16,7 @@ type CodaUnitRow = {
 type F2ContextRow = { target: string; helix: string };
 
 export type CodaFinger = ZfnFinger & {
+  position: FingerPosition;
   source: "CoDA F1 unit" | "fixed CoDA F2" | "CoDA F3 unit";
   f2Context: string;
 };

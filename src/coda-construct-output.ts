@@ -9,6 +9,7 @@ import {
   CODA_FINGER_LINKER,
   codaFingerSequence,
   type CodaArray,
+  type FingerPosition,
 } from "./coda-module-archive.ts";
 
 export const CODA_ZFN_DONORS = [
@@ -52,7 +53,7 @@ function buildProteinFeatures(candidate: CodaCandidate): CodaProteinFeature[] {
       const globalFinger = firstGlobalFinger + index as 1 | 2 | 3 | 4 | 5 | 6;
       addFeature(
         `ZF${globalFinger}`,
-        codaFingerSequence(finger.position, finger.helix),
+        codaFingerSequence(finger.position as FingerPosition, finger.helix),
         `CoDA F${finger.position}; target=${finger.triplet}; helix=${finger.helix}`,
       );
       if (index < array.fingers.length - 1) cursor += CODA_FINGER_LINKER.length;
@@ -71,9 +72,7 @@ function buildProteinFeatures(candidate: CodaCandidate): CodaProteinFeature[] {
   return features;
 }
 
-export function buildCodaBicistronicZfn(
-  candidate: CodaCandidate,
-): CodaBicistronicConstruct {
+export function buildCodaBicistronicZfn(candidate: CodaCandidate): CodaBicistronicConstruct {
   const left: CodaZfnMonomer = {
     arm: "left",
     fokIVariant: "ELD",
@@ -88,7 +87,7 @@ export function buildCodaBicistronicZfn(
   const features = buildProteinFeatures(candidate);
   if (features.at(-1)?.end !== protein.length) throw new Error("Protein feature coordinates do not cover the construct terminus");
   return {
-    name: `zfn_coda3_${candidate.id}_ELD_F2A_KKR`,
+    name: `zfn_coda_${candidate.id}_ELD_F2A_KKR`,
     protein,
     left,
     right,
@@ -107,29 +106,19 @@ function wrap(value: string, width: number): string[] {
   return rows;
 }
 
-export function codaConstructToProteinFasta(
-  construct: CodaBicistronicConstruct,
-): string {
-  return [
-    `>${construct.name} precursor_polyprotein; CoDA-2011 3-finger; left FokI-ELD; FMDV F2A; right FokI-KKR`,
-    ...wrap(construct.protein, 70),
-  ].join("\n");
+export function codaConstructToProteinFasta(construct: CodaBicistronicConstruct): string {
+  return [`>${construct.name} precursor_polyprotein; CoDA 2011; left FokI-ELD; FMDV F2A; right FokI-KKR`, ...wrap(construct.protein, 70)].join("\n");
 }
 
 function genPeptOrigin(protein: string): string[] {
-  return wrap(protein.toLowerCase(), 60).map((line, index) => {
-    const groups = line.match(/.{1,10}/g)?.join(" ") ?? line;
-    return `${String(index * 60 + 1).padStart(9)} ${groups}`;
-  });
+  return wrap(protein.toLowerCase(), 60).map((line, index) => `${String(index * 60 + 1).padStart(9)} ${line.match(/.{1,10}/g)?.join(" ") ?? line}`);
 }
 
 function escapeQualifier(value: string): string {
   return value.replaceAll('"', "'");
 }
 
-export function codaConstructToProteinGenPept(
-  construct: CodaBicistronicConstruct,
-): string {
+export function codaConstructToProteinGenPept(construct: CodaBicistronicConstruct): string {
   const locus = construct.name.replace(/[^A-Za-z0-9_.-]/g, "_").slice(0, 16);
   const featureRows = construct.features.flatMap((feature) => [
     `     Region          ${feature.start}..${feature.end}`,
@@ -137,14 +126,15 @@ export function codaConstructToProteinGenPept(
     `                     /note="${escapeQualifier(feature.note)}"`,
   ]);
   return [
-    `LOCUS       ${locus.padEnd(16)} ${String(construct.protein.length).padStart(7)} aa            linear   SYN 18-AUG-2026`,
-    `DEFINITION  Synthetic CoDA-3F ZFN precursor ${construct.name}.`,
+    `LOCUS       ${locus.padEnd(16)} ${String(construct.protein.length).padStart(7)} aa            linear   SYN 21-AUG-2026`,
+    `DEFINITION  Synthetic CoDA ZFN precursor ${construct.name}.`,
     "ACCESSION   .",
     "VERSION     .",
-    "KEYWORDS    synthetic construct; zinc finger nuclease; F2A.",
+    "KEYWORDS    synthetic construct; zinc finger nuclease; CoDA; F2A.",
     "SOURCE      synthetic protein construct",
     "  ORGANISM  synthetic protein construct",
     "COMMENT     Protein-only design; no nucleotide sequence or codon choice is implied.",
+    "COMMENT     CoDA source: Sander et al. 2011, DOI 10.1038/nmeth.1542.",
     "FEATURES             Location/Qualifiers",
     `     source          1..${construct.protein.length}`,
     "                     /organism=\"synthetic protein construct\"",

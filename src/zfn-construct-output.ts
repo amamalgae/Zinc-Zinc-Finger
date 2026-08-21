@@ -4,14 +4,14 @@ import type { ZfnArray } from "./zfn-array.ts";
 
 export const ZFN_DONORS = [
   { component: "SV40 NLS", scientificName: "Betapolyomavirus macacae", detailKey: "donorNls" },
-  { component: "3-finger framework", scientificName: "synthetic C2H2 array", detailKey: "donorFramework" },
+  { component: "ZF framework", scientificName: "synthetic C2H2 array", detailKey: "donorFramework" },
   { component: "FokI ELD / KKR", scientificName: "Flavobacterium okeanokoites", detailKey: "donorFokI" },
   { component: "F2A", scientificName: "Foot-and-mouth disease virus", detailKey: "donorF2A" },
 ] as const;
 
 export type ZfnMonomer = { arm: "left" | "right"; fokIVariant: "ELD" | "KKR"; protein: string };
 export type ProteinFeature = {
-  name: `ZF${1 | 2 | 3 | 4 | 5 | 6}` | "FokI (ELD)" | "F2A" | "FokI (KKR)";
+  name: string;
   start: number;
   end: number;
   note: string;
@@ -28,17 +28,19 @@ export type BicistronicConstruct = {
 function buildProteinFeatures(candidate: ZfnCandidate): ProteinFeature[] {
   const features: ProteinFeature[] = [];
   let cursor = 0;
-  const addFeature = (name: ProteinFeature["name"], sequence: string, note: string): void => {
+  const addFeature = (name: string, sequence: string, note: string): void => {
     const start = cursor + 1;
     cursor += sequence.length;
     features.push({ name, start, end: cursor, note });
   };
-  const addArray = (array: ZfnArray, firstGlobalFinger: 1 | 4): void => {
+  const addArray = (array: ZfnArray, firstGlobalFinger: number): void => {
+    cursor += array.nTerminalFixed?.length ?? 0;
     array.fingers.forEach((finger, index) => {
-      const globalFinger = (firstGlobalFinger + index) as 1 | 2 | 3 | 4 | 5 | 6;
+      const globalFinger = firstGlobalFinger + index;
       addFeature(`ZF${globalFinger}`, finger.protein, `${finger.source}; target=${finger.triplet}; helix=${finger.helix}; assembly=${array.assembly}`);
       if (index < array.linkers.length) cursor += array.linkers[index].length;
     });
+    cursor += array.cTerminalFixed?.length ?? 0;
   };
 
   cursor += SV40_NLS_PREFIX.length;
@@ -47,14 +49,15 @@ function buildProteinFeatures(candidate: ZfnCandidate): ProteinFeature[] {
   addFeature("FokI (ELD)", FOKI_ELD, "FokI nuclease; ELD: Q486E/N496D/I499L");
   addFeature("F2A", FMDV_F2A, "FMDV-derived F2A; Gly-Pro ribosomal skip");
   cursor += SV40_NLS_PREFIX.length;
-  addArray(candidate.rightArray, 4);
+  addArray(candidate.rightArray, candidate.leftArray.fingers.length + 1);
   cursor += candidate.fokILinker.length;
   addFeature("FokI (KKR)", FOKI_KKR, "FokI nuclease; KKR: E490K/H537R/I538K");
   return features;
 }
 
 function methodSummary(candidate: ZfnCandidate): string {
-  return `left ${candidate.leftArray.methodLabel}; right ${candidate.rightArray.methodLabel}`;
+  const bScore = candidate.combinedBScore === undefined ? "" : `; combined B-score ${candidate.combinedBScore}`;
+  return `left ${candidate.leftArray.methodLabel}; right ${candidate.rightArray.methodLabel}${bScore}`;
 }
 
 export function buildBicistronicZfn(candidate: ZfnCandidate): BicistronicConstruct {

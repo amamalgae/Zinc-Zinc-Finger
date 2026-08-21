@@ -1,3 +1,4 @@
+import { buildBhaktaArray, BHAKTA_B_SCORE_CUTOFF, type BhaktaArray } from "./bhakta-module-archive.ts";
 import { buildCodaArray } from "./coda-module-archive.ts";
 import {
   formatCut,
@@ -8,7 +9,7 @@ import {
 import { buildGuptaArray } from "./gupta-module-archive.ts";
 import type { ZfnArray } from "./zfn-array.ts";
 
-export type DesignProfile = "gupta-coda" | "coda-only";
+export type DesignProfile = "bhakta-2013" | "gupta-coda" | "coda-only";
 
 export type ZfnCandidate = {
   id: string;
@@ -25,6 +26,22 @@ export type ZfnCandidate = {
   leftArray: ZfnArray;
   rightArray: ZfnArray;
   fokILinker: string;
+  combinedBScore?: number;
+  tsoIssues?: number;
+  favorableModules?: number;
+  unfavorableModules?: number;
+};
+
+export type BhaktaAlternative = {
+  leftFingerCount: 3 | 4 | 5 | 6;
+  rightFingerCount: 3 | 4 | 5 | 6;
+  leftArray: BhaktaArray;
+  rightArray: BhaktaArray;
+  combinedBScore: number;
+  passesBScoreCutoff: boolean;
+  tsoIssues: number;
+  favorableModules: number;
+  unfavorableModules: number;
 };
 
 const FOKI_LINKERS: Readonly<Record<number, string>> = {
@@ -34,11 +51,18 @@ const FOKI_LINKERS: Readonly<Record<number, string>> = {
 };
 
 const SPACER_PRIORITY: Readonly<Record<number, number>> = { 6: 0, 5: 1, 7: 2 };
+const BHAKTA_FINGER_COUNTS = [3, 4, 5, 6] as const;
 
-export { formatCut, parseDNAInput, reverseComplement };
+export { BHAKTA_B_SCORE_CUTOFF, formatCut, parseDNAInput, reverseComplement };
 export type { ParsedDNAInput };
 
-function buildArray(recognition: string, profile: DesignProfile): ZfnArray | null {
+function complement(base: string | undefined): string | undefined {
+  if (!base) return undefined;
+  const complements: Readonly<Record<string, string>> = { A: "T", C: "G", G: "C", T: "A" };
+  return complements[base.toUpperCase()];
+}
+
+function buildLegacyArray(recognition: string, profile: Exclude<DesignProfile, "bhakta-2013">): ZfnArray | null {
   if (profile === "coda-only") return buildCodaArray(recognition);
   return buildGuptaArray(recognition) ?? buildCodaArray(recognition);
 }
@@ -47,7 +71,25 @@ function guptaArmCount(candidate: ZfnCandidate): number {
   return Number(candidate.leftArray.method === "gupta-2012") + Number(candidate.rightArray.method === "gupta-2012");
 }
 
+function compareBhaktaFunctional(
+  left: Pick<ZfnCandidate, "combinedBScore" | "tsoIssues" | "unfavorableModules" | "favorableModules" | "spacerLength" | "start">,
+  right: Pick<ZfnCandidate, "combinedBScore" | "tsoIssues" | "unfavorableModules" | "favorableModules" | "spacerLength" | "start">,
+): number {
+  return (
+    (right.combinedBScore ?? 0) - (left.combinedBScore ?? 0) ||
+    (left.tsoIssues ?? 0) - (right.tsoIssues ?? 0) ||
+    (left.unfavorableModules ?? 0) - (right.unfavorableModules ?? 0) ||
+    (right.favorableModules ?? 0) - (left.favorableModules ?? 0) ||
+    (SPACER_PRIORITY[left.spacerLength] ?? Number.MAX_SAFE_INTEGER) -
+      (SPACER_PRIORITY[right.spacerLength] ?? Number.MAX_SAFE_INTEGER) ||
+    left.start - right.start
+  );
+}
+
 export function compareZfnCandidates(left: ZfnCandidate, right: ZfnCandidate): number {
+  if (left.profile === "bhakta-2013" && right.profile === "bhakta-2013") {
+    return compareBhaktaFunctional(left, right);
+  }
   return (
     left.distance - right.distance ||
     (SPACER_PRIORITY[left.spacerLength] ?? Number.MAX_SAFE_INTEGER) -
@@ -55,6 +97,15 @@ export function compareZfnCandidates(left: ZfnCandidate, right: ZfnCandidate): n
     guptaArmCount(right) - guptaArmCount(left) ||
     left.start - right.start
   );
+}
+
+function bhaktaMetrics(leftArray: BhaktaArray, rightArray: BhaktaArray) {
+  return {
+    combinedBScore: leftArray.bScore + rightArray.bScore,
+    tsoIssues: leftArray.tsoIssues + rightArray.tsoIssues,
+    favorableModules: leftArray.favorableModules + rightArray.favorableModules,
+    unfavorableModules: leftArray.unfavorableModules + rightArray.unfavorableModules,
+  };
 }
 
 export function generateZfnCandidates(
@@ -69,27 +120,42 @@ export function generateZfnCandidates(
   const resultLimit = Math.max(0, Math.floor(limit));
   if (resultLimit === 0) return [];
 
+  const halfSiteLength = profile === "bhakta-2013" ? 18 : 9;
   const candidates: ZfnCandidate[] = [];
   for (const spacerLength of [5, 6, 7]) {
-    const footprint = 18 + spacerLength;
-    const cutOffset = 9 + spacerLength / 2;
+    const footprint = halfSiteLength * 2 + spacerLength;
+    const cutOffset = halfSiteLength + spacerLength / 2;
     const firstStart = Math.max(0, Math.ceil(desiredCut - searchDistance - cutOffset));
     const finalStart = Math.min(dna.length - footprint, Math.floor(desiredCut + searchDistance - cutOffset));
     for (let start = firstStart; start <= finalStart; start += 1) {
-      const leftTop = dna.slice(start, start + 9);
-      const spacer = dna.slice(start + 9, start + 9 + spacerLength);
-      const rightTop = dna.slice(start + 9 + spacerLength, start + footprint);
+      const leftTop = dna.slice(start, start + halfSiteLength);
+      const spacer = dna.slice(start + halfSiteLength, start + halfSiteLength + spacerLength);
+      const rightTop = dna.slice(start + halfSiteLength + spacerLength, start + footprint);
       const leftRecognition = reverseComplement(leftTop);
       const rightRecognition = rightTop;
-      const leftArray = buildArray(leftRecognition, profile);
-      const rightArray = buildArray(rightRecognition, profile);
-      if (!leftArray || !rightArray) continue;
+      let leftArray: ZfnArray | null;
+      let rightArray: ZfnArray | null;
+      let functionalMetrics: ReturnType<typeof bhaktaMetrics> | undefined;
+
+      if (profile === "bhakta-2013") {
+        const leftBhakta = buildBhaktaArray(leftRecognition, complement(dna[start - 1]));
+        const rightBhakta = buildBhaktaArray(rightRecognition, dna[start + footprint]);
+        if (!leftBhakta || !rightBhakta) continue;
+        functionalMetrics = bhaktaMetrics(leftBhakta, rightBhakta);
+        if (functionalMetrics.combinedBScore < BHAKTA_B_SCORE_CUTOFF) continue;
+        leftArray = leftBhakta;
+        rightArray = rightBhakta;
+      } else {
+        leftArray = buildLegacyArray(leftRecognition, profile);
+        rightArray = buildLegacyArray(rightRecognition, profile);
+        if (!leftArray || !rightArray) continue;
+      }
 
       const cut = start + cutOffset;
       const distance = Math.abs(cut - desiredCut);
       if (distance > searchDistance) continue;
       candidates.push({
-        id: `${start}-${spacerLength}`,
+        id: profile === "bhakta-2013" ? `bhakta-${start}-${spacerLength}` : `${start}-${spacerLength}`,
         profile,
         start,
         cut,
@@ -103,10 +169,54 @@ export function generateZfnCandidates(
         leftArray,
         rightArray,
         fokILinker: FOKI_LINKERS[spacerLength],
+        ...functionalMetrics,
       });
     }
   }
   return candidates.sort(compareZfnCandidates).slice(0, resultLimit);
+}
+
+export function bhaktaAlternativesForCandidate(candidate: ZfnCandidate): BhaktaAlternative[] {
+  if (candidate.profile !== "bhakta-2013") return [];
+  const alternatives: BhaktaAlternative[] = [];
+
+  for (const leftFingerCount of BHAKTA_FINGER_COUNTS) {
+    const leftOffset = candidate.leftTop.length - leftFingerCount * 3;
+    const leftRecognition = reverseComplement(candidate.leftTop.slice(leftOffset));
+    const leftArray = leftFingerCount === 6
+      ? candidate.leftArray as BhaktaArray
+      : buildBhaktaArray(leftRecognition, complement(candidate.leftTop[leftOffset - 1]));
+    if (!leftArray) continue;
+
+    for (const rightFingerCount of BHAKTA_FINGER_COUNTS) {
+      const rightRecognition = candidate.rightTop.slice(0, rightFingerCount * 3);
+      const rightArray = rightFingerCount === 6
+        ? candidate.rightArray as BhaktaArray
+        : buildBhaktaArray(rightRecognition, candidate.rightTop[rightFingerCount * 3]);
+      if (!rightArray) continue;
+      const metrics = bhaktaMetrics(leftArray, rightArray);
+      alternatives.push({
+        leftFingerCount,
+        rightFingerCount,
+        leftArray,
+        rightArray,
+        combinedBScore: metrics.combinedBScore,
+        passesBScoreCutoff: metrics.combinedBScore >= BHAKTA_B_SCORE_CUTOFF,
+        tsoIssues: metrics.tsoIssues,
+        favorableModules: metrics.favorableModules,
+        unfavorableModules: metrics.unfavorableModules,
+      });
+    }
+  }
+
+  return alternatives.sort((left, right) =>
+    right.combinedBScore - left.combinedBScore ||
+    left.tsoIssues - right.tsoIssues ||
+    left.unfavorableModules - right.unfavorableModules ||
+    right.favorableModules - left.favorableModules ||
+    right.leftFingerCount + right.rightFingerCount - (left.leftFingerCount + left.rightFingerCount) ||
+    right.leftFingerCount - left.leftFingerCount,
+  );
 }
 
 function arraySource(array: ZfnArray): string {
@@ -115,7 +225,7 @@ function arraySource(array: ZfnArray): string {
 
 export function zfnCandidatesToCsv(candidates: readonly ZfnCandidate[]): string {
   const header = [
-    "rank", "design_profile", "spacer_center_between_bases", "distance", "spacer_bp",
+    "rank", "design_profile", "combined_b_score", "tso_warnings", "spacer_center_between_bases", "distance", "spacer_bp",
     "left_half_site_top_5to3", "spacer", "right_half_site_top_5to3",
     "left_method", "right_method", "left_assembly", "right_assembly",
     "left_fingers_NtoC", "right_fingers_NtoC", "left_array_NtoC", "right_array_NtoC",
@@ -123,6 +233,8 @@ export function zfnCandidatesToCsv(candidates: readonly ZfnCandidate[]): string 
   const rows = candidates.map((candidate, index) => [
     index + 1,
     candidate.profile,
+    candidate.combinedBScore ?? "",
+    candidate.tsoIssues ?? "",
     formatCut(candidate.cut),
     candidate.distance.toFixed(1),
     candidate.spacerLength,
