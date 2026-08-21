@@ -1,9 +1,9 @@
-export type FingerPosition = 1 | 2 | 3 | 4 | 5 | 6;
+export type FingerPosition = 1 | 2 | 3;
 
 export type ZfnArrayMethod = "gupta-2012" | "coda-2011" | "bhakta-2013";
 
 export type ZfnFinger = {
-  position: FingerPosition;
+  position: number;
   triplet: string;
   helix: string;
   source: string;
