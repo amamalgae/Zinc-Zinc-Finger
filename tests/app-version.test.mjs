@@ -7,8 +7,8 @@ import {
   APP_VERSION_PR_URL,
 } from "../src/app-version.ts";
 
-test("displayed version links to the simplified SELECT UI PR", () => {
-  assert.equal(APP_VERSION_NUMBER, 72);
-  assert.equal(APP_VERSION, "ver.72 (PR #72)");
-  assert.equal(APP_VERSION_PR_URL, "https://github.com/amamalgae/Zinc-Zinc-Finger/pull/72");
+test("displayed version links to the concise SELECT status PR", () => {
+  assert.equal(APP_VERSION_NUMBER, 73);
+  assert.equal(APP_VERSION, "ver.73 (PR #73)");
+  assert.equal(APP_VERSION_PR_URL, "https://github.com/amamalgae/Zinc-Zinc-Finger/pull/73");
 });
