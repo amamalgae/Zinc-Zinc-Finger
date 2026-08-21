@@ -1,5 +1,19 @@
-.genome-file-control {
+.genome-drop-zone {
   margin-top: 8px;
+  padding: 10px;
+  border: 2px dashed #cbd5cd;
+  border-radius: 12px;
+  background: #fafcf9;
+  transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+}
+
+.genome-drop-zone.dragging {
+  border-color: var(--green);
+  background: var(--green-soft);
+  box-shadow: 0 0 0 3px rgba(23,79,61,.08);
+}
+
+.genome-file-control {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -40,6 +54,14 @@
   cursor: pointer;
 }
 
+.genome-drop-hint {
+  display: block;
+  margin: 7px 2px 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 .genome-file-status {
   margin-top: 7px;
   display: flex;
@@ -52,6 +74,7 @@
 
 .genome-file-status strong {
   min-width: 0;
+  max-width: 100%;
   overflow: hidden;
   color: var(--ink);
   text-overflow: ellipsis;
