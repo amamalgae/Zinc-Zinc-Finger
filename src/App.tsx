@@ -25,7 +25,14 @@ import {
   CODA_F3_UNIT_COUNT,
 } from "./coda-module-archive.ts";
 import { GUPTA_MODULE_COUNT, GUPTA_TARGET_COUNT } from "./gupta-module-archive.ts";
-import type { ExactGenomeMatchResult } from "./genome-exact-match.ts";
+import type {
+  ExactGenomeCandidateSummary,
+  ExactGenomeMatchResult,
+} from "./genome-exact-match.ts";
+import {
+  genomeAwareRankingAvailable,
+  rankZfnCandidatesWithGenome,
+} from "./genome-ranking.ts";
 import type { ZfnArray, ZfnFinger } from "./zfn-array.ts";
 import {
   DEFAULT_DESIRED_CUT_INPUT,
@@ -166,29 +173,50 @@ function arrayTitle(arm: "Left" | "Right", array: ZfnArray): string {
   return `${arm} ZF · ${array.methodLabel} · ${array.assembly}`;
 }
 
-function CandidateRow({ candidate, rank, selected, onSelect, copy, exactPairMatches }: {
+function genomeSummaryPresentation(copy: Copy, summary: ExactGenomeCandidateSummary): {
+  label: string;
+  className: string;
+  counts: string | null;
+} {
+  if (summary.exactPairMatches === 0) {
+    return { label: copy.genomeTargetMissing, className: "target-missing", counts: null };
+  }
+  const counts = copy.genomeMismatchCounts(summary.alternativeCountsByMismatch.slice(1, 6));
+  if (summary.extraExactMatches > 0) {
+    return { label: copy.genomeExactDuplicate(summary.extraExactMatches), className: "exact-duplicate", counts };
+  }
+  const closest = summary.closestAlternative;
+  if (!closest) return { label: copy.genomeNoClose, className: "clear", counts };
+  const label = copy.genomeClosest(
+    closest.leftMismatches,
+    closest.rightMismatches,
+    closest.totalMismatches,
+    closest.spacerLength,
+  );
+  const className = closest.totalMismatches <= 2
+    ? "near-high"
+    : closest.totalMismatches <= 4
+      ? "near-mid"
+      : "near-weak";
+  return { label, className, counts };
+}
+
+function CandidateRow({ candidate, rank, selected, onSelect, copy, genomeSummary }: {
   candidate: ZfnCandidate;
   rank: number;
   selected: boolean;
   onSelect: () => void;
   copy: Copy;
-  exactPairMatches?: number;
+  genomeSummary?: ExactGenomeCandidateSummary;
 }) {
   const isBhakta = candidate.profile === "bhakta-2013";
   const functionalScore = candidate.combinedBScore === undefined ? "" : `B${candidate.combinedBScore} · `;
-  const genomeLabel = exactPairMatches === undefined
-    ? null
-    : exactPairMatches === 1
-      ? copy.genomeUnique
-      : exactPairMatches === 0
-        ? copy.genomeNotFound
-        : copy.genomeRepeated(exactPairMatches);
-  const genomeClass = exactPairMatches === 1 ? "unique" : exactPairMatches === 0 ? "absent" : "duplicate";
+  const genome = genomeSummary ? genomeSummaryPresentation(copy, genomeSummary) : null;
   return (
     <div className={`candidate ${selected ? "selected" : ""}`} role="button" tabIndex={0} aria-pressed={selected} onClick={(event) => { if (!hasTextSelectionWithin(event.currentTarget)) onSelect(); }} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect(); } }}>
       <span className="candidate-rank">{String(rank).padStart(2, "0")}</span>
       <span className={`candidate-sequence ${isBhakta ? "extended" : ""}`}><b className="left">{candidate.leftTop}</b><i>{candidate.spacer}</i><b className="right">{candidate.rightTop}</b></span>
-      <span className="candidate-summary">{isBhakta ? null : <strong>{compactMethodPairLabel(candidate)}</strong>}<small>{functionalScore}±{formatCut(candidate.distance)} bp · {candidate.spacerLength} bp</small>{genomeLabel ? <em className={`genome-match ${genomeClass}`}>{genomeLabel}</em> : null}</span>
+      <span className="candidate-summary">{isBhakta ? null : <strong>{compactMethodPairLabel(candidate)}</strong>}<small>{functionalScore}±{formatCut(candidate.distance)} bp · {candidate.spacerLength} bp</small>{genome ? <><em className={`genome-match ${genome.className}`}>{genome.label}</em>{genome.counts ? <small className="genome-match-counts">{genome.counts}</small> : null}</> : null}</span>
       <span className="candidate-action" aria-hidden="true">{selected ? `✓ ${copy.selected}` : `${copy.select} →`}</span>
     </div>
   );
@@ -235,11 +263,25 @@ export default function Home() {
   const desiredCut = parseUnsignedIntegerInput(desiredCutInput);
   const maxDistance = parseUnsignedIntegerInput(maxDistanceInput);
   const desiredCutError = desiredCutInputError(desiredCutInput, dna.length);
-  const candidates = useMemo(
+  const baselineCandidates = useMemo(
     () => invalidCharacterCount || desiredCutError || desiredCut === null || maxDistance === null
       ? []
       : generateZfnCandidates(dna, desiredCut, maxDistance, designProfile),
     [dna, desiredCut, desiredCutError, maxDistance, invalidCharacterCount, designProfile],
+  );
+  const genomeSummaries = useMemo(
+    () => genomeCheck.status === "ready"
+      ? new Map(genomeCheck.result.summaries.map((summary) => [summary.candidateId, summary]))
+      : new Map<string, ExactGenomeCandidateSummary>(),
+    [genomeCheck],
+  );
+  const genomeRankingActive = genomeCheck.status === "ready"
+    && genomeAwareRankingAvailable(baselineCandidates, genomeSummaries);
+  const candidates = useMemo(
+    () => genomeCheck.status === "ready"
+      ? rankZfnCandidatesWithGenome(baselineCandidates, genomeSummaries)
+      : baselineCandidates,
+    [baselineCandidates, genomeCheck.status, genomeSummaries],
   );
   const selected = candidates.find(({ id }) => id === selectedId) ?? candidates[0] ?? null;
   const selectedRank = selected ? candidates.findIndex(({ id }) => id === selected.id) + 1 : 0;
@@ -249,21 +291,18 @@ export default function Home() {
   const desiredCutErrorText = desiredCutError === null
     ? null
     : desiredCutError.kind === "not-an-integer" ? copy.errorNotInteger : copy.errorOutOfRange(desiredCutError.maximum);
-  const rankingNote = designProfile === "bhakta-2013" ? copy.bhaktaRankingNote : copy.rankingNote;
+  const baseRankingNote = designProfile === "bhakta-2013" ? copy.bhaktaRankingNote : copy.rankingNote;
+  const rankingNote = genomeCheck.status === "ready"
+    ? `${baseRankingNote} ${genomeRankingActive ? copy.genomeRankingActive : copy.genomeRankingInactive}`
+    : baseRankingNote;
   const outputIntro = selected?.profile === "bhakta-2013" ? copy.bhaktaOutputIntro : copy.outputIntro;
-  const genomeSummaries = useMemo(
-    () => genomeCheck.status === "ready"
-      ? new Map(genomeCheck.result.summaries.map((summary) => [summary.candidateId, summary.exactPairMatches]))
-      : null,
-    [genomeCheck],
-  );
 
   useEffect(() => {
     document.documentElement.lang = language;
   }, [language]);
 
   useEffect(() => {
-    if (!genomeFiles.length || !candidates.length) return;
+    if (!genomeFiles.length || !baselineCandidates.length) return;
 
     let worker: Worker | null = null;
     const timer = window.setTimeout(() => {
@@ -276,7 +315,7 @@ export default function Home() {
       worker.postMessage({
         type: "start",
         files: genomeFiles,
-        candidates: candidates.map(({ id, leftTop, rightTop, spacerLength }) => ({ id, leftTop, rightTop, spacerLength })),
+        candidates: baselineCandidates.map(({ id, leftTop, rightTop, spacerLength }) => ({ id, leftTop, rightTop, spacerLength })),
       });
     }, 200);
 
@@ -284,7 +323,7 @@ export default function Home() {
       window.clearTimeout(timer);
       worker?.terminate();
     };
-  }, [genomeFiles, candidates]);
+  }, [genomeFiles, baselineCandidates]);
 
   const chooseLanguage = (next: Language) => {
     setLanguage(next);
@@ -295,16 +334,18 @@ export default function Home() {
     }
   };
 
+  const resetGenomeCheck = () => setGenomeCheck({ status: "idle" });
+
   const addGenomeFiles = (incoming: FileList | readonly File[]) => {
     const files = Array.from(incoming);
     if (!files.length) return;
     setGenomeFiles((current) => mergeGenomeFiles(current, files));
-    setGenomeCheck({ status: "idle" });
+    resetGenomeCheck();
   };
 
   const clearGenome = () => {
     setGenomeFiles([]);
-    setGenomeCheck({ status: "idle" });
+    resetGenomeCheck();
     setGenomeInputKey((value) => value + 1);
   };
 
@@ -351,19 +392,19 @@ export default function Home() {
         <div className="input-panel">
           <div className="panel-heading"><span>01</span><h2>INPUT</h2></div>
           <label htmlFor="target-sequence">{copy.targetLabel}<small>{copy.targetHint}</small></label>
-          <textarea id="target-sequence" value={rawSequence} onChange={(event) => { setRawSequence(event.target.value); setSelectedId(null); }} spellCheck={false} />
+          <textarea id="target-sequence" value={rawSequence} onChange={(event) => { setRawSequence(event.target.value); setSelectedId(null); resetGenomeCheck(); }} spellCheck={false} />
           <div className="input-meta"><span>{dna.length} bp</span>{ambiguousBaseCount ? <span className="warning">{ambiguousBaseCount} {copy.ambiguous}</span> : null}{invalidCharacterCount ? <span className="warning">{invalidCharacterCount} {copy.unsupported}</span> : null}</div>
           <div className="simple-controls">
             <label className="method-selector" htmlFor="design-profile"><span>{copy.methodLabel}</span>
               <div className="method-select">
-                <select id="design-profile" value={designProfile} onChange={(event) => { setDesignProfile(event.target.value as DesignProfile); setSelectedId(null); }}>
+                <select id="design-profile" value={designProfile} onChange={(event) => { setDesignProfile(event.target.value as DesignProfile); setSelectedId(null); resetGenomeCheck(); }}>
                   {DESIGN_PROFILE_OPTIONS.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
                 </select>
                 <i aria-hidden="true" />
               </div>
             </label>
-            <label className={desiredCutError ? "has-error" : undefined}><span>{copy.spacerCenterLabel}</span><input type="text" inputMode="numeric" pattern="[0-9]*" value={desiredCutInput} aria-invalid={Boolean(desiredCutError)} aria-describedby={desiredCutError ? "desired-cut-error" : undefined} onChange={(event) => { if (/^\d*$/.test(event.target.value)) setDesiredCutInput(event.target.value); setSelectedId(null); }} />{desiredCutError ? <small id="desired-cut-error" className="field-error" role="alert"><i aria-hidden="true">!</i>{desiredCutErrorText}</small> : null}</label>
-            <label><span>{copy.rangeLabel}</span><input type="text" inputMode="numeric" pattern="[0-9]*" value={maxDistanceInput} onChange={(event) => { if (/^\d*$/.test(event.target.value)) setMaxDistanceInput(event.target.value); setSelectedId(null); }} /></label>
+            <label className={desiredCutError ? "has-error" : undefined}><span>{copy.spacerCenterLabel}</span><input type="text" inputMode="numeric" pattern="[0-9]*" value={desiredCutInput} aria-invalid={Boolean(desiredCutError)} aria-describedby={desiredCutError ? "desired-cut-error" : undefined} onChange={(event) => { if (/^\d*$/.test(event.target.value)) setDesiredCutInput(event.target.value); setSelectedId(null); resetGenomeCheck(); }} />{desiredCutError ? <small id="desired-cut-error" className="field-error" role="alert"><i aria-hidden="true">!</i>{desiredCutErrorText}</small> : null}</label>
+            <label><span>{copy.rangeLabel}</span><input type="text" inputMode="numeric" pattern="[0-9]*" value={maxDistanceInput} onChange={(event) => { if (/^\d*$/.test(event.target.value)) setMaxDistanceInput(event.target.value); setSelectedId(null); resetGenomeCheck(); }} /></label>
           </div>
           <label htmlFor="genome-file">{copy.genomeLabel}<small>{copy.genomeHint}</small></label>
           <div
@@ -380,7 +421,7 @@ export default function Home() {
             <span className="genome-drop-hint">{copy.genomeHint}</span>
           </div>
           {genomeFiles.length ? <div className={`genome-file-status ${genomeCheck.status === "error" ? "error" : ""}`}><strong>{genomeFiles.map(({ name }) => name).join(", ")}</strong><span>{genomeCheck.status === "checking" ? copy.genomeChecking : genomeCheck.status === "ready" ? copy.genomeReady(genomeCheck.result.fastaFiles, genomeCheck.result.sequenceCount, genomeCheck.result.genomeBases) : genomeCheck.status === "error" ? genomeErrorText(copy, genomeCheck.code) : ""}</span></div> : null}
-          <button className="example-button" type="button" onClick={() => { setRawSequence(EXAMPLE_SEQUENCE); setDesiredCutInput("27"); setMaxDistanceInput(DEFAULT_MAX_DISTANCE_INPUT); setSelectedId(null); }}><span aria-hidden="true">↻</span> {copy.resetExample}</button>
+          <button className="example-button" type="button" onClick={() => { setRawSequence(EXAMPLE_SEQUENCE); setDesiredCutInput("27"); setMaxDistanceInput(DEFAULT_MAX_DISTANCE_INPUT); setSelectedId(null); resetGenomeCheck(); }}><span aria-hidden="true">↻</span> {copy.resetExample}</button>
         </div>
 
         <div className="results-panel">
@@ -388,7 +429,7 @@ export default function Home() {
           <div className="result-count"><strong>{candidates.length}</strong><span>{copy.candidates}</span></div>
           {candidates.length ? <p className="selection-help">{rankingNote}<br />{copy.copyHint}</p> : null}
           {genomeCheck.status === "ready" ? <p className="genome-scope-note">{copy.genomeScope}</p> : null}
-          {candidates.length ? <div className="candidate-list">{candidates.map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} copy={copy} exactPairMatches={genomeSummaries?.get(candidate.id)} />)}</div> : <div className="empty-state"><strong>{desiredCutError ? copy.emptyRangeTitle : invalidCharacterCount ? copy.emptyCharsTitle : copy.emptyNoneTitle}</strong><p>{desiredCutError ? copy.emptyRangeBody : invalidCharacterCount ? copy.emptyCharsBody : copy.emptyNoneBody}</p></div>}
+          {candidates.length ? <div className="candidate-list">{candidates.map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} copy={copy} genomeSummary={genomeSummaries.get(candidate.id)} />)}</div> : <div className="empty-state"><strong>{desiredCutError ? copy.emptyRangeTitle : invalidCharacterCount ? copy.emptyCharsTitle : copy.emptyNoneTitle}</strong><p>{desiredCutError ? copy.emptyRangeBody : invalidCharacterCount ? copy.emptyCharsBody : copy.emptyNoneBody}</p></div>}
         </div>
       </section>
 
