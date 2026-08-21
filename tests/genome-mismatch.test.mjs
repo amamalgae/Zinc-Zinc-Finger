@@ -66,36 +66,55 @@ test("approximate matches are found on the opposite genomic orientation", () => 
   assert.equal(summary.alternativeCountsByMismatch[1], 1);
 });
 
-test("Bhakta search accepts four mismatches on each 18-bp half-site", () => {
+test("Bhakta search uses either half as a <=3 mismatch anchor and measures the partner without a cutoff", () => {
   const longer = {
-    id: "candidate-6f",
+    id: "candidate-6f-anchor",
     leftTop: "ACGTACGTAACGTACGTA",
     rightTop: "TGCATGCATTGCATGCAT",
     spacerLength: 6,
   };
   const target = `${longer.leftTop}CCCCCC${longer.rightTop}`;
-  const approximate = `${mutate(longer.leftTop, [0, 1, 9, 10])}AAAAAA${mutate(longer.rightTop, [0, 1, 9, 10])}`;
+  const approximate = `${mutate(longer.leftTop, [0, 1])}AAAAAA${mutate(longer.rightTop, [0, 1, 2, 3, 4, 5, 6, 7, 8])}`;
   const summary = scan(`${target}NNNN${approximate}`, longer);
-  assert.equal(summary.alternativeCountsByMismatch[5], 1, "5+ display bucket should include an 8-mismatch site");
+  assert.equal(summary.alternativeCountsByMismatch[5], 1, "5+ bucket includes broad partner-half mismatch totals");
   assert.deepEqual(summary.closestAlternative, {
-    leftMismatches: 4,
-    rightMismatches: 4,
-    totalMismatches: 8,
+    leftMismatches: 2,
+    rightMismatches: 9,
+    totalMismatches: 11,
     spacerLength: 6,
   });
 });
 
-test("Bhakta search rejects more than four mismatches on either half-site", () => {
+test("Bhakta either-half anchoring is symmetric", () => {
   const longer = {
-    id: "candidate-6f-limit",
+    id: "candidate-6f-right-anchor",
     leftTop: "ACGTACGTAACGTACGTA",
     rightTop: "TGCATGCATTGCATGCAT",
     spacerLength: 6,
   };
   const target = `${longer.leftTop}CCCCCC${longer.rightTop}`;
-  const outside = `${mutate(longer.leftTop, [0, 1, 2, 9, 10])}AAAAAA${mutate(longer.rightTop, [0])}`;
+  const approximate = `${mutate(longer.leftTop, [0, 1, 2, 3, 4, 5, 6])}AAAAAA${mutate(longer.rightTop, [0, 9, 10])}`;
+  const summary = scan(`${target}NNNN${approximate}`, longer);
+  assert.deepEqual(summary.closestAlternative, {
+    leftMismatches: 7,
+    rightMismatches: 3,
+    totalMismatches: 10,
+    spacerLength: 6,
+  });
+});
+
+test("Bhakta search rejects a pair when neither 18-bp half-site is within three mismatches", () => {
+  const longer = {
+    id: "candidate-6f-outside-anchor",
+    leftTop: "ACGTACGTAACGTACGTA",
+    rightTop: "TGCATGCATTGCATGCAT",
+    spacerLength: 6,
+  };
+  const target = `${longer.leftTop}CCCCCC${longer.rightTop}`;
+  const outside = `${mutate(longer.leftTop, [0, 1, 9, 10])}AAAAAA${mutate(longer.rightTop, [0, 1, 9, 10])}`;
   const summary = scan(`${target}NNNN${outside}`, longer);
   assert.equal(summary.alternativeCountsByMismatch.reduce((sum, count) => sum + count, 0), 0);
+  assert.equal(summary.closestAlternative, null);
 });
 
 test("ambiguous N windows are not treated as mismatches", () => {
