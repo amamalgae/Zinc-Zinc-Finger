@@ -9,8 +9,8 @@ Before changing this repository, read [docs/AI_HANDOFF.md](docs/AI_HANDOFF.md) i
 - The complete submitted target DNA is the public search window. Do not restore separate requested-center or ±range controls unless that is an explicit later product decision.
 - v3 candidate order is functional rather than positional: combined B-score first, then context/module evidence and spacer preference. Candidate position must not affect v3 rank except genomic start as a deterministic final tie-break.
 - v2/v1 remain 3-finger methods. With no requested center, their public order is spacer preference `6 > 5 >> 7`, then method-specific evidence (v2 favors more Gupta-completed arms), then genomic start. Do not split Gupta 2F modules, mix methods inside one 3F monomer, or invent missing CoDA rows.
-- Candidate rows retain the spacer-center coordinate from the beginning of the submitted target DNA, displayed compactly as `+65` or `+64.5`. This is a location coordinate, not a distance score.
-- Preserve strand orientation, ambiguous-base coordinates, and the between-bases meaning of the spacer-center coordinate for every profile.
+- Candidate rows retain the spacer-center coordinate from the beginning of the submitted target DNA. For a half-integer center, display the earlier integer (`64.5` → `+64`) rather than a decimal. This is a location coordinate, not a distance score.
+- Preserve strand orientation and ambiguous-base coordinates. The exact geometric center may be half-integer internally even though the public coordinate is floored for compact display.
 - The public exporters are protein-only: annotated GenPept and Protein FASTA contain only the selected precursor polyprotein. Do not emit predicted F2A-processed products or restore codon presets, CDS, or nucleotide GenBank without an explicit product decision.
 - Input and optional local files must stay in the browser; do not add telemetry or sequence upload.
 - Genome input may contain multiple FASTA/FASTA.gz/ZIP files. Keep all selected filenames visible; when a ZIP is parsed, also expose every recognized FASTA entry name rather than truncating or collapsing the list.
