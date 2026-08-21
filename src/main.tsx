@@ -4,6 +4,7 @@ import App from "./App";
 import "./index.css";
 import "./ui-patch.css";
 import "./genome-exact-match.css";
+import "./progressive-candidates.ts";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
