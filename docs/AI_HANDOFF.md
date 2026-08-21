@@ -1,6 +1,6 @@
 # Zinc Zinc Finger: AI handoff and decision record
 
-Last reconciled: 2026-08-21, for the Gupta-first implementation based on `main` commit `99eb9d7`, plus the source files listed in section 10.
+Last reconciled: 2026-08-21, for Gupta-first implementation PR #55 based on `main` commit `99eb9d7`, plus the source files listed in section 10.
 
 This document is the durable context for a new AI or developer who has no access to the prior ChatGPT conversations. Read it before modifying the scientific logic. The current README explains what the public site does; this file also explains what it used to do, why approaches were removed, what the evidence can and cannot support, and which questions remain open.
 
@@ -384,7 +384,7 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 25. **Direct-select-to-output phase:** the separate unnumbered selected-content display and its sequence/finger diagram were removed because step 02 already exposes the selected half-sites and ranking facts. Step 03 now follows step 02 directly, while `finger構成と単一ORFの構成を見る` remains below it. Download controls are labelled `Download (GenPept: featureあり)` and `Download (fasta)`.
 26. **Gupta-first phase:** the complete Gupta 2012 implementation workbook (162 unique 6-bp targets, 87 unique 2F module identifiers) was transcribed and combined with the Zhu 2011 position-specific 1F archive to build 3F monomers. The default profile uses Gupta per monomer and falls back to a complete CoDA monomer when unavailable; a CoDA-only control preserves the former design path. Candidate rows, CSV, FASTA, and GenPept expose method provenance. No missing target or unpublished specificity category is imputed.
 
-### 7.2 Complete main-branch commit/PR ledger through PR #53
+### 7.2 Complete main-branch commit/PR ledger through merged PR #55
 
 | Date | Commit / PR | Change and significance |
 |---|---|---|
@@ -451,6 +451,7 @@ Paschon et al. (2019), DOI `10.1038/s41467-019-08867-x`, motivated base-skipping
 | 2026-08-18 | PR #51 | Removed the exploration-range default hint and made candidate DNA manually selectable while preserving whole-row candidate selection, green selected state, and keyboard operation. |
 | 2026-08-18 | PR #52 | Renamed step 02 from RESULTS to SELECT, numbered the output card as 03 PROTEIN OUTPUT, made its precursor amino-acid sequence always visible, and relabelled both file controls as explicit DOWNLOAD actions. |
 | 2026-08-18 | PR #53 | Removed the redundant selected-content display and sequence/finger diagram, retained the technical finger/ORF disclosure below step 03, and clarified the two download labels. |
+| 2026-08-21 | PR #55 | Added the complete Gupta 2012 2F implementation archive, default Gupta-first 3F monomer construction with Zhu 2011 1F completion, monomer-level CoDA fallback, the selectable CoDA-only v1 profile, provenance-aware outputs, and archive/coverage audits. |
 
 The abandoned T2A stage cited Katayama and Yamamoto (2025), DOI `10.3390/ijms26157602`, as a GSG-T2A ZFN precedent. It is historical only: current output uses an FMDV-derived F2A sequence without the old GSG-T2A implementation.
 
