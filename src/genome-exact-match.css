@@ -125,6 +125,20 @@ html[lang="en"] .genome-match.exact-duplicate::after { content: "Exact"; }
   display: none;
 }
 
+/* A wrong/mismatched reference genome is exceptional and shown once, not on every row. */
+.candidate-list:has(.genome-match.target-missing)::before {
+  display: block;
+  margin: 0 0 8px;
+  padding: 7px 9px;
+  border-radius: 8px;
+  background: #fff4d6;
+  color: #76550a;
+  font-size: 12px;
+  font-weight: 800;
+}
+html[lang="ja"] .candidate-list:has(.genome-match.target-missing)::before { content: "標的をゲノムで確認できません"; }
+html[lang="en"] .candidate-list:has(.genome-match.target-missing)::before { content: "Target not confirmed in genome"; }
+
 /*
  * While a genome scan is pending, SELECT is intentionally covered so the
  * baseline, genome-unaware ordering is never presented as a finished result.
