@@ -119,7 +119,7 @@
 .genome-match.near-mid { background: #fff4d6; color: #76550a; }
 .genome-match.near-weak { background: #f3f5f4; color: var(--muted); }
 
-/* Silence only true absence/reference failures; 5-8 mismatch stays visible but subdued. */
+/* Silence only true absence/reference failures; >=5 mismatch stays visible but subdued. */
 .genome-match.clear,
 .genome-match.target-missing {
   display: none;
@@ -168,6 +168,20 @@ html[lang="en"] .candidate-list:has(.genome-match.target-missing)::before { cont
   animation: genome-transition-spin .72s linear infinite;
 }
 
+/* Later pages never cover the existing candidates; only the list tail spins. */
+.candidate-list[data-genome-page-loading="true"]::after {
+  content: "";
+  display: block;
+  width: 22px;
+  height: 22px;
+  margin: 12px auto 4px;
+  box-sizing: border-box;
+  border: 3px solid #d9dfdb;
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: genome-transition-spin .72s linear infinite;
+}
+
 @keyframes genome-transition-spin {
   to { transform: rotate(360deg); }
 }
@@ -179,7 +193,8 @@ html[lang="en"] .candidate-list:has(.genome-match.target-missing)::before { cont
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .results-panel.genome-transition-loading::after { animation-duration: 1.4s; }
+  .results-panel.genome-transition-loading::after,
+  .candidate-list[data-genome-page-loading="true"]::after { animation-duration: 1.4s; }
 }
 
 @media (max-width: 600px) {
