@@ -15,6 +15,10 @@ type StartMessage = {
   candidates: ExactGenomeCandidate[];
 };
 
+type WorkerGenomeMatchResult = ExactGenomeMatchResult & {
+  fastaFileNames: string[];
+};
+
 const worker = self as unknown as DedicatedWorkerGlobalScope;
 const FASTA_PATH = /\.(?:fa|fasta|fna|fas)(?:\.gz)?$/i;
 const INITIAL_CANDIDATE_BATCH = 30;
@@ -45,53 +49,54 @@ async function scanTextStream(
 async function scanGenomeFile(
   file: File,
   matcher: ExactGenomeMatchAccumulator,
-): Promise<number> {
+): Promise<string[]> {
   const lowerName = file.name.toLowerCase();
-  let fastaFiles = 0;
 
   if (lowerName.endsWith(".zip")) {
     const entries = unzipSync(new Uint8Array(await file.arrayBuffer()));
+    const fastaFileNames: string[] = [];
     for (const [name, rawBytes] of Object.entries(entries)) {
       if (!FASTA_PATH.test(name)) continue;
       const bytes = name.toLowerCase().endsWith(".gz") ? gunzipSync(rawBytes) : rawBytes;
       addFastaText(strFromU8(bytes), matcher);
-      fastaFiles += 1;
+      fastaFileNames.push(`${file.name} / ${name}`);
     }
-    if (!fastaFiles) throw new Error("NO_FASTA_IN_ZIP");
-    return fastaFiles;
+    if (!fastaFileNames.length) throw new Error("NO_FASTA_IN_ZIP");
+    return fastaFileNames;
   }
 
   if (lowerName.endsWith(".gz")) {
     addFastaText(strFromU8(gunzipSync(new Uint8Array(await file.arrayBuffer()))), matcher);
-    return 1;
+    return [file.name];
   }
 
   await scanTextStream(file.stream(), matcher);
-  return 1;
+  return [file.name];
 }
 
 async function scanGenomeFiles(
   files: readonly File[],
   candidates: ExactGenomeCandidate[],
-): Promise<ExactGenomeMatchResult> {
+): Promise<WorkerGenomeMatchResult> {
   const matcher = new ExactGenomeMatchAccumulator(candidates);
-  let fastaFiles = 0;
+  const fastaFileNames: string[] = [];
 
-  for (const file of files) fastaFiles += await scanGenomeFile(file, matcher);
+  for (const file of files) fastaFileNames.push(...await scanGenomeFile(file, matcher));
 
-  const result = matcher.result(fastaFiles);
+  const result = matcher.result(fastaFileNames.length);
   if (!result.sequenceCount) throw new Error("NO_SEQUENCE");
-  return result;
+  return { ...result, fastaFileNames };
 }
 
 function mergeBatchResults(
-  first: ExactGenomeMatchResult,
-  rest: ExactGenomeMatchResult,
-): ExactGenomeMatchResult {
+  first: WorkerGenomeMatchResult,
+  rest: WorkerGenomeMatchResult,
+): WorkerGenomeMatchResult {
   return {
     genomeBases: first.genomeBases,
     sequenceCount: first.sequenceCount,
     fastaFiles: first.fastaFiles,
+    fastaFileNames: first.fastaFileNames,
     summaries: [...first.summaries, ...rest.summaries],
   };
 }
