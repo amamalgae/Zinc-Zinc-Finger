@@ -3,13 +3,15 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const css = await readFile(new URL("../src/genome-exact-match.css", import.meta.url), "utf8");
+const app = await readFile(new URL("../src/App.tsx", import.meta.url), "utf8");
 
-test("SELECT is covered while a genome scan is pending", () => {
-  assert.match(css, /:has\(\.genome-file-status:not\(\.error\)\):not\(:has\(\.genome-scope-note\)\) \.results-panel::before/);
-  assert.match(css, /genome-select-spin/);
+test("genome checking leaves existing SELECT candidates interactive", () => {
+  assert.doesNotMatch(css, /\.results-panel::before/);
+  assert.doesNotMatch(css, /\.results-panel::after/);
+  assert.match(app, /new Worker\(new URL\("\.\/genome-exact-match\.worker\.ts"/);
 });
 
-test("ready genome results keep the loading overlay briefly before reveal", () => {
-  assert.match(css, /:has\(\.genome-scope-note\) \.results-panel::before/);
-  assert.match(css, /genome-select-reveal \.5s/);
+test("genome checking status remains visible without a blocking overlay", () => {
+  assert.match(app, /genomeCheck\.status === "checking" \? copy\.genomeChecking/);
+  assert.match(css, /Genome scans run in a worker\. Existing candidates remain visible and selectable/);
 });
