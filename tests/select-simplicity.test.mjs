@@ -10,11 +10,12 @@ test("SELECT hides explanatory genome clutter but keeps candidate facts", () => 
   assert.doesNotMatch(css, /Recommended|推奨/);
 });
 
-test("SELECT shows one explicit nearest mismatch label through the searched envelope", () => {
+test("SELECT shows one explicit nearest mismatch label without badge emphasis", () => {
   assert.match(progressive, /"0 mismatch"/);
   assert.match(progressive, /2\[01\]/);
-  assert.match(css, /\.genome-match\.near-weak\s*\{[^}]*background:/);
-  assert.doesNotMatch(css, /\.genome-match\.near-weak\s*\{[^}]*display:\s*none/);
+  assert.match(css, /\.genome-match\s*\{[^}]*color:\s*var\(--muted\);[^}]*font-size:\s*13px;[^}]*font-style:\s*normal;[^}]*font-weight:\s*400;/s);
+  assert.doesNotMatch(css, /\.genome-match\.(?:exact-duplicate|near-high|near-mid|near-weak)\s*\{/);
+  assert.doesNotMatch(css, /\.genome-match\s*\{[^}]*(?:background|border-radius|padding|min-height):/s);
 });
 
 test("candidate rows progressively reveal in batches of 30", () => {
