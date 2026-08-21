@@ -90,38 +90,28 @@
   display: none;
 }
 
-/* Rank 01 is the default recommendation; the row still exposes its evidence below the sequence. */
-html[lang="ja"] .candidate:first-child .candidate-action::before { content: "推奨 · "; }
-html[lang="en"] .candidate:first-child .candidate-action::before { content: "Recommended · "; }
-
 .genome-match {
   display: inline-flex;
   align-items: center;
   min-height: 22px;
   padding: 2px 7px;
   border-radius: 999px;
-  font-size: 0;
+  font-size: 12px;
   font-style: normal;
   font-weight: 900;
   line-height: 1;
 }
 
-.genome-match::after { font-size: 12px; }
 .genome-match.exact-duplicate { background: #fee4e2; color: #b42318; }
 .genome-match.near-high { background: var(--orange-soft); color: #9b421d; }
 .genome-match.near-mid { background: #fff4d6; color: #76550a; }
 
-/* Non-actionable absence/reference states stay silent. */
+/* No badge is shown when there is no 0-4 mismatch alternative. */
 .genome-match.clear,
 .genome-match.target-missing,
 .genome-match.near-weak {
   display: none;
 }
-
-html[lang="ja"] .genome-match.exact-duplicate::after { content: "完全一致"; }
-html[lang="en"] .genome-match.exact-duplicate::after { content: "Exact"; }
-.genome-match.near-high::after { content: "≤2 mm"; }
-.genome-match.near-mid::after { content: "3–4 mm"; }
 
 /* A wrong/mismatched reference genome is exceptional and shown once, not on every row. */
 .candidate-list:has(.genome-match.target-missing)::before {
@@ -137,62 +127,13 @@ html[lang="en"] .genome-match.exact-duplicate::after { content: "Exact"; }
 html[lang="ja"] .candidate-list:has(.genome-match.target-missing)::before { content: "標的をゲノムで確認できません"; }
 html[lang="en"] .candidate-list:has(.genome-match.target-missing)::before { content: "Target not confirmed in genome"; }
 
-/*
- * While a genome scan is pending, SELECT is intentionally covered so the
- * baseline, genome-unaware ordering is never presented as a finished result.
- * When the scan becomes ready, the overlay remains for 500 ms before revealing
- * the genome-annotated ordering. This makes even very fast scans perceptible.
- */
+/* Genome scans run in a worker. Existing candidates remain visible and selectable. */
 .results-panel { position: relative; }
 
-.designer:has(.genome-file-status:not(.error)):not(:has(.genome-scope-note)) .results-panel::before,
-.designer:has(.genome-file-status:not(.error)):has(.genome-scope-note) .results-panel::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 30;
-  border-radius: inherit;
-  background: rgba(255,255,255,.97);
-}
-
-.designer:has(.genome-file-status:not(.error)):not(:has(.genome-scope-note)) .results-panel::after,
-.designer:has(.genome-file-status:not(.error)):has(.genome-scope-note) .results-panel::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 31;
-  width: 42px;
-  height: 42px;
-  margin: -21px 0 0 -21px;
-  box-sizing: border-box;
-  border: 4px solid #d9dfdb;
-  border-top-color: var(--green);
-  border-radius: 50%;
-  animation: genome-select-spin .72s linear infinite;
-}
-
-.designer:has(.genome-file-status:not(.error)):has(.genome-scope-note) .results-panel::before {
-  animation: genome-select-reveal .5s ease forwards;
-}
-
-.designer:has(.genome-file-status:not(.error)):has(.genome-scope-note) .results-panel::after {
-  animation: genome-select-spin .72s linear infinite, genome-select-reveal .5s ease forwards;
-}
-
-@keyframes genome-select-spin {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes genome-select-reveal {
-  0%, 92% { opacity: 1; visibility: visible; }
-  100% { opacity: 0; visibility: hidden; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .designer:has(.genome-file-status:not(.error)) .results-panel::after {
-    animation-duration: 1.4s, .5s;
-  }
+.candidate[hidden] { display: none !important; }
+.candidate {
+  content-visibility: auto;
+  contain-intrinsic-size: 52px;
 }
 
 @media (max-width: 600px) {
