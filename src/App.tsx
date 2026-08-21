@@ -1,12 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { APP_VERSION, APP_VERSION_PR_URL } from "./app-version.ts";
+import { BHAKTA_MODULE_COUNT } from "./bhakta-module-archive.ts";
 import { FMDV_F2A } from "./construct-output.ts";
 import {
+  BHAKTA_B_SCORE_CUTOFF,
+  bhaktaAlternativesForCandidate,
   formatCut,
   generateZfnCandidates,
   parseDNAInput,
   reverseComplement,
   zfnCandidatesToCsv,
+  type BhaktaAlternative,
   type DesignProfile,
   type ZfnCandidate,
 } from "./zfn-design-engine.ts";
@@ -39,9 +43,10 @@ import {
   type Language,
 } from "./i18n.ts";
 
-const EXAMPLE_LEFT_RECOGNITION = "GAAGAAACG";
-const EXAMPLE_RIGHT_RECOGNITION = "GAAGAAACG";
-const EXAMPLE_SEQUENCE = `CAGTCA${reverseComplement(EXAMPLE_LEFT_RECOGNITION)}GATTAC${EXAMPLE_RIGHT_RECOGNITION}TGACGT`;
+const EXAMPLE_LEFT_TOP = "TGCAGGGCCTATTGCACC";
+const EXAMPLE_SPACER = "AGGCCA";
+const EXAMPLE_RIGHT_TOP = "GATGAGAGAACCAAGGGG";
+const EXAMPLE_SEQUENCE = `CAGTCA${EXAMPLE_LEFT_TOP}${EXAMPLE_SPACER}${EXAMPLE_RIGHT_TOP}TGACGT`;
 
 function downloadText(contents: string, filename: string, type = "text/plain;charset=utf-8") {
   const url = URL.createObjectURL(new Blob([contents], { type }));
@@ -52,17 +57,17 @@ function downloadText(contents: string, filename: string, type = "text/plain;cha
   URL.revokeObjectURL(url);
 }
 
-function ArchitectureDiagram({ copy }: { copy: Copy }) {
+function ArchitectureDiagram({ copy, leftCount, rightCount }: { copy: Copy; leftCount: number; rightCount: number }) {
   return (
     <div className="architecture" aria-label="single ORF ZFN construct">
       <div className="arch-block nls"><span>{copy.archNls}</span><strong>NLS</strong></div>
-      <div className="arch-block zf"><span>{copy.archZf}</span><strong>ZF-L · 3F</strong></div>
+      <div className="arch-block zf"><span>{copy.archZf}</span><strong>ZF-L · {leftCount}F</strong></div>
       <div className="arch-block eld"><span>{copy.archCleave}</span><strong>FokI ELD (−)</strong></div>
       <i aria-hidden="true">→</i>
       <div className="arch-block f2a"><span>{copy.archSkip}</span><strong>F2A</strong></div>
       <i aria-hidden="true">→</i>
       <div className="arch-block nls"><span>{copy.archNls}</span><strong>NLS</strong></div>
-      <div className="arch-block zf"><span>{copy.archZf}</span><strong>ZF-R · 3F</strong></div>
+      <div className="arch-block zf"><span>{copy.archZf}</span><strong>ZF-R · {rightCount}F</strong></div>
       <div className="arch-block kkr"><span>{copy.archCleave}</span><strong>FokI KKR (+)</strong></div>
     </div>
   );
@@ -91,6 +96,23 @@ function FingerGroup({ title, fingers, copy }: { title: string; fingers: readonl
   );
 }
 
+function BhaktaAlternativesPanel({ alternatives, copy }: { alternatives: readonly BhaktaAlternative[]; copy: Copy }) {
+  return (
+    <section className="bhakta-alternatives">
+      <div className="finger-title"><h3>{copy.bhaktaAlternativesTitle}</h3><span>{copy.bhaktaThreshold}</span></div>
+      <p>{copy.bhaktaAlternativesNote}</p>
+      <div className="sequence-details embedded">
+        {alternatives.map((alternative) => (
+          <div key={`${alternative.leftFingerCount}-${alternative.rightFingerCount}`}>
+            <span>L{alternative.leftFingerCount} + R{alternative.rightFingerCount}</span>
+            <code>B{alternative.combinedBScore} · {alternative.passesBScoreCutoff ? "B≥15" : "B<15"} · TSO {alternative.tsoIssues}</code>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function hasTextSelectionWithin(element: HTMLElement): boolean {
   const selection = window.getSelection();
   return Boolean(
@@ -105,6 +127,7 @@ function hasTextSelectionWithin(element: HTMLElement): boolean {
 }
 
 const DESIGN_PROFILE_OPTIONS: ReadonlyArray<{ value: DesignProfile; label: string }> = [
+  { value: "bhakta-2013", label: "v3 · Bhakta 2013" },
   { value: "gupta-coda", label: "v2 · Gupta + CoDA fallback" },
   { value: "coda-only", label: "v1 · CoDA only" },
 ];
@@ -130,11 +153,12 @@ function CandidateRow({ candidate, rank, selected, onSelect, copy }: {
   onSelect: () => void;
   copy: Copy;
 }) {
+  const functionalScore = candidate.combinedBScore === undefined ? "" : `B${candidate.combinedBScore} · `;
   return (
     <div className={`candidate ${selected ? "selected" : ""}`} role="button" tabIndex={0} aria-pressed={selected} onClick={(event) => { if (!hasTextSelectionWithin(event.currentTarget)) onSelect(); }} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect(); } }}>
       <span className="candidate-rank">{String(rank).padStart(2, "0")}</span>
       <span className="candidate-sequence"><b className="left">{candidate.leftTop}</b><i>{candidate.spacer}</i><b className="right">{candidate.rightTop}</b></span>
-      <span className="candidate-summary"><strong>{compactMethodPairLabel(candidate)}</strong><small>±{formatCut(candidate.distance)} bp · {candidate.spacerLength} bp</small></span>
+      <span className="candidate-summary"><strong>{compactMethodPairLabel(candidate)}</strong><small>{functionalScore}±{formatCut(candidate.distance)} bp · {candidate.spacerLength} bp</small></span>
       <span className="candidate-action" aria-hidden="true">{selected ? `✓ ${copy.selected}` : `${copy.select} →`}</span>
     </div>
   );
@@ -165,12 +189,11 @@ function LanguageSwitch({ language, onChange, copy }: { language: Language; onCh
 }
 
 export default function Home() {
-  // Detected from the browser, overridden only when the reader picks a language.
   const [language, setLanguage] = useState<Language>(() => readStoredLanguage() ?? detectLanguage(navigator.languages ?? [navigator.language]));
   const [rawSequence, setRawSequence] = useState(EXAMPLE_SEQUENCE);
   const [desiredCutInput, setDesiredCutInput] = useState(DEFAULT_DESIRED_CUT_INPUT);
   const [maxDistanceInput, setMaxDistanceInput] = useState(DEFAULT_MAX_DISTANCE_INPUT);
-  const [designProfile, setDesignProfile] = useState<DesignProfile>("gupta-coda");
+  const [designProfile, setDesignProfile] = useState<DesignProfile>("bhakta-2013");
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const parsedInput = useMemo(() => parseDNAInput(rawSequence), [rawSequence]);
@@ -187,10 +210,13 @@ export default function Home() {
   const selected = candidates.find(({ id }) => id === selectedId) ?? candidates[0] ?? null;
   const selectedRank = selected ? candidates.findIndex(({ id }) => id === selected.id) + 1 : 0;
   const construct = useMemo(() => selected ? buildBicistronicZfn(selected) : null, [selected]);
+  const bhaktaAlternatives = useMemo(() => selected ? bhaktaAlternativesForCandidate(selected) : [], [selected]);
   const copy = COPY[language];
   const desiredCutErrorText = desiredCutError === null
     ? null
     : desiredCutError.kind === "not-an-integer" ? copy.errorNotInteger : copy.errorOutOfRange(desiredCutError.maximum);
+  const rankingNote = designProfile === "bhakta-2013" ? copy.bhaktaRankingNote : copy.rankingNote;
+  const outputIntro = selected?.profile === "bhakta-2013" ? copy.bhaktaOutputIntro : copy.outputIntro;
 
   useEffect(() => {
     document.documentElement.lang = language;
@@ -221,7 +247,7 @@ export default function Home() {
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <span className="eyebrow">GUPTA 2012 · 2F MODULE ZFN DESIGNER</span>
+          <span className="eyebrow">BHAKTA 2013 · EXTENDED MA ZFN DESIGNER</span>
           <h1>{copy.heroTitle}</h1>
           <p>{copy.heroBody}</p>
           <div className="hero-actions">
@@ -234,11 +260,11 @@ export default function Home() {
           </ul>
         </div>
         <aside className="study-card">
-          <span>GUPTA ORIGINAL STUDY</span>
-          <div className="study-value"><strong>9/11</strong></div>
-          <h2>{copy.studyHeadline}</h2>
-          <p>{copy.studyCaveat}</p>
-          <a href="https://doi.org/10.1038/nmeth.1994" target="_blank" rel="noreferrer">Gupta et al. 2012 · DOI 10.1038/nmeth.1994 <span aria-hidden="true">↗</span></a>
+          <span>BHAKTA ORIGINAL STUDY</span>
+          <div className="study-value"><strong>15/21</strong></div>
+          <h2>Bhakta et al. 2013</h2>
+          <p>{copy.evidenceBhakta}</p>
+          <a href="https://doi.org/10.1101/gr.143693.112" target="_blank" rel="noreferrer">Bhakta et al. 2013 · DOI 10.1101/gr.143693.112 <span aria-hidden="true">↗</span></a>
         </aside>
       </section>
 
@@ -262,13 +288,13 @@ export default function Home() {
             <label className={desiredCutError ? "has-error" : undefined}><span>{copy.spacerCenterLabel}</span><input type="text" inputMode="numeric" pattern="[0-9]*" value={desiredCutInput} aria-invalid={Boolean(desiredCutError)} aria-describedby={desiredCutError ? "desired-cut-error" : undefined} onChange={(event) => { if (/^\d*$/.test(event.target.value)) setDesiredCutInput(event.target.value); setSelectedId(null); }} />{desiredCutError ? <small id="desired-cut-error" className="field-error" role="alert"><i aria-hidden="true">!</i>{desiredCutErrorText}</small> : null}</label>
             <label><span>{copy.rangeLabel}</span><input type="text" inputMode="numeric" pattern="[0-9]*" value={maxDistanceInput} onChange={(event) => { if (/^\d*$/.test(event.target.value)) setMaxDistanceInput(event.target.value); setSelectedId(null); }} /></label>
           </div>
-          <button className="example-button" type="button" onClick={() => { setRawSequence(EXAMPLE_SEQUENCE); setDesiredCutInput("18"); setMaxDistanceInput(DEFAULT_MAX_DISTANCE_INPUT); setSelectedId(null); }}><span aria-hidden="true">↻</span> {copy.resetExample}</button>
+          <button className="example-button" type="button" onClick={() => { setRawSequence(EXAMPLE_SEQUENCE); setDesiredCutInput("27"); setMaxDistanceInput(DEFAULT_MAX_DISTANCE_INPUT); setSelectedId(null); }}><span aria-hidden="true">↻</span> {copy.resetExample}</button>
         </div>
 
         <div className="results-panel">
           <div className="panel-heading"><span>02</span><h2>SELECT</h2><button className="secondary-action" type="button" disabled={!candidates.length} onClick={() => downloadText(zfnCandidatesToCsv(candidates), "zfn-design-candidates.csv", "text/csv;charset=utf-8")}><span aria-hidden="true">↓</span> CSV</button></div>
           <div className="result-count"><strong>{candidates.length}</strong><span>{copy.candidates}</span></div>
-          {candidates.length ? <p className="selection-help">{copy.rankingNote}<br />{copy.copyHint}</p> : null}
+          {candidates.length ? <p className="selection-help">{rankingNote}<br />{copy.copyHint}</p> : null}
           {candidates.length ? <div className="candidate-list">{candidates.map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} copy={copy} />)}</div> : <div className="empty-state"><strong>{desiredCutError ? copy.emptyRangeTitle : invalidCharacterCount ? copy.emptyCharsTitle : copy.emptyNoneTitle}</strong><p>{desiredCutError ? copy.emptyRangeBody : invalidCharacterCount ? copy.emptyCharsBody : copy.emptyNoneBody}</p></div>}
         </div>
       </section>
@@ -277,7 +303,7 @@ export default function Home() {
         <section className="protein-output-section">
           <div className="output-card">
             <div className="output-heading"><div className="panel-heading"><span>03</span><h2>PROTEIN OUTPUT</h2></div><div className="output-stats"><span><strong>{construct.protein.length}</strong>{copy.precursorStat}</span><span><strong>{FMDV_F2A.length}</strong>{copy.f2aStat}</span></div></div>
-            <p className="output-intro">{copy.outputIntro}</p>
+            <p className="output-intro">{outputIntro}</p>
             <div className="download-row">
               <button className="primary-action" type="button" onClick={() => downloadText(constructToProteinGenPept(construct), resultFilename(selectedRank, "gp"))}><span aria-hidden="true">↓</span> {copy.downloadGenPept}</button>
               <button className="secondary-action" type="button" onClick={() => downloadText(constructToProteinFasta(construct), resultFilename(selectedRank, "fasta"))}><span aria-hidden="true">↓</span> {copy.downloadFasta}</button>
@@ -289,9 +315,10 @@ export default function Home() {
           <details className="technical-details">
             <summary>{copy.technicalSummary}</summary>
             <div className="technical-details-body">
-              <ArchitectureDiagram copy={copy} />
+              <ArchitectureDiagram copy={copy} leftCount={selected.leftArray.fingers.length} rightCount={selected.rightArray.fingers.length} />
               <div className="finger-pair"><FingerGroup title={arrayTitle("Left", selected.leftArray)} fingers={selected.leftArray.fingers} copy={copy} /><FingerGroup title={arrayTitle("Right", selected.rightArray)} fingers={selected.rightArray.fingers} copy={copy} /></div>
               <div className="sequence-details embedded"><div><span>Left array N→C</span><code>{selected.leftArray.protein}</code></div><div><span>Right array N→C</span><code>{selected.rightArray.protein}</code></div></div>
+              {selected.profile === "bhakta-2013" ? <BhaktaAlternativesPanel alternatives={bhaktaAlternatives} copy={copy} /> : null}
             </div>
           </details>
         </section>
@@ -300,6 +327,7 @@ export default function Home() {
       <section className="evidence">
         <div className="section-intro"><span>EVIDENCE</span><h2>{copy.evidenceTitle}</h2><p>{copy.evidenceBody}</p></div>
         <div className="reference-grid">
+          <article><span>EXTENDED MODULAR ASSEMBLY</span><h3>Bhakta et al. 2013</h3><p>{copy.evidenceBhakta}</p><a href="https://doi.org/10.1101/gr.143693.112" target="_blank" rel="noreferrer">DOI 10.1101/gr.143693.112 <span aria-hidden="true">↗</span></a></article>
           <article><span>2F + 1F ASSEMBLY</span><h3>Gupta et al. 2012</h3><p>{copy.evidenceGupta}</p><a href="https://doi.org/10.1038/nmeth.1994" target="_blank" rel="noreferrer">DOI 10.1038/nmeth.1994 <span aria-hidden="true">↗</span></a></article>
           <article><span>CODA FALLBACK</span><h3>Sander et al. 2011</h3><p>{copy.evidenceSander}</p><a href="https://doi.org/10.1038/nmeth.1542" target="_blank" rel="noreferrer">DOI 10.1038/nmeth.1542 <span aria-hidden="true">↗</span></a></article>
           <article><span>FOKI HETERODIMER</span><h3>Doyon et al. 2011</h3><p>{copy.evidenceDoyon}</p><a href="https://doi.org/10.1038/nmeth.1539" target="_blank" rel="noreferrer">DOI 10.1038/nmeth.1539 <span aria-hidden="true">↗</span></a></article>
@@ -309,7 +337,7 @@ export default function Home() {
         <p className="evidence-note">{copy.evidenceNote}</p>
       </section>
 
-      <footer><p>Zinc Zinc Finger · Gupta-first 3-finger design</p><p>Gupta 2012: {GUPTA_MODULE_COUNT} modules / {GUPTA_TARGET_COUNT} sites · CoDA fallback: F1 {CODA_F1_UNIT_COUNT} / F3 {CODA_F3_UNIT_COUNT}</p></footer>
+      <footer><p>Zinc Zinc Finger · Bhakta extended-MA / Gupta / CoDA design</p><p>Bhakta 2013: {BHAKTA_MODULE_COUNT} modules · cutoff B≥{BHAKTA_B_SCORE_CUTOFF} · Gupta 2012: {GUPTA_MODULE_COUNT} modules / {GUPTA_TARGET_COUNT} sites · CoDA: F1 {CODA_F1_UNIT_COUNT} / F3 {CODA_F3_UNIT_COUNT}</p></footer>
     </main>
   );
 }
