@@ -7,8 +7,8 @@ on:
     paths:
       - ".github/workflows/zf-specificity-research.yml"
       - "scripts/benchmark-zf-specificity-models.mjs"
-      - "scripts/benchmark-persikov-2014.mjs"
       - "scripts/benchmark-zfmodels-2014.R"
+      - "scripts/analyze-zfmodels-activity.mjs"
       - "scripts/export-bhakta-l6r6-for-predictors.mjs"
       - "scripts/zf-specificity-adapters/**"
       - "tests/zf-specificity-benchmark.test.mjs"
@@ -30,32 +30,6 @@ jobs:
         run: |
           node tests/zf-specificity-benchmark.test.mjs
           node tests/persikov-2015-adapter.test.mjs
-
-  princeton-pwm-predict:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Download authors' standalone PWM predictor
-        run: |
-          curl --fail --location --retry 3 \
-            https://zf.princeton.edu/downloads/pwm_predict.1.0.tar.gz \
-            --output /tmp/pwm_predict.tar.gz
-          mkdir -p /tmp/pwm_predict
-          tar -xzf /tmp/pwm_predict.tar.gz -C /tmp/pwm_predict
-          find /tmp/pwm_predict -maxdepth 3 -type f -print
-      - name: Inspect predictor CLI
-        run: |
-          EXE="$(find /tmp/pwm_predict -type f -name pwm_predict -perm -111 | head -n 1)"
-          echo "EXE=$EXE"
-          "$EXE" --help || true
-      - name: Run retained Persikov benchmark adapter
-        run: |
-          EXE="$(find /tmp/pwm_predict -type f -name pwm_predict -perm -111 | head -n 1)"
-          test -n "$EXE"
-          node scripts/benchmark-persikov-2014.mjs "$EXE"
 
   zfmodels-2014:
     runs-on: ubuntu-latest
@@ -83,4 +57,7 @@ jobs:
         run: |
           Rscript scripts/benchmark-zfmodels-2014.R \
             /tmp/zfmodels-supp/supp_gku132_nar-03543-h-2013-File009.txt \
-            /tmp/bhakta-l6r6.json
+            /tmp/bhakta-l6r6.json > /tmp/zfmodels-activity.json
+          cat /tmp/zfmodels-activity.json
+      - name: Paired bootstrap and cohort sensitivity analysis
+        run: node scripts/analyze-zfmodels-activity.mjs /tmp/zfmodels-activity.json
