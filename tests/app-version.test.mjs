@@ -8,7 +8,7 @@ import {
 } from "../src/app-version.ts";
 
 test("displayed version links to the repository Code page while retaining the implementation PR number", () => {
-  assert.equal(APP_VERSION_NUMBER, 56);
-  assert.equal(APP_VERSION, "ver.56 (PR #56)");
+  assert.equal(APP_VERSION_NUMBER, 58);
+  assert.equal(APP_VERSION, "ver.58 (PR #58)");
   assert.equal(APP_VERSION_PR_URL, "https://github.com/amamalgae/Zinc-Zinc-Finger");
 });
