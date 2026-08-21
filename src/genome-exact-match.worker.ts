@@ -6,6 +6,7 @@ import {
   FastaLineScanner,
   addFastaText,
   type ExactGenomeCandidate,
+  type ExactGenomeMatchResult,
 } from "./genome-exact-match.ts";
 
 type StartMessage = {
@@ -16,6 +17,7 @@ type StartMessage = {
 
 const worker = self as unknown as DedicatedWorkerGlobalScope;
 const FASTA_PATH = /\.(?:fa|fasta|fna|fas)(?:\.gz)?$/i;
+const INITIAL_CANDIDATE_BATCH = 30;
 
 async function scanTextStream(
   stream: ReadableStream<Uint8Array>,
@@ -71,7 +73,7 @@ async function scanGenomeFile(
 async function scanGenomeFiles(
   files: readonly File[],
   candidates: ExactGenomeCandidate[],
-) {
+): Promise<ExactGenomeMatchResult> {
   const matcher = new ExactGenomeMatchAccumulator(candidates);
   let fastaFiles = 0;
 
@@ -82,11 +84,40 @@ async function scanGenomeFiles(
   return result;
 }
 
+function mergeBatchResults(
+  first: ExactGenomeMatchResult,
+  rest: ExactGenomeMatchResult,
+): ExactGenomeMatchResult {
+  return {
+    genomeBases: first.genomeBases,
+    sequenceCount: first.sequenceCount,
+    fastaFiles: first.fastaFiles,
+    summaries: [...first.summaries, ...rest.summaries],
+  };
+}
+
 worker.addEventListener("message", async (event: MessageEvent<StartMessage>) => {
   if (event.data.type !== "start") return;
+  const { files, candidates } = event.data;
   try {
-    const result = await scanGenomeFiles(event.data.files, event.data.candidates);
-    worker.postMessage({ type: "result", result });
+    const firstCandidates = candidates.slice(0, INITIAL_CANDIDATE_BATCH);
+    const firstResult = await scanGenomeFiles(files, firstCandidates);
+
+    // Unblock SELECT as soon as the first visible page has genome annotations.
+    worker.postMessage({ type: "result", result: firstResult });
+
+    const remainingCandidates = candidates.slice(INITIAL_CANDIDATE_BATCH);
+    if (!remainingCandidates.length) return;
+
+    // Continue the expensive remainder only after the first 30 are usable.
+    // This second pass stays in the worker, so SELECT remains interactive.
+    try {
+      const remainingResult = await scanGenomeFiles(files, remainingCandidates);
+      worker.postMessage({ type: "result", result: mergeBatchResults(firstResult, remainingResult) });
+    } catch {
+      // Keep the already-useful first page rather than replacing it with an
+      // error after SELECT has become interactive.
+    }
   } catch (error) {
     const code = error instanceof Error && ["NO_FASTA_IN_ZIP", "NO_SEQUENCE"].includes(error.message)
       ? error.message

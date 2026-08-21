@@ -28,10 +28,14 @@ function compactGenomeLabels(root: ParentNode = document) {
       if (label.textContent !== "0 mismatch") label.textContent = "0 mismatch";
       return;
     }
-    if (!label.classList.contains("near-high") && !label.classList.contains("near-mid")) return;
+    if (
+      !label.classList.contains("near-high")
+      && !label.classList.contains("near-mid")
+      && !label.classList.contains("near-weak")
+    ) return;
     const text = label.textContent ?? "";
-    if (/^[1-4] mismatch$/.test(text)) return;
-    const match = text.match(/\b([1-4])\s*mm\b/);
+    if (/^[1-8] mismatch$/.test(text)) return;
+    const match = text.match(/\b([1-8])\s*mm\b/);
     if (match) label.textContent = `${match[1]} mismatch`;
   });
 }
