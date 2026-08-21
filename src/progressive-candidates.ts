@@ -40,6 +40,22 @@ function compactGenomeLabels(root: ParentNode = document) {
   });
 }
 
+function resultsPanel(): HTMLElement | null {
+  return document.querySelector<HTMLElement>(".results-panel");
+}
+
+function genomeStatus(): HTMLElement | null {
+  return document.querySelector<HTMLElement>(".genome-file-status");
+}
+
+function genomeIsReady(): boolean {
+  return Boolean(document.querySelector(".genome-scope-note"));
+}
+
+function rowHasGenomeSummary(row: HTMLElement): boolean {
+  return Boolean(row.querySelector(".genome-match"));
+}
+
 function applyVisibleRows(list: HTMLElement) {
   const rows = candidateRows(list);
   let state = states.get(list);
@@ -48,11 +64,20 @@ function applyVisibleRows(list: HTMLElement) {
     states.set(list, state);
   }
   state.visible = Math.min(Math.max(PAGE_SIZE, state.visible), Math.max(PAGE_SIZE, rows.length));
+
+  const genomePageMode = Boolean(genomeStatus()) && genomeIsReady();
+  let waitingForGenomePage = false;
   rows.forEach((row, index) => {
-    row.hidden = index >= state!.visible;
+    const requested = index < state!.visible;
+    const genomeSummaryReady = !genomePageMode || rowHasGenomeSummary(row);
+    row.hidden = !requested || !genomeSummaryReady;
+    if (requested && !genomeSummaryReady) waitingForGenomePage = true;
   });
-  list.dataset.visibleCandidates = String(Math.min(state.visible, rows.length));
+
+  list.dataset.visibleCandidates = String(rows.filter((row) => !row.hidden).length);
   list.dataset.totalCandidates = String(rows.length);
+  if (waitingForGenomePage) list.dataset.genomePageLoading = "true";
+  else delete list.dataset.genomePageLoading;
 
   if (!boundLists.has(list)) {
     boundLists.add(list);
@@ -66,18 +91,6 @@ function applyVisibleRows(list: HTMLElement) {
       applyVisibleRows(list);
     }, { passive: true });
   }
-}
-
-function resultsPanel(): HTMLElement | null {
-  return document.querySelector<HTMLElement>(".results-panel");
-}
-
-function genomeStatus(): HTMLElement | null {
-  return document.querySelector<HTMLElement>(".genome-file-status");
-}
-
-function genomeIsReady(): boolean {
-  return Boolean(document.querySelector(".genome-scope-note"));
 }
 
 function beginGenomeTransition() {
