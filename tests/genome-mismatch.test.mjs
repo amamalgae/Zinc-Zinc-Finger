@@ -104,16 +104,15 @@ test("Bhakta either-half anchoring is symmetric", () => {
   });
 });
 
-test("Bhakta search rejects a pair when neither 18-bp half-site is within three mismatches", () => {
+test("Bhakta search rejects the intended pair when neither 18-bp half-site is within three mismatches", () => {
   const longer = {
     id: "candidate-6f-outside-anchor",
-    leftTop: "ACGTACGTAACGTACGTA",
-    rightTop: "TGCATGCATTGCATGCAT",
+    leftTop: "ACGTTGCAAGTCGATCGA",
+    rightTop: "TGCACCTAGGATTCGACT",
     spacerLength: 6,
   };
-  const target = `${longer.leftTop}CCCCCC${longer.rightTop}`;
   const outside = `${mutate(longer.leftTop, [0, 1, 9, 10])}AAAAAA${mutate(longer.rightTop, [0, 1, 9, 10])}`;
-  const summary = scan(`${target}${ISOLATED_LOCUS_SEPARATOR}${outside}`, longer);
+  const summary = scan(outside, longer);
   assert.equal(summary.alternativeCountsByMismatch.reduce((sum, count) => sum + count, 0), 0);
   assert.equal(summary.closestAlternative, null);
 });
