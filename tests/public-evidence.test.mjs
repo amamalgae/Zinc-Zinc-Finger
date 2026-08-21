@@ -140,10 +140,11 @@ test("candidate rows retain the selected target sequence and ranking distance", 
 
 });
 
-test("the public UI keeps candidate selection limits without a duplicate display panel", () => {
+test("the public UI renders every returned candidate without a duplicate display panel", () => {
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
-  assert.match(app, /const LISTED_CANDIDATE_LIMIT = 12;/);
-  assert.doesNotMatch(app, /candidates\.slice\(0, 12\)/);
+  assert.match(app, /className="candidate-list">\{candidates\.map\(/);
+  assert.match(app, /全候補を表示/);
+  assert.doesNotMatch(app, /LISTED_CANDIDATE_LIMIT|listedCandidates|candidates\.slice\(/);
   assert.doesNotMatch(app, /dna-ruler|dna-legend|dna-direction|selected-rank/);
 });
 

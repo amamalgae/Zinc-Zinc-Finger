@@ -16,7 +16,7 @@ Gupta 2012のtwo-finger module archiveを優先し、構成できない片側だ
 - GuptaはXLSにある6 bp標的、CoDAは共有F2 contextが一致する組合せだけを使い、archiveにない組合せを予測や補間で埋めない
 - 希望スペーサー中心と探索範囲はスピナーのない手入力欄で、初期値はいずれも1000 bp。希望中心が入力配列外なら赤色で訂正を求め、候補計算を停止
 - 希望スペーサー中心への近さを最優先し、同距離では`6 > 5 >> 7`の順で候補を順位付け
-- 02 SELECTの候補行は全体を押して選択でき、表示塩基配列は選択状態を保ったままマウスドラッグで範囲選択・コピー可能
+- 02 SELECTは順位付けされた候補を最大30件すべてスクロール表示し、候補行全体を押して選択可能。表示塩基配列は選択状態を保ったままマウスドラッグで範囲選択・コピー可能
 - 各fingerの標的triplet、7 aa recognition helix、設計法、module ID、完全array配列を表示
 - `NLS–ZF-L 3F–FokI ELD–F2A–NLS–ZF-R 3F–FokI KKR`の単一ORFを生成
 - 選択候補の前駆体polyprotein 1配列を常時画面に表示し、`Download (GenPept: featureあり)`からZF1–ZF6、FokI ELD/KKR、F2Aのfeature付きGenPeptで保存

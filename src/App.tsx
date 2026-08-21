@@ -34,7 +34,6 @@ import ZfnOverviewDiagram from "./ZfnOverviewDiagram.tsx";
 const EXAMPLE_LEFT_RECOGNITION = "GAAGAAACG";
 const EXAMPLE_RIGHT_RECOGNITION = "GAAGAAACG";
 const EXAMPLE_SEQUENCE = `CAGTCA${reverseComplement(EXAMPLE_LEFT_RECOGNITION)}GATTAC${EXAMPLE_RIGHT_RECOGNITION}TGACGT`;
-const LISTED_CANDIDATE_LIMIT = 12;
 
 function downloadText(contents: string, filename: string, type = "text/plain;charset=utf-8") {
   const url = URL.createObjectURL(new Blob([contents], { type }));
@@ -139,7 +138,6 @@ export default function Home() {
       : generateZfnCandidates(dna, desiredCut, maxDistance, designProfile),
     [dna, desiredCut, desiredCutError, maxDistance, invalidCharacterCount, designProfile],
   );
-  const listedCandidates = candidates.slice(0, LISTED_CANDIDATE_LIMIT);
   const selected = candidates.find(({ id }) => id === selectedId) ?? candidates[0] ?? null;
   const selectedRank = selected ? candidates.findIndex(({ id }) => id === selected.id) + 1 : 0;
   const construct = useMemo(() => selected ? buildBicistronicZfn(selected) : null, [selected]);
@@ -204,9 +202,9 @@ export default function Home() {
 
         <div className="results-panel">
           <div className="panel-heading"><span>02</span><div><small>SELECT</small><h2>ZFNペア候補を選択</h2></div><button className="secondary-action" type="button" disabled={!candidates.length} onClick={() => downloadText(zfnCandidatesToCsv(candidates), "zfn-design-candidates.csv", "text/csv;charset=utf-8")}><span aria-hidden="true">↓</span> CSVを保存</button></div>
-          <div className="result-count"><strong>{candidates.length}</strong><span>設計候補</span><small>{candidates.length > LISTED_CANDIDATE_LIMIT ? `${LISTED_CANDIDATE_LIMIT}件を表示 · ` : ""}希望位置優先 · 同距離6 &gt; 5 &gt;&gt; 7 bp · 同条件ではGupta優先</small></div>
+          <div className="result-count"><strong>{candidates.length}</strong><span>設計候補</span><small>全候補を表示 · 希望位置優先 · 同距離6 &gt; 5 &gt;&gt; 7 bp · 同条件ではGupta優先</small></div>
           {candidates.length ? <p className="selection-help">候補を押すと設計内容が切り替わります。塩基配列はドラッグして選択・コピーできます。</p> : null}
-          {candidates.length ? <div className="candidate-list">{listedCandidates.map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} />)}</div> : <div className="empty-state"><strong>{desiredCutError ? "希望スペーサー中心を訂正してください" : invalidCharacterCount ? "未対応文字があります" : "候補がありません"}</strong><p>{desiredCutError ? "入力欄の赤いメッセージに従い、入力配列内の座標を指定してください。" : invalidCharacterCount ? "赤字の未対応文字を修正してから設計してください。IUPAC曖昧塩基は入力できます。" : "選択中のarchiveで左右9 bpを構成できる部位がありません。探索範囲、入力配列、または設計法を変更してください。"}</p></div>}
+          {candidates.length ? <div className="candidate-list">{candidates.map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} />)}</div> : <div className="empty-state"><strong>{desiredCutError ? "希望スペーサー中心を訂正してください" : invalidCharacterCount ? "未対応文字があります" : "候補がありません"}</strong><p>{desiredCutError ? "入力欄の赤いメッセージに従い、入力配列内の座標を指定してください。" : invalidCharacterCount ? "赤字の未対応文字を修正してから設計してください。IUPAC曖昧塩基は入力できます。" : "選択中のarchiveで左右9 bpを構成できる部位がありません。探索範囲、入力配列、または設計法を変更してください。"}</p></div>}
         </div>
       </section>
 
