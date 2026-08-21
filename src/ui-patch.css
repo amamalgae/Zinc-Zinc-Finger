@@ -58,3 +58,29 @@
 .overview-mobile-lightning.bottom {
   bottom: -6px;
 }
+
+/* Give long Bhakta 6F + 6F targets the row width instead of squeezing them beside metadata. */
+.candidate {
+  grid-template-columns: 24px minmax(0, 1fr) minmax(64px, auto);
+  grid-template-areas:
+    "rank seq action"
+    "rank summary action";
+  gap: 2px 12px;
+}
+
+.candidate-sequence.extended {
+  overflow-x: visible;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+  white-space: normal;
+  font-size: 13px;
+  line-height: 1.45;
+  letter-spacing: 0;
+}
+
+@media (max-width: 600px) {
+  .candidate {
+    grid-template-columns: 22px minmax(0, 1fr) auto;
+    gap: 2px 9px;
+  }
+}
