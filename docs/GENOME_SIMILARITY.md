@@ -1,6 +1,6 @@
 # Genome similarity guardrail
 
-Current public behavior: PR #71.
+Current public behavior: PR #77.
 
 This feature is a deterministic genomic sequence-similarity check. It is not an off-target cleavage predictor and does not output a safety probability.
 
@@ -11,25 +11,27 @@ For each returned ZFN candidate, the browser-local worker searches both genomic 
 The mismatch window is profile-specific:
 
 - v1/v2 (9-bp half-sites): at most 4 mismatches in either half-site and at most 5 mismatches across both half-sites combined;
-- v3 Bhakta (18-bp half-sites): at most 4 mismatches independently in each half-site, with no tighter combined cap, so the maximum accepted total is 8.
+- v3 Bhakta (18-bp half-sites): either complete 18-bp half-site may anchor the pair when it is within 3 mismatches. Once anchored, the partner 18-bp half-site is measured without an arbitrary mismatch cutoff. A displayed pair total can therefore range from 0 to 21 mismatches.
 
 `N`/ambiguous reference bases invalidate that comparison window rather than being counted as mismatches.
 
 One exact hit at the candidate's own spacer length is treated as the intended on-target and removed from alternative-site counts. Any remaining 0-mismatch hit is an extra exact genomic copy.
 
-The candidate row reports the closest alternative as `Lx/Ry`, its exact total mismatch count and spacer length. Count bins are 1/2/3/4/5+ mismatches; for v3, the 5+ bin therefore also includes totals 6-8.
+The candidate row reports the closest alternative pair as one explicit total mismatch value. Internal count bins remain 1/2/3/4/5+ mismatches so the existing ranking policy can stay conservative; the exact closest total is retained separately for display.
 
-## Why 4 mismatches are a primary inspection range
+## Why v3 uses either-half anchoring
 
-Cui et al. 2021 adapted GUIDE-seq to ZFNs and used a search condition of no more than four mismatches per half-site when assigning ZFN sites. In their retrospective set, 57/58 previously measured three-finger ZFN off-target sites were within that per-half-site window. Primary source: Cui Z et al. (2021), DOI `10.1016/j.omtn.2021.08.008`.
+Requiring both long half-sites to be simultaneously close makes a six-finger genome screen nearly silent in compact genomes. More importantly, Sander et al. 2013 showed that a strict both-halves mismatch cutoff can miss experimentally observed ZFN off-target sites. The repository's reproduced prospective Sander cohort contains only 5 CCR5 rows where both halves are within 3 mismatches, while all 52 CCR5/VEGFA prospective rows have at least one half within 3 mismatches. The existing `off-target-engine.ts` regression suite recovers those sites using either-half anchoring. Primary source: Sander JD et al. (2013), DOI `10.1093/nar/gkt716`.
 
-This does not mean every <=4-mismatch half-site pair is cleaved, nor that >4 mismatches are safe. Fine et al. 2014 and Sander et al. 2013 show why sequence similarity alone is not a calibrated cleavage model. References: Fine M et al. (2014), DOI `10.1093/nar/gkt1326`; Sander JD et al. (2013), DOI `10.1093/nar/gkt716`.
+PR #77 applies the same search principle to Bhakta v3 only: one 18-bp half-site within 3 mismatches is sufficient to inspect the paired genomic position, and the opposite half is then measured exactly. This is a sequence-similarity discovery rule, not evidence that a 6-finger Bhakta ZFN will cleave every returned site.
 
-For Bhakta v3, applying a total <=5 cap to all 36 recognized bases is overly restrictive for a similarity screen. PR #71 therefore uses the per-half-site <=4 condition directly. This is an engineering guardrail, not a validated six-finger cleavage model.
+Cui et al. 2021 used no more than four mismatches per half-site when assigning three-finger ZFN GUIDE-seq sites. That remains useful context but is not a validated six-finger cleavage threshold. Primary source: Cui Z et al. (2021), DOI `10.1016/j.omtn.2021.08.008`.
+
+Fine et al. 2014 and Sander et al. 2013 also show why raw mismatch count alone is not a calibrated cleavage model. Fine M et al. (2014), DOI `10.1093/nar/gkt1326`; Sander JD et al. (2013), DOI `10.1093/nar/gkt716`.
 
 ## Ranking policy
 
-Genome-aware ordering is enabled only when every displayed candidate has at least one exact hit at its intended spacer length in the supplied genome. If that validation fails, similarity annotations are still shown but the normal method ranking is preserved.
+Genome-aware ordering is enabled only when every candidate being ranked has at least one exact hit at its intended spacer length in the supplied genome. If that validation fails, similarity annotations can still be shown but the normal method ranking is preserved.
 
 When enabled:
 
@@ -50,9 +52,9 @@ No arithmetic "specificity score" combines B-score and mismatch counts.
 
 The implementation does not compare every candidate against every genomic base directly.
 
-- every 9-mer seed is expanded through 2 mismatches;
-- v1/v2 have two 9-mer half-sites; under a total <=5 condition, at least one must be within 2 mismatches;
-- v3 splits its two 18-bp half-sites into four 9-mer chunks; if each 18-bp half-site has <=4 mismatches, each half necessarily contains at least one 9-mer chunk within 2 mismatches;
-- only seed-positive coordinates undergo exact left/right Hamming-distance verification.
+- v1/v2 expand each 9-mer seed through 2 mismatches; under the legacy total <=5 condition, at least one 9-bp half-site must be within 2 mismatches;
+- v3 splits each 18-bp half-site into two 9-mer chunks and expands each chunk through 1 mismatch;
+- if an 18-bp v3 half-site has <=3 mismatches, at least one of its two 9-mer chunks must have <=1 mismatch, so the anchor search is lossless inside the declared <=3 half-site envelope;
+- only seed-positive coordinates undergo full paired Hamming-distance measurement.
 
-The widened v3 seed boundary is necessary for cases such as 4+4 mismatches distributed as 2/2 mismatches across both 9-mer chunks of each half-site. PR #71 includes a regression for that boundary.
+The v3 seed index is therefore smaller than the previous <=2-per-9-mer implementation even though the paired-site display is more informative.

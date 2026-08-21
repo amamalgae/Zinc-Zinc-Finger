@@ -30,7 +30,10 @@ export type ExactGenomeMatchResult = {
 
 export const GENOME_MAX_HALF_MISMATCHES = 4;
 export const GENOME_LEGACY_MAX_TOTAL_MISMATCHES = 5;
-export const GENOME_BHAKTA_MAX_TOTAL_MISMATCHES = 8;
+/** Bhakta v3 uses a lossless either-half anchor at <=3 mismatches. */
+export const GENOME_BHAKTA_ANCHOR_MAX_MISMATCHES = 3;
+/** The anchored partner can differ at every base, so the displayed pair total can reach 21. */
+export const GENOME_BHAKTA_MAX_TOTAL_MISMATCHES = 21;
 export const GENOME_SPACER_LENGTHS = [5, 6, 7] as const;
 
 const DISPLAY_MISMATCH_BUCKET_MAX = 5;
@@ -49,7 +52,7 @@ type Orientation = 0 | 1;
 type PreparedCandidate = {
   candidate: ExactGenomeCandidate;
   halfLength: 9 | 18;
-  maxTotalMismatches: 5 | 8;
+  maxTotalMismatches: 5 | 21;
   orientations: readonly [
     { firstHalf: string; secondHalf: string },
     { firstHalf: string; secondHalf: string },
@@ -141,7 +144,7 @@ function replaceEncodedBase(code: number, position: number, bits: number): numbe
   return (code & ~(3 << shift)) | (bits << shift);
 }
 
-function nineMerVariantCodes(sequence: string): number[] {
+function nineMerVariantCodes(sequence: string, maximumMismatches: 1 | 2): number[] {
   const original = encodeNineMer(sequence);
   if (original < 0) return [];
   const originalBits = [...sequence].map((base) => BASE_BITS[base]);
@@ -152,6 +155,7 @@ function nineMerVariantCodes(sequence: string): number[] {
       if (firstBits === originalBits[first]) continue;
       const oneMismatch = replaceEncodedBase(original, first, firstBits);
       result.add(oneMismatch);
+      if (maximumMismatches === 1) continue;
 
       for (let second = first + 1; second < 9; second += 1) {
         for (let secondBits = 0; secondBits < 4; secondBits += 1) {
@@ -242,6 +246,7 @@ function buildSeedIndex(candidates: readonly PreparedCandidate[]): Map<number, S
   candidates.forEach((prepared, candidateIndex) => {
     prepared.orientations.forEach((orientationPattern, orientationIndex) => {
       const orientation = orientationIndex as Orientation;
+      const seedMismatchLimit: 1 | 2 = prepared.halfLength === 18 ? 1 : 2;
       for (const spacerLength of GENOME_SPACER_LENGTHS) {
         for (const [halfIndex, half] of [orientationPattern.firstHalf, orientationPattern.secondHalf].entries()) {
           for (let chunkStart = 0; chunkStart < prepared.halfLength; chunkStart += 9) {
@@ -249,7 +254,7 @@ function buildSeedIndex(candidates: readonly PreparedCandidate[]): Map<number, S
             const offset = halfIndex === 0
               ? chunkStart
               : prepared.halfLength + spacerLength + chunkStart;
-            for (const code of nineMerVariantCodes(chunk)) {
+            for (const code of nineMerVariantCodes(chunk, seedMismatchLimit)) {
               addSeedAnchor(seedIndex, code, { candidateIndex, orientation, spacerLength, offset });
             }
           }
@@ -269,14 +274,30 @@ function verifyHit(
   start: number,
 ): GenomeSimilarityHit | null {
   const pattern = prepared.orientations[orientation];
-  const firstMismatches = hammingDistanceAt(sequence, start, pattern.firstHalf, GENOME_MAX_HALF_MISMATCHES);
-  if (firstMismatches === null) return null;
   const secondStart = start + prepared.halfLength + spacerLength;
-  const secondMismatches = hammingDistanceAt(sequence, secondStart, pattern.secondHalf, GENOME_MAX_HALF_MISMATCHES);
-  if (secondMismatches === null) return null;
-  const totalMismatches = firstMismatches + secondMismatches;
-  if (totalMismatches > prepared.maxTotalMismatches) return null;
 
+  let firstMismatches: number | null;
+  let secondMismatches: number | null;
+  if (prepared.halfLength === 18) {
+    // Sander-style either-half anchoring: one complete 18-bp half-site must be
+    // close (<=3 mismatches); the partner half is measured without an
+    // arbitrary cutoff. Splitting a <=3-mismatch half into two 9-mers
+    // guarantees at least one seed has <=1 mismatch, so this remains lossless
+    // inside the declared anchor envelope.
+    firstMismatches = hammingDistanceAt(sequence, start, pattern.firstHalf, prepared.halfLength);
+    if (firstMismatches === null) return null;
+    secondMismatches = hammingDistanceAt(sequence, secondStart, pattern.secondHalf, prepared.halfLength);
+    if (secondMismatches === null) return null;
+    if (Math.min(firstMismatches, secondMismatches) > GENOME_BHAKTA_ANCHOR_MAX_MISMATCHES) return null;
+  } else {
+    firstMismatches = hammingDistanceAt(sequence, start, pattern.firstHalf, GENOME_MAX_HALF_MISMATCHES);
+    if (firstMismatches === null) return null;
+    secondMismatches = hammingDistanceAt(sequence, secondStart, pattern.secondHalf, GENOME_MAX_HALF_MISMATCHES);
+    if (secondMismatches === null) return null;
+    if (firstMismatches + secondMismatches > prepared.maxTotalMismatches) return null;
+  }
+
+  const totalMismatches = firstMismatches + secondMismatches;
   const leftMismatches = orientation === 0 ? firstMismatches : secondMismatches;
   const rightMismatches = orientation === 0 ? secondMismatches : firstMismatches;
   return { leftMismatches, rightMismatches, totalMismatches, spacerLength };

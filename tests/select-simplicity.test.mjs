@@ -12,7 +12,7 @@ test("SELECT hides explanatory genome clutter but keeps candidate facts", () => 
 
 test("SELECT shows one explicit nearest mismatch label through the searched envelope", () => {
   assert.match(progressive, /"0 mismatch"/);
-  assert.match(progressive, /\[1-8\] mismatch/);
+  assert.match(progressive, /2\[01\]/);
   assert.match(css, /\.genome-match\.near-weak\s*\{[^}]*background:/);
   assert.doesNotMatch(css, /\.genome-match\.near-weak\s*\{[^}]*display:\s*none/);
 });
@@ -23,7 +23,7 @@ test("candidate rows progressively reveal in batches of 30", () => {
   assert.match(css, /\.candidate\[hidden\]\s*\{\s*display:\s*none/);
 });
 
-test("genome checking no longer overlays or blocks SELECT", () => {
+test("genome checking no longer overlays or blocks SELECT after the initial transition", () => {
   assert.doesNotMatch(css, /\.results-panel::before/);
   assert.doesNotMatch(css, /\.results-panel::after/);
 });
