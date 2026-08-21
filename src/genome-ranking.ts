@@ -88,7 +88,6 @@ export function compareGenomeAwareZfnCandidates(
   }
 
   return (
-    left.distance - right.distance ||
     severeSimilarityOrder() ||
     compareSpacer(left, right) ||
     guptaArmCount(right) - guptaArmCount(left) ||
