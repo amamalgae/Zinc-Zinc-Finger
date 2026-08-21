@@ -116,7 +116,7 @@ test("interactive controls remain distinguishable from informational labels", ()
   assert.match(app, /`✓ \$\{copy\.selected\}`/);
   assert.match(app, /CSV/);
   assert.match(app, /<ul className="hero-benefits"/);
-  assert.equal(COPY.en.heroBenefitBrowser, "Runs in your browser");
+  assert.equal(COPY.en.heroBenefitBrowser, "Runs in the browser");
   assert.match(css, /button:focus-visible, a:focus-visible, summary:focus-visible/);
   assert.match(css, /\.technical-details > summary::after/);
   assert.match(css, /\.candidate-action/);
