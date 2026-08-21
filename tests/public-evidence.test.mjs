@@ -30,18 +30,19 @@ test("landing page leads with Gupta-first design and qualifies the 9-of-11 cohor
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
 
   assert.match(app, /GUPTA 2012 · 2F MODULE ZFN DESIGNER/);
-  assert.match(app, /<h1>ZFNペアを設計<\/h1>/);
+  assert.match(app, /<h1>Design a ZFN pair<\/h1>/);
   assert.doesNotMatch(app, /標的DNAから、|ZFNペア候補を設計。/);
-  assert.match(app, /Gupta 2012の2F archiveを優先して左右ZFNペアを検索し、アミノ酸配列を出力します。/);
-  assert.match(app, /構成できない片側だけCoDAへ戻せます/);
+  assert.match(app, /searches the Gupta 2012 two-finger archive first/);
+  assert.match(app, /falls back to CoDA for a monomer it cannot build/);
   assert.match(app, /label: "v2 · Gupta \+ CoDA fallback"/);
   assert.match(app, /label: "v1 · CoDA only"/);
   assert.doesNotMatch(app, /Design v[12]/);
   assert.match(app, /<select id="design-profile"/);
-  assert.doesNotMatch(app, /実験に使う完全アミノ酸配列まで出力します。/);
-  assert.match(app, /配列を入力して設計する/);
-  assert.match(app, /11標的中9標的で/);
-  assert.match(app, /各候補の成功確率ではありません/);
+  assert.match(app, /returns the amino acid sequence/);
+  assert.match(app, /Enter a sequence/);
+  assert.match(app, /<strong>9\/11<\/strong>/);
+  assert.match(app, /zebrafish targets mutated/);
+  assert.match(app, /not the success probability of any candidate on this site/);
   assert.doesNotMatch(app, /3つのfingerで/i);
 });
 
@@ -49,7 +50,7 @@ test("candidate ranking shows the compact spacer order and keeps its rationale i
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
   const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
 
-  assert.match(app, /希望位置優先 · 同距離6 &gt; 5 &gt;&gt; 7 bp/);
+  assert.match(app, /nearest to the requested center first; ties prefer 6 &gt; 5 &gt;&gt; 7 bp spacers/);
   assert.doesNotMatch(app, /spacer長の実験傾向を用いた優先順位/);
   assert.match(readme, /`6 > 5 >> 7`/);
   assert.match(readme, /Shimizu et al\. \(2009\).*10\.1016\/j\.bmcl\.2009\.02\.109/);
@@ -66,11 +67,11 @@ test("protein output offers annotated GenPept without inventing a DNA sequence",
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
   const exporter = readFileSync(new URL("../src/zfn-construct-output.ts", import.meta.url), "utf8");
 
-  assert.match(app, /Download \(GenPept: featureあり\)/);
-  assert.match(app, /Download \(fasta\)/);
+  assert.match(app, /GenPept \(annotated\)/);
+  assert.match(app, /"true">↓<\/span> FASTA</);
   assert.match(app, /resultFilename\(selectedRank, "gp"\)/);
   assert.match(app, /resultFilename\(selectedRank, "fasta"\)/);
-  assert.match(app, /各fingerの設計法、module ID、認識helixを記録/);
+  assert.match(app, /records each finger's method, module ID and recognition helix/);
   assert.match(app, /<div className="protein-sequence"[\s\S]*?AMINO ACID SEQUENCE[\s\S]*?\{construct\.protein\}[\s\S]*?<\/div>/);
   assert.doesNotMatch(app, /<details className="sequence-details compact"/);
   assert.doesNotMatch(app, /processedLeftProtein|processedRightProtein|Processed left|Processed right/);
@@ -99,12 +100,12 @@ test("interactive controls remain distinguishable from informational labels", ()
   const css = readFileSync(new URL("../src/index.css", import.meta.url), "utf8");
 
   assert.match(app, /aria-pressed=\{selected\}/);
-  assert.match(app, /✓ 選択中/);
-  assert.match(app, /CSVを保存/);
-  assert.match(app, /Download \(fasta\)/);
+  assert.match(app, /✓ Selected/);
+  assert.match(app, /"true">↓<\/span> CSV</);
+  assert.match(app, /"true">↓<\/span> FASTA</);
   assert.match(app, /<ul className="hero-benefits"/);
   assert.doesNotMatch(app, /構成可能なペアだけを提示/);
-  assert.match(app, /<ul className="hero-benefits"[\s\S]*?<li>ブラウザ内で処理<\/li>[\s\S]*?<li>GenPept \/ Protein FASTA出力<\/li>[\s\S]*?<\/ul>/);
+  assert.match(app, /<ul className="hero-benefits"[\s\S]*?<li>Runs in the browser<\/li>[\s\S]*?<li>GenPept \/ protein FASTA<\/li>[\s\S]*?<\/ul>/);
   assert.match(css, /button:focus-visible, a:focus-visible, summary:focus-visible/);
   assert.match(css, /\.technical-details > summary::after/);
   assert.match(css, /\.candidate-action/);
@@ -112,7 +113,7 @@ test("interactive controls remain distinguishable from informational labels", ()
   assert.match(app, /hasTextSelectionWithin\(event\.currentTarget\)/);
   assert.doesNotMatch(app, /<button className=\{`candidate/);
   assert.match(css, /\.candidate-sequence \{[^}]*cursor: text;[^}]*user-select: text;/);
-  assert.match(app, /塩基配列はドラッグして選択・コピーできます/);
+  assert.match(app, /Drag across a sequence to select and copy it/);
   assert.doesNotMatch(app, /希望位置から。初期値1000 bp/);
   assert.match(css, /\.input-panel, \.results-panel, \.evidence \{ border: 1px solid/);
 });
@@ -126,7 +127,7 @@ test("selection flows directly into protein output while retaining technical det
   assert.match(app, /<div className="output-heading"><div className="panel-heading"><span>03<\/span><div><small>PROTEIN OUTPUT<\/small>/);
   assert.doesNotMatch(app, /<small>RESULTS<\/small>/);
   assert.doesNotMatch(app, /className="selected-design"/);
-  assert.match(app, /<summary>finger構成と単一ORFの構成を見る<\/summary>/);
+  assert.match(app, /<summary>Finger detail and ORF architecture<\/summary>/);
   assert.doesNotMatch(css, /\.selected-design|\.selected-heading|\.binding-figure|\.dna-map/);
 });
 
@@ -136,7 +137,7 @@ test("candidate rows retain the selected target sequence and ranking distance", 
 
   assert.match(app, /<b className="left">\{candidate\.leftTop\}<\/b>/);
   assert.match(app, /<b className="right">\{candidate\.rightTop\}<\/b>/);
-  assert.match(app, /希望位置 ±\{formatCut\(candidate\.distance\)\} bp/);
+  assert.match(app, /±\{formatCut\(candidate\.distance\)\} bp from center/);
   assert.match(css, /\.candidate-sequence b\.left \{ color: var\(--green\); \}/);
   assert.match(css, /\.candidate-sequence b\.right \{ color: var\(--blue\); \}/);
 
@@ -145,7 +146,7 @@ test("candidate rows retain the selected target sequence and ranking distance", 
 test("the public UI renders every returned candidate without a duplicate display panel", () => {
   const app = readFileSync(new URL("../src/App.tsx", import.meta.url), "utf8");
   assert.match(app, /className="candidate-list">\{candidates\.map\(/);
-  assert.match(app, /全候補を表示/);
+  assert.match(app, /All candidates, nearest to the requested center first/);
   assert.doesNotMatch(app, /LISTED_CANDIDATE_LIMIT|listedCandidates|candidates\.slice\(/);
   assert.doesNotMatch(app, /dna-ruler|dna-legend|dna-direction|selected-rank/);
 });
@@ -158,7 +159,7 @@ test("protein output retains its technical disclosure and keeps evidence separat
   assert.match(evidence, /ZFN_DONORS/);
   assert.ok(panel.indexOf("PROTEIN OUTPUT") < panel.indexOf('<details className="technical-details">'));
   assert.ok(panel.indexOf("<ArchitectureDiagram />") > panel.indexOf('<details className="technical-details">'));
-  assert.match(app, /<summary>finger構成と単一ORFの構成を見る<\/summary>/);
+  assert.match(app, /<summary>Finger detail and ORF architecture<\/summary>/);
 });
 
 test("an original 3ZF mechanism diagram explains the design before sequence input", () => {
@@ -168,21 +169,21 @@ test("an original 3ZF mechanism diagram explains the design before sequence inpu
   const patch = readFileSync(new URL("../src/ui-patch.css", import.meta.url), "utf8");
 
   assert.ok(app.indexOf("<ZfnOverviewDiagram />") < app.indexOf('<section className="designer"'));
-  assert.match(diagram, /ZFNがDNAを認識して<br \/>切断する仕組み/);
-  assert.match(diagram, /1 fingerが3 bp、3 fingerで9 bpを認識します/);
+  assert.match(diagram, /How a ZFN pair<br \/>finds and cuts DNA/);
+  assert.match(diagram, /One finger reads 3 bp, so three fingers read 9 bp/);
   assert.doesNotMatch(diagram, /およそ3 bp|左右2本で標的を挟む/);
   assert.match(diagram, /Left ZFN · protein N → C/);
   assert.match(diagram, /Right ZFN · protein N → C/);
-  assert.match(diagram, /ELD（−）/);
-  assert.match(diagram, /KKR（＋）/);
+  assert.match(diagram, /ELD \(−\)/);
+  assert.match(diagram, /KKR \(\+\)/);
   assert.match(diagram, /5–7 bp/);
   assert.match(diagram, /overview-strand-name f"[^>]*>F/);
   assert.match(diagram, /overview-strand-name r"[^>]*>R/);
   assert.match(diagram, /overview-lightning/);
   assert.doesNotMatch(diagram, /overview-cut|overview-dimer-link/);
   assert.match(diagram, /overview-mobile-diagram/);
-  assert.match(diagram, /overview-mobile-array right[\s\S]*>C<[\s\S]*KKR（＋）[\s\S]*ZF6[\s\S]*ZF5[\s\S]*ZF4[\s\S]*>N</);
-  assert.match(diagram, /overview-mobile-array left[\s\S]*>N<[\s\S]*ZF1[\s\S]*ZF2[\s\S]*ZF3[\s\S]*ELD（−）[\s\S]*>C</);
+  assert.match(diagram, /overview-mobile-array right[\s\S]*>C<[\s\S]*KKR \(\+\)[\s\S]*ZF6[\s\S]*ZF5[\s\S]*ZF4[\s\S]*>N</);
+  assert.match(diagram, /overview-mobile-array left[\s\S]*>N<[\s\S]*ZF1[\s\S]*ZF2[\s\S]*ZF3[\s\S]*ELD \(−\)[\s\S]*>C</);
   assert.match(css, /@media \(max-width: 600px\)[\s\S]*\.overview-svg-scroll \{ display: none; \}/);
   assert.match(css, /@media \(max-width: 600px\)[\s\S]*\.overview-mobile-diagram \{ display: grid;/);
   assert.match(patch, /\.overview-spacer-length,\s*\.overview-spacer-label \{\s*dominant-baseline: middle;\s*fill: #95461f;\s*font-size: 16px;/);
@@ -218,10 +219,29 @@ test("no interface text is set below the legible floor, and each step states wha
   // The three steps are carried by the numbered badge, the section key and the
   // controls themselves; prose instructions are deliberately absent.
   assert.doesNotMatch(app, /ここですること|ここで得られるもの|className="panel-help"/);
-  assert.match(app, /<small>INPUT<\/small><h2>標的配列を入力<\/h2>/);
-  assert.match(app, /<small>SELECT<\/small><h2>候補を選択<\/h2>/);
-  assert.match(app, /<small>PROTEIN OUTPUT<\/small><h2>アミノ酸配列を出力<\/h2>/);
+  assert.match(app, /<small>INPUT<\/small><h2>Enter the target<\/h2>/);
+  assert.match(app, /<small>SELECT<\/small><h2>Pick a candidate<\/h2>/);
+  assert.match(app, /<small>PROTEIN OUTPUT<\/small><h2>Get the sequence<\/h2>/);
   assert.match(app, /<span>Method<\/span>/);
   assert.match(app, /<span>Spacer center<\/span>/);
   assert.match(app, /<span>Range ±bp<\/span>/);
+});
+
+test("the public interface is written in English", () => {
+  const surfaces = [
+    "index.html",
+    "src/App.tsx",
+    "src/ZfnOverviewDiagram.tsx",
+    "src/zfn-construct-output.ts",
+    "src/manual-numeric-input.ts",
+    "src/index.css",
+    "src/ui-patch.css",
+  ];
+  const japanese = /[぀-ヿ一-鿿]/;
+
+  for (const path of surfaces) {
+    const source = readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+    const offending = source.split("\n").filter((line) => japanese.test(line));
+    assert.deepEqual(offending, [], `${path} still renders Japanese text`);
+  }
 });

@@ -20,6 +20,6 @@ test("manual coordinate controls default to 1000 and accept unsigned integers", 
 
 test("only a desired center inside the input sequence is valid", () => {
   assert.equal(desiredCutInputError("1000", 1000), null);
-  assert.equal(desiredCutInputError("1001", 1000), "入力配列の範囲内（0〜1000）に訂正してください。");
-  assert.equal(desiredCutInputError("", 1000), "0以上の整数を入力してください。");
+  assert.equal(desiredCutInputError("1001", 1000), "Enter a coordinate between 0 and 1000.");
+  assert.equal(desiredCutInputError("", 1000), "Enter a whole number of 0 or more.");
 });

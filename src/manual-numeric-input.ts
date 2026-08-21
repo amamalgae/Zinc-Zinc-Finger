@@ -10,8 +10,8 @@ export function parseUnsignedIntegerInput(value: string): number | null {
 
 export function desiredCutInputError(value: string, sequenceLength: number): string | null {
   const parsed = parseUnsignedIntegerInput(value);
-  if (parsed === null) return "0以上の整数を入力してください。";
+  if (parsed === null) return "Enter a whole number of 0 or more.";
   const maximum = Math.max(0, sequenceLength);
-  if (parsed > maximum) return `入力配列の範囲内（0〜${maximum}）に訂正してください。`;
+  if (parsed > maximum) return `Enter a coordinate between 0 and ${maximum}.`;
   return null;
 }
