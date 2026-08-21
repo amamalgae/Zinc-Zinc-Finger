@@ -47,11 +47,23 @@ These legacy modules and their associated analysis remain in the repository for 
 
 `data/zhu-2011-ma-zfn-benchmark.json` and its benchmark script remain only as legacy comparative evidence and are not used by the current public designer or sequence exporter.
 
-### Why CoDA is the public implementation
+### Why CoDA remains in the public implementation
 
-CoDA is included because its finite unit archive and exact shared-F2 assembly rule can be independently transcribed, audited, and implemented without bundling a target-specific selection service or a third-party trained model. This is a reproducibility and distributability decision, not a statement that CoDA is biologically superior at every target or free of intellectual-property restrictions.
+CoDA is included as the legacy-only mode and the monomer-level fallback for Gupta-first design because its finite unit archive and exact shared-F2 assembly rule can be independently transcribed and audited. This is a reproducibility decision, not a statement that CoDA is biologically superior at every target or free of intellectual-property restrictions.
 
 The project deliberately does not bundle ZFDesign code/data, DeepZF weights, or the official Persikov model. ZFDesign's article requires an academic material transfer agreement for the selection data and code; the other external model files did not carry redistribution terms sufficiently explicit for this project when reviewed. Their omission avoids representing third-party weights or restricted data as MIT-licensed project assets. CoDA's own patent family, sequence disclosures, and any claims applicable to a country, date, product, or commercial use still require a separate freedom-to-operate review. A public patent document or a ceased PCT application is not, by itself, a worldwide FTO conclusion.
+
+## Gupta 2012 two-finger and Zhu 2011 one-finger module data
+
+`data/gupta-2012-two-finger-modules.json` is a machine-readable transcription of all 162 target rows and 87 unique 2F module identifiers in Gupta 2012 Supplementary Table 2 (`NIHMS397909-supplement-3.xls`, MD5 `1998b2a86b539c624bbb5ee944875530`):
+
+- Gupta A et al. (2012), *An optimized two-finger archive for ZFN-mediated gene targeting*, DOI: 10.1038/nmeth.1994.
+
+`src/zhu-module-archive.ts` contains the 27 target triplets at three finger positions reported in Zhu 2011 Supplementary Table S1 and used as the 1F component of the Gupta 1F/2F assembly strategy:
+
+- Zhu C et al. (2011), *Evaluation and application of modularly assembled zinc-finger nucleases in zebrafish*, DOI: 10.1242/dev.066779.
+
+The implementation does not infer missing 2F targets. Gupta's online methods describe good/fair/poor scoring, but the implementation workbook does not assign those categories to every rationally derived row; no unreported per-row score is imputed here. The repository MIT license does not relicense the articles, supplements, sequence data, plasmids, patents, or biological materials.
 
 ## Spacer priority and ZF-FokI linker mapping
 
