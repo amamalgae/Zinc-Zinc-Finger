@@ -10,7 +10,7 @@ Gupta 2012のtwo-finger module archiveを優先し、構成できない片側だ
 
 - Gupta et al. (2012), DOI [10.1038/nmeth.1994](https://doi.org/10.1038/nmeth.1994) のimplementation archive 162標的・87個の2F moduleを収録
 - Gupta 3Fは、完全な2F moduleをF1–F2またはF2–F3へ置き、残る1FをZhu et al. (2011), DOI [10.1242/dev.066779](https://doi.org/10.1242/dev.066779) の位置別archiveから補う
-- デフォルトは`Design v2 · Gupta + CoDA fallback`、従来方式は`Design v1 · CoDA only`。フォールバックは完成した3Fモノマー単位で行い、1本の3F内でGuptaとCoDAを混ぜない
+- 設計法は1つのプルダウンから選び、デフォルトは`v2 · Gupta + CoDA fallback`、従来方式は`v1 · CoDA only`。フォールバックは完成した3Fモノマー単位で行い、1本の3F内でGuptaとCoDAを混ぜない
 - CoDA fallback用にF1 unit 319件、固定F2 context 18種、F3 unit 344件を収録
 - 左右とも3-fingerに固定し、5–7 bp spacerを探索
 - GuptaはXLSにある6 bp標的、CoDAは共有F2 contextが一致する組合せだけを使い、archiveにない組合せを予測や補間で埋めない
