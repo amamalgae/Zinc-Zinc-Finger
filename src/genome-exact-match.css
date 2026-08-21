@@ -98,12 +98,23 @@
   font-weight: 900;
 }
 
-.genome-match.unique { background: var(--green-soft); color: var(--green); }
-.genome-match.absent { background: #f2f3f2; color: #69756e; }
-.genome-match.duplicate { background: var(--orange-soft); color: #9b421d; }
+.genome-match.exact-duplicate { background: #fee4e2; color: #b42318; }
+.genome-match.near-high { background: var(--orange-soft); color: #9b421d; }
+.genome-match.near-mid { background: #fff4d6; color: #76550a; }
+.genome-match.near-weak { background: #f2f3f2; color: #69756e; }
+.genome-match.clear { background: var(--green-soft); color: var(--green); }
+.genome-match.target-missing { background: #f2f3f2; color: #69756e; }
+
+.genome-match-counts {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
 
 @media (max-width: 600px) {
   .genome-file-control { align-items: stretch; flex-direction: column; }
   .genome-file-control > button { align-self: flex-start; }
   .candidate-summary { flex-wrap: wrap; white-space: normal; }
+  .genome-match-counts { white-space: normal; }
 }
