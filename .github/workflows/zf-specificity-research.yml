@@ -1,0 +1,44 @@
+name: ZF specificity research benchmark
+
+on:
+  push:
+    branches:
+      - benchmark-zf-specificity-models
+  workflow_dispatch:
+
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run isolated baseline benchmark
+        run: node scripts/benchmark-zf-specificity-models.mjs
+
+  princeton-pwm-predict:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Download authors' standalone PWM predictor
+        run: |
+          curl --fail --location --retry 3 \
+            https://zf.princeton.edu/downloads/pwm_predict.1.0.tar.gz \
+            --output /tmp/pwm_predict.tar.gz
+          mkdir -p /tmp/pwm_predict
+          tar -xzf /tmp/pwm_predict.tar.gz -C /tmp/pwm_predict
+          find /tmp/pwm_predict -maxdepth 3 -type f -print
+      - name: Inspect predictor CLI
+        run: |
+          EXE="$(find /tmp/pwm_predict -type f -name pwm_predict -perm -111 | head -n 1)"
+          echo "EXE=$EXE"
+          "$EXE" --help || true
+      - name: Run retained Persikov benchmark adapter
+        run: |
+          EXE="$(find /tmp/pwm_predict -type f -name pwm_predict -perm -111 | head -n 1)"
+          test -n "$EXE"
+          node scripts/benchmark-persikov-2014.mjs "$EXE"
