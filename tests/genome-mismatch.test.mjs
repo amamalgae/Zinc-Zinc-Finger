@@ -50,7 +50,7 @@ test("exact alternatives at 5-7 bp spacers are detected", () => {
   assert.equal(summary.closestAlternative.spacerLength, 5);
 });
 
-test("five total mismatches are retained but six are outside the search window", () => {
+test("legacy three-finger search keeps the five-total mismatch cap", () => {
   const target = `${candidate.leftTop}CCCCCC${candidate.rightTop}`;
   const fiveMismatch = `${mutate(candidate.leftTop, [0, 1, 2])}AAAAAA${mutate(candidate.rightTop, [0, 1])}`;
   const sixMismatch = `${mutate(candidate.leftTop, [0, 1, 2])}AAAAAA${mutate(candidate.rightTop, [0, 1, 2])}`;
@@ -66,7 +66,7 @@ test("approximate matches are found on the opposite genomic orientation", () => 
   assert.equal(summary.alternativeCountsByMismatch[1], 1);
 });
 
-test("four-plus-one mismatch search works for 18 bp Bhakta half-sites", () => {
+test("Bhakta search accepts four mismatches on each 18-bp half-site", () => {
   const longer = {
     id: "candidate-6f",
     leftTop: "ACGTACGTAACGTACGTA",
@@ -74,9 +74,28 @@ test("four-plus-one mismatch search works for 18 bp Bhakta half-sites", () => {
     spacerLength: 6,
   };
   const target = `${longer.leftTop}CCCCCC${longer.rightTop}`;
-  const approximate = `${mutate(longer.leftTop, [0, 1, 2, 3])}AAAAAA${mutate(longer.rightTop, [0])}`;
+  const approximate = `${mutate(longer.leftTop, [0, 1, 9, 10])}AAAAAA${mutate(longer.rightTop, [0, 1, 9, 10])}`;
   const summary = scan(`${target}NNNN${approximate}`, longer);
-  assert.equal(summary.alternativeCountsByMismatch[5], 1);
+  assert.equal(summary.alternativeCountsByMismatch[5], 1, "5+ display bucket should include an 8-mismatch site");
+  assert.deepEqual(summary.closestAlternative, {
+    leftMismatches: 4,
+    rightMismatches: 4,
+    totalMismatches: 8,
+    spacerLength: 6,
+  });
+});
+
+test("Bhakta search rejects more than four mismatches on either half-site", () => {
+  const longer = {
+    id: "candidate-6f-limit",
+    leftTop: "ACGTACGTAACGTACGTA",
+    rightTop: "TGCATGCATTGCATGCAT",
+    spacerLength: 6,
+  };
+  const target = `${longer.leftTop}CCCCCC${longer.rightTop}`;
+  const outside = `${mutate(longer.leftTop, [0, 1, 2, 9, 10])}AAAAAA${mutate(longer.rightTop, [0])}`;
+  const summary = scan(`${target}NNNN${outside}`, longer);
+  assert.equal(summary.alternativeCountsByMismatch.reduce((sum, count) => sum + count, 0), 0);
 });
 
 test("ambiguous N windows are not treated as mismatches", () => {
