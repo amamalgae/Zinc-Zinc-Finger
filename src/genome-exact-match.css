@@ -102,24 +102,14 @@
   display: none;
 }
 
+/* Genome mismatch is ordinary candidate metadata, not a warning badge. */
 .genome-match {
-  display: inline-flex;
-  align-items: center;
-  min-height: 22px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  font-size: 12px;
+  color: var(--muted);
+  font-size: 13px;
   font-style: normal;
-  font-weight: 900;
-  line-height: 1;
+  font-weight: 400;
 }
 
-.genome-match.exact-duplicate { background: #fee4e2; color: #b42318; }
-.genome-match.near-high { background: var(--orange-soft); color: #9b421d; }
-.genome-match.near-mid { background: #fff4d6; color: #76550a; }
-.genome-match.near-weak { background: #f3f5f4; color: var(--muted); }
-
-/* Silence only true absence/reference failures; >=5 mismatch stays visible but subdued. */
 .genome-match.clear,
 .genome-match.target-missing {
   display: none;
