@@ -69,6 +69,14 @@ function genomeErrorText(copy: Copy, code: string): string {
   return copy.genomeErrorRead;
 }
 
+function mergeGenomeFiles(current: readonly File[], incoming: readonly File[]): File[] {
+  const merged = new Map<string, File>();
+  for (const file of [...current, ...incoming]) {
+    merged.set(`${file.name}\u0000${file.size}\u0000${file.lastModified}`, file);
+  }
+  return [...merged.values()];
+}
+
 function ArchitectureDiagram({ copy, leftCount, rightCount }: { copy: Copy; leftCount: number; rightCount: number }) {
   return (
     <div className="architecture" aria-label="single ORF ZFN construct">
@@ -217,8 +225,9 @@ export default function Home() {
   const [maxDistanceInput, setMaxDistanceInput] = useState(DEFAULT_MAX_DISTANCE_INPUT);
   const [designProfile, setDesignProfile] = useState<DesignProfile>("bhakta-2013");
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [genomeFile, setGenomeFile] = useState<File | null>(null);
+  const [genomeFiles, setGenomeFiles] = useState<File[]>([]);
   const [genomeInputKey, setGenomeInputKey] = useState(0);
+  const [genomeDragging, setGenomeDragging] = useState(false);
   const [genomeCheck, setGenomeCheck] = useState<GenomeCheckState>({ status: "idle" });
 
   const parsedInput = useMemo(() => parseDNAInput(rawSequence), [rawSequence]);
@@ -254,7 +263,7 @@ export default function Home() {
   }, [language]);
 
   useEffect(() => {
-    if (!genomeFile || !candidates.length) return;
+    if (!genomeFiles.length || !candidates.length) return;
 
     let worker: Worker | null = null;
     const timer = window.setTimeout(() => {
@@ -266,7 +275,7 @@ export default function Home() {
       };
       worker.postMessage({
         type: "start",
-        file: genomeFile,
+        files: genomeFiles,
         candidates: candidates.map(({ id, leftTop, rightTop, spacerLength }) => ({ id, leftTop, rightTop, spacerLength })),
       });
     }, 200);
@@ -275,7 +284,7 @@ export default function Home() {
       window.clearTimeout(timer);
       worker?.terminate();
     };
-  }, [genomeFile, candidates]);
+  }, [genomeFiles, candidates]);
 
   const chooseLanguage = (next: Language) => {
     setLanguage(next);
@@ -286,8 +295,15 @@ export default function Home() {
     }
   };
 
+  const addGenomeFiles = (incoming: FileList | readonly File[]) => {
+    const files = Array.from(incoming);
+    if (!files.length) return;
+    setGenomeFiles((current) => mergeGenomeFiles(current, files));
+    setGenomeCheck({ status: "idle" });
+  };
+
   const clearGenome = () => {
-    setGenomeFile(null);
+    setGenomeFiles([]);
     setGenomeCheck({ status: "idle" });
     setGenomeInputKey((value) => value + 1);
   };
@@ -350,11 +366,20 @@ export default function Home() {
             <label><span>{copy.rangeLabel}</span><input type="text" inputMode="numeric" pattern="[0-9]*" value={maxDistanceInput} onChange={(event) => { if (/^\d*$/.test(event.target.value)) setMaxDistanceInput(event.target.value); setSelectedId(null); }} /></label>
           </div>
           <label htmlFor="genome-file">{copy.genomeLabel}<small>{copy.genomeHint}</small></label>
-          <div className="genome-file-control">
-            <input key={genomeInputKey} id="genome-file" type="file" accept=".fa,.fasta,.fna,.fas,.fa.gz,.fasta.gz,.fna.gz,.fas.gz,.zip,application/zip" onChange={(event) => { setGenomeFile(event.target.files?.[0] ?? null); setGenomeCheck({ status: "idle" }); }} />
-            {genomeFile ? <button type="button" onClick={clearGenome}>{copy.genomeClear}</button> : null}
+          <div
+            className={`genome-drop-zone ${genomeDragging ? "dragging" : ""}`}
+            onDragEnter={(event) => { event.preventDefault(); setGenomeDragging(true); }}
+            onDragOver={(event) => { event.preventDefault(); event.dataTransfer.dropEffect = "copy"; setGenomeDragging(true); }}
+            onDragLeave={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setGenomeDragging(false); }}
+            onDrop={(event) => { event.preventDefault(); setGenomeDragging(false); addGenomeFiles(event.dataTransfer.files); }}
+          >
+            <div className="genome-file-control">
+              <input key={genomeInputKey} id="genome-file" type="file" multiple accept=".fa,.fasta,.fna,.fas,.fa.gz,.fasta.gz,.fna.gz,.fas.gz,.zip,application/zip" onChange={(event) => addGenomeFiles(event.target.files ?? [])} />
+              {genomeFiles.length ? <button type="button" onClick={clearGenome}>{copy.genomeClear}</button> : null}
+            </div>
+            <span className="genome-drop-hint">{copy.genomeHint}</span>
           </div>
-          {genomeFile ? <div className={`genome-file-status ${genomeCheck.status === "error" ? "error" : ""}`}><strong>{genomeFile.name}</strong><span>{genomeCheck.status === "checking" ? copy.genomeChecking : genomeCheck.status === "ready" ? copy.genomeReady(genomeCheck.result.fastaFiles, genomeCheck.result.sequenceCount, genomeCheck.result.genomeBases) : genomeCheck.status === "error" ? genomeErrorText(copy, genomeCheck.code) : ""}</span></div> : null}
+          {genomeFiles.length ? <div className={`genome-file-status ${genomeCheck.status === "error" ? "error" : ""}`}><strong>{genomeFiles.map(({ name }) => name).join(", ")}</strong><span>{genomeCheck.status === "checking" ? copy.genomeChecking : genomeCheck.status === "ready" ? copy.genomeReady(genomeCheck.result.fastaFiles, genomeCheck.result.sequenceCount, genomeCheck.result.genomeBases) : genomeCheck.status === "error" ? genomeErrorText(copy, genomeCheck.code) : ""}</span></div> : null}
           <button className="example-button" type="button" onClick={() => { setRawSequence(EXAMPLE_SEQUENCE); setDesiredCutInput("27"); setMaxDistanceInput(DEFAULT_MAX_DISTANCE_INPUT); setSelectedId(null); }}><span aria-hidden="true">↻</span> {copy.resetExample}</button>
         </div>
 

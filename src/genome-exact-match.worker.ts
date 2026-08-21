@@ -10,7 +10,7 @@ import {
 
 type StartMessage = {
   type: "start";
-  file: File;
+  files: File[];
   candidates: ExactGenomeCandidate[];
 };
 
@@ -42,9 +42,8 @@ async function scanTextStream(
 
 async function scanGenomeFile(
   file: File,
-  candidates: ExactGenomeCandidate[],
-) {
-  const matcher = new ExactGenomeMatchAccumulator(candidates);
+  matcher: ExactGenomeMatchAccumulator,
+): Promise<number> {
   const lowerName = file.name.toLowerCase();
   let fastaFiles = 0;
 
@@ -57,13 +56,26 @@ async function scanGenomeFile(
       fastaFiles += 1;
     }
     if (!fastaFiles) throw new Error("NO_FASTA_IN_ZIP");
-  } else if (lowerName.endsWith(".gz")) {
-    addFastaText(strFromU8(gunzipSync(new Uint8Array(await file.arrayBuffer()))), matcher);
-    fastaFiles = 1;
-  } else {
-    await scanTextStream(file.stream(), matcher);
-    fastaFiles = 1;
+    return fastaFiles;
   }
+
+  if (lowerName.endsWith(".gz")) {
+    addFastaText(strFromU8(gunzipSync(new Uint8Array(await file.arrayBuffer()))), matcher);
+    return 1;
+  }
+
+  await scanTextStream(file.stream(), matcher);
+  return 1;
+}
+
+async function scanGenomeFiles(
+  files: readonly File[],
+  candidates: ExactGenomeCandidate[],
+) {
+  const matcher = new ExactGenomeMatchAccumulator(candidates);
+  let fastaFiles = 0;
+
+  for (const file of files) fastaFiles += await scanGenomeFile(file, matcher);
 
   const result = matcher.result(fastaFiles);
   if (!result.sequenceCount) throw new Error("NO_SEQUENCE");
@@ -73,7 +85,7 @@ async function scanGenomeFile(
 worker.addEventListener("message", async (event: MessageEvent<StartMessage>) => {
   if (event.data.type !== "start") return;
   try {
-    const result = await scanGenomeFile(event.data.file, event.data.candidates);
+    const result = await scanGenomeFiles(event.data.files, event.data.candidates);
     worker.postMessage({ type: "result", result });
   } catch (error) {
     const code = error instanceof Error && ["NO_FASTA_IN_ZIP", "NO_SEQUENCE"].includes(error.message)
