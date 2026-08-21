@@ -34,8 +34,8 @@ function compactGenomeLabels(root: ParentNode = document) {
       && !label.classList.contains("near-weak")
     ) return;
     const text = label.textContent ?? "";
-    if (/^[1-8] mismatch$/.test(text)) return;
-    const match = text.match(/\b([1-8])\s*mm\b/);
+    if (/^(?:[1-9]|1\d|2[01]) mismatch$/.test(text)) return;
+    const match = text.match(/\b((?:[1-9]|1\d|2[01]))\s*mm\b/);
     if (match) label.textContent = `${match[1]} mismatch`;
   });
 }
