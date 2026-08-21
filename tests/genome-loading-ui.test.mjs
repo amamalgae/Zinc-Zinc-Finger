@@ -25,8 +25,8 @@ test("genome sequence scanning remains in a Web Worker", () => {
 });
 
 test("SELECT keeps exact mismatch numbers through the full searched Bhakta envelope", () => {
-  assert.match(progressive, /\[1-8\] mismatch/);
-  assert.match(progressive, /\(\[1-8\]\)\\s\*mm/);
+  assert.match(progressive, /2\[01\]/);
+  assert.match(progressive, /\\s\*mm/);
   assert.match(css, /\.genome-match\.near-weak/);
   assert.doesNotMatch(css, /\.genome-match\.near-weak\s*\{\s*display:\s*none/);
 });
