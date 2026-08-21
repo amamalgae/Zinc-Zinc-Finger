@@ -6,7 +6,7 @@ import {
   BHAKTA_B_SCORE_CUTOFF,
   bhaktaAlternativesForCandidate,
   formatCut,
-  generateZfnCandidates,
+  generateZfnCandidatesAcrossSequence,
   parseDNAInput,
   zfnCandidatesToCsv,
   type BhaktaAlternative,
@@ -34,12 +34,6 @@ import {
   rankZfnCandidatesWithGenome,
 } from "./genome-ranking.ts";
 import type { ZfnArray, ZfnFinger } from "./zfn-array.ts";
-import {
-  DEFAULT_DESIRED_CUT_INPUT,
-  DEFAULT_MAX_DISTANCE_INPUT,
-  desiredCutInputError,
-  parseUnsignedIntegerInput,
-} from "./manual-numeric-input.ts";
 import ZfnOverviewDiagram from "./ZfnOverviewDiagram.tsx";
 import {
   COPY,
@@ -55,10 +49,14 @@ const EXAMPLE_SPACER = "AGGCCA";
 const EXAMPLE_RIGHT_TOP = "GATGAGAGAACCAAGGGG";
 const EXAMPLE_SEQUENCE = `CAGTCA${EXAMPLE_LEFT_TOP}${EXAMPLE_SPACER}${EXAMPLE_RIGHT_TOP}TGACGT`;
 
+type GenomeMatchResultWithFiles = ExactGenomeMatchResult & {
+  fastaFileNames?: string[];
+};
+
 type GenomeCheckState =
   | { status: "idle" }
   | { status: "checking" }
-  | { status: "ready"; result: ExactGenomeMatchResult }
+  | { status: "ready"; result: GenomeMatchResultWithFiles }
   | { status: "error"; code: string };
 
 function downloadText(contents: string, filename: string, type = "text/plain;charset=utf-8") {
@@ -216,7 +214,7 @@ function CandidateRow({ candidate, rank, selected, onSelect, copy, genomeSummary
     <div className={`candidate ${selected ? "selected" : ""}`} role="button" tabIndex={0} aria-pressed={selected} onClick={(event) => { if (!hasTextSelectionWithin(event.currentTarget)) onSelect(); }} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect(); } }}>
       <span className="candidate-rank">{String(rank).padStart(2, "0")}</span>
       <span className={`candidate-sequence ${isBhakta ? "extended" : ""}`}><b className="left">{candidate.leftTop}</b><i>{candidate.spacer}</i><b className="right">{candidate.rightTop}</b></span>
-      <span className="candidate-summary">{isBhakta ? null : <strong>{compactMethodPairLabel(candidate)}</strong>}<small>{functionalScore}±{formatCut(candidate.distance)} bp · {candidate.spacerLength} bp</small>{genome ? <><em className={`genome-match ${genome.className}`}>{genome.label}</em>{genome.counts ? <small className="genome-match-counts">{genome.counts}</small> : null}</> : null}</span>
+      <span className="candidate-summary">{isBhakta ? null : <strong>{compactMethodPairLabel(candidate)}</strong>}<small>{functionalScore}+{formatCut(candidate.cut)} · {candidate.spacerLength} bp</small>{genome ? <><em className={`genome-match ${genome.className}`}>{genome.label}</em>{genome.counts ? <small className="genome-match-counts">{genome.counts}</small> : null}</> : null}</span>
       <span className="candidate-action" aria-hidden="true">{selected ? `✓ ${copy.selected}` : `${copy.select} →`}</span>
     </div>
   );
@@ -249,8 +247,6 @@ function LanguageSwitch({ language, onChange, copy }: { language: Language; onCh
 export default function Home() {
   const [language, setLanguage] = useState<Language>(() => readStoredLanguage() ?? detectLanguage(navigator.languages ?? [navigator.language]));
   const [rawSequence, setRawSequence] = useState(EXAMPLE_SEQUENCE);
-  const [desiredCutInput, setDesiredCutInput] = useState(DEFAULT_DESIRED_CUT_INPUT);
-  const [maxDistanceInput, setMaxDistanceInput] = useState(DEFAULT_MAX_DISTANCE_INPUT);
   const [designProfile, setDesignProfile] = useState<DesignProfile>("bhakta-2013");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [genomeFiles, setGenomeFiles] = useState<File[]>([]);
@@ -260,14 +256,9 @@ export default function Home() {
 
   const parsedInput = useMemo(() => parseDNAInput(rawSequence), [rawSequence]);
   const { dna, ambiguousBaseCount, invalidCharacterCount } = parsedInput;
-  const desiredCut = parseUnsignedIntegerInput(desiredCutInput);
-  const maxDistance = parseUnsignedIntegerInput(maxDistanceInput);
-  const desiredCutError = desiredCutInputError(desiredCutInput, dna.length);
   const baselineCandidates = useMemo(
-    () => invalidCharacterCount || desiredCutError || desiredCut === null || maxDistance === null
-      ? []
-      : generateZfnCandidates(dna, desiredCut, maxDistance, designProfile),
-    [dna, desiredCut, desiredCutError, maxDistance, invalidCharacterCount, designProfile],
+    () => invalidCharacterCount ? [] : generateZfnCandidatesAcrossSequence(dna, designProfile),
+    [dna, invalidCharacterCount, designProfile],
   );
   const genomeSummaries = useMemo(
     () => genomeCheck.status === "ready"
@@ -288,14 +279,14 @@ export default function Home() {
   const construct = useMemo(() => selected ? buildBicistronicZfn(selected) : null, [selected]);
   const bhaktaAlternatives = useMemo(() => selected ? bhaktaAlternativesForCandidate(selected) : [], [selected]);
   const copy = COPY[language];
-  const desiredCutErrorText = desiredCutError === null
-    ? null
-    : desiredCutError.kind === "not-an-integer" ? copy.errorNotInteger : copy.errorOutOfRange(desiredCutError.maximum);
   const baseRankingNote = designProfile === "bhakta-2013" ? copy.bhaktaRankingNote : copy.rankingNote;
   const rankingNote = genomeCheck.status === "ready"
     ? `${baseRankingNote} ${genomeRankingActive ? copy.genomeRankingActive : copy.genomeRankingInactive}`
     : baseRankingNote;
   const outputIntro = selected?.profile === "bhakta-2013" ? copy.bhaktaOutputIntro : copy.outputIntro;
+  const visibleGenomeFileNames = genomeCheck.status === "ready" && genomeCheck.result.fastaFileNames?.length
+    ? genomeCheck.result.fastaFileNames
+    : genomeFiles.map(({ name }) => name);
 
   useEffect(() => {
     document.documentElement.lang = language;
@@ -308,7 +299,7 @@ export default function Home() {
     const timer = window.setTimeout(() => {
       worker = new Worker(new URL("./genome-exact-match.worker.ts", import.meta.url), { type: "module" });
       setGenomeCheck({ status: "checking" });
-      worker.onmessage = (event: MessageEvent<{ type: "result"; result: ExactGenomeMatchResult } | { type: "error"; code: string }>) => {
+      worker.onmessage = (event: MessageEvent<{ type: "result"; result: GenomeMatchResultWithFiles } | { type: "error"; code: string }>) => {
         if (event.data.type === "result") setGenomeCheck({ status: "ready", result: event.data.result });
         else setGenomeCheck({ status: "error", code: event.data.code });
       };
@@ -403,8 +394,6 @@ export default function Home() {
                 <i aria-hidden="true" />
               </div>
             </label>
-            <label className={desiredCutError ? "has-error" : undefined}><span>{copy.spacerCenterLabel}</span><input type="text" inputMode="numeric" pattern="[0-9]*" value={desiredCutInput} aria-invalid={Boolean(desiredCutError)} aria-describedby={desiredCutError ? "desired-cut-error" : undefined} onChange={(event) => { if (/^\d*$/.test(event.target.value)) setDesiredCutInput(event.target.value); setSelectedId(null); resetGenomeCheck(); }} />{desiredCutError ? <small id="desired-cut-error" className="field-error" role="alert"><i aria-hidden="true">!</i>{desiredCutErrorText}</small> : null}</label>
-            <label><span>{copy.rangeLabel}</span><input type="text" inputMode="numeric" pattern="[0-9]*" value={maxDistanceInput} onChange={(event) => { if (/^\d*$/.test(event.target.value)) setMaxDistanceInput(event.target.value); setSelectedId(null); resetGenomeCheck(); }} /></label>
           </div>
           <label htmlFor="genome-file">{copy.genomeLabel}<small>{copy.genomeHint}</small></label>
           <div
@@ -420,8 +409,8 @@ export default function Home() {
             </div>
             <span className="genome-drop-hint">{copy.genomeHint}</span>
           </div>
-          {genomeFiles.length ? <div className={`genome-file-status ${genomeCheck.status === "error" ? "error" : ""}`}><strong>{genomeFiles.map(({ name }) => name).join(", ")}</strong><span>{genomeCheck.status === "checking" ? copy.genomeChecking : genomeCheck.status === "ready" ? copy.genomeReady(genomeCheck.result.fastaFiles, genomeCheck.result.sequenceCount, genomeCheck.result.genomeBases) : genomeCheck.status === "error" ? genomeErrorText(copy, genomeCheck.code) : ""}</span></div> : null}
-          <button className="example-button" type="button" onClick={() => { setRawSequence(EXAMPLE_SEQUENCE); setDesiredCutInput("27"); setMaxDistanceInput(DEFAULT_MAX_DISTANCE_INPUT); setSelectedId(null); resetGenomeCheck(); }}><span aria-hidden="true">↻</span> {copy.resetExample}</button>
+          {genomeFiles.length ? <div className={`genome-file-status ${genomeCheck.status === "error" ? "error" : ""}`}><ul className="genome-file-list">{visibleGenomeFileNames.map((name, index) => <li key={`${name}-${index}`}>{name}</li>)}</ul><span>{genomeCheck.status === "checking" ? copy.genomeChecking : genomeCheck.status === "ready" ? copy.genomeReady(genomeCheck.result.fastaFiles, genomeCheck.result.sequenceCount, genomeCheck.result.genomeBases) : genomeCheck.status === "error" ? genomeErrorText(copy, genomeCheck.code) : ""}</span></div> : null}
+          <button className="example-button" type="button" onClick={() => { setRawSequence(EXAMPLE_SEQUENCE); setSelectedId(null); resetGenomeCheck(); }}><span aria-hidden="true">↻</span> {copy.resetExample}</button>
         </div>
 
         <div className="results-panel">
@@ -429,7 +418,7 @@ export default function Home() {
           <div className="result-count"><strong>{candidates.length}</strong><span>{copy.candidates}</span></div>
           {candidates.length ? <p className="selection-help">{rankingNote}<br />{copy.copyHint}</p> : null}
           {genomeCheck.status === "ready" ? <p className="genome-scope-note">{copy.genomeScope}</p> : null}
-          {candidates.length ? <div className="candidate-list">{candidates.map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} copy={copy} genomeSummary={genomeSummaries.get(candidate.id)} />)}</div> : <div className="empty-state"><strong>{desiredCutError ? copy.emptyRangeTitle : invalidCharacterCount ? copy.emptyCharsTitle : copy.emptyNoneTitle}</strong><p>{desiredCutError ? copy.emptyRangeBody : invalidCharacterCount ? copy.emptyCharsBody : copy.emptyNoneBody}</p></div>}
+          {candidates.length ? <div className="candidate-list">{candidates.map((candidate, index) => <CandidateRow key={candidate.id} candidate={candidate} rank={index + 1} selected={selected?.id === candidate.id} onSelect={() => setSelectedId(candidate.id)} copy={copy} genomeSummary={genomeSummaries.get(candidate.id)} />)}</div> : <div className="empty-state"><strong>{invalidCharacterCount ? copy.emptyCharsTitle : copy.emptyNoneTitle}</strong><p>{invalidCharacterCount ? copy.emptyCharsBody : copy.emptyNoneBody}</p></div>}
         </div>
       </section>
 
