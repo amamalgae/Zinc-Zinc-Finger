@@ -7,8 +7,8 @@ import {
   APP_VERSION_PR_URL,
 } from "../src/app-version.ts";
 
-test("displayed version links to the exact genome match implementation PR", () => {
-  assert.equal(APP_VERSION_NUMBER, 64);
-  assert.equal(APP_VERSION, "ver.64 (PR #64)");
-  assert.equal(APP_VERSION_PR_URL, "https://github.com/amamalgae/Zinc-Zinc-Finger/pull/64");
+test("displayed version links to the candidate-row fix PR", () => {
+  assert.equal(APP_VERSION_NUMBER, 66);
+  assert.equal(APP_VERSION, "ver.66 (PR #66)");
+  assert.equal(APP_VERSION_PR_URL, "https://github.com/amamalgae/Zinc-Zinc-Finger/pull/66");
 });
